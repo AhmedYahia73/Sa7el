@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class VillageAdminRequest extends FormRequest
+class UserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,13 +23,15 @@ class VillageAdminRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [ 
+        return [
             'name' => ['required'],
+            'user_type' => ['required', 'in:owner,rent,visitor'],
+            'village_id' => ['required', 'exists:villages,id'],
             'email' => ['required', 'email'],
             'phone' => ['required'],
             'password' => ['required'],
-            'admin_position_id' => ['required', 'exists:admin_positions,id'],
             'status' => ['required', 'boolean'],
+            'parent_user_id' => ['nullable', 'exists:users,id'],
         ];
     }
 

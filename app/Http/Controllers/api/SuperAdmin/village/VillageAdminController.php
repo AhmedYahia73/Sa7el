@@ -4,8 +4,9 @@ namespace App\Http\Controllers\api\SuperAdmin\village;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Requests\SuperAdmin\VillageRequest;
+use App\Http\Requests\SuperAdmin\VillageAdminRequest;
 use Illuminate\Support\Facades\Validator;
+use App\trait\image;
 
 use App\Models\Village;
 use App\Models\User;
@@ -14,6 +15,7 @@ class VillageAdminController extends Controller
 {
     public function __construct(private Village $village,
     private User $admin){}
+    use image;
 
     public function view($id){
         $village = $this->village
@@ -30,6 +32,7 @@ class VillageAdminController extends Controller
     public function admin($id){
         $admin = $this->admin
         ->where('id', $id)
+        ->where('role', 'village')
         ->first();
 
         return response()->json([
@@ -39,8 +42,17 @@ class VillageAdminController extends Controller
 
 
     public function status(Request $request, $id){
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|boolean',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'error' => $validator->errors(),
+            ],400);
+        }
         $this->admin
         ->where('id', $id)
+        ->where('role', 'village')
         ->update([
             'status' => $request->status
         ]);
@@ -50,30 +62,64 @@ class VillageAdminController extends Controller
         ]);
     }
     
-    public function create(){
+    public function create(VillageAdminRequest $request){
+        $validator = Validator::make($request->all(), [
+            'village_id' => ['required', 'exists:villages,id'],
+            'email' => ['unique:users'],
+            'phone' => ['unique:users'],
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'error' => $validator->errors(),
+            ],400);
+        }
+        $adminRequest = $request->validated();
+        $adminRequest['role'] = 'village';
+        $adminRequest['village_id'] = $request->village_id;
         $this->admin
-        ->create();
+        ->create($adminRequest);
 
         return response()->json([
             'success' => 'You add data success',
         ]);
     }
     
-    public function modify($id){
-        $villages = $this->village
-        ->get();
+    public function modify(VillageAdminRequest $request, $id){
+        $validator = Validator::make($request->all(), [
+            'email' => ['email', 'unique:users,email,' . $id],
+            'phone' => ['unique:users,phone,' . $id],
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'error' => $validator->errors(),
+            ],400);
+        }
+        $adminRequest = $request->validated(); 
+        $this->admin
+        ->where('id', $id)
+        ->where('role', 'village')
+        ->update($adminRequest);
 
         return response()->json([
-            'villages' => $villages,
+            'success' => 'You update data success',
         ]);
     }
     
     public function delete($id){
-        $villages = $this->village
-        ->get();
+        $admin = $this->admin
+        ->where('id', $id)
+        ->where('role', 'village')
+        ->first();
+        if (empty($admin)) {
+            return response()->json([
+                'errors' => 'Admin not found'
+            ], 400);
+        }
+        $this->deleteImage($admin->image);
+        $admin->delete();
 
         return response()->json([
-            'villages' => $villages,
+            'success' => 'You delete data success',
         ]);
     }
 }

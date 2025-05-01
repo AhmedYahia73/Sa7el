@@ -24,6 +24,7 @@ class User extends Authenticatable
         'email_verified_at',
         'phone',
         'password',
+        'user_type',
         'village_id',
         'provider_id',
         'admin_position_id',
@@ -34,6 +35,13 @@ class User extends Authenticatable
     ];
     protected $appends = ['image_link'];
 
+    public function village(){
+        return $this->belongsTo(Village::class, 'village_id');
+    }
+
+    public function parent(){
+        return $this->belongsTo(User::class, 'parent_user_id');
+    }
 
     public function getImageLinkAttribute(){
         return url('storage/' . $this->image);

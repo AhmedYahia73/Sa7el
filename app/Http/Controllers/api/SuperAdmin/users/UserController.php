@@ -4,6 +4,9 @@ namespace App\Http\Controllers\api\SuperAdmin\users;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\SuperAdmin\UserRequest;
+use Illuminate\Support\Facades\Validator;
+use App\trait\image;
 
 use App\Models\User;
 
@@ -13,22 +16,29 @@ class UserController extends Controller
     use image;
 
     public function view(){
-        $zone = $this->zone
-        ->with('translations')
+        $users = $this->user
+        ->select('id', 'name', 'email', 'phone', 'password', 
+        'user_type', 'village_id', 'image', 'parent_user_id', 'status')
+        ->with('village', 'parent')
+        ->where('role', 'user')
         ->get();
 
         return response()->json([
-            'zones' => $zone,
+            'users' => $users,
         ]);
     }
 
-    public function zone($id){
-        $zone = $this->zone
+    public function user($id){
+        $user = $this->user
+        ->select('id', 'name', 'email', 'phone', 'password', 
+        'user_type', 'village_id', 'image', 'parent_user_id', 'status')
         ->where('id', $id)
+        ->where('role', 'user')
+        ->with('village', 'parent')
         ->first();
 
         return response()->json([
-            'zone' => $zone,
+            'user' => $user,
         ]);
     }
 
@@ -42,8 +52,9 @@ class UserController extends Controller
             ],400);
         }
         
-        $zone = $this->zone
+        $user = $this->user
         ->where('id', $id)
+        ->where('role', 'user')
         ->update([
             'status' => $request->status
         ]);
@@ -53,95 +64,59 @@ class UserController extends Controller
         ]);
     }
 
-    public function create(ZoneRequest $request){
-        // name, description, status
-        // ar_name, ar_description, image
-        $zoneRequest = $request->validated();
-        if (!is_string($request->image)) {
-            $image_path = $this->upload($request, 'image', 'images/zones');
-            $zoneRequest['image'] = $image_path;
+    public function create(UserRequest $request){
+        // name, user_type, village_id, email, phone
+        // password, status, parent_user_id
+        $validator = Validator::make($request->all(), [ 
+            'email' => ['unique:users'],
+            'phone' => ['unique:users'],
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'error' => $validator->errors(),
+            ],400);
         }
-        $zone = $this->zone
-        ->create($zoneRequest);
-        $zone_translations = [[ 
-            'locale' => 'en',
-            'key' => 'name',
-            'value' => $request->name,
-        ]];
-        if (!empty($request->ar_name)) {
-            $zone_translations[] = [ 
-                'locale' => 'ar',
-                'key' => 'name',
-                'value' => $request->ar_name,
-            ];
-        }
-        if (!empty($request->description)) {
-            $zone_translations[] = [ 
-                'locale' => 'en',
-                'key' => 'description',
-                'value' => $request->description,
-            ];
-        }
-        if (!empty($request->ar_description)) {
-            $zone_translations[] = [ 
-                'locale' => 'ar',
-                'key' => 'description',
-                'value' => $request->ar_description,
-            ];
-        }
-        $zone->translations()->createMany($zone_translations);
+        $userRequest = $request->validated();
+        $userRequest['role'] = 'user';
+        // if (!is_string($request->image)) {
+        //     $image_path = $this->upload($request, 'image', 'images/users');
+        //     $userRequest['image'] = $image_path;
+        // }
+        $user = $this->user
+        ->create($userRequest);
 
         return response()->json([
             'success' => 'You add data success'
         ]);
     }
 
-    public function modify(ZoneRequest $request, $id){
-        // name, description, status
-        // ar_name, ar_description
-        $zoneRequest = $request->validated();
-        $zone = $this->zone
-        ->where('id', $id)
-        ->first();
-        if (empty($zone)) {
+    public function modify(UserRequest $request, $id){
+        // name, user_type, village_id, email, phone
+        // password, status, parent_user_id
+        $validator = Validator::make($request->all(), [
+            'email' => ['email', 'unique:users,email,' . $id],
+            'phone' => ['unique:users,phone,' . $id],
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
-                'errors' => 'zone not found'
+                'error' => $validator->errors(),
+            ],400);
+        }
+        $userRequest = $request->validated();
+        $user = $this->user
+        ->where('id', $id)
+        ->where('role', 'user')
+        ->first();
+        if (empty($user)) {
+            return response()->json([
+                'errors' => 'user not found'
             ], 400);
         }
-        if (!is_string($request->image)) {
-            $image_path = $this->update_image($request, $zone->image, 'image', 'images/zones');
-            $zoneRequest['image'] = $image_path;
-        }
-        $zone
-        ->update($zoneRequest);
-        $zone_translations = [[ 
-            'locale' => 'en',
-            'key' => 'name',
-            'value' => $request->name,
-        ]];
-        if (!empty($request->ar_name)) {
-            $zone_translations[] = [ 
-                'locale' => 'ar',
-                'key' => 'name',
-                'value' => $request->ar_name,
-            ];
-        }
-        if (!empty($request->description)) {
-            $zone_translations[] = [ 
-                'locale' => 'en',
-                'key' => 'description',
-                'value' => $request->description,
-            ];
-        }
-        if (!empty($request->ar_description)) {
-            $zone_translations[] = [ 
-                'locale' => 'ar',
-                'key' => 'description',
-                'value' => $request->ar_description,
-            ];
-        }
-        $zone->translations()->delete();
-        $zone->translations()->createMany($zone_translations);
+        // if (!is_string($request->image)) {
+        //     $image_path = $this->update_image($request, $user->image, 'image', 'images/users');
+        //     $userRequest['image'] = $image_path;
+        // }
+        $user->update($userRequest);
 
         return response()->json([
             'success' => 'You update data success'
@@ -149,17 +124,16 @@ class UserController extends Controller
     }
 
     public function delete($id){
-        $zone = $this->zone
+        $user = $this->user
         ->where('id', $id)
         ->first();
-        if (empty($zone)) {
+        if (empty($user)) {
             return response()->json([
-                'errors' => 'zone not found'
+                'errors' => 'user not found'
             ], 400);
         }
-        $zone->translations()->delete();
-        $this->deleteImage($zone->image);
-        $zone->delete();
+        $this->deleteImage($user->image);
+        $user->delete();
 
         return response()->json([
             'success' => 'You delete data success'

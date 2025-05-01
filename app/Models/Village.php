@@ -48,7 +48,7 @@ class Village extends Model
 
     public function admin(){
         return $this->hasMany(User::class, 'village_id')
-        ->where('role', 'admin');
+        ->where('role', 'village');
     }
 
     public function translations()
