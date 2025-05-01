@@ -66,4 +66,9 @@ class Provider extends Model
     {
         return $this->morphMany(Translation::class, 'translatable');
     }
+
+    public function admin(){
+        return $this->hasMany(User::class, 'provider_id')
+        ->where('role', 'provider');
+    }
 }

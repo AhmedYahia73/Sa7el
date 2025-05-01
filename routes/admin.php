@@ -7,12 +7,14 @@ use App\Http\Controllers\api\SuperAdmin\zones\ZoneController;
 use App\Http\Controllers\api\SuperAdmin\village\VillageController;
 use App\Http\Controllers\api\SuperAdmin\village\VillageGallaryController;
 use App\Http\Controllers\api\SuperAdmin\village\VillageAdminController;
+use App\Http\Controllers\api\SuperAdmin\village\VillageRolesController;
 use App\Http\Controllers\api\SuperAdmin\appartment_type\AppartmentTypeController;
 use App\Http\Controllers\api\SuperAdmin\service_type\ServiceTypeController;
 use App\Http\Controllers\api\SuperAdmin\users\UserController;
 use App\Http\Controllers\api\SuperAdmin\Provider\ProviderController;
 use App\Http\Controllers\api\SuperAdmin\Provider\ProviderAdminController;
 use App\Http\Controllers\api\SuperAdmin\Provider\ProviderGalleryController;
+use App\Http\Controllers\api\SuperAdmin\Provider\ProviderRolesController;
 
 Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     Route::controller(ZoneController::class)->prefix('zone')
@@ -47,6 +49,16 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     ->group(function() {
         Route::get('/{id}', 'view');
         Route::get('/item/{id}', 'admin');
+        Route::put('/status/{id}', 'status');
+        Route::post('/add', 'create');
+        Route::post('/update/{id}', 'modify');
+        Route::delete('/delete/{id}', 'delete');
+    });
+    
+    Route::controller(VillageRolesController::class)->prefix('village_roles')
+    ->group(function() {
+        Route::get('/', 'view');
+        Route::get('/item/{id}', 'position');
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
@@ -98,6 +110,26 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::get('/{id}', 'view');
         Route::put('/status/{id}', 'status');
         Route::post('/add/{id}', 'create');
+        Route::delete('/delete/{id}', 'delete');
+    });
+    
+    Route::controller(ProviderAdminController::class)->prefix('provider_admin')
+    ->group(function() {
+        Route::get('/{id}', 'view');
+        Route::get('/item/{id}', 'admin');
+        Route::put('/status/{id}', 'status');
+        Route::post('/add', 'create');
+        Route::post('/update/{id}', 'modify');
+        Route::delete('/delete/{id}', 'delete');
+    });
+    
+    Route::controller(ProviderRolesController::class)->prefix('provider_roles')
+    ->group(function() {
+        Route::get('/', 'view');
+        Route::get('/item/{id}', 'position');
+        Route::put('/status/{id}', 'status');
+        Route::post('/add', 'create');
+        Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
     });
 });

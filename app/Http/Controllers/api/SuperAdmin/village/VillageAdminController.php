@@ -24,6 +24,8 @@ class VillageAdminController extends Controller
         ->first();
         $admins = $village?->admin ?? [];
         $village_positions = $this->admin_positions
+        ->where('type', 'village')
+        ->where('status', 1)
         ->with('roles')
         ->get();
 
@@ -38,6 +40,7 @@ class VillageAdminController extends Controller
         $admin = $this->admin
         ->where('id', $id)
         ->where('role', 'village')
+        ->with('position.roles')
         ->first();
 
         return response()->json([

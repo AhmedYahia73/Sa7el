@@ -41,6 +41,10 @@ class User extends Authenticatable
         return $this->belongsTo(Village::class, 'village_id');
     }
 
+    public function position(){
+        return $this->belongsTo(AdminPosition::class, 'admin_position_id');
+    }
+
     public function parent(){
         return $this->belongsTo(User::class, 'parent_user_id');
     }
