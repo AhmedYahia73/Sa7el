@@ -9,10 +9,12 @@ use Illuminate\Support\Facades\Validator;
 use App\trait\image;
 
 use App\Models\User;
+use App\Models\Village;
 
 class UserController extends Controller
 {
-    public function __construct(private User $user){}
+    public function __construct(private User $user,
+    private Village $village){}
     use image;
 
     public function view(){
@@ -22,9 +24,12 @@ class UserController extends Controller
         ->with('village', 'parent')
         ->where('role', 'user')
         ->get();
+        $village = $this->village
+        ->get();
 
         return response()->json([
             'users' => $users,
+            'village' => $village,
         ]);
     }
 

@@ -8,7 +8,11 @@ use App\Http\Controllers\api\SuperAdmin\village\VillageController;
 use App\Http\Controllers\api\SuperAdmin\village\VillageGallaryController;
 use App\Http\Controllers\api\SuperAdmin\village\VillageAdminController;
 use App\Http\Controllers\api\SuperAdmin\appartment_type\AppartmentTypeController;
+use App\Http\Controllers\api\SuperAdmin\service_type\ServiceTypeController;
 use App\Http\Controllers\api\SuperAdmin\users\UserController;
+use App\Http\Controllers\api\SuperAdmin\Provider\ProviderController;
+use App\Http\Controllers\api\SuperAdmin\Provider\ProviderAdminController;
+use App\Http\Controllers\api\SuperAdmin\Provider\ProviderGalleryController;
 
 Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     Route::controller(ZoneController::class)->prefix('zone')
@@ -35,8 +39,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     ->group(function() {
         Route::get('/{id}', 'view');
         Route::put('/status/{id}', 'status');
-        Route::post('/add/{id}', 'create');
-        Route::post('/update/{id}', 'modify');
+        Route::post('/add/{id}', 'create'); 
         Route::delete('/delete/{id}', 'delete');
     });
     
@@ -67,6 +70,34 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
+        Route::delete('/delete/{id}', 'delete');
+    });
+    
+    Route::controller(ServiceTypeController::class)->prefix('service_type')
+    ->group(function() {
+        Route::get('/', 'view');
+        Route::get('/item/{id}', 'service_type');
+        Route::put('/status/{id}', 'status');
+        Route::post('/add', 'create');
+        Route::post('/update/{id}', 'modify');
+        Route::delete('/delete/{id}', 'delete');
+    });
+    
+    Route::controller(ProviderController::class)->prefix('provider')
+    ->group(function() {
+        Route::get('/', 'view');
+        Route::get('/item/{id}', 'provider');
+        Route::put('/status/{id}', 'status');
+        Route::post('/add', 'create');
+        Route::post('/update/{id}', 'modify');
+        Route::delete('/delete/{id}', 'delete');
+    });
+    
+    Route::controller(ProviderGalleryController::class)->prefix('provider_gallary')
+    ->group(function() {
+        Route::get('/{id}', 'view');
+        Route::put('/status/{id}', 'status');
+        Route::post('/add/{id}', 'create');
         Route::delete('/delete/{id}', 'delete');
     });
 });

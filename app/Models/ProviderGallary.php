@@ -11,4 +11,9 @@ class ProviderGallary extends Model
         'provider_id',
         'status',
     ];
+    protected $appends = ['image_link'];
+
+    public function getImageLinkAttribute(){
+        return url('storage/' . $this->image);
+    }
 }

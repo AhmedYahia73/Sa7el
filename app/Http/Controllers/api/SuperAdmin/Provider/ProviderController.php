@@ -1,45 +1,43 @@
 <?php
 
-namespace App\Http\Controllers\api\SuperAdmin\village;
+namespace App\Http\Controllers\api\SuperAdmin\Provider;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Requests\SuperAdmin\VillageRequest;
+use App\Http\Requests\SuperAdmin\ProviderRequest;
 use Illuminate\Support\Facades\Validator;
 use App\trait\image;
 
-use App\Models\Zone;
-use App\Models\Village;
+use App\Models\Provider;
+use App\Models\ServiceType;
 
-class VillageController extends Controller
+class ProviderController extends Controller
 {
-    public function __construct(private Village $village
-    , private Zone $zones){}
+    public function __construct(private Provider $provider,
+    private ServiceType $services_types){}
     use image;
 
     public function view(){
-        $village = $this->village
-        ->with(['translations', 'zone'])
-        ->withCount('population')
+        $provider = $this->provider
+        ->with(['translations', 'service', 'package'])
         ->get();
-        $zones = $this->zones
+        $services_types = $this->services_types
         ->get();
 
         return response()->json([
-            'villages' => $village,
-            'zones' => $zones,
+            'providers' => $provider,
+            'services_types' => $services_types,
         ]);
     }
 
-    public function village($id){
-        $village = $this->village
-        ->with(['translations', 'zone'])
-        ->withCount('population')
+    public function provider($id){
+        $provider = $this->provider
+        ->with(['translations', 'service', 'package'])
         ->where('id', $id)
         ->first();
 
         return response()->json([
-            'village' => $village,
+            'provider' => $provider,
         ]);
     }
 
@@ -53,7 +51,7 @@ class VillageController extends Controller
             ],400);
         }
         
-        $village = $this->village
+        $provider = $this->provider
         ->where('id', $id)
         ->update([
             'status' => $request->status
@@ -64,95 +62,95 @@ class VillageController extends Controller
         ]);
     }
 
-    public function create(VillageRequest $request){
-        // name, description, status, zone_id, location
+    public function create(ProviderRequest $request){
+        // service_id, name, description, phone, status, location
         // ar_name, ar_description, image
-        $villageRequest = $request->validated();
+        $providerRequest = $request->validated();
         if (!is_string($request->image)) {
-            $image_path = $this->upload($request, 'image', 'images/villages');
-            $villageRequest['image'] = $image_path;
+            $image_path = $this->upload($request, 'image', 'images/providers');
+            $providerRequest['image'] = $image_path;
         }
-        $village = $this->village
-        ->create($villageRequest);
-        $village_translations = [[ 
+        $provider = $this->provider
+        ->create($providerRequest);
+        $provider_translations = [[ 
             'locale' => 'en',
             'key' => 'name',
             'value' => $request->name,
         ]];
         if (!empty($request->ar_name)) {
-            $village_translations[] = [ 
+            $provider_translations[] = [ 
                 'locale' => 'ar',
                 'key' => 'name',
                 'value' => $request->ar_name,
             ];
         }
         if (!empty($request->description)) {
-            $village_translations[] = [ 
+            $provider_translations[] = [ 
                 'locale' => 'en',
                 'key' => 'description',
                 'value' => $request->description,
             ];
         }
         if (!empty($request->ar_description)) {
-            $village_translations[] = [ 
+            $provider_translations[] = [ 
                 'locale' => 'ar',
                 'key' => 'description',
                 'value' => $request->ar_description,
             ];
         }
-        $village->translations()->createMany($village_translations);
+        $provider->translations()->createMany($provider_translations);
 
         return response()->json([
             'success' => 'You add data success'
         ]);
     }
 
-    public function modify(VillageRequest $request, $id){
-       // name, description, status, zone_id, location
+    public function modify(ProviderRequest $request, $id){
+        // service_id, name, description, phone, status, location
         // ar_name, ar_description, image
-        $villageRequest = $request->validated();
-        $village = $this->village
+        $providerRequest = $request->validated();
+        $provider = $this->provider
         ->where('id', $id)
         ->first();
-        if (empty($village)) {
+        if (empty($provider)) {
             return response()->json([
-                'errors' => 'village not found'
+                'errors' => 'provider not found'
             ], 400);
         }
         if (!is_string($request->image)) {
-            $image_path = $this->update_image($request, $village->image, 'image', 'images/villages');
-            $villageRequest['image'] = $image_path;
+            $image_path = $this->update_image($request, $provider->image, 'image', 'images/providers');
+            $providerRequest['image'] = $image_path;
         }
-        $village
-        ->update($villageRequest);
-        $village_translations = [[ 
+        $provider
+        ->update($providerRequest);
+        $provider_translations = [[ 
             'locale' => 'en',
             'key' => 'name',
             'value' => $request->name,
         ]];
         if (!empty($request->ar_name)) {
-            $village_translations[] = [ 
+            $provider_translations[] = [ 
                 'locale' => 'ar',
                 'key' => 'name',
                 'value' => $request->ar_name,
             ];
         }
         if (!empty($request->description)) {
-            $village_translations[] = [ 
+            $provider_translations[] = [ 
                 'locale' => 'en',
                 'key' => 'description',
                 'value' => $request->description,
             ];
         }
         if (!empty($request->ar_description)) {
-            $village_translations[] = [ 
+            $provider_translations[] = [ 
                 'locale' => 'ar',
                 'key' => 'description',
                 'value' => $request->ar_description,
             ];
         }
-        $village->translations()->delete();
-        $village->translations()->createMany($village_translations);
+        $provider->translations()->delete();
+        $provider->translations()->createMany($provider_translations);
 
         return response()->json([
             'success' => 'You update data success'
@@ -160,17 +158,17 @@ class VillageController extends Controller
     }
 
     public function delete($id){
-        $village = $this->village
+        $provider = $this->provider
         ->where('id', $id)
         ->first();
-        if (empty($village)) {
+        if (empty($provider)) {
             return response()->json([
-                'errors' => 'village not found'
+                'errors' => 'provider not found'
             ], 400);
         }
-        $village->translations()->delete();
-        $this->deleteImage($village->image);
-        $village->delete();
+        $provider->translations()->delete();
+        $this->deleteImage($provider->image);
+        $provider->delete();
 
         return response()->json([
             'success' => 'You delete data success'

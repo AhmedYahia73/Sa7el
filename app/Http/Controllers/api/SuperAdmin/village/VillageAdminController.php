@@ -10,11 +10,12 @@ use App\trait\image;
 
 use App\Models\Village;
 use App\Models\User;
+use App\Models\AdminPosition;
 
 class VillageAdminController extends Controller
 {
     public function __construct(private Village $village,
-    private User $admin){}
+    private User $admin, private AdminPosition $admin_positions){}
     use image;
 
     public function view($id){
@@ -22,10 +23,14 @@ class VillageAdminController extends Controller
         ->where('id', $id)
         ->first();
         $admins = $village?->admin ?? [];
+        $village_positions = $this->admin_positions
+        ->with('roles')
+        ->get();
 
         return response()->json([
             'village' => $village,
-            'admins' => $admins,
+            'admins' => $admins, 
+            'village_positions' => $village_positions,
         ]);
     }
 

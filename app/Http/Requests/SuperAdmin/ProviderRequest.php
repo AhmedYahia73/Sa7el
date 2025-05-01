@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class VillageRequest extends FormRequest
+class ProviderRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,6 +15,7 @@ class VillageRequest extends FormRequest
     {
         return true;
     }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -23,11 +24,13 @@ class VillageRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'service_id' => ['required', 'exists:service_types,id'],
             'name' => ['required'],
             'description' => ['sometimes'],
+            'phone' => ['required', ],
+            'image' => ['required'],
             'location' => ['required'],
-            'zone_id' => ['required', 'exists:zones,id'],
-            'status' => ['required', 'boolean'],
+            'status' => ['required'],
         ];
     }
 
