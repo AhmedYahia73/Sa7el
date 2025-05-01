@@ -23,16 +23,32 @@ class UserRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'name' => ['required'],
-            'user_type' => ['required', 'in:owner,rent,visitor'],
-            'village_id' => ['required', 'exists:villages,id'],
-            'email' => ['required', 'email'],
-            'phone' => ['required'],
-            'password' => ['required'],
-            'status' => ['required', 'boolean'],
-            'parent_user_id' => ['nullable', 'exists:users,id'],
-        ];
+        if ($this->input('user_type') == 'rent') {
+            return [
+                'name' => ['required'],
+                'user_type' => ['required', 'in:owner,rent,visitor'],
+                'village_id' => ['required', 'exists:villages,id'],
+                'email' => ['required', 'email'],
+                'phone' => ['required'],
+                'password' => ['required'],
+                'status' => ['required', 'boolean'],
+                'parent_user_id' => ['nullable', 'exists:users,id'],
+                'rent_from' => ['required', 'date'],
+                'rent_to' => ['required', 'date'],
+            ];
+        }
+        else{
+            return [
+                'name' => ['required'],
+                'user_type' => ['required', 'in:owner,rent,visitor'],
+                'village_id' => ['required', 'exists:villages,id'],
+                'email' => ['required', 'email'],
+                'phone' => ['required'],
+                'password' => ['required'],
+                'status' => ['required', 'boolean'],
+                'parent_user_id' => ['nullable', 'exists:users,id'],
+            ];
+        }
     }
 
     public function failedValidation(Validator $validator){

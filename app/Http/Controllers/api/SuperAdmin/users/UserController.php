@@ -17,8 +17,8 @@ class UserController extends Controller
 
     public function view(){
         $users = $this->user
-        ->select('id', 'name', 'email', 'phone', 'password', 
-        'user_type', 'village_id', 'image', 'parent_user_id', 'status')
+        ->select('id', 'name', 'email', 'phone', 'password', 'rent_from',
+        'rent_to', 'user_type', 'village_id', 'image', 'parent_user_id', 'status')
         ->with('village', 'parent')
         ->where('role', 'user')
         ->get();
@@ -30,8 +30,8 @@ class UserController extends Controller
 
     public function user($id){
         $user = $this->user
-        ->select('id', 'name', 'email', 'phone', 'password', 
-        'user_type', 'village_id', 'image', 'parent_user_id', 'status')
+        ->select('id', 'name', 'email', 'phone', 'password', 'rent_from',
+        'rent_to', 'user_type', 'village_id', 'image', 'parent_user_id', 'status')
         ->where('id', $id)
         ->where('role', 'user')
         ->with('village', 'parent')
@@ -103,6 +103,10 @@ class UserController extends Controller
             ],400);
         }
         $userRequest = $request->validated();
+        if ($request->user_type != 'rent') {
+            $userRequest['rent_from'] = null;
+            $userRequest['rent_to'] = null;
+        }
         $user = $this->user
         ->where('id', $id)
         ->where('role', 'user')

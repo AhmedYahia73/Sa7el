@@ -32,6 +32,8 @@ class User extends Authenticatable
         'role',
         'parent_user_id',
         'status',
+        'rent_from',
+        'rent_to',
     ];
     protected $appends = ['image_link'];
 

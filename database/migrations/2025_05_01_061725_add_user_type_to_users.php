@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->enum('user_type', ['owner', 'rent', 'visitor'])->nullable()->after('password');
+            $table->date('rent_from')->nullable();
+            $table->date('rent_to')->nullable();
         });
     }
 
