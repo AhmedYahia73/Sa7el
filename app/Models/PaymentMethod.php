@@ -12,7 +12,6 @@ class PaymentMethod extends Model
         'description',
         'status', 
     ];
-    
     protected $appends = ['logo_link', 'ar_name', 'ar_description'];
 
     public function getArNameAttribute(){

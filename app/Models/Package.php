@@ -14,10 +14,32 @@ class Package extends Model
         'type',
         'feez',
         'discount',
-        'type',
+        'admin_num',
+        'security_num',
+        'maintenance_module',
+        'beach_pool_module',
         'status',
     ];
+    protected $appends = ['ar_name', 'ar_description'];
     
+    public function getArNameAttribute(){
+        return $this->translations
+        ->where('key', 'name')
+        ->where('locale', 'ar')
+        ->first()?->value;
+    }
+
+    public function getArDescriptionAttribute(){
+        return $this->translations
+        ->where('key', 'description')
+        ->where('locale', 'ar')
+        ->first()?->value;
+    }
+
+    public function service(){
+        return $this->belongsTo(ServiceType::class, 'service_id');
+    }
+
     public function translations()
     {
         return $this->morphMany(Translation::class, 'translatable');

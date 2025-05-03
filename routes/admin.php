@@ -16,6 +16,7 @@ use App\Http\Controllers\api\SuperAdmin\Provider\ProviderAdminController;
 use App\Http\Controllers\api\SuperAdmin\Provider\ProviderGalleryController;
 use App\Http\Controllers\api\SuperAdmin\Provider\ProviderRolesController;
 use App\Http\Controllers\api\SuperAdmin\payment_method\PaymentMethodController;
+use App\Http\Controllers\api\SuperAdmin\subscription\SubscriptionController;
 
 Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     Route::controller(ZoneController::class)->prefix('zone')
@@ -138,6 +139,26 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     ->group(function() {
         Route::get('/', 'view');
         Route::get('/item/{id}', 'payment_method');
+        Route::put('/status/{id}', 'status');
+        Route::post('/add', 'create');
+        Route::post('/update/{id}', 'modify');
+        Route::delete('/delete/{id}', 'delete');
+    });
+    
+    Route::controller(PaymentMethodController::class)->prefix('payment_method')
+    ->group(function() {
+        Route::get('/', 'view');
+        Route::get('/item/{id}', 'payment_method');
+        Route::put('/status/{id}', 'status');
+        Route::post('/add', 'create');
+        Route::post('/update/{id}', 'modify');
+        Route::delete('/delete/{id}', 'delete');
+    });
+    
+    Route::controller(SubscriptionController::class)->prefix('subscription')
+    ->group(function() {
+        Route::get('/', 'view');
+        Route::get('/item/{id}', 'package');
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
