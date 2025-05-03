@@ -17,6 +17,7 @@ use App\Http\Controllers\api\SuperAdmin\Provider\ProviderGalleryController;
 use App\Http\Controllers\api\SuperAdmin\Provider\ProviderRolesController;
 use App\Http\Controllers\api\SuperAdmin\payment_method\PaymentMethodController;
 use App\Http\Controllers\api\SuperAdmin\subscription\SubscriptionController;
+use App\Http\Controllers\api\SuperAdmin\subscriper\SubscriperController;
 
 Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     Route::controller(ZoneController::class)->prefix('zone')
@@ -163,5 +164,11 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
+    });
+    
+    Route::controller(SubscriperController::class)->prefix('subscriper')
+    ->group(function() {
+        Route::get('/', 'view');
+        Route::post('/add', 'create');
     });
 });
