@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\Auth\SignupRequest;
 
 use App\Models\User;
 
@@ -45,5 +46,55 @@ class LoginController extends Controller
         else { 
             return response()->json(['errors'=>'creational not Valid'],403);
         }
+    }
+    
+
+    public function user_login(Request $request){
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'error' => $validator->errors(),
+            ],400);
+        }
+        $user = $this->user
+        ->where('email', $request->email)
+        ->orWhere('phone', $request->email)
+        ->with('village', 'parent', 'provider')
+        ->first();
+        if (empty($user)) {
+            return response()->json(['errors'=>'creational not Valid'],403);
+        }
+
+        if ($user->status == 0) {
+            return response()->json([
+                'errors' => 'user is banned'
+            ], 400);
+        }
+        if (password_verify($request->input('password'), $user->password) && $user->role == 'user') {
+            $user->token = $user->createToken('user')->plainTextToken;
+            return response()->json([
+                'user' => $user,
+                'token' => $user->token,
+            ], 200);
+        }
+        else { 
+            return response()->json(['errors'=>'creational not Valid'],403);
+        }
+    }
+
+    public function sign_up(SignupRequest $request){
+        $userRequest = $request->validated();
+        $userRequest['user_type'] = 'visitor';
+        $user = $this->user
+        ->create($userRequest);
+        $token = $user->createToken('user')->plainTextToken;
+
+        return response()->json([
+            'user' => $user,
+            'token' => $token,
+        ]);
     }
 }

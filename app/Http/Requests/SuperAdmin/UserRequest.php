@@ -35,6 +35,8 @@ class UserRequest extends FormRequest
                 'parent_user_id' => ['nullable', 'exists:users,id'],
                 'rent_from' => ['required', 'date'],
                 'rent_to' => ['required', 'date'],
+                'gender' => ['required', 'in:male,female'], 
+                'birthDate' => ['required', 'date'],
             ];
         }
         else{
@@ -47,6 +49,8 @@ class UserRequest extends FormRequest
                 'password' => ['required'],
                 'status' => ['required', 'boolean'],
                 'parent_user_id' => ['nullable', 'exists:users,id'],
+                'gender' => ['required', 'in:male,female'], 
+                'birthDate' => ['required', 'date'],
             ];
         }
     }

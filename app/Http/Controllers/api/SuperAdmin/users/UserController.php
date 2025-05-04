@@ -19,8 +19,8 @@ class UserController extends Controller
 
     public function view(){
         $users = $this->user
-        ->select('id', 'name', 'email', 'phone', 'password', 'rent_from',
-        'rent_to', 'user_type', 'village_id', 'image', 'parent_user_id', 'status')
+        ->select('id', 'name', 'email', 'phone', 'password', 'rent_from', 'birthDate',
+        'rent_to', 'user_type', 'village_id', 'image', 'parent_user_id', 'status', 'gender')
         ->with('village', 'parent')
         ->where('role', 'user')
         ->get();
@@ -35,8 +35,8 @@ class UserController extends Controller
 
     public function user($id){
         $user = $this->user
-        ->select('id', 'name', 'email', 'phone', 'password', 'rent_from',
-        'rent_to', 'user_type', 'village_id', 'image', 'parent_user_id', 'status')
+        ->select('id', 'name', 'email', 'phone', 'password', 'rent_from', 'birthDate',
+        'rent_to', 'user_type', 'village_id', 'image', 'parent_user_id', 'status', 'gender')
         ->where('id', $id)
         ->where('role', 'user')
         ->with('village', 'parent')
@@ -71,7 +71,7 @@ class UserController extends Controller
 
     public function create(UserRequest $request){
         // name, user_type, village_id, email, phone
-        // password, status, parent_user_id
+        // password, status, parent_user_id, gender, birthDate
         $validator = Validator::make($request->all(), [ 
             'email' => ['unique:users'],
             'phone' => ['unique:users'],
@@ -97,7 +97,7 @@ class UserController extends Controller
 
     public function modify(UserRequest $request, $id){
         // name, user_type, village_id, email, phone
-        // password, status, parent_user_id
+        // password, status, parent_user_id, gender, birthDate
         $validator = Validator::make($request->all(), [
             'email' => ['email', 'unique:users,email,' . $id],
             'phone' => ['unique:users,phone,' . $id],

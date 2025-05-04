@@ -20,6 +20,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'birthDate',
+        'gender',
         'email',
         'email_verified_at',
         'phone',
@@ -39,6 +41,10 @@ class User extends Authenticatable
 
     public function village(){
         return $this->belongsTo(Village::class, 'village_id');
+    }
+
+    public function provider(){
+        return $this->belongsTo(Provider::class, 'provider_id');
     }
 
     public function position(){
