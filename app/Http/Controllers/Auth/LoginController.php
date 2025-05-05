@@ -66,8 +66,9 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
             return response()->json([
-                'error' => $validator->errors(),
+                'error' => $firstError,
             ],400);
         }
         $user = $this->user
