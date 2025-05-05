@@ -69,6 +69,14 @@ class SubscriperController extends Controller
     }
 
     public function create(SubscriperRequest $request){
+        $validator = Validator::make($request->all(), [
+            'type' => 'required|in:provider,village',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'error' => $validator->errors(),
+            ],400);
+        }
         $user = [];
         if ($request->type == 'provider') {
             $user = $this->provider

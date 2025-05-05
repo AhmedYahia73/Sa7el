@@ -26,7 +26,6 @@ class SubscriperRequest extends FormRequest
         return [
             'payment_method_id' => ['required', 'exists:payment_methods,id'],
             'package_id' => ['required', 'exists:packages,id'],
-            'type' => ['required', 'in:provider,village'],
             'service_id' => ['required_if:type,provider', 'exists:service_types,id'],
             'provider_id' => ['required_if:type,provider', 'exists:providers,id'],
             'village_id' => ['required_if:type,village', 'exists:villages,id'],
