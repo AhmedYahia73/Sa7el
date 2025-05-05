@@ -14,7 +14,7 @@ class LoginController extends Controller
 {
     public function __construct(private User $user, private Village $village){}
 
-    public function sign_up_list(SignupRequest $request){
+    public function sign_up_list(){
         $villages = $this->village
         ->where('status', 1)
         ->get();
