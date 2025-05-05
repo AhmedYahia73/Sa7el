@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api\SuperAdmin\payment;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 use App\Models\Payment;
 
@@ -24,6 +25,39 @@ class PaymentController extends Controller
         return response()->json([
             'pending_payments' => $pending_payments,
             'history_payments' => $history_payments,
+        ]);
+    }
+
+    public function approve(Request $request, $id){
+        $this->payments
+        ->where('id', $id)
+        ->update([
+            'status' => 'approved'
+        ]);
+
+        return response()->json([
+            'success' => 'You approve success'
+        ]);
+    }
+
+    public function reject(Request $request, $id){
+        $validator = Validator::make($request->all(), [
+            'rejected_reason' => 'required',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'error' => $validator->errors(),
+            ],400);
+        }
+        $this->payments
+        ->where('id', $id)
+        ->update([
+            'rejected_reason' => $request->rejected_reason,
+            'status' => 'rejected',
+        ]);
+
+        return response()->json([
+            'success' => 'You reject success'
         ]);
     }
 }

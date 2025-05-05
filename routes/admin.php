@@ -179,7 +179,9 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     
     Route::controller(PaymentController::class)->prefix('payments')
     ->group(function() {
-        Route::get('/', 'view'); 
+        Route::get('/', 'view');
+        Route::put('/approve/{id}', 'approve');
+        Route::put('/reject/{id}', 'reject');
     });
     
     Route::controller(InvoiceController::class)->prefix('invoice')

@@ -18,8 +18,14 @@ class Payment extends Model
         'expire_date',
         'village_id',
         'provider_id',
+        'receipt',
         'status',
     ];
+    protected $appends = ['receipt_link'];
+
+    public function getReceiptLinkAttribute(){
+        return url('storage/' . $this->receipt);
+    }
 
     public function payment_method(){
         return $this->belongsTo(PaymentMethod::class, 'payment_method_id');
