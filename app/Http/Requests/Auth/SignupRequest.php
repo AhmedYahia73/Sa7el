@@ -19,7 +19,7 @@ class SignupRequest extends FormRequest
             'name' => ['required'],
             'village_id' => ['required', 'exists:villages,id'],
             'email' => ['required', 'email', 'unique:users'],
-            'phone' => ['required'],
+            'phone' => ['required', 'unique:users'],
             'password' => ['required'],
             'parent_user_id' => ['nullable', 'exists:users,id'],
             'gender' => ['required', 'in:male,female'], 

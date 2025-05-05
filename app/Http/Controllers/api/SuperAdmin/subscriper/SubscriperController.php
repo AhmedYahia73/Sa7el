@@ -85,7 +85,7 @@ class SubscriperController extends Controller
             ->first();
         }
         elseif($request->type == 'village'){
-            $user = $this->villages
+            $user = $this->village
             ->where('id', $request->village_id)
             ->first();
         }
@@ -128,7 +128,7 @@ class SubscriperController extends Controller
             ->first();
         }
         elseif($payments->type == 'village'){
-            $user = $this->villages
+            $user = $this->village
             ->where('id', $request->village_id)
             ->first();
         }
@@ -169,7 +169,7 @@ class SubscriperController extends Controller
             ->first();
         }
         elseif($payments->type == 'village'){
-            $user = $this->villages
+            $user = $this->village
             ->where('id', $payments->village_id)
             ->first();
         }
