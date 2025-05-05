@@ -75,6 +75,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [ 
             'email' => ['unique:users'],
             'phone' => ['unique:users'],
+            'password' => ['required'],
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -108,6 +109,9 @@ class UserController extends Controller
             ],400);
         }
         $userRequest = $request->validated();
+        if ($request->password) {
+            $userRequest['password'] = $request->password;
+        }
         if ($request->user_type != 'rent') {
             $userRequest['rent_from'] = null;
             $userRequest['rent_to'] = null;

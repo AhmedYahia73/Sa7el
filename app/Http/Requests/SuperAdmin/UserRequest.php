@@ -30,7 +30,6 @@ class UserRequest extends FormRequest
                 'village_id' => ['required', 'exists:villages,id'],
                 'email' => ['required', 'email'],
                 'phone' => ['required'],
-                'password' => ['required'],
                 'status' => ['required', 'boolean'],
                 'parent_user_id' => ['nullable', 'exists:users,id'],
                 'rent_from' => ['required', 'date'],
