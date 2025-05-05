@@ -4,6 +4,8 @@ namespace App\Http\Controllers\api\SuperAdmin\subscriper;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\SuperAdmin\SubscriperRequest;
+use Carbon\Carbon;
 
 use App\Models\Payment;
 use App\Models\PaymentMethod;
@@ -34,7 +36,8 @@ class SubscriperController extends Controller
         ->where('status', 'approved')
         ->get()
         ->map(function($item){
-            return [       
+            return [
+                'id' => $item->id,
                 'subscriber' => $item?->village?->name ?? $item?->provider?->name,
                 'type' => $item?->package?->type,
                 'start_date' => $item?->start_date,
@@ -53,18 +56,134 @@ class SubscriperController extends Controller
     }
 
     public function filter(){
-        
+        $subscriber = $this->payments
+        ->where('expire_date', '>=', date('Y-m-d'))
+        ->where('status', 'approved')
+        ->with('village', 'provider', 'package', 'payment_method', 'service')
+        ->first();
+        $subscriber->type = $subscriber?->package?->type;
+
+        return response()->json([
+            'subscriber' => $subscriber
+        ]);
     }
 
-    public function create(){
-        
+    public function create(SubscriperRequest $request){
+        $user = [];
+        if ($request->type == 'provider') {
+            $user = $this->provider
+            ->where('id', $request->provider_id)
+            ->first();
+        }
+        elseif($request->type == 'village'){
+            $user = $this->villages
+            ->where('id', $request->village_id)
+            ->first();
+        }
+        $package = $this->packages
+        ->where('id', $request->package_id)
+        ->first();
+        $amount = $package->price;
+        if (empty($user?->package_id)) {
+            $amount += $package->feez;
+        }
+        $amount -= $package->discount;
+        $subscripeRequest = $request->validated();
+        $subscripeRequest['discount'] = $package->discount;
+        $subscripeRequest['start_date'] = date('Y-m-d');
+        $subscripeRequest['expire_date'] = Carbon::now()->addYear()->format('Y-m-d');
+        $subscripeRequest['amount'] = $amount;
+        $subscripeRequest['status'] = 'approved';
+        $payments = $this->payments
+        ->create($subscripeRequest);
+        $user->from = $payments->start_date;
+        $user->to = $payments->expire_date;
+        $user->package_id = $payments->package_id;
+        $user->save();
+
+        return response()->json([
+            'success' => 'you add subscriber success'
+        ]);
     }
 
-    public function modify(){
-        
+    public function modify(SubscriperRequest $request, $id){
+        $user = [];
+        $old_package = null;
+        $subscripeRequest = $request->validated();
+        if ($request->type == 'provider') {
+            $user = $this->provider
+            ->where('id', $request->provider_id)
+            ->first();
+        }
+        elseif($request->type == 'village'){
+            $user = $this->villages
+            ->where('id', $request->village_id)
+            ->first();
+        }
+        $payments = $this->payments
+        ->where('id', $id)
+        ->first();
+        $old_package = $this->old_package
+        ->where('id', $user?->package_id)
+        ->first();
+        $old_amount = 0;
+        if (!empty($old_package)) {
+            $old_amount = $old_package->price - $old_package->discount;
+        }
+        $package = $this->packages
+        ->where('id', $request->package_id)
+        ->first();
+        $amount = $package->price;
+        if ($old_amount < $payments->amount) {
+            $amount += $package->feez;
+        }
+        $amount -= $package->discount;
+        $subscripeRequest['discount'] = $package->discount;
+        $subscripeRequest['amount'] = $amount;
+        $subscripeRequest['status'] = 'approved';
+        $payments->update($subscripeRequest);
+        $user->package_id = $payments->package_id;
+        $user->save();
+
+        return response()->json([
+            'success' => 'you update subscriber success'
+        ]);
     }
 
-    public function delete(){
-        
+    public function delete($id){
+        $user = [];
+        $old_package = null;
+        $subscripeRequest = $request->validated();
+        if ($request->type == 'provider') {
+            $user = $this->provider
+            ->where('id', $request->provider_id)
+            ->first();
+        }
+        elseif($request->type == 'village'){
+            $user = $this->villages
+            ->where('id', $request->village_id)
+            ->first();
+        }
+        $payments = $this->payments
+        ->where('id', $id)
+        ->first();
+        $old_package = $this->old_package
+        ->where('id', $user?->package_id)
+        ->first();
+        $old_amount = 0;
+        if (!empty($old_package)) {
+            $old_amount = $old_package->price - $old_package->discount;
+        }
+        if ($old_amount < $payments->amount) {
+            $user->package_id = null;
+            $user->from = null;
+            $user->to = null;
+        }
+        $payments->delete(); 
+        $user->save();
+
+        return response()->json([
+            'success' => 'you delete subscriber success'
+        ]);
     }
 }

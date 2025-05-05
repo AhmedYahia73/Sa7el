@@ -168,7 +168,10 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     
     Route::controller(SubscriperController::class)->prefix('subscriper')
     ->group(function() {
-        Route::get('/', 'view');
+        Route::get('/', 'view'); 
+        Route::get('/item/{id}', 'filter');
         Route::post('/add', 'create');
+        Route::post('/update/{id}', 'modify');
+        Route::delete('/delete/{id}', 'delete');
     });
 });
