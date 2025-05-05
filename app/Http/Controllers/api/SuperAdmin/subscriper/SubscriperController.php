@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\SuperAdmin\subscriper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\SuperAdmin\SubscriperRequest;
+use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 
 use App\Models\Payment;
@@ -118,20 +119,20 @@ class SubscriperController extends Controller
         $user = [];
         $old_package = null;
         $subscripeRequest = $request->validated();
-        if ($request->type == 'provider') {
+        $payments = $this->payments
+        ->where('id', $id)
+        ->first();
+        if ($payments->type == 'provider') {
             $user = $this->provider
             ->where('id', $request->provider_id)
             ->first();
         }
-        elseif($request->type == 'village'){
+        elseif($payments->type == 'village'){
             $user = $this->villages
             ->where('id', $request->village_id)
             ->first();
         }
-        $payments = $this->payments
-        ->where('id', $id)
-        ->first();
-        $old_package = $this->old_package
+        $old_package = $this->packages
         ->where('id', $user?->package_id)
         ->first();
         $old_amount = 0;
@@ -158,24 +159,21 @@ class SubscriperController extends Controller
         ]);
     }
 
-    public function delete($id){
-        $user = [];
-        $old_package = null;
-        $subscripeRequest = $request->validated();
-        if ($request->type == 'provider') {
-            $user = $this->provider
-            ->where('id', $request->provider_id)
-            ->first();
-        }
-        elseif($request->type == 'village'){
-            $user = $this->villages
-            ->where('id', $request->village_id)
-            ->first();
-        }
+    public function delete($id){ 
         $payments = $this->payments
         ->where('id', $id)
         ->first();
-        $old_package = $this->old_package
+        if ($payments->type == 'provider') {
+            $user = $this->provider
+            ->where('id', $payments->provider_id)
+            ->first();
+        }
+        elseif($payments->type == 'village'){
+            $user = $this->villages
+            ->where('id', $payments->village_id)
+            ->first();
+        }
+        $old_package = $this->packages
         ->where('id', $user?->package_id)
         ->first();
         $old_amount = 0;
@@ -186,6 +184,9 @@ class SubscriperController extends Controller
             $user->package_id = null;
             $user->from = null;
             $user->to = null;
+        }
+        else{
+            $user->to = Carbon::now()->subDay()->format('Y-m-d');
         }
         $payments->delete(); 
         $user->save();

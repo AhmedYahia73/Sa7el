@@ -8,10 +8,21 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\Auth\SignupRequest;
 
 use App\Models\User;
+use App\Models\Village;
 
 class LoginController extends Controller
 {
-    public function __construct(private User $user){}
+    public function __construct(private User $user, private Village $village){}
+
+    public function sign_up_list(SignupRequest $request){
+        $villages = $this->village
+        ->where('status', 1)
+        ->get();
+
+        return response()->json([
+            'villages' => $villages,
+        ]);
+    }
 
     public function admin_login(Request $request){
         $validator = Validator::make($request->all(), [
