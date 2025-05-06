@@ -84,6 +84,7 @@ class UserController extends Controller
         }
         $userRequest = $request->validated();
         $userRequest['role'] = 'user';
+        $userRequest['password'] = $request->password;
         // if (!is_string($request->image)) {
         //     $image_path = $this->upload($request, 'image', 'images/users');
         //     $userRequest['image'] = $image_path;
