@@ -16,6 +16,10 @@ class PropertyController extends Controller
         $appartment = $this->appartment
         ->where('user_id', $request->user()->id)
         ->get();
+
+        return response()->json([
+            'appartment' => $appartment
+        ]);
     }
 
     public function add_property(Request $request){
