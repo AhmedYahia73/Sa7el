@@ -5,13 +5,15 @@ namespace App\Http\Controllers\api\User\ProblemReport;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\trait\image;
 
 use App\Models\ProblemReport as ProblemsReport;
 
 class ProblemReportController extends Controller
 {
     public function __construct(private ProblemsReport $problem_report){}
-
+    use image;
+    
     public function add_report(Request $request){
         $validator = Validator::make($request->all(), [
             'google_map' => 'required',
