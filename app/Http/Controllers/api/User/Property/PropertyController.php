@@ -31,7 +31,7 @@ class PropertyController extends Controller
         ->where('to', '>=', date('Y-m-d'))
         ->get()
         ->pluck('appartment')
-        ->map(function($item){
+        ->map(function($item) use($request){
             return [
                 'id' => $item->id,
                 'unit' => $item->unit,
