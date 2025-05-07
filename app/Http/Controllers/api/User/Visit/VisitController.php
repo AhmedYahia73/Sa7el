@@ -24,7 +24,7 @@ class VisitController extends Controller
             'qr_code' => $fileName
         ]);
 
-        return reponse()->json([
+        return response()->json([
             'success' => url('storage/' . $fileName)
         ]);
     }
@@ -40,7 +40,7 @@ class VisitController extends Controller
             'code' => $code
         ]);
 
-        return reponse()->json([
+        return response()->json([
             'success' => $code
         ]);
     }
