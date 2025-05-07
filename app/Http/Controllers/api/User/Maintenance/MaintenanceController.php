@@ -34,6 +34,7 @@ class MaintenanceController extends Controller
             $image_path =$this->upload($request, 'image', '/images/maintenance_request');
             $maintenanceRequest['image'] = $image_path;
         }
+        $maintenanceRequest['user_id'] = $request->user()->id;
         $this->maintenance
         ->create($maintenanceRequest);
 
