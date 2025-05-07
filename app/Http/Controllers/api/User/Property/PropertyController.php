@@ -22,7 +22,17 @@ class PropertyController extends Controller
         ->where('from', '<=', date('Y-m-d'))
         ->where('to', '>=', date('Y-m-d'))
         ->get()
-        ->pluck('appartment');
+        ->pluck('appartment')
+        ->map(function($item){
+            return [
+                'id' => $item->id,
+                'unit' => $item->unit,
+                'image' => $item->image_link,
+                'number_floors' => $item->number_floors,
+                'type' => $item?->type?->name,
+                'type_ar' => $item?->type?->ar_name,
+            ];
+        });
 
         return response()->json([
             'appartment' => $appartment

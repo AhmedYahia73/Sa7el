@@ -14,6 +14,11 @@ class Appartment extends Model
         'user_id',
         'village_id',
     ];
+    protected $appends = ['image_link'];
+
+    public function getImageLinkAttribute(){
+        return url('storage/' . $this->image);
+    }
 
     public function type(){
         return $this->belongsTo(AppartmentType::class, 'appartment_type_id');
