@@ -37,7 +37,8 @@ class PropertyController extends Controller
                 'unit' => $item->unit,
                 'image' => $item->image_link,
                 'number_floors' => $item->number_floors,
-                'type' => $request->local == 'en' ? $item?->type?->name : $item?->type?->ar_name,
+                'type' => $request->local == 'en' ? $item?->type?->name : 
+                $item?->type?->ar_name ?? $item?->type?->name,
             ];
         });
 
