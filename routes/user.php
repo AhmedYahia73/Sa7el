@@ -36,7 +36,7 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
 
     Route::controller(PoolBeachesController::class)
     ->group(function() {
-        Route::post('/pools', 'beaches'); 
-        Route::post('/beaches', 'pools'); 
+        Route::get('/pools', 'beaches'); 
+        Route::get('/beaches', 'pools'); 
     });
 });
