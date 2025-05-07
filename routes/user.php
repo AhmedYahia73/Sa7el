@@ -21,7 +21,7 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
         Route::get('/create_code', 'create_code'); 
     });
 
-    Route::controller(VisitController::class)->prefix('maintenance_request')
+    Route::controller(MaintenanceController::class)->prefix('maintenance_request')
     ->group(function() {
         Route::post('/add', 'maintenance_request'); 
     });
