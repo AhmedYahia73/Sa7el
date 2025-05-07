@@ -15,6 +15,14 @@ class PropertyController extends Controller
     private AppartmentCode $appartment_code){}
 
     public function my_property(Request $request){
+        $validator = Validator::make($request->all(), [
+            'local' => 'required|in:en,ar',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'error' => $validator->errors(),
+            ],400);
+        }
         $appartment = $this->appartment_code
         ->with('appartment.type')
         ->where('type', 'owner')
@@ -29,8 +37,7 @@ class PropertyController extends Controller
                 'unit' => $item->unit,
                 'image' => $item->image_link,
                 'number_floors' => $item->number_floors,
-                'type' => $item?->type?->name,
-                'type_ar' => $item?->type?->ar_name,
+                'type' => $request->local == 'en' ? $item?->type?->name : $item?->type?->ar_name,
             ];
         });
 
