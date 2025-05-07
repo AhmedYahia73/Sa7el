@@ -23,6 +23,6 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
 
     Route::controller(VisitController::class)->prefix('maintenance_request')
     ->group(function() {
-        Route::get('/add', 'maintenance_request'); 
+        Route::post('/add', 'maintenance_request'); 
     });
 });
