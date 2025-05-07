@@ -43,6 +43,10 @@ class User extends Authenticatable
         return $this->belongsTo(Village::class, 'village_id');
     }
 
+    public function appartments(){
+        return $this->hasMany(Appartment::class, 'user_id');
+    }
+
     public function provider(){
         return $this->belongsTo(Provider::class, 'provider_id');
     }

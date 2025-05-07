@@ -8,6 +8,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\UserMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -20,11 +21,16 @@ return Application::configure(basePath: dirname(__DIR__))
             ->prefix('admin')
             ->name('admin.')
             ->group(base_path('routes/admin.php'));
+            Route::middleware('api')
+            ->prefix('user')
+            ->name('user.')
+            ->group(base_path('routes/user.php'));
         }
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'IsAdmin' => AdminMiddleware::class,
+            'IsUser' => UserMiddleware::class,
         ]);
         $middleware->redirectGuestsTo(function (Request $request) {
            if (!$request->is('api/*')) {

@@ -28,4 +28,8 @@ class ServiceType extends Model
     {
         return $this->morphMany(Translation::class, 'translatable');
     }
+
+    public function providers(){
+        return $this->hasMany(Provider::class, 'service_id');
+    }
 }
