@@ -16,7 +16,7 @@ class VisitController extends Controller
     public function create_qr_code(Request $request){
         $data = $request->user()->id . time();
         $qrCode = QrCode::format('png')->size(300)->generate($data);
-        $fileName = 'user/visit/qr/' . $data . 'png';
+        $fileName = 'user/visit/qr/' . $data . '.png';
         Storage::disk('public')->put($fileName, $qrCode); // Save the image
         $this->visitor_code
         ->create([
