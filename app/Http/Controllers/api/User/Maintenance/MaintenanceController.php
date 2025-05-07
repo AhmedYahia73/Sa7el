@@ -15,7 +15,7 @@ class MaintenanceController extends Controller
     public function __construct(private Maintenance $maintenance,
     private MaintenanceType $maintenance_type){}
 
-    public function maintenance_request(Request $requst){
+    public function maintenance_request(Request $request){
         $validator = Validator::make($request->all(), [
             'appartment_id' => 'required|exists:appartments,id',
             'maintenance_type_id' => 'required|exists:maintenance_types,id',
