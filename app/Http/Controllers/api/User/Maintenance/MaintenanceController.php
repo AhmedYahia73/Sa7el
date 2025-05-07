@@ -9,12 +9,61 @@ use App\trait\image;
 
 use App\Models\Maintenance;
 use App\Models\MaintenanceType;
+use App\Models\AppartmentCode;
 
 class MaintenanceController extends Controller
 {
     public function __construct(private Maintenance $maintenance,
-    private MaintenanceType $maintenance_type){}
+    private MaintenanceType $maintenance_type, private AppartmentCode $appartment_code){}
+    use image;
+    
+    public function maintenance_lists(Request $request){
+        $validator = Validator::make($request->all(), [
+            'local' => 'required|in:en,ar'
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'error' => $validator->errors(),
+            ],400);
+        }
+        $appartment = $this->appartment_code
+        ->with(['appartment' => function($query){
+            $query->with('type', 'village');
+        }])
+        ->where('type', 'owner')
+        ->orWhere('type', 'renter')
+        ->where('from', '<=', date('Y-m-d'))
+        ->where('to', '>=', date('Y-m-d'))
+        ->get()
+        ->pluck('appartment')
+        ->map(function($item) use($request){
+            return [
+                'id' => $item->id,
+                'unit' => $item->unit,
+                'image' => $item->image_link,
+                'village' => $item->village->name,
+                'number_floors' => $item->number_floors,
+                'type' => $request->local == 'en' ? $item?->type?->name : 
+                $item?->type?->ar_name ?? $item?->type?->name,
+            ];
+        });
 
+        $maintenance_type = $this->maintenance_type
+        ->where('status', 1)
+        ->get()
+        ->map(function($item) use($request){
+            return [
+                'id' => $id,
+                'name' => $request->local == 'en' ? $item->name : $item->ar_name ?? $item->name
+            ];
+        });
+
+        return response()->json([
+            'appartment' => $appartment,
+            'maintenance_type' => $maintenance_type,
+        ]);
+    }
+    
     public function maintenance_request(Request $request){
         $validator = Validator::make($request->all(), [
             'appartment_id' => 'required|exists:appartments,id',
