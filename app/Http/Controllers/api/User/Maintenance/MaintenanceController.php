@@ -53,7 +53,7 @@ class MaintenanceController extends Controller
         ->get()
         ->map(function($item) use($request){
             return [
-                'id' => $id,
+                'id' => $item->id,
                 'name' => $request->local == 'en' ? $item->name : $item->ar_name ?? $item->name
             ];
         });
