@@ -1,0 +1,39 @@
+<?php
+
+namespace App\Http\Controllers\api\User\ProblemReport;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
+use App\Models\Appartment;
+
+class ProblemReportController extends Controller
+{
+    public function __construct(private ProblemReport $problem_report){}
+
+    public function add_report(Request $request){
+        $validator = Validator::make($request->all(), [
+            'google_map' => 'required',
+            'description' => 'required',
+            'image' => 'required',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'error' => $validator->errors(),
+            ],400);
+        }
+        $reportRequest = $validator->validated();
+        if ($request->has('image')) {
+            $image_path =$this->upload($request, 'image', '/images/problem_report');
+            $reportRequest['image'] = $image_path;
+        }
+        $reportRequest['user_id'] = $request->user()->id;
+        $this->problem_report
+        ->create($reportRequest);
+
+        return response()->json([
+            'success' => 'You add data success'
+        ]);
+    }
+}
