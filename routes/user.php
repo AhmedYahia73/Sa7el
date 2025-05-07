@@ -27,7 +27,7 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
         Route::post('/add', 'maintenance_request'); 
     });
 
-    Route::controller(MaintenanceController::class)->prefix('maintenance_request')
+    Route::controller(MaintenanceController::class)->prefix('problem_report')
     ->group(function() {
         Route::post('/add', 'add_report'); 
     });
