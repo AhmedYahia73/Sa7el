@@ -23,4 +23,8 @@ class Appartment extends Model
     public function type(){
         return $this->belongsTo(AppartmentType::class, 'appartment_type_id');
     }
+
+    public function village(){
+        return $this->belongsTo(Village::class, 'village_id');
+    }
 }
