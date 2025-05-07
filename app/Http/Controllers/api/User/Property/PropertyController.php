@@ -21,6 +21,7 @@ class PropertyController extends Controller
         ->orWhere('type', 'renter')
         ->where('from', '<=', date('Y-m-d'))
         ->where('to', '>=', date('Y-m-d'))
+        ->get()
         ->pluck('appartment');
 
         return response()->json([
