@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\User\Property\PropertyController;
 use App\Http\Controllers\api\User\Visit\VisitController;
 use App\Http\Controllers\api\User\Maintenance\MaintenanceController;
+use App\Http\Controllers\api\User\ProblemReport\ProblemReportController;
 
 
 Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
