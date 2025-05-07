@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\User\Visit;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Facades\Storage;
 
 use App\Models\VisitorCode;
 
