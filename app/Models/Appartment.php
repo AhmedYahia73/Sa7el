@@ -8,10 +8,14 @@ class Appartment extends Model
 {
     protected $fillable =[
         'unit',
+        'image',
         'number_floors',
         'appartment_type_id',
-        'village_id',
         'user_id',
-        'code',
+        'village_id',
     ];
+
+    public function type(){
+        return $this->belongsTo(AppartmentType::class, 'appartment_type_id');
+    }
 }
