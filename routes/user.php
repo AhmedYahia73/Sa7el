@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\api\User\Property\PropertyController;
 use App\Http\Controllers\api\User\Visit\VisitController;
+use App\Http\Controllers\api\User\Maintenance\MaintenanceController;
 
 
 Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
@@ -18,5 +19,10 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     ->group(function() {
         Route::get('/create_qr_code', 'create_qr_code'); 
         Route::get('/create_code', 'create_code'); 
+    });
+
+    Route::controller(VisitController::class)->prefix('maintenance_request')
+    ->group(function() {
+        Route::get('/add', 'maintenance_request'); 
     });
 });
