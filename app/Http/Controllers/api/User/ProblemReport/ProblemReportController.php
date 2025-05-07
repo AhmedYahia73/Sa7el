@@ -6,11 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-use App\Models\Appartment;
+use App\Models\ProblemReport as ProblemsReport;
 
 class ProblemReportController extends Controller
 {
-    public function __construct(private ProblemReport $problem_report){}
+    public function __construct(private ProblemsReport $problem_report){}
 
     public function add_report(Request $request){
         $validator = Validator::make($request->all(), [
