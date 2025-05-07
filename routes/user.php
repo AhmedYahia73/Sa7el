@@ -7,6 +7,7 @@ use App\Http\Controllers\api\User\Property\PropertyController;
 use App\Http\Controllers\api\User\Visit\VisitController;
 use App\Http\Controllers\api\User\Maintenance\MaintenanceController;
 use App\Http\Controllers\api\User\ProblemReport\ProblemReportController;
+use App\Http\Controllers\api\User\PoolBeaches\PoolBeachesController;
 
 
 Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
@@ -31,5 +32,11 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     Route::controller(ProblemReportController::class)->prefix('problem_report')
     ->group(function() {
         Route::post('/add', 'add_report'); 
+    });
+
+    Route::controller(PoolBeachesController::class)
+    ->group(function() {
+        Route::post('/pools', 'beaches'); 
+        Route::post('/beaches', 'pools'); 
     });
 });

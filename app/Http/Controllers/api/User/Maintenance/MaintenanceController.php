@@ -22,8 +22,9 @@ class MaintenanceController extends Controller
             'local' => 'required|in:en,ar'
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
             return response()->json([
-                'error' => $validator->errors(),
+                'error' => $firstError,
             ],400);
         }
         $appartment = $this->appartment_code
@@ -73,8 +74,9 @@ class MaintenanceController extends Controller
             'status' => 'required|boolean',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
             return response()->json([
-                'error' => $validator->errors(),
+                'error' => $firstError,
             ],400);
         }
 

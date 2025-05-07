@@ -10,6 +10,20 @@ class Beach extends Model
         'name',
         'from',
         'to',
+        'village_id',
         'status', 
     ];
+    protected $appends = ['ar_name'];
+
+    public function getArNameAttribute(){
+        return $this->translations
+        ->where('key', 'name')
+        ->where('locale', 'ar')
+        ->first()?->value;
+    }
+    
+    public function translations()
+    {
+        return $this->morphMany(Translation::class, 'translatable');
+    }
 }

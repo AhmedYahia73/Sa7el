@@ -21,8 +21,9 @@ class ProblemReportController extends Controller
             'image' => 'required',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
             return response()->json([
-                'error' => $validator->errors(),
+                'error' => $firstError,
             ],400);
         }
         $reportRequest = $validator->validated();
