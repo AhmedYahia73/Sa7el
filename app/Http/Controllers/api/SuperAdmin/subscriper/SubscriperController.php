@@ -32,6 +32,9 @@ class SubscriperController extends Controller
         $providers = $this->provider
         ->where('status', 1)
         ->get();
+        $services = $this->service_types
+        ->where('status', 1)
+        ->get();
         $subscribers = $this->payments
         ->where('expire_date', '>=', date('Y-m-d'))
         ->where('status', 'approved')
@@ -53,6 +56,7 @@ class SubscriperController extends Controller
             'villages' => $villages,
             'providers' => $providers,
             'subscribers' => $subscribers,
+            'services' => $services
         ]);
     }
 
