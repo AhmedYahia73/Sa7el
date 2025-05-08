@@ -44,7 +44,6 @@ class OwnerController extends Controller
 
     public function owner(Request $request, $id){
         $owner = $this->owners
-        ->where('village_id', $request->user()->village_id)
         ->where('user_type', 'owner')
         ->where('id', $id)
         ->first();
