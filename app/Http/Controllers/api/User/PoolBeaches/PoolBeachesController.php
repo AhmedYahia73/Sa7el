@@ -33,6 +33,7 @@ class PoolBeachesController extends Controller
                 'name' => $request->local == 'en' ? $item->name : $item->ar_name ?? $item->name,
                 'from' => $item->from,
                 'to' => $item->to,
+                'qr_code' =>$item->qr_code,
             ];
         }); 
 
@@ -60,6 +61,7 @@ class PoolBeachesController extends Controller
                 'name' => $request->local == 'en' ? $item->name : $item->ar_name ?? $item->name,
                 'from' => $item->from,
                 'to' => $item->to,
+                'qr_code' =>$item->qr_code,
             ];
         });
 

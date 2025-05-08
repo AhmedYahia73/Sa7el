@@ -13,6 +13,7 @@ class Provider extends Model
         'image',
         'from',
         'to',
+        'village_id',
         'package_id',
         'location', 
         'description', 
@@ -41,6 +42,11 @@ class Provider extends Model
     public function package()
     {
         return $this->belongsTo(Package::class, 'package_id');
+    }
+
+    public function village()
+    {
+        return $this->belongsTo(Village::class, 'village_id');
     }
     
     public function rate_items()

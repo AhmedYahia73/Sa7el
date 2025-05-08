@@ -8,6 +8,7 @@ class Pools extends Model
 {
     protected $fillable =[
         'name',
+        'qr_code',
         'village_id',
         'from',
         'to',

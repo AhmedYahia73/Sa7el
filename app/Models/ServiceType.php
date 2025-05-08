@@ -9,6 +9,7 @@ class ServiceType extends Model
     protected $fillable =[
         'name',
         'image',
+        'village_id',
         'status',
     ];
     protected $appends = ['image_link', 'ar_name'];

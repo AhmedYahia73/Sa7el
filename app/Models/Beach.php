@@ -8,6 +8,7 @@ class Beach extends Model
 {
     protected $fillable =[
         'name',
+        'qr_code',
         'from',
         'to',
         'village_id',

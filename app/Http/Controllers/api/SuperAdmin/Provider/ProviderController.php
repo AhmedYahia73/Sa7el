@@ -10,11 +10,12 @@ use App\trait\image;
 
 use App\Models\Provider;
 use App\Models\ServiceType;
+use App\Models\Village;
 
 class ProviderController extends Controller
 {
     public function __construct(private Provider $provider,
-    private ServiceType $services_types){}
+    private ServiceType $services_types, private Village $villages){}
     use image;
 
     public function view(){
@@ -23,16 +24,20 @@ class ProviderController extends Controller
         ->get();
         $services_types = $this->services_types
         ->get();
+        $villages = $this->villages
+        ->where('status', 1)
+        ->get();
 
         return response()->json([
             'providers' => $provider,
             'services_types' => $services_types,
+            'villages' => $villages,
         ]);
     }
 
     public function provider($id){
         $provider = $this->provider
-        ->with(['translations', 'service', 'package'])
+        ->with(['translations', 'service', 'package', 'village'])
         ->where('id', $id)
         ->first();
 
@@ -63,7 +68,7 @@ class ProviderController extends Controller
     }
 
     public function create(ProviderRequest $request){
-        // service_id, name, description, phone, status, location
+        // service_id, name, description, phone, status, location, village_id
         // ar_name, ar_description, image
         $providerRequest = $request->validated();
         if (!is_string($request->image)) {
@@ -106,7 +111,7 @@ class ProviderController extends Controller
     }
 
     public function modify(ProviderRequest $request, $id){
-        // service_id, name, description, phone, status, location
+        // service_id, name, description, phone, status, location, village_id
         // ar_name, ar_description, image
         $providerRequest = $request->validated();
         $provider = $this->provider
