@@ -25,12 +25,17 @@ return Application::configure(basePath: dirname(__DIR__))
             ->prefix('user')
             ->name('user.')
             ->group(base_path('routes/user.php'));
+            Route::middleware('api')
+            ->prefix('village')
+            ->name('village.')
+            ->group(base_path('routes/village.php'));
         }
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'IsAdmin' => AdminMiddleware::class,
             'IsUser' => UserMiddleware::class,
+            'IsVillage' => VillageMiddleware::class,
         ]);
         $middleware->redirectGuestsTo(function (Request $request) {
            if (!$request->is('api/*')) {

@@ -60,9 +60,46 @@ class LoginController extends Controller
     }
     
 
+    public function village_login(Request $request){
+        $validator = Validator::make($request->all(), [
+            'email' => 'required',
+            'password' => 'required',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'error' => $firstError,
+            ],400);
+        }
+        $user = $this->user
+        ->where('email', $request->email)
+        ->orWhere('phone', $request->email)
+        ->first();
+        if (empty($user)) {
+            return response()->json(['errors'=>'creational not Valid'],403);
+        }
+
+        if ($user->status == 0) {
+            return response()->json([
+                'errors' => 'user is banned'
+            ], 400);
+        }
+        if (password_verify($request->input('password'), $user->password) && $user->role == 'village') {
+            $user->token = $user->createToken('village')->plainTextToken;
+            return response()->json([
+                'village' => $user,
+                'token' => $user->token,
+            ], 200);
+        }
+        else { 
+            return response()->json(['errors'=>'creational not Valid'],403);
+        }
+    }
+    
+
     public function user_login(Request $request){
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
+            'email' => 'required',
             'password' => 'required',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
