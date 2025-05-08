@@ -50,13 +50,17 @@ class SubscriperController extends Controller
                 'service' => $item?->service?->name,
             ];
         });
+        $subscribers_village = $subscribers->where('type', 'village')->values();
+        $subscribers_provider = $subscribers->where('type', 'provider')->values();
 
         return response()->json([
             'payment_methods' => $payment_methods,
             'villages' => $villages,
             'providers' => $providers,
+            'services' => $services,
             'subscribers' => $subscribers,
-            'services' => $services
+            'subscribers_village' => $subscribers_village,
+            'subscribers_provider' => $subscribers_provider,
         ]);
     }
 
