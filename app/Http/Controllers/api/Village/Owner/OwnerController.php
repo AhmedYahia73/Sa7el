@@ -76,6 +76,7 @@ class OwnerController extends Controller
         $ownerRequest = $request->validated();
         $ownerRequest['user_type'] = 'owner';
         $ownerRequest['role'] = 'user';
+        $ownerRequest['password'] = $request->password;
         $ownerRequest['village_id'] = $request->user()->village_id;
         if ($request->has('image')) {
             $image_path = $this->upload($request, 'image', '/village/owner');
@@ -112,6 +113,9 @@ class OwnerController extends Controller
         if ($request->has('image')) {
             $image_path = $this->update_image($request, $owner->image, 'image', '/village/owner');
             $ownerRequest['image'] = $image_path;
+        }
+        if (!empty($request->password)) {
+            $ownerRequest['password'] = $request->password;
         }
         $owner->update($ownerRequest);
 
