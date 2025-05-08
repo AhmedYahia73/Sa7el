@@ -27,7 +27,6 @@ class UserRequest extends FormRequest
             return [
                 'name' => ['required'],
                 'user_type' => ['required', 'in:owner,rent,visitor'],
-                'village_id' => ['required', 'exists:villages,id'],
                 'email' => ['required', 'email'],
                 'phone' => ['required'],
                 'status' => ['required', 'boolean'],

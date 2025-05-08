@@ -9,6 +9,12 @@ use App\trait\image;
 use App\Http\Requests\Village\OwnerRequest;
 
 use App\Models\User;
+use App\Models\EntranceBeach;
+use App\Models\EntranceGate;
+use App\Models\EntrancePool;
+use App\Models\Rent;
+use App\Models\ProblemReport;
+use App\Models\Maintenance;
 
 class OwnerController extends Controller
 {
@@ -32,9 +38,23 @@ class OwnerController extends Controller
         ->where('user_type', 'owner')
         ->where('id', $id)
         ->first();
+        $entrance =  [
+            'gates' => EntranceGate::where('user_id', $id)->get(),
+            'beaches' => EntranceBeach::where('user_id', $id)->get(),
+            'pools' => EntrancePool::where('user_id', $id)->get(),
+        ];
+        $rent = Rent::where('owner_id', $id)
+        ->get();
+        $problem_request = ProblemReport::where('user_id', $id)->get();
+        $maintenance_request = Maintenance::where('user_id', $id)->get();
 
         return response()->json([
             'owner' => $owner,
+            'entrance' => $entrance,
+            'rent' => $rent,
+            'problem_request' => $problem_request,
+            'maintenance_request' => $maintenance_request,
+
         ]);
     }
 
