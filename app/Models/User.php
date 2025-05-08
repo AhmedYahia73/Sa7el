@@ -44,7 +44,7 @@ class User extends Authenticatable
     }
 
     public function villages_user(){
-        return $this->belongsTo(Village::class, 'village_id');
+        return $this->belongsToMany(Village::class, 'user_village');
     }
 
     public function appartments(){
