@@ -64,6 +64,7 @@ class OwnerController extends Controller
         $validator = Validator::make($request->all(), [
             'email' => 'unique:users,email',
             'phone' => 'unique:users,phone',
+            'password' => 'required',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -127,7 +128,7 @@ class OwnerController extends Controller
                 'errors' => 'owner not found'
             ], 400);
         }
-        
+
         $this->deleteImage($owner->image);
         $owner->delete();
 

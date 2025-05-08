@@ -29,7 +29,7 @@ class OwnerRequest extends FormRequest
             'birthDate' => ['required', 'date'],
             'email' => ['required', 'email'],
             'phone' => ['required'],
-            'parent_user_id' => ['required', 'exists:users,id'],
+            'parent_user_id' => ['exists:users,id'],
             'status' => ['required', 'boolean'],
         ];
     }
