@@ -38,7 +38,7 @@ class OwnerController extends Controller
 
         return response()->json([
             'owners' => $owners,
-            'parents' => $parents,
+            'parents' => $parent,
         ]);
     }
 
