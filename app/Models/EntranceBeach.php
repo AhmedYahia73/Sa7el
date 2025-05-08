@@ -11,4 +11,8 @@ class EntranceBeach extends Model
         'user_id',
         'time',
     ];
+
+    public function beach(){
+        return $this->belongsTo(Beach::class);
+    }
 }

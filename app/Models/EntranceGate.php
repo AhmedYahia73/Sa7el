@@ -11,4 +11,8 @@ class EntranceGate extends Model
         'user_id',
         'time',
     ];
+
+    public function gate(){
+        return $this->belongsTo(Gate::class);
+    }
 }

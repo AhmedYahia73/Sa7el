@@ -39,14 +39,21 @@ class OwnerController extends Controller
         ->where('id', $id)
         ->first();
         $entrance =  [
-            'gates' => EntranceGate::where('user_id', $id)->get(),
-            'beaches' => EntranceBeach::where('user_id', $id)->get(),
-            'pools' => EntrancePool::where('user_id', $id)->get(),
+            'gates' => EntranceGate::with('gate')
+            ->where('user_id', $id)->get(),
+            'beaches' => EntranceBeach::with('beach')
+            ->where('user_id', $id)->get(),
+            'pools' => EntrancePool::with('pool')
+            ->where('user_id', $id)->get(),
         ];
-        $rent = Rent::where('owner_id', $id)
+        $rent = Rent::
+        with('renter', 'unit', 'unit_type')
+        ->where('owner_id', $id)
         ->get();
         $problem_request = ProblemReport::where('user_id', $id)->get();
-        $maintenance_request = Maintenance::where('user_id', $id)->get();
+        $maintenance_request = Maintenance::
+        with('maintenance_type')
+        ->where('user_id', $id)->get();
 
         return response()->json([
             'owner' => $owner,

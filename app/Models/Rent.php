@@ -15,4 +15,16 @@ class Rent extends Model
         'unit_type_id',
         'status',
     ];
+
+    public function unit(){
+        return $this->belongsTo(Appartment::class, 'unit_id');
+    }
+
+    public function unit_type(){
+        return $this->belongsTo(AppartmentType::class, 'unit_type_id');
+    }
+
+    public function renter(){
+        return $this->belongsTo(User::class, 'reterner_id');
+    }
 }

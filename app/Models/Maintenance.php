@@ -14,4 +14,8 @@ class Maintenance extends Model
         'image',
         'status', 
     ];
+
+    public function maintenance_type(){
+        return $this->belongsTo(MaintenanceType::class ,'maintenance_type_id');
+    }
 }

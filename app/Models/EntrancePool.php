@@ -11,4 +11,8 @@ class EntrancePool extends Model
         'user_id',
         'time',
     ];
+
+    public function pool(){
+        return $this->belongsTo(Pools::class);
+    }
 }
