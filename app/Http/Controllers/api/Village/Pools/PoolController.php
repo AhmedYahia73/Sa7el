@@ -16,6 +16,7 @@ class PoolController extends Controller
     public function view(){
         $pool = $this->pool
         ->with('translations')
+        ->where('village_id', $request->user()->village_id)
         ->get();
 
         return response()->json([
@@ -35,6 +36,7 @@ class PoolController extends Controller
         
         $pool = $this->pool
         ->where('id', $id)
+        ->where('village_id', $request->user()->village_id)
         ->update([
             'status' => $request->status
         ]);
@@ -78,6 +80,7 @@ class PoolController extends Controller
         $poolRequest = $request->validated();
         $pool = $this->pool
         ->where('id', $id)
+        ->where('village_id', $request->user()->village_id)
         ->first();
         if (empty($pool)) {
             return response()->json([
@@ -109,6 +112,7 @@ class PoolController extends Controller
     public function delete($id){
         $pool = $this->pool
         ->where('id', $id)
+        ->where('village_id', $request->user()->village_id)
         ->first();
         if (empty($pool)) {
             return response()->json([
