@@ -9,6 +9,7 @@ use App\Http\Controllers\api\User\Maintenance\MaintenanceController;
 use App\Http\Controllers\api\User\ProblemReport\ProblemReportController;
 use App\Http\Controllers\api\User\PoolBeaches\PoolBeachesController;
 use App\Http\Controllers\api\User\Services\ServiceController;
+use App\Http\Controllers\api\User\rent\RentController;
 
 
 Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
@@ -44,5 +45,11 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     Route::controller(ServiceController::class)
     ->group(function() {
         Route::get('/services', 'view');
+    });
+
+    Route::controller(RentController::class)
+    ->group(function() {
+        Route::get('/rent', 'view');
+        Route::get('/rent/add', 'create');
     });
 });
