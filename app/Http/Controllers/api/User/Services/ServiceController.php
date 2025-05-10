@@ -23,7 +23,9 @@ class ServiceController extends Controller
             ],400);
         }
         $services = $this->services
-        ->where('village_id', $request->village_id)
+        ->whereHas('village', function($query) use($request){
+            $query->where('villages.id', $request->village_id);
+        })
         ->with('providers') // load all providers
         ->get();
         // Optionally filter in PHP
