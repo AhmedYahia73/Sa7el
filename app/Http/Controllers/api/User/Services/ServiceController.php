@@ -22,10 +22,15 @@ class ServiceController extends Controller
                 'error' => $firstError,
             ],400);
         }
-        $services = $this->services
-        ->with(['providers'])
+        $services = $this->services()
         ->where('village_id', $request->village_id)
+        ->with('providers') // load all providers
         ->get();
+        // Optionally filter in PHP
+        $services->each(function ($service) use ($request) {
+            $service->my_providers = $service->providers->where('village_id', $request->user()->village_id)->values();
+            $service->other_providers = $service->providers->where('village_id', '!=', $request->user()->village_id)->values();
+        });
 
         return response()->json([
             'services' => $services

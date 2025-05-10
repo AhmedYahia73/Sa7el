@@ -13,6 +13,8 @@ class Rent extends Model
         'to',
         'reterner_id',
         'unit_type_id',
+        'code',
+        'people',
         'status',
     ];
 
