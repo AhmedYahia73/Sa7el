@@ -8,11 +8,12 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Models\Appartment;
 use App\Models\AppartmentCode;
+use App\Models\Zone;
 
 class PropertyController extends Controller
 {
     public function __construct(private Appartment $appartment,
-    private AppartmentCode $appartment_code){}
+    private AppartmentCode $appartment_code, private Zone $zones){}
 
     public function my_property(Request $request){
         $validator = Validator::make($request->all(), [
@@ -25,6 +26,9 @@ class PropertyController extends Controller
                 'error' => $firstError,
             ],400);
         }
+        $zones = $this->zones
+        ->where('status', 1)
+        ->get();
         $appartment = $this->appartment_code
         ->with(['appartment' => function($query){
             $query->with('type', 'village');
@@ -46,11 +50,14 @@ class PropertyController extends Controller
                 'number_floors' => $item->number_floors,
                 'type' => $request->local == 'en' ? $item?->type?->name : 
                 $item?->type?->ar_name ?? $item?->type?->name,
+                'zone' => $item?->zone?->name,
+                'zone_id' => $item->zone_id,
             ];
         });
 
         return response()->json([
-            'appartment' => $appartment
+            'appartment' => $appartment,
+            'zones' => $zones
         ]);
     }
 

@@ -13,6 +13,7 @@ class Appartment extends Model
         'appartment_type_id',
         'user_id',
         'village_id',
+        'zone_id',
     ];
     protected $appends = ['image_link'];
 
@@ -26,5 +27,9 @@ class Appartment extends Model
 
     public function village(){
         return $this->belongsTo(Village::class, 'village_id');
+    }
+
+    public function zone(){
+        return $this->belongsTo(Zone::class, 'zone_id');
     }
 }
