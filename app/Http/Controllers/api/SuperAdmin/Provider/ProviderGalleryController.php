@@ -30,7 +30,7 @@ class ProviderGalleryController extends Controller
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
-                'error' => $validator->errors(),
+                'errors' => $validator->errors(),
             ],400);
         }
         $this->provider_gallary
@@ -51,7 +51,7 @@ class ProviderGalleryController extends Controller
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
-                'error' => $validator->errors(),
+                'errors' => $validator->errors(),
             ],400);
         }
 

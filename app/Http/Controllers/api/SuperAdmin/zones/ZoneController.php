@@ -41,7 +41,7 @@ class ZoneController extends Controller
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
-                'error' => $validator->errors(),
+                'errors' => $validator->errors(),
             ],400);
         }
         

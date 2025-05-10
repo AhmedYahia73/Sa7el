@@ -49,7 +49,7 @@ class ProviderRolesController extends Controller
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
-                'error' => $validator->errors(),
+                'errors' => $validator->errors(),
             ],400);
         }
         $admin_position = $this->admin_position
@@ -73,7 +73,7 @@ class ProviderRolesController extends Controller
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
-                'error' => $validator->errors(),
+                'errors' => $validator->errors(),
             ],400);
         }
         $positionRequest = $request->only($this->roleRequest);
@@ -104,7 +104,7 @@ class ProviderRolesController extends Controller
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
-                'error' => $validator->errors(),
+                'errors' => $validator->errors(),
             ],400);
         }
         $positionRequest = $request->only($this->roleRequest);

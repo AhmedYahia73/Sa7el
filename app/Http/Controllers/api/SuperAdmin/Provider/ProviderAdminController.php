@@ -55,7 +55,7 @@ class ProviderAdminController extends Controller
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
-                'error' => $validator->errors(),
+                'errors' => $validator->errors(),
             ],400);
         }
         $this->admin
@@ -78,7 +78,7 @@ class ProviderAdminController extends Controller
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
-                'error' => $validator->errors(),
+                'errors' => $validator->errors(),
             ],400);
         }
         $adminRequest = $request->validated();
@@ -99,7 +99,7 @@ class ProviderAdminController extends Controller
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
-                'error' => $validator->errors(),
+                'errors' => $validator->errors(),
             ],400);
         }
         $adminRequest = $request->validated(); 

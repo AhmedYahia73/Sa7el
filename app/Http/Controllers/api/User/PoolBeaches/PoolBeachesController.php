@@ -23,7 +23,7 @@ class PoolBeachesController extends Controller
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
             return response()->json([
-                'error' => $firstError,
+                'errors' => $firstError,
             ],400);
         } 
         $beaches = $this->beaches
@@ -57,7 +57,7 @@ class PoolBeachesController extends Controller
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
             return response()->json([
-                'error' => $firstError,
+                'errors' => $firstError,
             ],400);
         }
         $pools = $this->pools

@@ -24,7 +24,7 @@ class ProblemReportController extends Controller
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
             return response()->json([
-                'error' => $firstError,
+                'errors' => $firstError,
             ],400);
         }
         $reportRequest = $validator->validated();

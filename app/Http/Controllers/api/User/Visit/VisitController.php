@@ -21,7 +21,7 @@ class VisitController extends Controller
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
             return response()->json([
-                'error' => $firstError,
+                'errors' => $firstError,
             ],400);
         }
         $data = $request->user()->id . '-' . $request->village_id . '-' . time();
@@ -46,7 +46,7 @@ class VisitController extends Controller
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
             return response()->json([
-                'error' => $firstError,
+                'errors' => $firstError,
             ],400);
         }   
         do {
