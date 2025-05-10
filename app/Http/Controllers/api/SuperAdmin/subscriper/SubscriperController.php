@@ -35,6 +35,12 @@ class SubscriperController extends Controller
         $services = $this->service_types
         ->where('status', 1)
         ->get();
+        $provider_packages = $this->packages
+        ->where('type', 'provider')
+        ->get();
+        $village_packages = $this->packages
+        ->where('type', 'village')
+        ->get();
         $subscribers = $this->payments
         ->where('expire_date', '>=', date('Y-m-d'))
         ->where('status', 'approved')
@@ -48,6 +54,7 @@ class SubscriperController extends Controller
                 'expire_date' => $item?->expire_date,
                 'payment_method' => $item?->payment_method?->name,
                 'service' => $item?->service?->name,
+                'package' => $item?->package?->name,
             ];
         });
         $subscribers_village = $subscribers->where('type', 'village')->values();
@@ -61,6 +68,8 @@ class SubscriperController extends Controller
             'subscribers' => $subscribers,
             'subscribers_village' => $subscribers_village,
             'subscribers_provider' => $subscribers_provider,
+            'provider_packages' => $provider_packages,
+            'village_packages' => $village_packages,
         ]);
     }
 
