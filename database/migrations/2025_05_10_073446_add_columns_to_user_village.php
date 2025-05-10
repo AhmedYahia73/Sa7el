@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('gates', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->boolean('status')->default(1);
-            $table->timestamps();
+        Schema::table('user_village', function (Blueprint $table) {
+            $table->enum('type', ['owner', 'rent'])->default('owner');
+            $table->date('rent_from')->nullable();
+            $table->date('rent_to')->nullable();
         });
     }
 
@@ -24,6 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('gates');
+        Schema::table('user_village', function (Blueprint $table) {
+            //
+        });
     }
 };
