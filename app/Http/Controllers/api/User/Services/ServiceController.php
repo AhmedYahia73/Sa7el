@@ -26,12 +26,50 @@ class ServiceController extends Controller
         ->whereHas('village', function($query) use($request){
             $query->where('villages.id', $request->village_id);
         })
+        ->where('status', 1)
         ->with('providers') // load all providers
-        ->get();
+        ->get()
+        ->map(function($query){
+            return [
+                'id' => $item->id,
+                'name' => $request->local == 'en' ?
+                $item->name : $item->ar_name?? $item->name,
+                'image' => $item->image_link,
+                'status' => $item->status,
+                'description' => $request->local == 'en' ?
+                $item->description : $item->ar_description?? $item->description,
+                'my_providers' => $item->my_providers,
+                'other_providers' => $item->other_providers,
+            ];
+        });
         // Optionally filter in PHP
         $services->each(function ($service) use ($request) {
-            $service->my_providers = $service->providers->where('village_id', $request->village_id)->values();
-            $service->other_providers = $service->providers->where('village_id', '!=', $request->village_id)->values();
+            $service->my_providers = $service->providers
+            ->where('status', 1)->where('village_id', $request->village_id)->values()
+            ->map(function($query){
+                return [
+                    'id' => $item->id,
+                    'name' => $request->local == 'en' ?
+                    $item->name : $item->ar_name?? $item->name,
+                    'image' => $item->image_link,
+                    'status' => $item->status,
+                    'description' => $request->local == 'en' ?
+                    $item->description : $item->ar_description?? $item->description,
+                ];
+            });
+            $service->other_providers = $service->providers
+            ->where('status', 1)->where('village_id', '!=', $request->village_id)->values()
+            ->map(function($query){
+                return [
+                    'id' => $item->id,
+                    'name' => $request->local == 'en' ?
+                    $item->name : $item->ar_name?? $item->name,
+                    'image' => $item->image_link,
+                    'status' => $item->status,
+                    'description' => $request->local == 'en' ?
+                    $item->description : $item->ar_description?? $item->description,
+                ];
+            });
         });
 
         return response()->json([
