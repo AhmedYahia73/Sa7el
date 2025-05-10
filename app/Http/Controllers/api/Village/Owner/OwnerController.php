@@ -25,6 +25,7 @@ class OwnerController extends Controller
         $owners = $this->owners
         ->where('user_type', 'owner')
         ->where('user_type', 'owner')
+        ->with('parent')
         ->get();
         $parent = $this->owners
         ->where('user_type', 'owner')
@@ -42,6 +43,7 @@ class OwnerController extends Controller
         $owner = $this->owners
         ->where('user_type', 'owner')
         ->where('id', $id)
+        ->with('parent')
         ->first();
         $entrance =  [
             'gates' => EntranceGate::with('gate')
