@@ -32,13 +32,15 @@ class PoolBeachesController extends Controller
         ->get()
         ->map(function($item) use($request){
             $data = 'user_id-' . $request->user()->id . '-beach_id-' . $item->id;
-            $qrCode = QrCode::format('png')->size(300)->generate($data);  
-            $qrCodeUrl = 'data:image/png;base64,' . $qrCode;
+            $qrCode = base64_encode(
+                QrCode::format('png')->size(300)->generate($data)
+            );
+            $qrCodeImage = 'data:image/png;base64,' . $qrCode;
             return [
                 'name' => $request->local == 'en' ? $item->name : $item->ar_name ?? $item->name,
                 'from' => $item->from,
                 'to' => $item->to,
-                'qr_code' =>$qrCodeUrl,
+                'qr_code' =>$qrCodeImage,
             ];
         }); 
 
@@ -63,14 +65,16 @@ class PoolBeachesController extends Controller
         ->where('status', 1)
         ->get()
         ->map(function($item) use($request){
-            $data = 'user_id-' . $request->user()->id . '-beach_id-' . $item->id;
-            $qrCode = QrCode::format('png')->size(300)->generate($data);  
-            $qrCodeUrl = 'data:image/png;base64,' . $qrCode;
+            $data = 'user_id-' . $request->user()->id . '-pool_id-' . $item->id;
+            $qrCode = base64_encode(
+                QrCode::format('png')->size(300)->generate($data)
+            );
+            $qrCodeImage = 'data:image/png;base64,' . $qrCode;
             return [
                 'name' => $request->local == 'en' ? $item->name : $item->ar_name ?? $item->name,
                 'from' => $item->from,
                 'to' => $item->to,
-                'qr_code' =>$qrCodeUrl,
+                'qr_code' => $qrCodeImage,
             ];
         });
 
