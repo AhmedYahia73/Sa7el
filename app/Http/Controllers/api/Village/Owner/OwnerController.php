@@ -23,15 +23,11 @@ class OwnerController extends Controller
 
     public function view(Request $request){
         $owners = $this->owners
-        ->whereHas('villages_user', function($quesry) use($request){
-            $quesry->where('villages.id', $request->user()->village_id);
-        })
+        ->where('user_type', 'owner')
         ->where('user_type', 'owner')
         ->get();
         $parent = $this->owners
-        ->whereHas('villages_user', function($quesry) use($request){
-            $quesry->where('villages.id', $request->user()->village_id);
-        })
+        ->where('user_type', 'owner')
         ->where('user_type', 'owner')
         ->whereNull('parent_user_id')
         ->get();
