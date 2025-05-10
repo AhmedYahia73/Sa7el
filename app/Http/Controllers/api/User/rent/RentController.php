@@ -61,7 +61,7 @@ class RentController extends Controller
         ->create($rentRequest);
         
         return response()->json([
-            'success' => 'you create'
+            'success' => $code
         ]);
     }
 }
