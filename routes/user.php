@@ -50,6 +50,6 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     Route::controller(RentController::class)
     ->group(function() {
         Route::get('/rent', 'view');
-        Route::get('/rent/add', 'create');
+        Route::post('/rent/add', 'create');
     });
 });
