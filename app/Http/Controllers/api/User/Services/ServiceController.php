@@ -29,7 +29,7 @@ class ServiceController extends Controller
         ->where('status', 1)
         ->with('providers') // load all providers
         ->get()
-        ->map(function($item){
+        ->map(function($item) use($request){
             return [
                 'id' => $item->id,
                 'name' => $request->local == 'en' ?
@@ -46,7 +46,7 @@ class ServiceController extends Controller
         $services->each(function ($service) use ($request) {
             $service->my_providers = $service->providers
             ->where('status', 1)->where('village_id', $request->village_id)->values()
-            ->map(function($item){
+            ->map(function($item) use($request){
                 return [
                     'id' => $item->id,
                     'name' => $request->local == 'en' ?
@@ -59,7 +59,7 @@ class ServiceController extends Controller
             });
             $service->other_providers = $service->providers
             ->where('status', 1)->where('village_id', '!=', $request->village_id)->values()
-            ->map(function($item){
+            ->map(function($item) use($request){
                 return [
                     'id' => $item->id,
                     'name' => $request->local == 'en' ?
