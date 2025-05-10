@@ -109,7 +109,7 @@ class PoolController extends Controller
         ]);
     }
 
-    public function delete($id){
+    public function delete(Request $request, $id){
         $pool = $this->pool
         ->where('id', $id)
         ->where('village_id', $request->user()->village_id)
