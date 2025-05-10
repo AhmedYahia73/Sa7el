@@ -17,7 +17,6 @@ class SignupRequest extends FormRequest
     {
         return [
             'name' => ['required'],
-            'village_id' => ['required', 'exists:villages,id'],
             'email' => ['required', 'email', 'unique:users'],
             'phone' => ['required', 'unique:users'],
             'password' => ['required'],
