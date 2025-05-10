@@ -47,7 +47,7 @@ class PoolController extends Controller
     }
 
     public function create(PoolRequest $request){
-        // name, image, status,
+        // name, from, to, status,
         // ar_name
     
         $poolRequest = $request->validated();
