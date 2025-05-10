@@ -14,7 +14,8 @@ class MaintenanceType extends Model
     protected $appends = ['image_link', 'ar_name'];
 
     public function village(){
-        return $this->belongsToMany(Village::class, 'maintenance_type_villages');
+        return $this->belongsToMany(Village::class, 'maintenance_type_villages', 
+        'maintenance_types_id', 'village_id');
     }
 
     public function getImageLinkAttribute(){
