@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('maintenance_type_villages', function (Blueprint $table) {
             $table->id();
             $table->foreignId('maintenance_types_id')->nullable()->constrained('maintenance_types')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('village_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('village_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

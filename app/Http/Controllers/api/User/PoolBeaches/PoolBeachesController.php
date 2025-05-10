@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\User\PoolBeaches;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 use App\Models\Pools;
 use App\Models\Beach;
@@ -30,11 +31,14 @@ class PoolBeachesController extends Controller
         ->where('status', 1)
         ->get()
         ->map(function($item) use($request){
+            $data = 'user_id-' . $request->user()->id . '-beach_id-' . $item->id;
+            $qrCode = QrCode::format('png')->size(300)->generate($data);  
+            $qrCodeUrl = 'data:image/png;base64,' . $qrCode;
             return [
                 'name' => $request->local == 'en' ? $item->name : $item->ar_name ?? $item->name,
                 'from' => $item->from,
                 'to' => $item->to,
-                'qr_code' =>$item->qr_code,
+                'qr_code' =>$qrqrCodeUrlode,
             ];
         }); 
 
@@ -59,11 +63,14 @@ class PoolBeachesController extends Controller
         ->where('status', 1)
         ->get()
         ->map(function($item) use($request){
+            $data = 'user_id-' . $request->user()->id . '-beach_id-' . $item->id;
+            $qrCode = QrCode::format('png')->size(300)->generate($data);  
+            $qrCodeUrl = 'data:image/png;base64,' . $qrCode;
             return [
                 'name' => $request->local == 'en' ? $item->name : $item->ar_name ?? $item->name,
                 'from' => $item->from,
                 'to' => $item->to,
-                'qr_code' =>$item->qr_code,
+                'qr_code' =>$qrCodeUrl,
             ];
         });
 
