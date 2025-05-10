@@ -14,6 +14,11 @@ class Maintenance extends Model
         'image',
         'status', 
     ];
+    protected $appends = ['status_request'];
+
+    public function getStatusRequestAttribute(){
+        return $this->status ? 'completed': 'pending';
+    }
 
     public function maintenance_type(){
         return $this->belongsTo(MaintenanceType::class ,'maintenance_type_id');
