@@ -13,7 +13,7 @@ class PoolController extends Controller
 {
     public function __construct(private Pools $pool){}
 
-    public function view(){
+    public function view(Request $request){
         $pool = $this->pool
         ->with('translations')
         ->where('village_id', $request->user()->village_id)
