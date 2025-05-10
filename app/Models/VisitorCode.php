@@ -10,5 +10,6 @@ class VisitorCode extends Model
         'user_id',
         'qr_code',
         'code',
+        'village_id',
     ];
 }

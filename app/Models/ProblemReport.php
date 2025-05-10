@@ -11,6 +11,7 @@ class ProblemReport extends Model
         'description',
         'image',
         'user_id',
+        'village_id',
         'status', 
     ];
 }

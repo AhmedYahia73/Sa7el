@@ -17,6 +17,7 @@ class PropertyController extends Controller
     public function my_property(Request $request){
         $validator = Validator::make($request->all(), [
             'local' => 'required|in:en,ar',
+            'village_id' => 'required|exists:villages,id',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -29,7 +30,9 @@ class PropertyController extends Controller
             $query->with('type', 'village');
         }])
         ->where('type', 'owner')
+        ->where('village_id', $request->village_id)
         ->orWhere('type', 'renter')
+        ->where('village_id', $request->village_id)
         ->where('from', '<=', date('Y-m-d'))
         ->where('to', '>=', date('Y-m-d'))
         ->get()

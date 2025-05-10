@@ -10,6 +10,7 @@ class Maintenance extends Model
         'user_id',
         'appartment_id',
         'maintenance_type_id',
+        'village_id',
         'description',
         'image',
         'status', 

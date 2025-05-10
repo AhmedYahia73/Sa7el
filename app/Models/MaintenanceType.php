@@ -13,6 +13,10 @@ class MaintenanceType extends Model
     ];
     protected $appends = ['image_link', 'ar_name'];
 
+    public function village(){
+        return $this->belongsToMany(Village::class, 'maintenance_type_villages');
+    }
+
     public function getImageLinkAttribute(){
         return url('storage/' . $this->image);
     }

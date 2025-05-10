@@ -19,6 +19,7 @@ class ProblemReportController extends Controller
             'google_map' => 'required',
             'description' => 'required',
             'image' => 'required',
+            'village_id' => 'required|exists:villages,id',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();

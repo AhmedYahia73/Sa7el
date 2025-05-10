@@ -19,7 +19,8 @@ class MaintenanceController extends Controller
     
     public function maintenance_lists(Request $request){
         $validator = Validator::make($request->all(), [
-            'local' => 'required|in:en,ar'
+            'local' => 'required|in:en,ar',
+            'village_id' => 'required|exists:villages,id',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -51,6 +52,9 @@ class MaintenanceController extends Controller
 
         $maintenance_type = $this->maintenance_type
         ->where('status', 1)
+        ->whereHas('village', function($query) use($request) {
+            return $query->where('villages.id', $request->village_id);
+        })
         ->get()
         ->map(function($item) use($request){
             return [
@@ -72,6 +76,7 @@ class MaintenanceController extends Controller
             'description' => 'nullable',
             'image' => 'nullable',
             'status' => 'required|boolean',
+            'village_id' => 'required|exists:villages,id',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
