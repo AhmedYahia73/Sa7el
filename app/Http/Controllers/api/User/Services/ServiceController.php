@@ -28,20 +28,7 @@ class ServiceController extends Controller
         })
         ->where('status', 1)
         ->with('providers') // load all providers
-        ->get()
-        ->map(function($item) use($request){
-            return [
-                'id' => $item->id,
-                'name' => $request->local == 'en' ?
-                $item->name : $item->ar_name?? $item->name,
-                'image' => $item->image_link,
-                'status' => $item->status,
-                'description' => $request->local == 'en' ?
-                $item->description : $item->ar_description?? $item->description,
-                'my_providers' => $item->my_providers,
-                'other_providers' => $item->other_providers,
-            ];
-        });
+        ->get();
         // Optionally filter in PHP
         $services->each(function ($service) use ($request) {
             $service->my_providers = $service->providers
@@ -70,6 +57,20 @@ class ServiceController extends Controller
                     $item->description : $item->ar_description?? $item->description,
                 ];
             });
+        });
+        $services = $services
+        ->map(function($item) use($request){
+            return [
+                'id' => $item->id,
+                'name' => $request->local == 'en' ?
+                $item->name : $item->ar_name?? $item->name,
+                'image' => $item->image_link,
+                'status' => $item->status,
+                'description' => $request->local == 'en' ?
+                $item->description : $item->ar_description?? $item->description,
+                'my_providers' => $item->my_providers,
+                'other_providers' => $item->other_providers,
+            ];
         });
 
         return response()->json([
