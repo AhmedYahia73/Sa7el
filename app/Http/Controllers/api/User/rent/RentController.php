@@ -12,7 +12,7 @@ class RentController extends Controller
 {
     public function __construct(private AppartmentCode $appartment_code){}
 
-    public function view(){
+    public function view(Request $request){
         $validator = Validator::make($request->all(), [
             'village_id' => 'required|exists:villages,id',
         ]);
