@@ -50,7 +50,8 @@ class PropertyController extends Controller
                 'number_floors' => $item->number_floors,
                 'type' => $request->local == 'en' ? $item?->type?->name : 
                 $item?->type?->ar_name ?? $item?->type?->name,
-                'zone' => $item?->zone?->name,
+                'zone' => $request->local == 'en' ? $item?->zone?->name
+                : $item?->zone?->ar_name ?? $item?->zone?->name,
                 'zone_id' => $item->zone_id,
             ];
         });
