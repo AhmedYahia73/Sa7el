@@ -128,8 +128,8 @@ class OwnerController extends Controller
 
     public function modify(OwnerRequest $request, $id){
         $validator = Validator::make($request->all(), [
-            'email' => 'unique:users,email,' . $id,
-            'phone' => 'unique:users,phone,' . $id,
+            'email' => 'unique:users,email,' . $id . ',id',
+            'phone' => 'unique:users,phone,' . $id . ',id',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
