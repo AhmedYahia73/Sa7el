@@ -15,6 +15,7 @@ class ProblemController extends Controller
     private AppartmentCode $appartment){}
 
     public function view(Request $request){
+        $appartment = $this->appartment;
         $problem_reports = $this->problem_report
         ->where('village_id', $request->user()->id)
         ->get()
