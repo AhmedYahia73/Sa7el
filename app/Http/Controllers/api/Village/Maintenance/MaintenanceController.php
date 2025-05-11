@@ -24,7 +24,7 @@ class MaintenanceController extends Controller
         ->values();
 
         return response()->json([
-            'completed' => $completedm,
+            'completed' => $completed,
             'pending' => $pending,
         ]);
     }
