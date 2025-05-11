@@ -77,4 +77,29 @@ class ServiceController extends Controller
             'services' => $services
         ]);
     }
+
+    public function out_service(Request $request){
+        $services = $this->services
+        ->where('status', 1)
+        ->with('providers') // load all providers
+        ->get();
+        
+        $services = $services
+        ->map(function($item) use($request){
+            return [
+                'id' => $item->id,
+                'name' => $request->local == 'en' ?
+                $item->name : $item->ar_name?? $item->name,
+                'image' => $item->image_link,
+                'status' => $item->status,
+                'description' => $request->local == 'en' ?
+                $item->description : $item->ar_description?? $item->description,
+                'providers' => $item->providers,
+            ];
+        });
+
+        return response()->json([
+            'services' => $services
+        ]);
+    }
 }

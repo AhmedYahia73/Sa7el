@@ -5,12 +5,15 @@ namespace App\Http\Controllers\api\User\Offers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\trait\image;
 
 use App\Models\Offer;
+use App\Models\OfferImage;
 
 class OfferController extends Controller
 {
-    public function __construct(private Offer $offers){}
+    public function __construct(private Offer $offers, private OfferImage $offer_image){}
+    use image;
 
     public function view(Request $request){
         $validator = Validator::make($request->all(), [
@@ -36,6 +39,59 @@ class OfferController extends Controller
         return response()->json([
             'rent' => $rent,
             'sale' => $sale,
+        ]);
+    }
+
+    public function appartment(Request $request){
+        $validator = Validator::make($request->all(), [
+            'appartment_id' => 'required|exists:appartments,id',
+            'type' => 'in:rent,sale|required'
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+
+        $offer_image = $this->offer_image
+        ->where('appartment_id', $request->appartment_id)
+        ->get();
+        $offers = $this->offers
+        ->where('type', $request->type)
+        ->where('appartment_id', $request->appartment_id)
+        ->where('owner_id', $request->user()->id)
+        ->get();
+
+        return response()->json([
+            'offer' => $offers,
+            'offer_image' => $offer_images,
+        ]);
+    }
+
+    public function upload_appartment_image(Request $request){
+        $validator = Validator::make($request->all(), [
+            'appartment_id' => 'required|exists:appartments,id',
+            'village_id' => 'required|exists:villages,id',
+            'image' => 'required'
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+
+        $image_path =$this->storeBase64Image($request->image, '/images/offer/appartment');
+        
+        $offer_image = $this->offer_image
+        ->create([
+            'village_id' => $request->village_id,
+            'owner_id' => $request->user()->id,
+            'appartment_id' => $request->appartment_id,
+            'image' => $image_path,
+        ]);
+
+        return response()->json([
+            'success' => 'you add data success',
         ]);
     }
 

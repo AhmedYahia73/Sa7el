@@ -45,6 +45,7 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     Route::controller(ServiceController::class)
     ->group(function() {
         Route::get('/services', 'view');
+        Route::get('/out_service', 'out_service');
     });
 
     Route::controller(RentController::class)
@@ -56,6 +57,8 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     Route::controller(OfferController::class)->prefix('offer')
     ->group(function() {
         Route::get('/', 'view');
+        Route::get('/appartment', 'appartment');
+        Route::post('/upload_appartment_image', 'upload_appartment_image');
         Route::post('/add_rent', 'add_rent');
         Route::post('/add_sale', 'add_sale');
         Route::post('/update_rent/{id}', 'update_rent');
