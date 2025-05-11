@@ -20,7 +20,7 @@ class ProblemController extends Controller
         ->where('village_id', $request->user()->id)
         ->get()
         ->map(function($item) use($appartment, $request){
-            $appartment = $this->appartment
+            $appartment = $appartment
             ->where('village_id', $request->user()->village_id)
             ->where('user_id', $request->user()->id)
             ->where('type', 'owner')
