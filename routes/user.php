@@ -58,8 +58,8 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
         Route::get('/', 'view');
         Route::post('/add_rent', 'add_rent');
         Route::post('/add_sale', 'add_sale');
-        Route::post('/update_rent', 'update_rent');
-        Route::post('/update_sale', 'update_sale');
+        Route::post('/update_rent/{id}', 'update_rent');
+        Route::post('/update_sale/{id}', 'update_sale');
         Route::delete('/delete', 'delete');
     });
 });
