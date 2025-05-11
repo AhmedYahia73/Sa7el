@@ -14,4 +14,13 @@ class ProblemReport extends Model
         'village_id',
         'status', 
     ];
+    protected $appends = ['image_link'];
+
+    public function getImageLinkAttribute(){
+        return url('storage/' . $this->image);
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

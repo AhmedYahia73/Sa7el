@@ -55,6 +55,11 @@ class SubscriperController extends Controller
                 'payment_method' => $item?->payment_method?->name,
                 'service' => $item?->service?->name,
                 'package' => $item?->package?->name,
+                'village' => $item->village,
+                'provider' => $item->provider,
+                'package' => $item->package,
+                'payment_method_item' => $item->payment_method,
+                'service_item' => $item->service,
             ];
         });
         $subscribers_village = $subscribers->where('type', 'village')->values();
