@@ -15,7 +15,21 @@ class ServiceController extends Controller
         $services = $this->provider
         ->with('service')
         ->where('village_id', $request->user()->id)
-        ->get();
+        ->get()
+        ->map(function($item){
+            return [
+                'id' => $item->id,
+                'name' => $item->name,
+                'phone' => $item->phone,
+                'image' => $item->image_link,
+                'location' => $item->location,
+                'from' => $item->from,
+                'to' => $item->to,
+                'description' => $item->description,
+                'service_type' => $item?->service?->name,
+                'rate' => $item->rate,
+            ];
+        });
 
         return response()->json([
             'services' => $services,
