@@ -60,7 +60,7 @@ class ProblemController extends Controller
         ]);
 
         return response()->json([
-            'success' => $request->status ? 'active': 'banned'
+            'success' => $request->status ? 'active' : 'banned'
         ]);
     }
 }

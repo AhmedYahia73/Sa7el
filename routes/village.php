@@ -8,6 +8,7 @@ use App\Http\Controllers\api\Village\Pools\PoolController;
 use App\Http\Controllers\api\Village\Beach\BeachController;
 use App\Http\Controllers\api\Village\Service\ServiceController;
 use App\Http\Controllers\api\Village\Problem\ProblemController;
+use App\Http\Controllers\api\Village\Maintenance\MaintenanceController;
 
 Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(OwnerController::class)->prefix('owner')
@@ -44,6 +45,12 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     });
 
     Route::controller(ProblemController::class)->prefix('problem')
+    ->group(function() {
+        Route::get('/', 'view');
+        Route::put('/status/{id}', 'status');
+    });
+
+    Route::controller(MaintenanceController::class)->prefix('problem')
     ->group(function() {
         Route::get('/', 'view');
         Route::put('/status/{id}', 'status');
