@@ -34,9 +34,7 @@ class PropertyController extends Controller
             $query->with('type', 'village');
         }])
         ->where('type', 'owner')
-        ->where('village_id', $request->village_id)
         ->orWhere('type', 'renter')
-        ->where('village_id', $request->village_id)
         ->where('from', '<=', date('Y-m-d'))
         ->where('to', '>=', date('Y-m-d'))
         ->get()
