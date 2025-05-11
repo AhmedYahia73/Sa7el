@@ -50,7 +50,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
         Route::put('/status/{id}', 'status');
     });
 
-    Route::controller(MaintenanceController::class)->prefix('problem')
+    Route::controller(MaintenanceController::class)->prefix('maintenance')
     ->group(function() {
         Route::get('/', 'view');
     });
