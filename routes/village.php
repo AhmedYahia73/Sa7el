@@ -53,6 +53,5 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(MaintenanceController::class)->prefix('problem')
     ->group(function() {
         Route::get('/', 'view');
-        Route::put('/status/{id}', 'status');
     });
 });

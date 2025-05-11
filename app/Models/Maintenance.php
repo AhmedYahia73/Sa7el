@@ -15,7 +15,11 @@ class Maintenance extends Model
         'image',
         'status', 
     ];
-    protected $appends = ['status_request'];
+    protected $appends = ['image_link', 'status_request'];
+
+    public function getImageLinkAttribute(){
+        return url('storage/' . $this->image);
+    }
 
     public function getStatusRequestAttribute(){
         return $this->status ? 'completed': 'pending';
@@ -23,5 +27,13 @@ class Maintenance extends Model
 
     public function maintenance_type(){
         return $this->belongsTo(MaintenanceType::class ,'maintenance_type_id');
+    }
+
+    public function appartment(){
+        return $this->belongsTo(Appartment::class ,'appartment_id');
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
     }
 }

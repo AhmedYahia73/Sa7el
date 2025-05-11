@@ -173,7 +173,7 @@ class SubscriperController extends Controller
         $subscripeRequest['amount'] = $amount;
         $subscripeRequest['status'] = 'approved';
         $payments->update($subscripeRequest);
-        $user->package_id = $payments?->package_id;
+        $user->package_id = $payments->package_id;
         $user->save();
 
         return response()->json([
