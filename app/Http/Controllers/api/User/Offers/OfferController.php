@@ -64,7 +64,7 @@ class OfferController extends Controller
 
         return response()->json([
             'offer' => $offers,
-            'offer_image' => $offer_images,
+            'offer_images' => $offer_image,
         ]);
     }
 
