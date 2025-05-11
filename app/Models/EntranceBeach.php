@@ -10,6 +10,7 @@ class EntranceBeach extends Model
         'beach_id',
         'user_id',
         'time',
+        'village_id',
     ];
 
     public function beach(){

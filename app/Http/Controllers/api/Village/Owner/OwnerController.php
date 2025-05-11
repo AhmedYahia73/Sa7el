@@ -15,10 +15,12 @@ use App\Models\EntrancePool;
 use App\Models\Rent;
 use App\Models\ProblemReport;
 use App\Models\Maintenance;
+use App\Models\AppartmentCode;
 
 class OwnerController extends Controller
 {
-    public function __construct(private User $owners){}
+    public function __construct(private User $owners, 
+    private AppartmentCode $appartment_code){}
     use image;
 
     public function view(Request $request){
@@ -47,19 +49,25 @@ class OwnerController extends Controller
         ->first();
         $entrance =  [
             'gates' => EntranceGate::with('gate')
-            ->where('user_id', $id)->get(),
+            ->where('user_id', $id)
+            ->where('village_id', $request->user()->village_id)->get(),
             'beaches' => EntranceBeach::with('beach')
+            ->where('village_id', $request->user()->village_id)
             ->where('user_id', $id)->get(),
             'pools' => EntrancePool::with('pool')
+            ->where('village_id', $request->user()->village_id)
             ->where('user_id', $id)->get(),
-        ];
-        $rent = Rent::
-        with('renter', 'unit', 'unit_type')
-        ->where('owner_id', $id)
+        ]; 
+        $rent = $this->appartment_code
+        ->where('village_id', $request->user()->village_id)
+        ->where('user_id', $id)
+        ->with('appartment')
         ->get();
-        $problem_request = ProblemReport::where('user_id', $id)->get();
+        $problem_request = ProblemReport::where('user_id', $id)
+        ->where('village_id', $request->user()->village_id)->get();
         $maintenance_request = Maintenance::
         with('maintenance_type')
+        ->where('village_id', $request->user()->village_id)
         ->where('user_id', $id)->get();
 
         return response()->json([

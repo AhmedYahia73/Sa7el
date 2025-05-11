@@ -10,6 +10,7 @@ class EntrancePool extends Model
         'pool_id',
         'user_id',
         'time',
+        'village_id',
     ];
 
     public function pool(){

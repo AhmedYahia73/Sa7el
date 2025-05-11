@@ -10,6 +10,7 @@ class EntranceGate extends Model
         'gate_id',
         'user_id',
         'time',
+        'village_id',
     ];
 
     public function gate(){
