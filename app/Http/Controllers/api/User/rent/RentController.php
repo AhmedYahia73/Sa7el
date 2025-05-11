@@ -15,6 +15,7 @@ class RentController extends Controller
     public function view(Request $request){
         $validator = Validator::make($request->all(), [
             'village_id' => 'required|exists:villages,id',
+            'appartment_id' => 'required|exists:appartments,id',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -25,6 +26,7 @@ class RentController extends Controller
 
         $rents = $this->appartment_code
         ->where('village_id', $request->village_id)
+        ->where('appartment_id', $request->appartment_id)
         ->where('user_id', $request->user()->id)
         ->with('appartment')
         ->get();
