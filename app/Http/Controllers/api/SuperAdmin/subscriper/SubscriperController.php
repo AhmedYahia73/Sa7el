@@ -211,6 +211,7 @@ class SubscriperController extends Controller
             $user->to = Carbon::now()->subDay()->format('Y-m-d');
         }
         $user->save();
+        $payments->delete();
 
         return response()->json([
             'success' => 'you delete subscriber success'
