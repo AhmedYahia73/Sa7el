@@ -18,7 +18,6 @@ class PropertyController extends Controller
     public function my_property(Request $request){
         $validator = Validator::make($request->all(), [
             'local' => 'required|in:en,ar',
-            'village_id' => 'required|exists:villages,id',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
