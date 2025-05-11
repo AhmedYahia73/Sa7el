@@ -60,6 +60,6 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
         Route::post('/add_sale', 'add_sale');
         Route::post('/update_rent/{id}', 'update_rent');
         Route::post('/update_sale/{id}', 'update_sale');
-        Route::delete('/delete', 'delete');
+        Route::delete('/delete/{id}', 'delete');
     });
 });
