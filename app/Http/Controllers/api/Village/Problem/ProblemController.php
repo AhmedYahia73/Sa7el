@@ -36,5 +36,9 @@ class ProblemController extends Controller
                 'owner_type' => $appartment?->type,
             ];
         });
+
+        return response()->json([
+            'problem_reports' => $problem_reports
+        ]);
     }
 }

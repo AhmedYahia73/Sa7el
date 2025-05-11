@@ -87,7 +87,7 @@ class MaintenanceController extends Controller
 
         $maintenanceRequest = $validator->validated();
         if ($request->has('image')) {
-            $image_path =$this->upload($request, 'image', '/images/maintenance_request');
+            $image_path =$this->storeBase64Image($request->image, '/images/maintenance_request');
             $maintenanceRequest['image'] = $image_path;
         }
         $maintenanceRequest['user_id'] = $request->user()->id;

@@ -29,7 +29,7 @@ class ProblemReportController extends Controller
         }
         $reportRequest = $validator->validated();
         if ($request->has('image')) {
-            $image_path =$this->upload($request, 'image', '/images/problem_report');
+            $image_path =$this->storeBase64Image($request->image, '/images/problem_report');
             $reportRequest['image'] = $image_path;
         }
         $reportRequest['user_id'] = $request->user()->id;
