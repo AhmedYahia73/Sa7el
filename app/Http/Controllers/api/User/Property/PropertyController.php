@@ -43,6 +43,7 @@ class PropertyController extends Controller
                 'id' => $item->id,
                 'unit' => $item->unit,
                 'image' => $item->image_link,
+                'village_id' => $item->village_id,
                 'village' => $item->village->name,
                 'number_floors' => $item->number_floors,
                 'type' => $request->local == 'en' ? $item?->type?->name : 
