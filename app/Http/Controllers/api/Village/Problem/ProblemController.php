@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api\Village\Problem;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 use App\Models\ProblemReport;
 use App\Models\AppartmentCode;
@@ -39,6 +40,26 @@ class ProblemController extends Controller
 
         return response()->json([
             'problem_reports' => $problem_reports
+        ]);
+    }
+
+    public function status(Request $request, $id){
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|boolean',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+        $this->problem_report
+        ->where('id', $id)
+        ->update([
+            'status' => $request->status
+        ]);
+
+        return response()->json([
+            'success' => 'You add data success'
         ]);
     }
 }
