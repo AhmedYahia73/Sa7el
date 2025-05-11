@@ -69,7 +69,7 @@ class ProviderController extends Controller
 
     public function create(ProviderRequest $request){
         // service_id, name, description, phone, status, location, village_id
-        // ar_name, ar_description, image
+        // ar_name, ar_description, image, open_from, open_to
         $providerRequest = $request->validated();
         if (!is_string($request->image)) {
             $image_path = $this->upload($request, 'image', 'images/providers');

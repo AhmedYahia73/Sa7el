@@ -17,6 +17,8 @@ class Provider extends Model
         'package_id',
         'location', 
         'description', 
+        'open_from', 
+        'open_to', 
         'status', 
     ];
     protected $appends = ['image_link', 'ar_name', 'ar_description', 'rate'];

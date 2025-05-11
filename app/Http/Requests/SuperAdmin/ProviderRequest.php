@@ -24,6 +24,8 @@ class ProviderRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'open_from' => ['regex:/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/'], 
+            'open_to' => ['regex:/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/'], 
             'service_id' => ['required', 'exists:service_types,id'],
             'name' => ['required'],
             'description' => ['sometimes'],
