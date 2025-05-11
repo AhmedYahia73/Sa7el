@@ -13,16 +13,24 @@ class OfferController extends Controller
     public function __construct(private Offer $offers){}
 
     public function view(Request $request){
+        $validator = Validator::make($request->all(), [
+            'village_id' => 'required|exists:villages,id',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
         $rent = $this->offers
         ->select('id', 'village_id', 'owner_id', 'appartment_id', 'price_day', 'price_month')
         ->where('type', 'rent')
-        ->where('village_id', $request->user()->village_id)
+        ->where('village_id', $request->village_id)
         ->with('village:id,name', 'owner:id,name,email,phone', 'appartment:id,unit,image,number_floors')
         ->get();
         $sale = $this->offers
         ->select('id', 'village_id', 'owner_id', 'appartment_id', 'price')
         ->where('type', 'sale')
-        ->where('village_id', $request->user()->village_id)
+        ->where('village_id', $request->village_id)
         ->get();
 
         return response()->json([

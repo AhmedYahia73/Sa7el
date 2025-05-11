@@ -10,7 +10,7 @@ use App\Http\Controllers\api\User\ProblemReport\ProblemReportController;
 use App\Http\Controllers\api\User\PoolBeaches\PoolBeachesController;
 use App\Http\Controllers\api\User\Services\ServiceController;
 use App\Http\Controllers\api\User\rent\RentController;
-
+use App\Http\Controllers\api\User\Offers\OfferController;
 
 Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     Route::controller(PropertyController::class)->prefix('property')
@@ -51,5 +51,15 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     ->group(function() {
         Route::get('/rent', 'view');
         Route::post('/rent/add', 'create');
+    });
+
+    Route::controller(OfferController::class)->prefix('offer')
+    ->group(function() {
+        Route::get('/', 'view');
+        Route::post('/add_rent', 'add_rent');
+        Route::post('/add_sale', 'add_sale');
+        Route::post('/update_rent', 'update_rent');
+        Route::post('/update_sale', 'update_sale');
+        Route::delete('/delete', 'delete');
     });
 });
