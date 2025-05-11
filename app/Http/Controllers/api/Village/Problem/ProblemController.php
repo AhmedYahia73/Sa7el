@@ -21,6 +21,12 @@ class ProblemController extends Controller
         ->get()
         ->map(function($item) use($appartment, $request){
             $appartment = $appartment
+            ->where('village_id', $request->user()->village_id)
+            ->where('user_id', $request->user()->id)
+            ->where('type', 'owner')
+            ->orWhere('village_id', $request->user()->village_id)
+            ->where('user_id', $request->user()->id)
+            ->orderByDesc('id')
             ->first();
             return [
                 'id' =>$item->id,
