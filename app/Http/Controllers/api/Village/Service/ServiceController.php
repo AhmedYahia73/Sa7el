@@ -28,6 +28,8 @@ class ServiceController extends Controller
                 'description' => $item->description,
                 'service_type' => $item?->service?->name,
                 'rate' => $item->rate,
+                'ar_name' => $item->ar_name,
+                'ar_description' => $item->ar_description,
             ];
         });
 
