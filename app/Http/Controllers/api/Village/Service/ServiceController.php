@@ -14,7 +14,7 @@ class ServiceController extends Controller
     public function view(Request $request){
         $services = $this->provider
         ->with('service')
-        ->where('village_id', $request->user()->id)
+        ->where('village_id', $request->user()->village_id)
         ->get()
         ->map(function($item){
             return [

@@ -40,4 +40,34 @@ class ProblemReportController extends Controller
             'success' => 'You add data success'
         ]);
     }
+
+    public function history(Request $request){
+        $validator = Validator::make($request->all(), [
+            'village_id' => 'required|exists:villages,id',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }
+        $problem_reports = $this->problem_report
+        ->where('village_id', $request->village_id)
+        ->where('user_id', $request->user()->id)
+        ->get()
+        ->map(function($item) use($appartment, $request){
+            return [
+                'id' =>$item->id, 
+                'google_map' =>$item->google_map,
+                'description' =>$item->description,
+                'image' =>$item->image_link,
+                'status' =>$item->status,
+            ];
+        });
+
+        return response()->json([
+            'problem_reports' => $problem_reports
+        ]);
+    }
+
 }

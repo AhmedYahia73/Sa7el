@@ -17,7 +17,7 @@ class ProblemController extends Controller
     public function view(Request $request){
         $appartment = $this->appartment;
         $problem_reports = $this->problem_report
-        ->where('village_id', $request->user()->id)
+        ->where('village_id', $request->user()->village_id)
         ->get()
         ->map(function($item) use($appartment, $request){
             $appartment = $appartment

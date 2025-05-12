@@ -27,13 +27,15 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
 
     Route::controller(MaintenanceController::class)->prefix('maintenance_request')
     ->group(function() {
-        Route::get('/', 'maintenance_lists'); 
-        Route::post('/add', 'maintenance_request'); 
+        Route::get('/', 'maintenance_lists');
+        Route::get('/history', 'history');
+        Route::post('/add', 'maintenance_request');
     });
 
     Route::controller(ProblemReportController::class)->prefix('problem_report')
     ->group(function() {
         Route::post('/add', 'add_report'); 
+        Route::get('/history', 'history');
     });
 
     Route::controller(PoolBeachesController::class)

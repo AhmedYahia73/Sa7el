@@ -98,4 +98,16 @@ class MaintenanceController extends Controller
             'success' => 'You add data success'
         ]);
     }
+
+    public function history(Request $request){
+        $maintenance = $this->maintenance
+        ->where('village_id', $request->village_id)
+        ->where('user_id', $request->user()->id)
+        ->with('maintenance_type', 'appartment', 'user')
+        ->get();
+
+        return response()->json([
+            'maintenance' => $maintenance,
+        ]);
+    }
 }
