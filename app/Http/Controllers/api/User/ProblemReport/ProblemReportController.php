@@ -55,7 +55,7 @@ class ProblemReportController extends Controller
         ->where('village_id', $request->village_id)
         ->where('user_id', $request->user()->id)
         ->get()
-        ->map(function($item) use($appartment, $request){
+        ->map(function($item) use($request){
             return [
                 'id' =>$item->id, 
                 'google_map' =>$item->google_map,
