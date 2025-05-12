@@ -25,6 +25,7 @@ class LoginController extends Controller
 
         return response()->json([
             'villages' => $villages,
+            'current_village' => $current_village,
         ]);
     }
 
