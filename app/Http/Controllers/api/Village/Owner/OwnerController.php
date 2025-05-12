@@ -73,6 +73,7 @@ class OwnerController extends Controller
         ->where('user_id', $id)->get();
         $visit_requests = $this->visit_request
         ->where('village_id', $request->user()->village_id)
+        ->where('owner_id', $id)
         ->with(['owner:id,name', 'appartment:id,unit,number_floors'])
         ->get();
 
