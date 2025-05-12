@@ -84,7 +84,6 @@ class OwnerController extends Controller
             'problem_request' => $problem_request,
             'maintenance_request' => $maintenance_request,
             'visit_requests' => $visit_requests,
-
         ]);
     }
 

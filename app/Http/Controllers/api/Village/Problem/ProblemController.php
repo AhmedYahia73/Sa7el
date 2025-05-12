@@ -46,7 +46,7 @@ class ProblemController extends Controller
 
     public function status(Request $request, $id){
         $validator = Validator::make($request->all(), [
-            'status' => 'required|boolean',
+            'status' => 'required|in:pending,resolved',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -60,7 +60,7 @@ class ProblemController extends Controller
         ]);
 
         return response()->json([
-            'success' => $request->status ? 'active' : 'banned'
+            'success' => $request->status
         ]);
     }
 }

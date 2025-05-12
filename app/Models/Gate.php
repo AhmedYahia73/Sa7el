@@ -9,5 +9,6 @@ class Gate extends Model
     protected $fillable =[
         'name',
         'location',
+        'status',
     ];
 }
