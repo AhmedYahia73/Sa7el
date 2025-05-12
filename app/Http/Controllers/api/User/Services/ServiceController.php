@@ -88,9 +88,6 @@ class ServiceController extends Controller
 
     public function out_service(Request $request){
         $services = $this->services
-        ->whereDoesntHave('village', function($query) use($request){
-            $query->where('villages.id', $request->village_id);
-        })
         ->where('status', 1)
         ->with('providers') // load all providers
         ->get();
