@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use App\trait\image;
 use App\Http\Requests\Village\OwnerRequest;
 
+use App\Models\VisitRequest;
 use App\Models\User;
 use App\Models\EntranceBeach;
 use App\Models\EntranceGate;
@@ -20,7 +21,8 @@ use App\Models\AppartmentCode;
 class OwnerController extends Controller
 {
     public function __construct(private User $owners, 
-    private AppartmentCode $appartment_code){}
+    private AppartmentCode $appartment_code,
+    private VisitRequest $visit_request){}
     use image;
 
     public function view(Request $request){
@@ -69,6 +71,10 @@ class OwnerController extends Controller
         with('maintenance_type')
         ->where('village_id', $request->user()->village_id)
         ->where('user_id', $id)->get();
+        $visit_requests = $this->visit_request
+        ->where('village_id', $request->user()->village_id)
+        ->with(['owner:id,name', 'appartment:id,unit,number_floors'])
+        ->get();
 
         return response()->json([
             'owner' => $owner,
@@ -76,6 +82,7 @@ class OwnerController extends Controller
             'rent' => $rent,
             'problem_request' => $problem_request,
             'maintenance_request' => $maintenance_request,
+            'visit_requests' => $visit_requests,
 
         ]);
     }
