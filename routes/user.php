@@ -11,6 +11,7 @@ use App\Http\Controllers\api\User\PoolBeaches\PoolBeachesController;
 use App\Http\Controllers\api\User\Services\ServiceController;
 use App\Http\Controllers\api\User\rent\RentController;
 use App\Http\Controllers\api\User\Offers\OfferController;
+use App\Http\Controllers\api\User\Posts\PostsController;
 
 Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     Route::controller(PropertyController::class)->prefix('property')
@@ -66,5 +67,11 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
         Route::post('/update_rent/{id}', 'update_rent');
         Route::post('/update_sale/{id}', 'update_sale');
         Route::delete('/delete/{id}', 'delete');
+    });
+
+    Route::controller(PostsController::class)->prefix('post')
+    ->group(function() {
+        Route::get('/', 'view');
+        Route::post('/react', 'react');
     });
 });
