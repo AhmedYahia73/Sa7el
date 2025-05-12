@@ -18,6 +18,10 @@ class LoginController extends Controller
         $villages = $this->village
         ->where('status', 1)
         ->get();
+        $current_village = $this->village
+        ->where('status', 1)
+        ->where('to', '>=', date('Y-m-d'))
+        ->get();
 
         return response()->json([
             'villages' => $villages,
