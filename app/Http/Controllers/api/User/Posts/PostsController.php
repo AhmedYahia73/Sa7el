@@ -28,6 +28,7 @@ class PostsController extends Controller
         ->get()
         ->map(function($item){
             return [
+                'id' => $item->id,
                 'image' => $item->image_link,
                 'description' => $item->description,
                 'love_count' => $item->love_count,
