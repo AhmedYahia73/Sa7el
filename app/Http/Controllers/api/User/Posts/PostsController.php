@@ -31,8 +31,7 @@ class PostsController extends Controller
                 'image' => $item->image_link,
                 'description' => $item->description,
                 'love_count' => $item->love_count,
-                'posts' => $item,
-                'my_love' => !empty($item->my_love) ? 1 : 0,
+                'my_love' => count($item->my_love) > 0 ? 1 : 0,
             ];
         });
 
