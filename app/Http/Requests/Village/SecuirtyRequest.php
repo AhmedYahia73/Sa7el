@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\SuperAdmin;
+namespace App\Http\Requests\Village;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class ProviderRequest extends FormRequest
+class SecuirtyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,17 +23,17 @@ class ProviderRequest extends FormRequest
      */
     public function rules(): array
     {
+        // , , , , password, image
+        // email , phone, , 
         return [
-            'open_from' => ['regex:/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/'], 
-            'open_to' => ['regex:/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/'], 
-            'service_id' => ['required', 'exists:service_types,id'],
-            'village_id' => ['exists:villages,id'],
             'name' => ['required'],
-            'description' => ['sometimes'],
-            'phone' => ['required', ],
-            'image' => ['required'],
             'location' => ['required'],
-            'status' => ['required'],
+            'shift_from' => ['required', 'regex:/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/'],
+            'shift_to' => ['required', 'regex:/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/'],
+            'email' => ['required', 'email'],
+            'phone' => ['required'],
+            'type' => ['required', 'in:pool,gate,beach'],
+            'status' => ['required', 'boolean'],
         ];
     }
 

@@ -1,0 +1,126 @@
+<?php
+
+namespace App\Http\Controllers\api\Village\Security;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use App\trait\image;
+
+use App\Models\SecurityMan;
+
+class SecurityController extends Controller
+{
+    public function __construct(private SecurityMan $security){}
+    use image;
+
+    public function view(Request $request){
+        $security = $this->security
+        ->where('village_id', $request->user()->village_id)
+        ->get();
+
+        return response()->json([
+            'security' => $security,
+        ]);
+    }
+
+    public function status(Request $request, $id){
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|boolean',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+        
+        $security = $this->security
+        ->where('id', $id)
+        ->where('village_id', $request->user()->village_id)
+        ->update([
+            'status' => $request->status
+        ]);
+
+        return response()->json([
+            'success' => $request->status ? 'active' : 'banned'
+        ]);
+    }
+
+    public function create(Request $request){
+        // name, location, shift_from, shift_to, password, image
+        // email, phone, type, status
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'location' => 'required',
+            'status' => 'required|boolean',
+            'image' => 'required',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+        $securityRequest = $validator->validated();
+        $securityRequest['village_id'] = $request->user()->village_id;
+        $image_path = $this->upload($request, 'image', '/village/security');
+        $securityRequest['image'] = $image_path;
+  
+        $security = $this->security
+        ->create($securityRequest);
+      
+        return response()->json([
+            'success' => 'You add data success'
+        ]);
+    }
+
+    public function modify(Request $request, $id){
+        // name, location, shift_from, shift_to, password, image
+        // email, phone, type, status
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'location' => 'required',
+            'status' => 'required|boolean',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+        $securityRequest = $validator->validated();
+        $security = $this->security
+        ->where('id', $id)
+        ->where('village_id', $request->user()->village_id)
+        ->first();
+        if (empty($security)) {
+            return response()->json([
+                'errors' => 'security not found'
+            ], 400);
+        }
+        if ($request->image && !is_string($request->image)) {
+            $image_path = $this->update_image($request, $security->image, 'image', '/village/security');
+            $securityRequest['image'] = $image_path;
+        }
+        $security->update($securityRequest);
+   
+        return response()->json([
+            'success' => 'You update data success'
+        ]);
+    }
+
+    public function delete($id){
+        $security = $this->security
+        ->where('id', $id)
+        ->first();
+        if (empty($security)) {
+            return response()->json([
+                'errors' => 'security not found'
+            ], 400);
+        }
+        $this->deleteImage($security->image);
+        $security->delete();
+
+        return response()->json([
+            'success' => 'You delete data success'
+        ]);
+    }
+}
