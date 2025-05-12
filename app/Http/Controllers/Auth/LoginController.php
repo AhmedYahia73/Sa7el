@@ -9,10 +9,12 @@ use App\Http\Requests\Auth\SignupRequest;
 
 use App\Models\User;
 use App\Models\Village;
+use App\Models\Zone;
 
 class LoginController extends Controller
 {
-    public function __construct(private User $user, private Village $village){}
+    public function __construct(private User $user, private Village $village,
+    private Zone $zones){}
 
     public function sign_up_list(){
         $villages = $this->village
@@ -22,10 +24,14 @@ class LoginController extends Controller
         ->where('status', 1)
         ->where('to', '>=', date('Y-m-d'))
         ->get();
+        $zones = $this->zones
+        ->where('status', 1)
+        ->get();
 
         return response()->json([
             'villages' => $villages,
             'current_village' => $current_village,
+            'zones' => $zones,
         ]);
     }
 
