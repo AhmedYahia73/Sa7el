@@ -29,7 +29,7 @@ class RentController extends Controller
         $rents = $this->appartment_code
         ->where('village_id', $request->village_id)
         ->where('appartment_id', $request->appartment_id)
-        ->where('user_id', $request->user()->id)
+        ->where('owner_id', $request->user()->id)
         ->where('type', 'renter')
         ->with('appartment')
         ->get();
@@ -55,6 +55,7 @@ class RentController extends Controller
             ],400);
         }
         $rentRequest = $validator->validated();
+        $rentRequest['owner_id'] = $request->user()->id;
         $rentRequest['type'] = 'renter';
         $image_path =$this->storeBase64Image($request->image, '/images/rent/id');
         $rentRequest['image'] = $image_path;

@@ -11,13 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('visit_requests', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('village_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
+        Schema::table('appartment_codes', function (Blueprint $table) {
             $table->foreignId('owner_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('appartment_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
-            $table->enum('visitor_type', ['guest', 'worker', 'delivery']);
-            $table->timestamps();
         });
     }
 
@@ -26,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('visit_requests');
+        Schema::table('appartment_codes', function (Blueprint $table) {
+            //
+        });
     }
 };

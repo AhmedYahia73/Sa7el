@@ -16,6 +16,7 @@ class AppartmentCode extends Model
         'code',
         'people',
         'image',
+        'owner_id',
     ];
     protected $appends = ['image_id_link'];
 
