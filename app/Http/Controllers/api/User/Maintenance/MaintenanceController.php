@@ -101,7 +101,9 @@ class MaintenanceController extends Controller
 
     public function history(Request $request){
         $validator = Validator::make($request->all(), [
+            'local' => 'required|in:en,ar',
             'village_id' => 'required|exists:villages,id',
+            'appartment_id' => 'required|exists:appartments,id',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -109,11 +111,23 @@ class MaintenanceController extends Controller
                 'errors' => $firstError,
             ],400);
         }
+
         $maintenance = $this->maintenance
         ->where('village_id', $request->village_id)
+        ->where('appartment_id', $request->appartment_id)
         ->where('user_id', $request->user()->id)
         ->with('maintenance_type', 'appartment', 'user')
-        ->get();
+        ->get()
+        ->map(function($item) use($request){
+            return [
+                'maintenance_type' => $request->local == 'en' ?
+                $item?->maintenance_type?->name : $item?->maintenance_type?->ar_name 
+                ?? $item?->maintenance_type?->name,
+                'description' => $item->description,
+                'image' => $item->image_link,
+                'status' => $item->status,
+            ];
+        });
 
         return response()->json([
             'maintenance' => $maintenance,
