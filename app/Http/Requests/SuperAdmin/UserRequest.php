@@ -40,8 +40,7 @@ class UserRequest extends FormRequest
         else{
             return [
                 'name' => ['required'],
-                'user_type' => ['required', 'in:owner,rent,visitor'],
-                'village_id' => ['required', 'exists:villages,id'],
+                'user_type' => ['required', 'in:owner,rent,visitor'], 
                 'email' => ['required', 'email'],
                 'phone' => ['required'],
                 'password' => ['required'],
