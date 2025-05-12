@@ -55,7 +55,6 @@ class RentController extends Controller
             ],400);
         }
         $rentRequest = $validator->validated();
-        $rentRequest['user_id'] = $request->user()->id;
         $rentRequest['type'] = 'renter';
         $image_path =$this->storeBase64Image($request->image, '/images/rent/id');
         $rentRequest['image'] = $image_path;
