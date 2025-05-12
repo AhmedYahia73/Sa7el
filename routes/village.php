@@ -10,6 +10,7 @@ use App\Http\Controllers\api\Village\Service\ServiceController;
 use App\Http\Controllers\api\Village\Problem\ProblemController;
 use App\Http\Controllers\api\Village\Maintenance\MaintenanceController;
 use App\Http\Controllers\api\Village\Visitor\VisitorController;
+use App\Http\Controllers\api\Village\Gate\GateController;
 
 Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(OwnerController::class)->prefix('owner')
@@ -59,5 +60,14 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(VisitorController::class)->prefix('visits')
     ->group(function() {
         Route::get('/', 'view');
+    });
+
+    Route::controller(GateController::class)->prefix('gate')
+    ->group(function() {
+        Route::get('/', 'view');
+        Route::put('/status/{id}', 'status');
+        Route::post('/add', 'create');
+        Route::post('/update/{id}', 'modify');
+        Route::delete('/delete/{id}', 'delete');
     });
 });
