@@ -15,6 +15,7 @@ class ServiceController extends Controller
     public function view(Request $request){
         $validator = Validator::make($request->all(), [
             'village_id' => 'required|exists:villages,id',
+            'local' => 'required',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -87,6 +88,15 @@ class ServiceController extends Controller
     }
 
     public function out_service(Request $request){
+        $validator = Validator::make($request->all(), [
+            'local' => 'required',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }
         $services = $this->services
         ->where('status', 1)
         ->with('providers') // load all providers
