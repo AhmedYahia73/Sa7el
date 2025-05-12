@@ -11,5 +11,11 @@ class Gate extends Model
         'location',
         'status',
         'village_id',
+        'image',
     ];
+    protected $appends = ['image_link'];
+
+    public function getImageLinkAttribute(){
+        return url('storage/' . $this->image);
+    }
 }

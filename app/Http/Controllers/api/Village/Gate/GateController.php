@@ -5,12 +5,14 @@ namespace App\Http\Controllers\api\Village\Gate;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\trait\image;
 
 use App\Models\Gate;
 
 class GateController extends Controller
 {
     public function __construct(private Gate $gates){}
+    use image;
 
     public function view(Request $request){
         $gates = $this->gates
@@ -50,6 +52,7 @@ class GateController extends Controller
             'name' => 'required',
             'location' => 'required',
             'status' => 'required|boolean',
+            'image' => 'required',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -58,6 +61,8 @@ class GateController extends Controller
         }
         $gateRequest = $validator->validated();
         $gateRequest['village_id'] = $request->user()->village_id;
+        $image_path = $this->upload($request, 'image', '/village/gate');
+        $gateRequest['image'] = $image_path;
   
         $gates = $this->gates
         ->create($gateRequest);
@@ -89,6 +94,10 @@ class GateController extends Controller
                 'errors' => 'gates not found'
             ], 400);
         }
+        if ($request->image && !is_string($request->image)) {
+            $image_path = $this->upload($request, 'image', '/village/gate');
+            $gateRequest['image'] = $image_path;
+        }
         $gates->update($gateRequest);
    
         return response()->json([
@@ -104,7 +113,8 @@ class GateController extends Controller
             return response()->json([
                 'errors' => 'gates not found'
             ], 400);
-        } 
+        }
+        $this->deleteImage($gates->image);
         $gates->delete();
 
         return response()->json([
