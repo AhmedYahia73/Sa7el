@@ -30,6 +30,7 @@ class RentController extends Controller
         ->where('village_id', $request->village_id)
         ->where('appartment_id', $request->appartment_id)
         ->where('user_id', $request->user()->id)
+        ->where('type', 'renter')
         ->with('appartment')
         ->get();
 

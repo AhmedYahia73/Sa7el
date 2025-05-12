@@ -9,6 +9,7 @@ use App\Http\Controllers\api\Village\Beach\BeachController;
 use App\Http\Controllers\api\Village\Service\ServiceController;
 use App\Http\Controllers\api\Village\Problem\ProblemController;
 use App\Http\Controllers\api\Village\Maintenance\MaintenanceController;
+use App\Http\Controllers\api\Village\Visitor\VisitorController;
 
 Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(OwnerController::class)->prefix('owner')
@@ -51,6 +52,11 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     });
 
     Route::controller(MaintenanceController::class)->prefix('maintenance')
+    ->group(function() {
+        Route::get('/', 'view');
+    });
+
+    Route::controller(VisitorController::class)->prefix('visits')
     ->group(function() {
         Route::get('/', 'view');
     });

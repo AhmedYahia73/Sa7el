@@ -39,6 +39,10 @@ class ServiceController extends Controller
                     'name' => $request->local == 'en' ?
                     $item->name : $item->ar_name?? $item->name,
                     'image' => $item->image_link,
+                    'location' => $item->location,
+                    'phone' => $item->phone,
+                    'from' => $item->open_from,
+                    'to' => $item->open_to,
                     'status' => $item->status,
                     'description' => $request->local == 'en' ?
                     $item->description : $item->ar_description?? $item->description,
@@ -52,6 +56,10 @@ class ServiceController extends Controller
                     'name' => $request->local == 'en' ?
                     $item->name : $item->ar_name?? $item->name,
                     'image' => $item->image_link,
+                    'location' => $item->location,
+                    'phone' => $item->phone,
+                    'from' => $item->open_from,
+                    'to' => $item->open_to,
                     'status' => $item->status,
                     'description' => $request->local == 'en' ?
                     $item->description : $item->ar_description?? $item->description,
