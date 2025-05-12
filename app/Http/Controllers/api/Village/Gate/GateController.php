@@ -95,7 +95,7 @@ class GateController extends Controller
             ], 400);
         }
         if ($request->image && !is_string($request->image)) {
-            $image_path = $this->upload($request, 'image', '/village/gate');
+            $image_path = $this->update_image($request, $gates->image, 'image', '/village/gate');
             $gateRequest['image'] = $image_path;
         }
         $gates->update($gateRequest);
