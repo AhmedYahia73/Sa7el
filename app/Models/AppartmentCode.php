@@ -17,12 +17,12 @@ class AppartmentCode extends Model
         'people',
         'image',
     ];
-    protected $appends = ['image_link'];
+    protected $appends = ['image_id_link'];
 
-    public function getImageLinkAttribute(){
+    public function getImageIdLinkAttribute(){
         return url('storage/' . $this->image);
     }
-    
+
     public function appartment(){
         return $this->belongsTo(Appartment::class, 'appartment_id');
     }
