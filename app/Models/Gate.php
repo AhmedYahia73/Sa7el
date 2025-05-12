@@ -10,5 +10,6 @@ class Gate extends Model
         'name',
         'location',
         'status',
+        'village_id',
     ];
 }
