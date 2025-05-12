@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('visit_requests', function (Blueprint $table) {
             $table->id();
+                        $table->foreignId('village_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('owner_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('appartment_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->enum('visitor_type', ['guest', 'worker', 'delivery']);
             $table->timestamps();
         });
     }

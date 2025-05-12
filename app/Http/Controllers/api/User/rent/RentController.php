@@ -5,12 +5,14 @@ namespace App\Http\Controllers\api\User\rent;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\trait\image;
 
 use App\Models\AppartmentCode;
 
 class RentController extends Controller
 {
     public function __construct(private AppartmentCode $appartment_code){}
+    use image;
 
     public function view(Request $request){
         $validator = Validator::make($request->all(), [
@@ -43,6 +45,7 @@ class RentController extends Controller
             'from' => 'required|date',
             'to' => 'required|date',
             'people' => 'required|integer',
+            'image' => 'required'
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -53,6 +56,8 @@ class RentController extends Controller
         $rentRequest = $validator->validated();
         $rentRequest['user_id'] = $request->user()->id;
         $rentRequest['type'] = 'renter';
+        $image_path =$this->storeBase64Image($request->image, '/images/rent/id');
+        $rentRequest['image'] = $image_path;
         do {
             $code = mt_rand(1000000, 9999999); // Always 7 digits
         } while ($this->appartment_code::where('code', $code)->exists()); 

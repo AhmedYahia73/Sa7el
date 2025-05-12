@@ -14,8 +14,15 @@ class AppartmentCode extends Model
         'to',
         'type',
         'code',
+        'people',
+        'image',
     ];
+    protected $appends = ['image_link'];
 
+    public function getImageLinkAttribute(){
+        return url('storage/' . $this->image);
+    }
+    
     public function appartment(){
         return $this->belongsTo(Appartment::class, 'appartment_id');
     }
