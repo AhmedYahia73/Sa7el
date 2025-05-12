@@ -100,6 +100,15 @@ class MaintenanceController extends Controller
     }
 
     public function history(Request $request){
+        $validator = Validator::make($request->all(), [
+            'village_id' => 'required|exists:villages,id',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }
         $maintenance = $this->maintenance
         ->where('village_id', $request->village_id)
         ->where('user_id', $request->user()->id)
