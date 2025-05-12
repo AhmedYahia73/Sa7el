@@ -11,8 +11,9 @@ class GateController extends Controller
 {
     public function __construct(private Gate $gates){}
 
-    public function view(){
+    public function view(Request $request){
         $gates = $this->gates
+        ->where('village_id', $request->user()->village_id)
         ->get();
 
         return response()->json([
@@ -32,6 +33,7 @@ class GateController extends Controller
         
         $gates = $this->gates
         ->where('id', $id)
+        ->where('village_id', $request->user()->village_id)
         ->update([
             'status' => $request->status
         ]);
@@ -54,6 +56,7 @@ class GateController extends Controller
             ],400);
         }
         $gateRequest = $validator->validated();
+        $gateRequest['village_id'] = $request->user()->village_id;
   
         $gates = $this->gates
         ->create($gateRequest);
@@ -78,6 +81,7 @@ class GateController extends Controller
         $gateRequest = $validator->validated();
         $gates = $this->gates
         ->where('id', $id)
+        ->where('village_id', $request->user()->village_id)
         ->first();
         if (empty($gates)) {
             return response()->json([
