@@ -23,4 +23,10 @@ class SecurityMan extends Model
         'password',
         'remember_token',
     ];
+    protected function casts(): array
+    {
+        return [
+            'password' => 'hashed',
+        ];
+    }
 }
