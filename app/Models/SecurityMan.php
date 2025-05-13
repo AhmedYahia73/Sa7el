@@ -10,6 +10,7 @@ class SecurityMan extends Model
         'name',
         'location',
         'image',
+        'village_id',
         'shift_from',
         'shift_to',
         'password',

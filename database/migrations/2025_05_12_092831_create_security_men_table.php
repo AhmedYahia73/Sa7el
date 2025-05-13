@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('security_men', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('village_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->string('name');
             $table->string('location');
             $table->time('shift_from');
