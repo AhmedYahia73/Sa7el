@@ -33,6 +33,10 @@ class Village extends Model
         ->first()?->value;
     }
 
+    public function units(){
+        return $this->hasMany(Appartment::class, 'village_id');
+    }
+
     public function getImageLinkAttribute(){
         return url('storage/' . $this->image);
     }

@@ -20,7 +20,7 @@ class VillageController extends Controller
     public function view(){
         $village = $this->village
         ->with(['translations', 'zone'])
-        ->withCount('population')
+        ->withCount('population', 'units')
         ->get();
         $zones = $this->zones
         ->get();
@@ -34,7 +34,7 @@ class VillageController extends Controller
     public function village($id){
         $village = $this->village
         ->with(['translations', 'zone'])
-        ->withCount('population')
+        ->withCount('population', 'units')
         ->where('id', $id)
         ->first();
 
