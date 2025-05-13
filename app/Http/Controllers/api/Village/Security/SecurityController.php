@@ -61,7 +61,7 @@ class SecurityController extends Controller
                 'errors' => $validator->errors(),
             ],400);
         }
-        $securityRequest = $validator->validated();
+        $securityRequest = $request->validated();
         $securityRequest['village_id'] = $request->user()->village_id;
         $securityRequest['password'] = $request->password;
         $image_path = $this->upload($request, 'image', '/village/security');
@@ -75,7 +75,7 @@ class SecurityController extends Controller
         ]);
     }
 
-    public function modify(Request $request, $id){
+    public function modify(SecuirtyRequest $request, $id){
         // name, location, shift_from, shift_to, password, image
         // email, phone, type, status
         $validator = Validator::make($request->all(), [
@@ -87,7 +87,7 @@ class SecurityController extends Controller
                 'errors' => $validator->errors(),
             ],400);
         }
-        $securityRequest = $validator->validated();
+        $securityRequest = $request->validated();
         $security = $this->security
         ->where('id', $id)
         ->where('village_id', $request->user()->village_id)
