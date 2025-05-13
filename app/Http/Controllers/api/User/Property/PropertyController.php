@@ -45,7 +45,7 @@ class PropertyController extends Controller
                 return [
                     'id' => null,
                     'unit' => null,
-                    'image' => $item->image_link,
+                    'image' => $item->village->image_link,
                     'village_id' => $item->village_id,
                     'village' => $item->village->name,
                     'number_floors' => null,
