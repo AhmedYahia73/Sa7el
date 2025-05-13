@@ -65,7 +65,7 @@ class PropertyController extends Controller
     public function add_property(Request $request){
         $validator = Validator::make($request->all(), [
             'village_id' => 'required|exists:villages,id',
-            'code' => 'required',
+            'code' => 'sometimes',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -74,6 +74,14 @@ class PropertyController extends Controller
             ],400);
         }
 
+        if (!$request->code) {
+            $this->appartment
+            ->create([
+                'user_id' => $request->user()->id,
+                'village_id' => $request->village_id,
+                'type' => 'owner'
+            ]);
+        }
         $appartment_code = $this->appartment_code
         ->where('type', 'owner')
         ->where('village_id', $request->village_id)

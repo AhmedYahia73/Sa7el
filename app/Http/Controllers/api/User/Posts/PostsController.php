@@ -33,6 +33,8 @@ class PostsController extends Controller
                 'description' => $item->description,
                 'love_count' => $item->love_count,
                 'my_love' => count($item->my_love) > 0 ? 1 : 0,
+                'user_name' => empty($item->admin) ? $item?->village?->name : $item?->admin?->name,
+                'user_image' => empty($item->admin) ? $item?->village?->image_link : $item?->admin?->image_link,
             ];
         });
 

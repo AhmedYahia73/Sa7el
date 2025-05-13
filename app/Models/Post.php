@@ -8,6 +8,7 @@ class Post extends Model
 {
     protected $fillable =[
         'village_id',
+        'admin_id',
         'image',
         'description',
     ];
@@ -15,6 +16,14 @@ class Post extends Model
 
     public function getImageLinkAttribute(){
         return url('storage/' . $this->image);
+    }
+
+    public function admin(){
+        return $this->belongsTo(User::class, 'admin_id');
+    }
+
+    public function village(){
+        return $this->belongsTo(Village::class, 'village_id');
     }
 
     public function love(){
