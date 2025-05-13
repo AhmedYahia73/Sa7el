@@ -19,10 +19,17 @@ class SecurityMan extends Model
         'type',
         'status',
     ];
+    protected $appends = ['image_link'];
+
+    public function getImageLinkAttribute(){
+        return url('storage/' . $this->image);
+    }
+
     protected $hidden = [
         'password',
         'remember_token',
     ];
+    
     protected function casts(): array
     {
         return [
