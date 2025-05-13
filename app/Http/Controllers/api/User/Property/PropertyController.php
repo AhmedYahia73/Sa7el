@@ -75,7 +75,7 @@ class PropertyController extends Controller
         }
 
         if (!$request->code) {
-            $this->appartment
+            $this->appartment_code
             ->create([
                 'user_id' => $request->user()->id,
                 'village_id' => $request->village_id,
