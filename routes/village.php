@@ -11,6 +11,7 @@ use App\Http\Controllers\api\Village\Problem\ProblemController;
 use App\Http\Controllers\api\Village\Maintenance\MaintenanceController;
 use App\Http\Controllers\api\Village\Visitor\VisitorController;
 use App\Http\Controllers\api\Village\Gate\GateController;
+use App\Http\Controllers\api\Village\Security\SecurityController;
 
 Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(OwnerController::class)->prefix('owner')
@@ -63,6 +64,15 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     });
 
     Route::controller(GateController::class)->prefix('gate')
+    ->group(function() {
+        Route::get('/', 'view');
+        Route::put('/status/{id}', 'status');
+        Route::post('/add', 'create');
+        Route::post('/update/{id}', 'modify');
+        Route::delete('/delete/{id}', 'delete');
+    });
+
+    Route::controller(SecurityController::class)->prefix('security')
     ->group(function() {
         Route::get('/', 'view');
         Route::put('/status/{id}', 'status');

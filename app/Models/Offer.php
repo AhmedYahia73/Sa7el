@@ -13,6 +13,7 @@ class Offer extends Model
         'price_day',
         'price_month',
         'price',
+        'description',
         'type',
     ];
 

@@ -124,6 +124,7 @@ class OfferController extends Controller
             'appartment_id' => 'required|exists:appartments,id',
             'price_day' => 'required|numeric',
             'price_month' => 'required|numeric',
+            'description' => 'sometimes',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -145,6 +146,7 @@ class OfferController extends Controller
             'village_id' => 'required|exists:villages,id',
             'appartment_id' => 'required|exists:appartments,id',
             'price' => 'required|numeric',
+            'description' => 'sometimes',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -167,6 +169,7 @@ class OfferController extends Controller
             'appartment_id' => 'required|exists:appartments,id',
             'price_day' => 'required|numeric',
             'price_month' => 'required|numeric',
+            'description' => 'sometimes',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -188,6 +191,7 @@ class OfferController extends Controller
             'village_id' => 'required|exists:villages,id',
             'appartment_id' => 'required|exists:appartments,id',
             'price' => 'required|numeric',
+            'description' => 'sometimes',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
