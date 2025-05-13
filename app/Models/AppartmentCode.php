@@ -27,4 +27,8 @@ class AppartmentCode extends Model
     public function appartment(){
         return $this->belongsTo(Appartment::class, 'appartment_id');
     }
+
+    public function village(){
+        return $this->belongsTo(Village::class, 'village_id');
+    }
 }

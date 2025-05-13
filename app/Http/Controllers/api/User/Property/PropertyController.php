@@ -39,21 +39,36 @@ class PropertyController extends Controller
         ->where('from', '<=', date('Y-m-d'))
         ->where('to', '>=', date('Y-m-d'))
         ->get()
-        ->pluck('appartment')
         ->map(function($item) use($request){
-            return [
-                'id' => $item->id,
-                'unit' => $item->unit,
-                'image' => $item->image_link,
-                'village_id' => $item->village_id,
-                'village' => $item->village->name,
-                'number_floors' => $item->number_floors,
-                'type' => $request->local == 'en' ? $item?->type?->name : 
-                $item?->type?->ar_name ?? $item?->type?->name,
-                'zone' => $request->local == 'en' ? $item?->zone?->name
-                : $item?->zone?->ar_name ?? $item?->zone?->name,
-                'zone_id' => $item->zone_id,
-            ];
+            $appartment = $item->appartment;
+            if (empty($appartment)) {
+                return [
+                    'id' => null,
+                    'unit' => null,
+                    'image' => $item->image_link,
+                    'village_id' => $item->village_id,
+                    'village' => $item->village->name,
+                    'number_floors' => null,
+                    'type' => null,
+                    'zone' => $request->local == 'en' ? $item?->village?->zone?->name
+                    : $item?->village?->zone?->ar_name ?? $item?->village?->zone?->name,
+                    'zone_id' => $item?->village?->zone_id,
+                ];
+            } else {
+                return [
+                    'id' => $appartment->id,
+                    'unit' => $appartment->unit,
+                    'image' => $appartment->image_link,
+                    'village_id' => $appartment->village_id,
+                    'village' => $appartment->village->name,
+                    'number_floors' => $appartment->number_floors,
+                    'type' => $request->local == 'en' ? $appartment?->type?->name : 
+                    $appartment?->type?->ar_name ?? $appartment?->type?->name,
+                    'zone' => $request->local == 'en' ? $appartment?->zone?->name
+                    : $appartment?->zone?->ar_name ?? $appartment?->zone?->name,
+                    'zone_id' => $appartment->zone_id,
+                ];
+            }
         });
 
         return response()->json([
