@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\Village\Security;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\Village\SecuirtyRequest;
 use App\trait\image;
 
 use App\Models\SecurityMan;
@@ -46,14 +47,14 @@ class SecurityController extends Controller
         ]);
     }
 
-    public function create(Request $request){
+    public function create(SecuirtyRequest $request){
         // name, location, shift_from, shift_to, password, image
         // email, phone, type, status
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'location' => 'required',
-            'status' => 'required|boolean',
             'image' => 'required',
+            'password' => 'required',
+            'email' => 'unique:security_men,email',
+            'phone' => 'unique:security_men,phone',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -62,6 +63,7 @@ class SecurityController extends Controller
         }
         $securityRequest = $validator->validated();
         $securityRequest['village_id'] = $request->user()->village_id;
+        $securityRequest['password'] = $request->password;
         $image_path = $this->upload($request, 'image', '/village/security');
         $securityRequest['image'] = $image_path;
   
@@ -77,9 +79,8 @@ class SecurityController extends Controller
         // name, location, shift_from, shift_to, password, image
         // email, phone, type, status
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'location' => 'required',
-            'status' => 'required|boolean',
+            'email' => 'unique:security_men,email,' . $id,
+            'phone' => 'unique:security_men,phone,' . $id,
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -99,6 +100,9 @@ class SecurityController extends Controller
         if ($request->image && !is_string($request->image)) {
             $image_path = $this->update_image($request, $security->image, 'image', '/village/security');
             $securityRequest['image'] = $image_path;
+        }
+        if (!empty($request->password)) {
+            $securityRequest['image'] = $request->password;
         }
         $security->update($securityRequest);
    
