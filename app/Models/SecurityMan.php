@@ -19,4 +19,8 @@ class SecurityMan extends Model
         'type',
         'status',
     ];
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 }
