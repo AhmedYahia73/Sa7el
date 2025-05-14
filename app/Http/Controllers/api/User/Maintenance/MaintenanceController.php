@@ -28,27 +28,27 @@ class MaintenanceController extends Controller
                 'errors' => $firstError,
             ],400);
         }
-        $appartment = $this->appartment_code
-        ->with(['appartment' => function($query){
-            $query->with('type', 'village');
-        }])
-        ->where('type', 'owner')
-        ->orWhere('type', 'renter')
-        ->where('from', '<=', date('Y-m-d'))
-        ->where('to', '>=', date('Y-m-d'))
-        ->get()
-        ->pluck('appartment')
-        ->map(function($item) use($request){
-            return [
-                'id' => $item->id,
-                'unit' => $item->unit,
-                'image' => $item->image_link,
-                'village' => $item->village->name,
-                'number_floors' => $item->number_floors,
-                'type' => $request->local == 'en' ? $item?->type?->name : 
-                $item?->type?->ar_name ?? $item?->type?->name,
-            ];
-        });
+        // $appartment = $this->appartment_code
+        // ->with(['appartment' => function($query){
+        //     $query->with('type', 'village');
+        // }])
+        // ->where('type', 'owner')
+        // ->orWhere('type', 'renter')
+        // ->where('from', '<=', date('Y-m-d'))
+        // ->where('to', '>=', date('Y-m-d'))
+        // ->get()
+        // ->pluck('appartment')
+        // ->map(function($item) use($request){
+        //     return [
+        //         'id' => $item->id,
+        //         'unit' => $item->unit,
+        //         'image' => $item->image_link,
+        //         'village' => $item->village->name,
+        //         'number_floors' => $item->number_floors,
+        //         'type' => $request->local == 'en' ? $item?->type?->name : 
+        //         $item?->type?->ar_name ?? $item?->type?->name,
+        //     ];
+        // });
 
         $maintenance_type = $this->maintenance_type
         ->where('status', 1)
@@ -64,7 +64,7 @@ class MaintenanceController extends Controller
         });
 
         return response()->json([
-            'appartment' => $appartment,
+            //'appartment' => $appartment,
             'maintenance_type' => $maintenance_type,
         ]);
     }
