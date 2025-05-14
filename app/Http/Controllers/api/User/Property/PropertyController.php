@@ -110,7 +110,7 @@ class PropertyController extends Controller
         
         if (empty($appartment_code)) {
             return response()->json([
-                'errors' => 'appartment is not found'
+                'message' => 'appartment is not found'
             ]);
         }
 
@@ -125,7 +125,7 @@ class PropertyController extends Controller
         }
 
         return response()->json([
-            'success' => 'You add data success'
+            'message' => 'You add data success'
         ]);
     }
 }
