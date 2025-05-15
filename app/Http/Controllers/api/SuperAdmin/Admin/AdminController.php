@@ -15,7 +15,7 @@ class AdminController extends Controller
     public function __construct(private User $admin){}
     use image;
 
-    public function view($id){
+    public function view(){
         $admins = $this->admin
         ->where('role', 'admin')
         ->get();
