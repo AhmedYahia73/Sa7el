@@ -69,7 +69,7 @@ class OfferController extends Controller
         ]);
     }
 
-    public function offer_status(Request $request, $id){
+    public function offer_status(Request $request, $appartment_id){
         $validator = Validator::make($request->all(), [
             'status_offer' => 'required|in:rent,sale',
         ]);
@@ -79,7 +79,7 @@ class OfferController extends Controller
             ],400);
         }
         $offers = $this->offers
-        ->where('id', $id)
+        ->where('appartment_id', $appartment_id)
         ->update([
             'status_offer' => $request->status_offer
         ]);
