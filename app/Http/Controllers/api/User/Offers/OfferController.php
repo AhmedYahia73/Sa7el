@@ -57,7 +57,7 @@ class OfferController extends Controller
         ->where('appartment_id', $request->appartment_id)
         ->get();
         $offer_status = $this->offer_status
-        ->where('appartment_id', $appartment_id)
+        ->where('appartment_id', $request->appartment_id)
         ->first();
         $rent_status = $offer_status?->status_offer == 'rent' ? 1: 0;
         $sale_status = $offer_status?->status_offer == 'sale' ? 1: 0;
