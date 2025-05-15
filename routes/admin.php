@@ -19,6 +19,7 @@ use App\Http\Controllers\api\SuperAdmin\payment_method\PaymentMethodController;
 use App\Http\Controllers\api\SuperAdmin\subscription\SubscriptionController;
 use App\Http\Controllers\api\SuperAdmin\subscriper\SubscriperController;
 use App\Http\Controllers\api\SuperAdmin\payment\PaymentController;
+use App\Http\Controllers\api\SuperAdmin\Admin\AdminController;
 use App\Http\Controllers\api\SuperAdmin\invoice\InvoiceController;
 
 Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
@@ -26,6 +27,15 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     ->group(function() {
         Route::get('/', 'view');
         Route::get('/item/{id}', 'zone');
+        Route::put('/status/{id}', 'status');
+        Route::post('/add', 'create');
+        Route::post('/update/{id}', 'modify');
+        Route::delete('/delete/{id}', 'delete');
+    });
+    
+    Route::controller(AdminController::class)->prefix('admins')
+    ->group(function() {
+        Route::get('/', 'view'); 
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
