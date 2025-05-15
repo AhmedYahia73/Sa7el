@@ -9,10 +9,12 @@ use App\trait\image;
 
 use App\Models\Offer;
 use App\Models\OfferImage;
+use App\Models\OfferStatus;
 
 class OfferController extends Controller
 {
-    public function __construct(private Offer $offers, private OfferImage $offer_image){}
+    public function __construct(private Offer $offers, private OfferImage $offer_image,
+    private OfferStatus $offer_status){}
     use image;
 
     public function view(Request $request){
@@ -54,13 +56,11 @@ class OfferController extends Controller
         $offer_image = $this->offer_image
         ->where('appartment_id', $request->appartment_id)
         ->get();
-        $offers = $this->offers
-        ->where('appartment_id', $request->appartment_id)
-        ->where('owner_id', $request->user()->id)
-        ->orderByDesc('id')
+        $offer_status = $this->offer_status
+        ->where('appartment_id', $appartment_id)
         ->first();
-        $rent_status = $offers?->status_offer == 'rent' ? 1: 0;
-        $sale_status = $offers?->status_offer == 'sale' ? 1: 0;
+        $rent_status = $offer_status?->status_offer == 'rent' ? 1: 0;
+        $sale_status = $offer_status?->status_offer == 'sale' ? 1: 0;
 
         return response()->json([
             'offer_images' => $offer_image,
@@ -78,11 +78,22 @@ class OfferController extends Controller
                 'errors' => $validator->errors(),
             ],400);
         }
-        $offers = $this->offers
+        $offers = $this->offer_status
         ->where('appartment_id', $appartment_id)
-        ->update([
-            'status_offer' => $request->status_offer
-        ]);
+        ->first();
+        if (empty($offers)) {
+            $this->offer_status
+            ->create([
+                'appartment_id' => $appartment_id,
+                'status_offer' => $request->status_offer,
+            ]);
+        } else {      
+            $offers
+            ->update([
+                'status_offer' => $request->status_offer,
+            ]);
+        }
+        
 
         return response()->json([
             'success' => $request->status_offer,
