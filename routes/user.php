@@ -60,6 +60,7 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     Route::controller(OfferController::class)->prefix('offer')
     ->group(function() {
         Route::get('/', 'view');
+        Route::put('/offer_status/{id}', 'offer_status');
         Route::get('/appartment_image', 'appartment_image');
         Route::get('/appartment', 'appartment');
         Route::post('/upload_appartment_image', 'upload_appartment_image');

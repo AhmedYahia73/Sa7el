@@ -59,13 +59,33 @@ class OfferController extends Controller
         ->where('owner_id', $request->user()->id)
         ->orderByDesc('id')
         ->first();
-        $rent_status = $offers?->type == 'rent' ? 1: 0;
-        $sale_status = $offers?->type == 'sale' ? 1: 0;
+        $rent_status = $offers?->status_offer == 'rent' ? 1: 0;
+        $sale_status = $offers?->status_offer == 'sale' ? 1: 0;
 
         return response()->json([
             'offer_images' => $offer_image,
             'rent_status' => $rent_status,
             'sale_status' => $sale_status,
+        ]);
+    }
+
+    public function offer_status($id){
+        $validator = Validator::make($request->all(), [
+            'status_offer' => 'required|in:rent,sale',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+        $offers = $this->offers
+        ->where('id', $id)
+        ->update([
+            'status_offer' => $request->status_offer
+        ]);
+
+        return response()->json([
+            'success' => $request->status_offer,
         ]);
     }
 
