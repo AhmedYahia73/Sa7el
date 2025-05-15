@@ -4,7 +4,6 @@ namespace App\Http\Controllers\api\SuperAdmin\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Requests\SuperAdmin\ProviderAdminRequest;
 use Illuminate\Support\Facades\Validator;
 use App\trait\image;
 
@@ -45,7 +44,7 @@ class AdminController extends Controller
         ]);
     }
     
-    public function create(ProviderAdminRequest $request){
+    public function create(Request $request){
         $validator = Validator::make($request->all(), [
             'name' => ['required'],
             'email' => ['required', 'email', 'unique:users,email'],
@@ -69,7 +68,7 @@ class AdminController extends Controller
         ]);
     }
     
-    public function modify(ProviderAdminRequest $request, $id){
+    public function modify(Request $request, $id){
         $validator = Validator::make($request->all(), [
             'name' => ['required'],
             'email' => ['required', 'email', 'unique:users,email,' . $id],
