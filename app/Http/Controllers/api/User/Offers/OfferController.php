@@ -69,7 +69,7 @@ class OfferController extends Controller
         ]);
     }
 
-    public function offer_status($id){
+    public function offer_status(Request $request, $id){
         $validator = Validator::make($request->all(), [
             'status_offer' => 'required|in:rent,sale',
         ]);
