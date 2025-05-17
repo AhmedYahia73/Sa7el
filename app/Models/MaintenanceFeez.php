@@ -18,6 +18,6 @@ class MaintenanceFeez extends Model
     }
 
     public function village(){
-        return $this->belongTo(Village::class, 'village_id');
+        return $this->belongsTo(Village::class, 'village_id');
     }
 }
