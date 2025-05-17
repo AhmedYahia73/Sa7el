@@ -62,7 +62,7 @@ class OwnerController extends Controller
         ]; 
         $rent = $this->appartment_code
         ->where('village_id', $request->user()->village_id)
-        ->where('user_id', $id)
+        ->where('owner_id', $id)
         ->with('appartment')
         ->get();
         $problem_request = ProblemReport::where('user_id', $id)
