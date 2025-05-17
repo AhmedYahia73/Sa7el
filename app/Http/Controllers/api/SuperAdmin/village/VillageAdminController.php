@@ -103,6 +103,9 @@ class VillageAdminController extends Controller
             ],400);
         }
         $adminRequest = $request->validated(); 
+        if (!empty($request->password)) {
+            $adminRequest['password'] = bcrypt($request->password);
+        }
         $this->admin
         ->where('id', $id)
         ->where('role', 'village')

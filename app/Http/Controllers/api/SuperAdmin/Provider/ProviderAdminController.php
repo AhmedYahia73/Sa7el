@@ -102,7 +102,10 @@ class ProviderAdminController extends Controller
                 'errors' => $validator->errors(),
             ],400);
         }
-        $adminRequest = $request->validated(); 
+        $adminRequest = $request->validated();
+        if (!empty($request->password)) {
+            $adminRequest['password'] = bcrypt($request->password);
+        } 
         $this->admin
         ->where('id', $id)
         ->where('role', 'provider')

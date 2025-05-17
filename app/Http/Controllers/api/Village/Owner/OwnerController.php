@@ -68,7 +68,7 @@ class OwnerController extends Controller
         $problem_request = ProblemReport::where('user_id', $id)
         ->where('village_id', $request->user()->village_id)->get();
         $maintenance_request = Maintenance::
-        with('maintenance_type')
+        with('maintenance_type', 'appartment')
         ->where('village_id', $request->user()->village_id)
         ->where('user_id', $id)->get();
         $visit_requests = $this->visit_request
