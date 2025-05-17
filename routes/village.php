@@ -29,7 +29,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     ->group(function() {
         Route::get('/', 'view');
         Route::get('/year', 'view_year');
-        Route::get('/add_payment', 'add_payment');
+        Route::post('/add_payment', 'add_payment');
     });
 
     Route::controller(PoolController::class)->prefix('pool')
