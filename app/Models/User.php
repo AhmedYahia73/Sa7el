@@ -36,6 +36,7 @@ class User extends Authenticatable
         'status',
         'rent_from',
         'rent_to',
+        'provider_only',
     ];
     protected $appends = ['image_link'];
 

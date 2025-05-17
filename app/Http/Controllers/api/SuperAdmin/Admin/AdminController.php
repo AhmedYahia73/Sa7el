@@ -51,7 +51,8 @@ class AdminController extends Controller
             'phone' => ['required', 'unique:users,phone'],
             'password' => ['required'],
             'status' => ['required', 'boolean'],
-            'gender' => ['required', 'in:male,female']
+            'gender' => ['required', 'in:male,female'],
+            'provider_only' => ['required', 'boolean'],
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -74,7 +75,8 @@ class AdminController extends Controller
             'email' => ['required', 'email', 'unique:users,email,' . $id],
             'phone' => ['required', 'unique:users,phone,' . $id],
             'status' => ['required', 'boolean'],
-            'gender' => ['required', 'in:male,female']
+            'gender' => ['required', 'in:male,female'],
+            'provider_only' => ['required', 'boolean'],
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
