@@ -12,6 +12,7 @@ use App\Http\Controllers\api\Village\Maintenance\MaintenanceController;
 use App\Http\Controllers\api\Village\Visitor\VisitorController;
 use App\Http\Controllers\api\Village\Gate\GateController;
 use App\Http\Controllers\api\Village\Security\SecurityController;
+use App\Http\Controllers\api\Village\MaintenanceFeez\MaintenanceFeezController;
 
 Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(OwnerController::class)->prefix('owner')
@@ -22,6 +23,13 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
+    });
+
+    Route::controller(MaintenanceFeezController::class)->prefix('maintenance_feez')
+    ->group(function() {
+        Route::get('/', 'view');
+        Route::get('/year', 'view_year');
+        Route::get('/add_payment', 'add_payment');
     });
 
     Route::controller(PoolController::class)->prefix('pool')
