@@ -73,7 +73,6 @@ class AdminController extends Controller
             'name' => ['required'],
             'email' => ['required', 'email', 'unique:users,email,' . $id],
             'phone' => ['required', 'unique:users,phone,' . $id],
-            'password' => ['required'],
             'status' => ['required', 'boolean'],
             'gender' => ['required', 'in:male,female']
         ]);
@@ -82,7 +81,10 @@ class AdminController extends Controller
                 'errors' => $validator->errors(),
             ],400);
         }
-        $adminRequest = $validator->validated(); 
+        $adminRequest = $validator->validated();
+        if (!empty($request->password)) {
+            $adminRequest['password'] = bcrypt($request->password);
+        }
         $this->admin
         ->where('id', $id) 
         ->update($adminRequest);
