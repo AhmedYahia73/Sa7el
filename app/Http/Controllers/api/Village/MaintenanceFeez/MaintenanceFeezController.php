@@ -101,6 +101,9 @@ class MaintenanceFeezController extends Controller
             ],400);
         }
 
+        $maintenance_fees = $this->maintenance_fees
+        ->where('id', $request->maintenance_feez_id)
+        ->first();
         $appartment_maintenance = $this->appartment_maintenance
         ->where('appartment_id', $request->appartment_id)
         ->where('maintenance_id', $request->maintenance_feez_id)
@@ -113,6 +116,7 @@ class MaintenanceFeezController extends Controller
                 'maintenance_id' => $request->maintenance_feez_id,
                 'user_id' => $request->user_id,
                 'paid' => $request->paid,
+                'total' => $maintenance_fees->price,
             ]);
         } 
         else {
