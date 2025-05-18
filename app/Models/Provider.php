@@ -22,7 +22,8 @@ class Provider extends Model
         'status', 
         'cover_image',
     ];
-    protected $appends = ['image_link', 'ar_name', 'ar_description', 'rate'];
+    protected $appends = ['image_link', 'ar_name', 'ar_description', 'rate',
+    'cover_image_link'];
 
     public function getArNameAttribute(){
         return $this->translations
@@ -40,6 +41,10 @@ class Provider extends Model
 
     public function getImageLinkAttribute(){
         return url('storage/' . $this->image);
+    }
+
+    public function getCoverImageLinkAttribute(){
+        return url('storage/' . $this->cover_image_link);
     }
     
     public function package()
