@@ -28,8 +28,7 @@ class MaintenanceFeezController extends Controller
         $maintenance_fees = $this->maintenance_fees
         ->where('village_id', $request->village_id)
         ->with(['appartments' => function($query) use($request){
-            $query->with('users', 'appartment_unit')
-            ->where('appartment_id', $request->appartment_id);
+            $query->with('users', 'appartment_unit');
         }])
         ->get()
         ->map(function($item) use($request){
@@ -71,8 +70,7 @@ class MaintenanceFeezController extends Controller
         ->where('village_id', $request->village_id)
         ->where('year', $request->year)
         ->with(['appartments' => function($query) use($request){
-            $query->with('users', 'appartment_unit')
-            ->where('appartment_id', $request->appartment_id);
+            $query->with('users', 'appartment_unit');
         }])
         ->get()
         ->map(function($item) use($request){
