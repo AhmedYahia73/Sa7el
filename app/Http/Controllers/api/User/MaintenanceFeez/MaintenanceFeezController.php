@@ -47,10 +47,7 @@ class MaintenanceFeezController extends Controller
         });
 
         return response()->json([
-            'maintenance_fees' =>$maintenance_fees,
-            'total' =>$maintenance_fees->sum('total'),
-            'paid' =>$maintenance_fees->sum('paid'),
-            'remain' =>$maintenance_fees->sum('remain'),
+            'maintenance_fees' =>$maintenance_fees, 
         ]);
     }
     
@@ -88,10 +85,7 @@ class MaintenanceFeezController extends Controller
         });
 
         return response()->json([
-            'maintenance_fees' =>$maintenance_fees,
-            'total' =>$maintenance_fees->sum('total'),
-            'paid' =>$maintenance_fees->sum('paid'),
-            'remain' =>$maintenance_fees->sum('remain'),
+            'maintenance_fees' =>$maintenance_fees, 
         ]);
     }
 
