@@ -10,13 +10,14 @@ use App\trait\image;
 use App\Models\Appartment;
 use App\Models\AppartmentCode;
 use App\Models\AppartmentType;
+use App\Models\User;
 use App\Models\Zone;
 
 class AppartmentController extends Controller
 {
     public function __construct(private Appartment $appartment,
     private AppartmentCode $appartment_code, private Zone $zones,
-    private AppartmentType $appartment_type){}
+    private AppartmentType $appartment_type, private User $users){}
     use image;
 
     public function view(Request $request){
@@ -30,11 +31,15 @@ class AppartmentController extends Controller
         $appartment_type = $this->appartment_type
         ->where('status', 1)
         ->get();
+        $users = $this->users
+        ->where('role', 'user')
+        ->get();
 
         return response()->json([ 
             'appartments' => $appartments, 
             'zones' => $zones, 
             'appartment_type' => $appartment_type, 
+            'users' => $users, 
         ]);
     }
 
