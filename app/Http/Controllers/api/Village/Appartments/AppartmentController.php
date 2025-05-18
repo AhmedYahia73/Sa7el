@@ -85,6 +85,13 @@ class AppartmentController extends Controller
         }
         $this->appartment_code
         ->create($codeRequest);
+        if ($request->type == 'owner') {
+            $appartments = $this->appartment
+            ->where('id', $request->appartment_id) 
+            ->update([
+                'user_id' => $request->user_id 
+            ]);
+        }
 
         return response()->json([
             'success' => $code
