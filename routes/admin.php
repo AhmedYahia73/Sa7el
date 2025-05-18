@@ -21,6 +21,8 @@ use App\Http\Controllers\api\SuperAdmin\subscriper\SubscriperController;
 use App\Http\Controllers\api\SuperAdmin\payment\PaymentController;
 use App\Http\Controllers\api\SuperAdmin\Admin\AdminController;
 use App\Http\Controllers\api\SuperAdmin\invoice\InvoiceController;
+use App\Http\Controllers\api\SuperAdmin\Provider\ProviderCoverController;
+use App\Http\Controllers\api\SuperAdmin\village\VillageCoverController;
 
 Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     Route::controller(ZoneController::class)->prefix('zone')
@@ -30,6 +32,20 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
+        Route::delete('/delete/{id}', 'delete');
+    });
+    
+    Route::controller(ProviderCoverController::class)->prefix('provider')
+    ->group(function() {
+        Route::get('/{id}', 'view'); 
+        Route::post('/add/{id}', 'create');
+        Route::delete('/delete/{id}', 'delete');
+    });
+    
+    Route::controller(VillageCoverController::class)->prefix('village')
+    ->group(function() {
+        Route::get('/{id}', 'view'); 
+        Route::post('/add/{id}', 'create');
         Route::delete('/delete/{id}', 'delete');
     });
     
