@@ -35,7 +35,7 @@ class MaintenanceFeezController extends Controller
             $total = $item->price;
             $my_appartment = $item->appartments
             ->where('appartment_id', $request->appartment_id)
-            ->orderByDesc('id')
+            ->sortByDesc('id')
             ->first();
 
             return [
@@ -75,7 +75,7 @@ class MaintenanceFeezController extends Controller
         ->map(function($item) use($request){
             $total = $item->price;
             $my_appartment = $item->appartments
-            ->orderByDesc('id')
+            ->sortByDesc('id')
             ->where('appartment_id', $request->appartment_id)
             ->first();
             return [
