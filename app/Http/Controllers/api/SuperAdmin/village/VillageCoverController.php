@@ -39,13 +39,13 @@ class VillageCoverController extends Controller
         ->where('id', $id)
         ->first();
         if (empty($village->cover_image)) {
-            $image_path = $this->upload($request, 'image', 'images/village_cover_image');
+            $image_path = $this->upload($request, 'cover_image', 'images/village_cover_image');
             $village->update([
                 'cover_image' => $image_path
             ]);
         } 
         else {
-            $image_path = $this->update_image($request, $village->cover_image ,'image', 'images/village_cover_image');
+            $image_path = $this->update_image($request, $village->cover_image ,'cover_image', 'images/village_cover_image');
             $village->update([
                 'cover_image' => $image_path
             ]);

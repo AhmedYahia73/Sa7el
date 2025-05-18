@@ -39,13 +39,13 @@ class ProviderCoverController extends Controller
         ->where('id', $id)
         ->first();
         if (empty($provider->cover_image)) {
-            $image_path = $this->upload($request, 'image', 'images/provider_cover_image');
+            $image_path = $this->upload($request, 'cover_image', 'images/provider_cover_image');
             $provider->update([
                 'cover_image' => $image_path
             ]);
         } 
         else {
-            $image_path = $this->update_image($request, $provider->cover_image ,'image', 'images/provider_cover_image');
+            $image_path = $this->update_image($request, $provider->cover_image ,'cover_image', 'images/provider_cover_image');
             $provider->update([
                 'cover_image' => $image_path
             ]);
