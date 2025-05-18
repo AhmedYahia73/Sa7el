@@ -16,8 +16,8 @@ class VillageCoverController extends Controller
 
     public function view($id){
         $village = $this->village
-        ->where('id', $id)
         ->select('cover_image', 'id')
+        ->where('id', $id)
         ->first();
 
         return response()->json([

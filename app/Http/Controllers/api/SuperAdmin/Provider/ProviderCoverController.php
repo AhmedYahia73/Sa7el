@@ -16,8 +16,8 @@ class ProviderCoverController extends Controller
 
     public function view($id){
         $provider = $this->provider
-        ->where('id', $id)
         ->select('cover_image', 'id')
+        ->where('id', $id)
         ->first();
 
         return response()->json([
