@@ -35,14 +35,14 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::delete('/delete/{id}', 'delete');
     });
     
-    Route::controller(ProviderCoverController::class)->prefix('provider')
+    Route::controller(ProviderCoverController::class)->prefix('provider_cover')
     ->group(function() {
         Route::get('/{id}', 'view'); 
         Route::post('/add/{id}', 'create');
         Route::delete('/delete/{id}', 'delete');
     });
     
-    Route::controller(VillageCoverController::class)->prefix('village')
+    Route::controller(VillageCoverController::class)->prefix('village_cover')
     ->group(function() {
         Route::get('/{id}', 'view'); 
         Route::post('/add/{id}', 'create');
