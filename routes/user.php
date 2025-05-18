@@ -12,6 +12,7 @@ use App\Http\Controllers\api\User\Services\ServiceController;
 use App\Http\Controllers\api\User\rent\RentController;
 use App\Http\Controllers\api\User\Offers\OfferController;
 use App\Http\Controllers\api\User\Posts\PostsController;
+use App\Http\Controllers\api\User\MaintenanceFeez\MaintenanceFeezController;
 
 Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     Route::controller(PropertyController::class)->prefix('property')
@@ -24,6 +25,12 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     ->group(function() {
         Route::get('/create_qr_code', 'create_qr_code'); 
         Route::get('/create_code', 'create_code'); 
+    });
+
+    Route::controller(MaintenanceFeezController::class)->prefix('maintenance_feez')
+    ->group(function() {
+        Route::get('/', 'view');
+        Route::get('/view_year', 'view_year'); 
     });
 
     Route::controller(MaintenanceController::class)->prefix('maintenance_request')
