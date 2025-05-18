@@ -36,7 +36,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(AppartmentController::class)->prefix('appartment')
     ->group(function() {
         Route::get('/', 'view');
-        Route::put('/create_code', 'create_code');
+        Route::post('/create_code', 'create_code');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
