@@ -21,7 +21,7 @@ class Village extends Model
     protected $appends = ['image_link', 'ar_name', 'ar_description', 'cover_image'];
 
     public function getCoverImageLinkAttribute(){
-        return url('storage/' . $this->cover_image_link);
+        return url('storage/' . $this->cover_image);
     }
 
     public function getArNameAttribute(){

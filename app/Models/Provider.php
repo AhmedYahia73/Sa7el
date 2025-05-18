@@ -44,7 +44,7 @@ class Provider extends Model
     }
 
     public function getCoverImageLinkAttribute(){
-        return url('storage/' . $this->cover_image_link);
+        return url('storage/' . $this->cover_image);
     }
     
     public function package()
