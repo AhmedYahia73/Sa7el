@@ -58,8 +58,7 @@ class AdminController extends Controller
     }
     
     public function create(VillageAdminRequest $request){
-        $validator = Validator::make($request->all(), [
-            'village_id' => ['required', 'exists:villages,id'],
+        $validator = Validator::make($request->all(), [ 
             'email' => ['unique:users'],
             'phone' => ['unique:users'],
         ]);
