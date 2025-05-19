@@ -35,7 +35,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     ->group(function() {
         Route::get('/', 'view'); 
         Route::post('/add', 'create');
-        Route::delete('/delete/{id}', 'delete');
+        Route::delete('/delete', 'delete');
     });
 
     Route::controller(RentController::class)->prefix('rents')
