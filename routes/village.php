@@ -22,6 +22,7 @@ use App\Http\Controllers\api\Village\VillageSinglePage\CoverVillageController;
 use App\Http\Controllers\api\Village\VillageSinglePage\InfoController;
 use App\Http\Controllers\api\Village\VillageSinglePage\AdminController;
 use App\Http\Controllers\api\Village\Posts\PostsController;
+use App\Http\Controllers\api\Village\MaintenanceType\MaintenanceTypeController;
 
 Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(OwnerController::class)->prefix('owner')
@@ -37,6 +38,13 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(InfoController::class)->prefix('info_village')
     ->group(function() {
         Route::get('/', 'view');
+    });
+
+    Route::controller(MaintenanceTypeController::class)->prefix('maintenance_type')
+    ->group(function() {
+        Route::get('/', 'view'); 
+        Route::post('/add', 'add');
+        Route::delete('/delete', 'delete');
     });
 
     Route::controller(ProfileImageVillageController::class)->prefix('profile_image_village')
