@@ -19,6 +19,7 @@ use App\Http\Controllers\api\Village\Rent\RentController;
 use App\Http\Controllers\api\Village\Gallary\GallaryController;
 use App\Http\Controllers\api\Village\VillageSinglePage\ProfileImageVillageController;
 use App\Http\Controllers\api\Village\VillageSinglePage\CoverVillageController;
+use App\Http\Controllers\api\Village\VillageSinglePage\InfoController;
 
 Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(OwnerController::class)->prefix('owner')
@@ -29,6 +30,11 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
+    });
+
+    Route::controller(InfoController::class)->prefix('info_village')
+    ->group(function() {
+        Route::get('/', 'view');
     });
 
     Route::controller(ProfileImageVillageController::class)->prefix('profile_image_village')
