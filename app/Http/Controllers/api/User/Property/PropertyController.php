@@ -90,22 +90,31 @@ class PropertyController extends Controller
         }
 
         if (!$request->code) {
-            $this->appartment_code
-            ->create([
-                'user_id' => $request->user()->id,
-                'village_id' => $request->village_id,
-                'type' => 'owner'
-            ]);
+            $appartment = $this->appartment_code
+            ->where('user_id', $request->user()->id)
+            ->where('village_id', $request->village_id)
+            ->where('type', 'owner')
+            ->first();
+            if (empty($appartment)) {
+                $this->appartment_code
+                ->create([
+                    'user_id' => $request->user()->id,
+                    'village_id' => $request->village_id,
+                    'type' => 'owner'
+                ]);
+            }
         }
         $appartment_code = $this->appartment_code
         ->where('type', 'owner')
         ->where('village_id', $request->village_id)
         ->where('code', $request->code)
+        ->whereNull('user_id')
         ->orWhere('type', 'renter')
         ->where('from', '<=', date('Y-m-d'))
         ->where('to', '>=', date('Y-m-d'))
         ->where('village_id', $request->village_id)
         ->where('code', $request->code)
+        ->whereNull('user_id')
         ->first();
         
         if (empty($appartment_code)) {

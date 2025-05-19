@@ -47,8 +47,8 @@ class AppartmentController extends Controller
         if ($request->type == 'owner') {
             $validator = Validator::make($request->all(), [
                 'appartment_id' => ['required', 'exists:appartments,id'],
-                'type' => ['required', 'in:owner,renter'],
-                'user_id' => ['required', 'exists:users,id'],
+                'type' => ['required', 'in:owner,renter'], 
+                'people' => ['required', 'numeric'],
             ]);
         } 
         else {
@@ -58,8 +58,7 @@ class AppartmentController extends Controller
                 'from' => ['required', 'date'],
                 'to' => ['required', 'date'],
                 'people' => ['required', 'numeric'],
-                'image' => ['required'],
-                'user_id' => ['required', 'exists:users,id'],
+                'image' => ['required'], 
             ]);
         }
         if ($validator->fails()) { // if Validate Make Error Return Message Error
@@ -88,14 +87,9 @@ class AppartmentController extends Controller
             $image_path = $this->upload($request, 'image', '/village/appartment_code/id');
             $codeRequest['image'] = $image_path;
         }
-        $this->appartment_code
-        ->create($codeRequest);
-        if ($request->type == 'owner') {
-            $appartments = $this->appartment
-            ->where('id', $request->appartment_id) 
-            ->update([
-                'user_id' => $request->user_id 
-            ]);
+        for ($i = 0; $i < $request->people; $i++) {
+            $this->appartment_code
+            ->create($codeRequest);
         }
 
         return response()->json([
