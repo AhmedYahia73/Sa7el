@@ -8,19 +8,25 @@ use Illuminate\Support\Facades\Validator;
 use App\trait\image;
 
 use App\Models\VillageGallary;
+use App\Models\Village;
 
 class GallaryController extends Controller
 {
-    public function __construct(private VillageGallary $village_gallary){}
+    public function __construct(private VillageGallary $village_gallary,
+    private Village $village){}
     use image;
 
     public function view(Request $request){
         $village_gallary = $this->village_gallary
         ->where('village_id', $request->user()->village_id)
         ->get();
+        $village = $this->village
+        ->where('id', $request->user()->village_id)
+        ->first();
 
         return response()->json([
-            'village_gallary' => $village_gallary
+            'village_gallary' => $village_gallary,
+            'village' => $village,
         ]);
     }
 
