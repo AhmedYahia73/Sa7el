@@ -16,6 +16,7 @@ use App\Http\Controllers\api\Village\MaintenanceFeez\MaintenanceFeezController;
 use App\Http\Controllers\api\Village\Appartments\AppartmentController;
 use App\Http\Controllers\api\Village\ForRentSale\ForRentSaleController;
 use App\Http\Controllers\api\Village\Rent\RentController;
+use App\Http\Controllers\api\Village\Gallary\GallaryController;
 
 Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(OwnerController::class)->prefix('owner')
@@ -43,6 +44,14 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
         Route::get('/', 'view');
         Route::get('/year', 'view_year');
         Route::post('/add_payment', 'add_payment');
+    });
+
+    Route::controller(GallaryController::class)->prefix('gallery')
+    ->group(function() {
+        Route::get('/', 'view');
+        Route::put('/status/{id}', 'status');
+        Route::post('/add', 'create');
+        Route::delete('/delete/{id}', 'delete');
     });
 
     Route::controller(AppartmentController::class)->prefix('appartment')
