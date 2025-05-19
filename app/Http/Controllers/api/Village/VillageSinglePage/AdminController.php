@@ -21,6 +21,7 @@ class AdminController extends Controller
     public function view(Request $request){
         $admins = $this->admin
         ->where('village_id', $request->user()->village_id)
+        ->where('role', 'village')
         ->get();
         $village_positions = $this->admin_positions
         ->where('type', 'village')
