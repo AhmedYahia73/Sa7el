@@ -14,7 +14,7 @@ class GallaryController extends Controller
     public function __construct(private VillageGallary $village_gallary){}
     use image;
 
-    public function view(){
+    public function view(Request $request){
         $village_gallary = $this->village_gallary
         ->where('village_id', $request->user()->village_id)
         ->get();
