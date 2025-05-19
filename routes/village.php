@@ -23,6 +23,7 @@ use App\Http\Controllers\api\Village\VillageSinglePage\InfoController;
 use App\Http\Controllers\api\Village\VillageSinglePage\AdminController;
 use App\Http\Controllers\api\Village\Posts\PostsController;
 use App\Http\Controllers\api\Village\MaintenanceType\MaintenanceTypeController;
+use App\Http\Controllers\api\Village\PaymentRequest\PaymentRequestController;
 
 Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(OwnerController::class)->prefix('owner')
@@ -33,6 +34,12 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
+    });
+
+    Route::controller(PaymentRequestController::class)->prefix('payment_request')
+    ->group(function() {
+        Route::get('/', 'view');
+        Route::get('/status/{id}', 'status');
     });
 
     Route::controller(InfoController::class)->prefix('info_village')
