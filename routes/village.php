@@ -136,6 +136,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(MaintenanceController::class)->prefix('maintenance')
     ->group(function() {
         Route::get('/', 'view');
+        Route::put('/status/{id}', 'status');
     });
 
     Route::controller(VisitorController::class)->prefix('visits')
