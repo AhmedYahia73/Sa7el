@@ -69,7 +69,7 @@ class AdminController extends Controller
         }
         $adminRequest = $request->validated();
         $adminRequest['role'] = 'village';
-        $adminRequest['village_id'] = $request->village_id;
+        $adminRequest['village_id'] = $request->user()->village_id;
         $this->admin
         ->create($adminRequest);
 
