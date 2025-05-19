@@ -38,6 +38,13 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
         Route::delete('/delete', 'delete');
     });
 
+    Route::controller(CoverVillageController::class)->prefix('cover_village')
+    ->group(function() {
+        Route::get('/', 'view'); 
+        Route::post('/add', 'create');
+        Route::delete('/delete', 'delete');
+    });
+
     Route::controller(RentController::class)->prefix('rents')
     ->group(function() {
         Route::get('/', 'view'); 
