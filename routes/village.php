@@ -20,6 +20,7 @@ use App\Http\Controllers\api\Village\Gallary\GallaryController;
 use App\Http\Controllers\api\Village\VillageSinglePage\ProfileImageVillageController;
 use App\Http\Controllers\api\Village\VillageSinglePage\CoverVillageController;
 use App\Http\Controllers\api\Village\VillageSinglePage\InfoController;
+use App\Http\Controllers\api\Village\VillageSinglePage\AdminController;
 use App\Http\Controllers\api\Village\Posts\PostsController;
 
 Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
@@ -74,6 +75,15 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
         Route::get('/', 'view');
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
+        Route::delete('/delete/{id}', 'delete');
+    });
+
+    Route::controller(AdminController::class)->prefix('admin_village')
+    ->group(function() {
+        Route::get('/', 'view');
+        Route::put('/status/{id}', 'status');
+        Route::post('/add', 'create');
+        Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
     });
 
