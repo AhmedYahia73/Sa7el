@@ -24,12 +24,22 @@ use App\Http\Controllers\api\SuperAdmin\invoice\InvoiceController;
 use App\Http\Controllers\api\SuperAdmin\Provider\ProviderCoverController;
 use App\Http\Controllers\api\SuperAdmin\village\VillageCoverController;
 use App\Http\Controllers\api\SuperAdmin\MaintenanceType\MaintenanceTypeController;
+use App\Http\Controllers\api\SuperAdmin\ServiceProvider\ServiceProviderController;
 
 Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     Route::controller(ZoneController::class)->prefix('zone')
     ->group(function() {
         Route::get('/', 'view');
         Route::get('/item/{id}', 'zone');
+        Route::put('/status/{id}', 'status');
+        Route::post('/add', 'create');
+        Route::post('/update/{id}', 'modify');
+        Route::delete('/delete/{id}', 'delete');
+    });
+    
+    Route::controller(ServiceProviderController::class)->prefix('service_provider')
+    ->group(function() {
+        Route::get('/', 'view');
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
