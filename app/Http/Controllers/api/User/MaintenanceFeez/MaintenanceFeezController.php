@@ -100,7 +100,7 @@ class MaintenanceFeezController extends Controller
     public function make_payment_request(Request $request){
         $validator = Validator::make($request->all(), [
             'village_id' => 'required|exists:villages,id',
-            'maintenance_feez_id' => 'required|exists:villages,id',
+            'maintenance_feez_id' => 'required|exists:maintenance_feezs,id',
             'paid' => 'required|numeric',
             'receipt' => 'required',
         ]);
