@@ -126,6 +126,55 @@ class MaintenanceFeezController extends Controller
         ]);
     }
 
+    public function maintenanace_users(Request $request, $id){
+        $maintenance_fees = $this->maintenance_fees
+        ->where('village_id', $request->user()->village_id)
+        ->where('id', $id)
+        ->with(['appartments' => function($query){
+            $query->with('users', 'appartment_unit');
+        }])
+        ->get()
+        ->map(function($item){
+            $total = $item->price * $item->village->units->count();
+            $unpaid = $item->village->units->count() - 
+            $item->appartments->where('status',  'paid')->count();
+            $paid = $item->appartments->sum('paid');
+            $users_paid = $item->appartments->where('status', 'paid');
+            $users_unpaid = $item->village->units->whereNotIn('id', $users_paid->pluck('appartment_id'));
+            $users_unpaid = $users_unpaid->map(function($element) use($item){
+                if (count($element?->maintenance) > 0) {
+                    $maintenance = $element->maintenance->where('maintenance_id', $item->id)->first();
+                    $paid = $maintenance->paid;
+                    $total = $item->price;
+                } 
+                else {
+                    $paid = 0;
+                    $total = $item->price;
+                }
+                return [
+                    'unit' => $element->unit,
+                    'unit_type' => $element?->type?->name,
+                    'user_name' => $element?->user?->name,
+                    'paid' => $paid,
+                    'total' => $total,
+                ];
+            });
+            return [
+                'id' => $item->id,
+                'name' => $item->name,
+                'total' => $total,
+                'paid' => $paid,
+                'remain' => $total - $paid,
+                'unpaid' => $unpaid,
+                'users_unpaid' => $users_unpaid,
+            ];
+        });
+
+        return response()->json([
+            'users' =>$maintenance_fees[0]->users_unpaid, 
+        ]);
+    }
+
     public function add_payment(Request $request){
         $validator = Validator::make($request->all(), [
             'maintenance_feez_id' => 'required|exists:maintenance_feezs,id',
