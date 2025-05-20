@@ -13,8 +13,10 @@ class RentController extends Controller
 
     public function view(Request $request){
         $rents = $this->rents
-        ->with('owner', 'appartment')
+        ->with('owner', 'appartment', 'user')
         ->where('type', 'renter')
+        ->whereNotNull('user_id')
+        ->orderByDesc('id')
         ->get();
 
         return response()->json([
