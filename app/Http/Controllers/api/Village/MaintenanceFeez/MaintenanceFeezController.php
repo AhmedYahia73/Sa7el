@@ -171,7 +171,7 @@ class MaintenanceFeezController extends Controller
         });
 
         return response()->json([
-            'users' =>$maintenance_fees[0]->users_unpaid, 
+            'users' =>$maintenance_fees[0]['users_unpaid'], 
         ]);
     }
 
