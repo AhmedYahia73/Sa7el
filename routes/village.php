@@ -39,7 +39,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(PaymentRequestController::class)->prefix('payment_request')
     ->group(function() {
         Route::get('/', 'view');
-        Route::get('/status/{id}', 'status');
+        Route::put('/status/{id}', 'status');
     });
 
     Route::controller(InfoController::class)->prefix('info_village')
