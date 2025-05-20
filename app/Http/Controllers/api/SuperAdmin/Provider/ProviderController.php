@@ -35,7 +35,7 @@ class ProviderController extends Controller
         ]);
     }
 
-    public function update_profile_image($id){
+    public function update_profile_image(Request $request, $id){
            $validator = Validator::make($request->all(), [
             'image' => 'required', 
         ]);
