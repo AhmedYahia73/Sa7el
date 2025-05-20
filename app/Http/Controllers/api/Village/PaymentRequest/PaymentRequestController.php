@@ -15,9 +15,11 @@ class PaymentRequestController extends Controller
     public function view(){
         $upcoming = $this->payment_request
         ->where('status', 'pending')
+        ->with('maintenance', 'user')
         ->get();
         $history = $this->payment_request
         ->where('status', '!=', 'pending')
+        ->with('maintenance', 'user')
         ->get();
 
         return response()->json([

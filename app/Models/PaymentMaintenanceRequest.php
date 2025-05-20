@@ -14,4 +14,12 @@ class PaymentMaintenanceRequest extends Model
         'receipt',
         'status',
     ];
+
+    public function maintenance(){
+        return $this->belongsTo(MaintenanceFeez::class, 'maintenance_feez_id');
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
