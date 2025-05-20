@@ -238,6 +238,7 @@ class VillageController extends Controller
 
     public function village_units_delete(Request $request){
         $validator = Validator::make($request->all(), [
+            'appartment_ids' => 'required|array',
             'appartment_ids.*' => 'required|exists:appartments,id',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
