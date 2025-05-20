@@ -10,11 +10,12 @@ use App\trait\image;
 
 use App\Models\Zone;
 use App\Models\Village;
+use App\Models\Appartment;
 
 class VillageController extends Controller
 {
     public function __construct(private Village $village
-    , private Zone $zones){}
+    , private Zone $zones, private Appartment $appartment){}
     use image;
 
     public function view(){
@@ -206,6 +207,50 @@ class VillageController extends Controller
 
         return response()->json([
             'success' => 'You delete data success'
+        ]);
+    }
+
+    public function village_units(Request $request){
+        $validator = Validator::make($request->all(), [
+            'village_id' => 'required|exists:villages,id',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+        $units = $this->appartment
+        ->where('village_id', $request->village_id)
+        ->get()
+        ->map(function($item){
+            return [
+                'name' => $item?->user?->name,
+                'phone' => $item?->user?->phone,
+                'type_unit' => $item?->type?->name,
+                'unit_name' => $item?->unit,
+            ];
+        });
+
+        return response()->json([
+            'units' => $units,
+        ]);
+    }
+
+    public function village_units_delete(Request $request){
+        $validator = Validator::make($request->all(), [
+            'appartment_ids.*' => 'required|exists:appartments,id',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+        $units = $this->appartment
+        ->whereIn('id', $request->appartment_ids)
+        ->delete();
+
+        return response()->json([
+            'success' => 'You delete data success',
         ]);
     }
 }
