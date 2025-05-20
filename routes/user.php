@@ -31,6 +31,7 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     ->group(function() {
         Route::get('/', 'view');
         Route::get('/view_year', 'view_year'); 
+        Route::post('/payment_request', 'make_payment_request'); 
     });
 
     Route::controller(MaintenanceController::class)->prefix('maintenance_request')

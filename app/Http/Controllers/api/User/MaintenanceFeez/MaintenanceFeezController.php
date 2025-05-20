@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\User\MaintenanceFeez;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\trait\image;
 
 use App\Models\MaintenanceFeez;
 use App\Models\AppartmentMaintenanceFeez;
@@ -13,6 +14,7 @@ class MaintenanceFeezController extends Controller
 {
     public function __construct(private MaintenanceFeez $maintenance_fees,
     private AppartmentMaintenanceFeez $appartment_maintenance){}
+    use image;
 
     public function view(Request $request){
         $validator = Validator::make($request->all(), [
@@ -93,4 +95,28 @@ class MaintenanceFeezController extends Controller
         ]);
     }
 
+    public function make_payment_request(Request $request){
+        $validator = Validator::make($request->all(), [
+            'village_id' => 'required|exists:villages,id',
+            'maintenance_feez_id' => 'required|exists:villages,id',
+            'paid' => 'required|numeric',
+            'receipt' => 'required',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+        $paymentRequest = $validator->validated();
+        $paymentRequest['user_id'] = $request->user()->id;
+        $paymentRequest['status'] = 'pending';
+        if ($request->has('receipt')) {
+            $image_path =$this->storeBase64Image($request->receipt, '/images/payment_request');
+            $paymentRequest['receipt'] = $image_path;
+        }
+        
+        return response()->json([
+            'success' => 'You make request success'
+        ]);
+    }
 }
