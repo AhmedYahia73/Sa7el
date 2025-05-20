@@ -108,6 +108,22 @@ class PropertyController extends Controller
         ->where('type', 'owner')
         ->where('village_id', $request->village_id)
         ->where('code', $request->code)
+        ->orWhere('type', 'renter')
+        ->where('from', '<=', date('Y-m-d'))
+        ->where('to', '>=', date('Y-m-d'))
+        ->where('village_id', $request->village_id)
+        ->where('code', $request->code)
+        ->first();
+        
+        if (empty($appartment_code) && $appartment_code->user_id == $request->user()->id) {
+            return response()->json([
+                'message' => 'appartment already added'
+            ]);
+        }
+        $appartment_code = $this->appartment_code
+        ->where('type', 'owner')
+        ->where('village_id', $request->village_id)
+        ->where('code', $request->code)
         ->whereNull('user_id')
         ->orWhere('type', 'renter')
         ->where('from', '<=', date('Y-m-d'))
@@ -116,7 +132,6 @@ class PropertyController extends Controller
         ->where('code', $request->code)
         ->whereNull('user_id')
         ->first();
-        
         if (empty($appartment_code)) {
             return response()->json([
                 'message' => 'appartment is not found'
