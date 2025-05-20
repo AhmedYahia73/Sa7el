@@ -21,6 +21,7 @@ class Provider extends Model
         'open_to', 
         'status', 
         'cover_image',
+        'zone_id',
     ];
     protected $appends = ['image_link', 'ar_name', 'ar_description', 'rate',
     'cover_image_link'];
@@ -45,6 +46,11 @@ class Provider extends Model
 
     public function getCoverImageLinkAttribute(){
         return url('storage/' . $this->cover_image);
+    }
+    
+    public function zone()
+    {
+        return $this->belongsTo(Zone::class, 'zone_id');
     }
     
     public function package()

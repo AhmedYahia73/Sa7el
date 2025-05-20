@@ -20,7 +20,7 @@ class ProviderController extends Controller
 
     public function view(){
         $provider = $this->provider
-        ->with(['translations', 'service', 'package'])
+        ->with(['translations', 'service', 'package', 'zone'])
         ->get();
         $services_types = $this->services_types
         ->get();
@@ -69,7 +69,7 @@ class ProviderController extends Controller
 
     public function create(ProviderRequest $request){
         // service_id, name, description, phone, status, location, village_id
-        // ar_name, ar_description, image, open_from, open_to
+        // ar_name, ar_description, image, open_from, open_to, zone_id
         $providerRequest = $request->validated();
         if (!is_string($request->image)) {
             $image_path = $this->upload($request, 'image', 'images/providers');
@@ -112,7 +112,7 @@ class ProviderController extends Controller
 
     public function modify(ProviderRequest $request, $id){
         // service_id, name, description, phone, status, location, village_id
-        // ar_name, ar_description, image
+        // ar_name, ar_description, image, zone_id
         $providerRequest = $request->validated();
         $provider = $this->provider
         ->where('id', $id)
