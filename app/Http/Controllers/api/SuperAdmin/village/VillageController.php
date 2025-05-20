@@ -224,6 +224,7 @@ class VillageController extends Controller
         ->get()
         ->map(function($item){
             return [
+                'id' => $item?->id,
                 'name' => $item?->user?->name,
                 'phone' => $item?->user?->phone,
                 'type_unit' => $item?->type?->name,
