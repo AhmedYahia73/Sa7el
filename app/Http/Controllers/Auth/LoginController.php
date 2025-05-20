@@ -9,12 +9,13 @@ use App\Http\Requests\Auth\SignupRequest;
 
 use App\Models\User;
 use App\Models\Village;
+use App\Models\AppartmentType;
 use App\Models\Zone;
 
 class LoginController extends Controller
 {
     public function __construct(private User $user, private Village $village,
-    private Zone $zones){}
+    private Zone $zones, private AppartmentType $appartment_types){}
 
     public function sign_up_list(){
         $villages = $this->village
@@ -27,11 +28,15 @@ class LoginController extends Controller
         $zones = $this->zones
         ->where('status', 1)
         ->get();
+        $appartment_types = $this->appartment_types
+        ->where('status', 1)
+        ->get();
 
         return response()->json([
             'villages' => $villages,
             'current_village' => $current_village,
             'zones' => $zones,
+            'appartment_types' => $appartment_types,
         ]);
     }
 
