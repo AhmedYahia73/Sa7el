@@ -18,7 +18,7 @@ class LoginController extends Controller
     private Zone $zones, private AppartmentType $appartment_types){}
 
     public function sign_up_list(Request $request){
-        $local = $request->local == 'en' ? 1 : 0;
+        $local = $request->local == 'ar' ? 1 : 0;
         $villages = $this->village
         ->where('status', 1)
         ->get();
@@ -32,7 +32,7 @@ class LoginController extends Controller
         ->map(function($item) use($local){
             return [
                 'id' => $item->id,
-                'name' => $local ? $item->name : $item->ar_name ?? $item->name,
+                'name' => !$local ? $item->name : $item->ar_name ?? $item->name,
             ];
         });
         $appartment_types = $this->appartment_types
@@ -41,7 +41,7 @@ class LoginController extends Controller
         ->map(function($item) use($local){
             return [
                 'id' => $item->id,
-                'name' => $local ? $item->name : $item->ar_name ?? $item->name,
+                'name' => !$local ? $item->name : $item->ar_name ?? $item->name,
             ];
         });
 
