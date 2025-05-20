@@ -88,8 +88,8 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
 
-        Route::get('/village_units', 'village_units');
-        Route::delete('/village_units_delete', 'village_units_delete');
+        Route::post('/village_units', 'village_units');
+        Route::post('/village_units_delete', 'village_units_delete');
     });
     
     Route::controller(VillageGallaryController::class)->prefix('village_gallery')
