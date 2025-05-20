@@ -9,11 +9,13 @@ use App\trait\image;
 
 use App\Models\MaintenanceFeez;
 use App\Models\AppartmentMaintenanceFeez;
+use App\Models\PaymentMaintenanceRequest;
 
 class MaintenanceFeezController extends Controller
 {
     public function __construct(private MaintenanceFeez $maintenance_fees,
-    private AppartmentMaintenanceFeez $appartment_maintenance){}
+    private AppartmentMaintenanceFeez $appartment_maintenance,
+    private PaymentMaintenanceRequest $payment_request){}
     use image;
 
     public function view(Request $request){
@@ -114,6 +116,8 @@ class MaintenanceFeezController extends Controller
             $image_path =$this->storeBase64Image($request->receipt, '/images/payment_request');
             $paymentRequest['receipt'] = $image_path;
         }
+        $this->payment_request
+        ->create($paymentRequest);
         
         return response()->json([
             'success' => 'You make request success'
