@@ -31,6 +31,38 @@ class VillageController extends Controller
         ]);
     }
 
+    public function update_profile_image($id){
+        $validator = Validator::make($request->all(), [
+            'image' => 'required', 
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+
+        $village = $this->village
+        ->where('id', $id)
+        ->first();
+        if (empty($village->image)) {
+            $image_path = $this->upload($request, 'image', 'images/village_image');
+            $village->update([
+                'image' => $image_path
+            ]);
+        } 
+        else {
+            $image_path = $this->update_image($request, $village->image ,'image', 'images/village_image');
+            $village->update([
+                'image' => $image_path
+            ]);
+        }
+        
+
+        return response()->json([
+            'success' => 'You add image success'
+        ]);
+    }
+
     public function village($id){
         $village = $this->village
         ->with(['translations', 'zone'])
