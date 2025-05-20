@@ -90,19 +90,30 @@ class PropertyController extends Controller
         }
 
         if (!$request->code) {
-            $appartment = $this->appartment_code
-            ->where('user_id', $request->user()->id)
-            ->where('village_id', $request->village_id)
-            ->where('type', 'owner')
-            ->first();
-            if (empty($appartment)) {
-                $this->appartment_code
-                ->create([
-                    'user_id' => $request->user()->id,
-                    'village_id' => $request->village_id,
-                    'type' => 'owner'
-                ]);
+            $validator_errors = Validator::make($request->all(), [
+                'unit' => 'required',
+                'appartment_type_id' => 'required|exists:appartment_types,id',
+            ]);
+            if ($validator_errors->fails()) { // if Validate Make Error Return Message Error
+                $firstError = $validator_errors->errors()->first();
+                return response()->json([
+                    'errors' => $firstError,
+                ],400);
             }
+            $appartment = $this->appartment
+            ->create([
+                'unit' => $request->unit,
+                'appartment_type_id' => $request->appartment_type_id,
+                'village_id' => $request->village_id,
+                'user_id' => $request->user()->id,
+            ]);
+            $this->appartment_code
+            ->create([
+                'user_id' => $request->user()->id,
+                'village_id' => $request->village_id,
+                'type' => 'owner',
+                'appartment_id' => $appartment->id,
+            ]);
         }
         $appartment_code = $this->appartment_code
         ->where('type', 'owner')
