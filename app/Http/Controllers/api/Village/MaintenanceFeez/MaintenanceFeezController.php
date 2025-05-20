@@ -26,7 +26,16 @@ class MaintenanceFeezController extends Controller
             $unpaid = $item->village->units->count() - 
             $item->appartments->where('status',  'paid')->count();
             $paid = $item->appartments->sum('paid');
-            $users_unpaid = $item->appartments->where('status', 'unpaid');
+            $users_paid = $item->appartments->where('status', 'paid');
+            $users_unpaid = $item->village->units->whereNotIn('id', $users_paid->pluck('appartment_id'));
+            $users_unpaid = $users_unpaid->map(function($element){
+                return [
+                    'unit' => $element->unit,
+                    'unit_type' => $element?->type?->name,
+                    'user_name' => $element?->user?->name,
+                    'paid' => $element?->maintenance?->paid ?? 0,
+                ];
+            });
             return [
                 'id' => $item->id,
                 'name' => $item->name,

@@ -21,8 +21,16 @@ class Appartment extends Model
         return url('storage/' . $this->image);
     }
 
+    public function maintenance(){
+        return $this->hasMany(AppartmentMaintenanceFeez::class, 'appartment_id');
+    }
+
     public function type(){
         return $this->belongsTo(AppartmentType::class, 'appartment_type_id');
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function village(){

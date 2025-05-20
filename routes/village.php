@@ -24,8 +24,14 @@ use App\Http\Controllers\api\Village\VillageSinglePage\AdminController;
 use App\Http\Controllers\api\Village\Posts\PostsController;
 use App\Http\Controllers\api\Village\MaintenanceType\MaintenanceTypeController;
 use App\Http\Controllers\api\Village\PaymentRequest\PaymentRequestController;
+use App\Http\Controllers\api\Village\Home\HomeController;
 
 Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
+    Route::controller(HomeController::class)->prefix('home')
+    ->group(function() {
+        Route::get('/', 'view');
+    });
+
     Route::controller(OwnerController::class)->prefix('owner')
     ->group(function() {
         Route::get('/', 'view');
