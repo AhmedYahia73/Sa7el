@@ -27,11 +27,13 @@ class OwnerController extends Controller
 
     public function view(Request $request){
         $owners = $this->owners
+        ->with('appartments')
         ->where('user_type', 'owner')
         ->where('user_type', 'owner')
         ->with('parent')
         ->get();
         $parent = $this->owners
+        ->with('appartments')
         ->where('user_type', 'owner')
         ->where('user_type', 'owner')
         ->whereNull('parent_user_id')
@@ -45,6 +47,7 @@ class OwnerController extends Controller
 
     public function owner(Request $request, $id){
         $owner = $this->owners
+        ->with('appartments')
         ->where('user_type', 'owner')
         ->where('id', $id)
         ->with('parent')
