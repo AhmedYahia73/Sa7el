@@ -42,7 +42,8 @@ class MaintenanceFeezController extends Controller
                     'unit' => $element->unit,
                     'unit_type' => $element?->type?->name,
                     'user_name' => $element?->user?->name,
-                    'paid' => $element?->maintenance?->paid ?? 0,
+                    'paid' => $paid,
+                    'total' => $total,
                 ];
             });
             return [
