@@ -216,4 +216,30 @@ class MaintenanceFeezController extends Controller
             'success' => 'You payment success'
         ]);
     }
+
+    public function create(Request $request){
+    //     village_id Index	bigint(20)		UNSIGNED	Yes	NULL			Change Change	Drop Drop	
+	// 3		varchar(255)	utf8mb4_unicode_ci		No	None			Change Change	Drop Drop	
+	// 4		int(11)			No	None			Change Change	Drop Drop	
+	// 5	
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|exists:maintenance_feezs,id',
+            'year' => 'required|exists:appartments,id',
+            'price' => 'required|exists:users,id',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+
+    }
+
+    public function modify(){
+        
+    }
+
+    public function delete(){
+        
+    }
 }

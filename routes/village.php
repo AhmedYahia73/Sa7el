@@ -25,11 +25,19 @@ use App\Http\Controllers\api\Village\Posts\PostsController;
 use App\Http\Controllers\api\Village\MaintenanceType\MaintenanceTypeController;
 use App\Http\Controllers\api\Village\PaymentRequest\PaymentRequestController;
 use App\Http\Controllers\api\Village\Home\HomeController;
+use App\Http\Controllers\api\Village\ServiceType\ServiceTypeController;
 
 Route::middleware(['auth:sanctum', 'IsVillage', 'can:package_roles'])->group(function(){
     Route::controller(HomeController::class)->prefix('home')->middleware('can:Home')
     ->group(function() {
         Route::get('/', 'view');
+    });
+
+    Route::controller(ServiceTypeController::class)->prefix('service_type')
+    ->middleware('can:owner')->group(function() {
+        Route::get('/', 'view'); 
+        Route::post('/add', 'add'); 
+        Route::post('/delete', 'delete'); 
     });
 
     Route::controller(OwnerController::class)->prefix('owner')->middleware('can:owner')
