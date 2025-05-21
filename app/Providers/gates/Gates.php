@@ -145,5 +145,12 @@ class Gates
             }
             return false;
         });
+        Gate::define('Service Type', function ($user) { 
+            if ($user->position &&  
+            $user->position->roles->pluck('module')->contains('Service Type')) {
+                return true;
+            }
+            return false;
+        });
     }
 }

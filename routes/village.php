@@ -34,7 +34,7 @@ Route::middleware(['auth:sanctum', 'IsVillage', 'can:package_roles'])->group(fun
     });
 
     Route::controller(ServiceTypeController::class)->prefix('service_type')
-    ->middleware('can:owner')->group(function() {
+    ->middleware('can:Service Type')->group(function() {
         Route::get('/', 'view'); 
         Route::post('/add', 'add'); 
         Route::post('/delete', 'delete'); 
