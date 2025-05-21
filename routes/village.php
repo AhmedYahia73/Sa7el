@@ -34,12 +34,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
 
     Route::controller(OwnerController::class)->prefix('owner')
     ->group(function() {
-        Route::get('/', 'view');
-        Route::get('/item/{id}', 'owner');
-        Route::put('/status/{id}', 'status');
-        Route::post('/add', 'create');
-        Route::post('/update/{id}', 'modify');
-        Route::delete('/delete/{id}', 'delete');
+        Route::get('/', 'view'); 
     });
 
     Route::controller(PaymentRequestController::class)->prefix('payment_request')

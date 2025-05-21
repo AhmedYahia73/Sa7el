@@ -68,6 +68,10 @@ class User extends Authenticatable
         return $this->belongsTo(User::class, 'parent_user_id');
     }
 
+    public function appartment_code(){
+        return $this->hasMany(AppartmentCode::class, 'user_id');
+    }
+
     public function getImageLinkAttribute(){
         return url('storage/' . $this->image);
     }
