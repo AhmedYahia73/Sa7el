@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\SuperAdmin\UserRequest;
 use Illuminate\Support\Facades\Validator;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Facades\Storage;
 use App\trait\image;
 
 use App\Models\User;
