@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\Auth\SignupRequest;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 use App\Models\User;
 use App\Models\Village;
@@ -165,7 +166,12 @@ class LoginController extends Controller
 
     public function sign_up(SignupRequest $request){
         $userRequest = $request->validated();
-        $userRequest['user_type'] = 'visitor';
+        $userRequest['user_type'] = 'visitor'; 
+        $data = $request->user()->id;
+        $qrCode = QrCode::format('png')->size(300)->generate($data);
+        $fileName = 'user/qr/' . $data . '.png';
+        Storage::disk('public')->put($fileName, $qrCode); // Save the image
+        $userRequest['qr_code'] = $fileName;
         $user = $this->user
         ->create($userRequest);
         $token = $user->createToken('user')->plainTextToken;

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\SuperAdmin\UserRequest;
 use Illuminate\Support\Facades\Validator;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\trait\image;
 
 use App\Models\User;
@@ -89,6 +90,11 @@ class UserController extends Controller
         //     $image_path = $this->upload($request, 'image', 'images/users');
         //     $userRequest['image'] = $image_path;
         // }
+        $data = $request->user()->id;
+        $qrCode = QrCode::format('png')->size(300)->generate($data);
+        $fileName = 'user/qr/' . $data . '.png';
+        Storage::disk('public')->put($fileName, $qrCode); // Save the image
+        $userRequest['qr_code'] = $fileName;
         $user = $this->user
         ->create($userRequest);
 
