@@ -14,7 +14,7 @@ class MyVisitorsController extends Controller
     public function view(Request $request){
         $visitors_count = $this->visit_village
         ->where('user_id', $request->user()->id)
-        ->whereDate('created_at')
+        ->whereDate('created_at', date('Y-m-d'))
         ->count();
 
         return response()->json([
