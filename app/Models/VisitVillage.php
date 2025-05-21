@@ -9,6 +9,7 @@ class VisitVillage extends Model
     protected $fillable = [
         'user_id', 
         'village_id', 
+        'gate_id', 
         'image', 
     ];
 }
