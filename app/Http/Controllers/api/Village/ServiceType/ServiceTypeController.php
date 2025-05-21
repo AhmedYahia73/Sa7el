@@ -39,7 +39,7 @@ class ServiceTypeController extends Controller
                 'errors' => $validator->errors(),
             ],400);
         }
-        $service_type = $service_type
+        $service_type = $this->service_type
         ->where('id', $request->service_type_id)
         ->first();
         $service_type->village()->attach($request->user()->village_id);
@@ -58,7 +58,7 @@ class ServiceTypeController extends Controller
                 'errors' => $validator->errors(),
             ],400);
         }
-        $service_type = $service_type
+        $service_type = $this->service_type
         ->where('id', $request->service_type_id)
         ->first();
         $service_type->village()->detach($request->user()->village_id);
