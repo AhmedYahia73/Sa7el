@@ -11,11 +11,13 @@ use App\trait\image;
 use App\Models\Provider;
 use App\Models\ServiceType;
 use App\Models\Village;
+use App\Models\Zone;
 
 class ProviderController extends Controller
 {
     public function __construct(private Provider $provider,
-    private ServiceType $services_types, private Village $villages){}
+    private ServiceType $services_types, private Village $villages,
+    private Zone $zones){}
     use image;
 
     public function view(){
@@ -27,11 +29,15 @@ class ProviderController extends Controller
         $villages = $this->villages
         ->where('status', 1)
         ->get();
+        $zones = $this->zones
+        ->where('status', 1)
+        ->get();
 
         return response()->json([
             'providers' => $provider,
             'services_types' => $services_types,
             'villages' => $villages,
+            'zones' => $zones,
         ]);
     }
 
