@@ -99,10 +99,9 @@ class AppartmentController extends Controller
 
     public function create(Request $request){
         $validator = Validator::make($request->all(), [
-            'unit' => ['required'],
-            'number_floors' => ['required', 'numeric'],
+            'unit' => ['required'], 
             'appartment_type_id' => ['required', 'exists:appartment_types,id'],
-            'zone_id' => ['required', 'exists:zones,id'],
+            'location' => ['sometimes'],
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -113,10 +112,10 @@ class AppartmentController extends Controller
             // 'village_id' => ['required'],
         $appartmentRequest = $validator->validated();
         $appartmentRequest['village_id'] = $request->user()->village_id;
-        if ($request->has('image')) {
-            $image_path = $this->upload($request, 'image', '/village/appartment');
-            $appartmentRequest['image'] = $image_path;
-        }
+        // if ($request->has('image')) {
+        //     $image_path = $this->upload($request, 'image', '/village/appartment');
+        //     $appartmentRequest['image'] = $image_path;
+        // }
         $this->appartment
         ->create($appartmentRequest);
 
@@ -127,10 +126,9 @@ class AppartmentController extends Controller
     
     public function modify(Request $request, $id){
         $validator = Validator::make($request->all(), [
-            'unit' => ['required'],
-            'number_floors' => ['required', 'numeric'],
+            'unit' => ['required'], 
             'appartment_type_id' => ['required', 'exists:appartment_types,id'],
-            'zone_id' => ['required', 'exists:zones,id'],
+            'location' => ['sometimes'],
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -141,10 +139,10 @@ class AppartmentController extends Controller
         ->where('id', $id) 
         ->first();
         $appartmentRequest = $validator->validated();
-        if ($request->has('image')) {
-            $image_path = $this->update_image($request, $appartment->image, 'image', '/village/appartment');
-            $appartmentRequest['image'] = $image_path;
-        }
+        // if ($request->has('image')) {
+        //     $image_path = $this->update_image($request, $appartment->image, 'image', '/village/appartment');
+        //     $appartmentRequest['image'] = $image_path;
+        // }
         $appartment->update($appartmentRequest);
 
         return response()->json([

@@ -8,12 +8,10 @@ class Appartment extends Model
 {
     protected $fillable =[
         'unit',
-        'image',
-        'number_floors',
+        'location',
         'appartment_type_id',
         'user_id',
-        'village_id',
-        'zone_id',
+        'village_id', 
     ];
     protected $appends = ['image_link'];
 
