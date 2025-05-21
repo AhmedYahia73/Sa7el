@@ -167,13 +167,14 @@ class LoginController extends Controller
     public function sign_up(SignupRequest $request){
         $userRequest = $request->validated();
         $userRequest['user_type'] = 'visitor'; 
-        $data = $request->user()->id;
+        $user = $this->user
+        ->create($userRequest);
+        $data = $user->id;
         $qrCode = QrCode::format('png')->size(300)->generate($data);
         $fileName = 'user/qr/' . $data . '.png';
         Storage::disk('public')->put($fileName, $qrCode); // Save the image
-        $userRequest['qr_code'] = $fileName;
-        $user = $this->user
-        ->create($userRequest);
+        $user->qr_code = $fileName;
+        $user->save();
         $token = $user->createToken('user')->plainTextToken;
 
         return response()->json([

@@ -90,13 +90,14 @@ class UserController extends Controller
         //     $image_path = $this->upload($request, 'image', 'images/users');
         //     $userRequest['image'] = $image_path;
         // }
-        $data = $request->user()->id;
+        $user = $this->user
+        ->create($userRequest); 
+        $data = $user->id;
         $qrCode = QrCode::format('png')->size(300)->generate($data);
         $fileName = 'user/qr/' . $data . '.png';
         Storage::disk('public')->put($fileName, $qrCode); // Save the image
-        $userRequest['qr_code'] = $fileName;
-        $user = $this->user
-        ->create($userRequest);
+        $user->qr_code = $fileName;
+        $user->save();
 
         return response()->json([
             'success' => 'You add data success'
