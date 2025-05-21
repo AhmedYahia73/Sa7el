@@ -61,6 +61,15 @@ class SecurityController extends Controller
                 'errors' => $validator->errors(),
             ],400);
         }
+        $security_num = $request->user()->village?->package?->security_num ?? 0;
+        $security_count = $this->security
+        ->where('village_id', $request->user()->village_id)
+        ->count();
+        if ($security_num <= $security_count) {
+            return response()->json([
+                'errors' => 'You have exceeded the limit of add admin'
+            ], 400);
+        }
         $securityRequest = $request->validated();
         $securityRequest['village_id'] = $request->user()->village_id;
         $securityRequest['password'] = $request->password;

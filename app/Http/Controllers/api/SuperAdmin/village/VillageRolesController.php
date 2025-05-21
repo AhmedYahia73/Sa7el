@@ -23,7 +23,11 @@ class VillageRolesController extends Controller
         ->where('type', 'village')
         ->with('roles')
         ->get();
-        $roles = ['Test'];
+        $roles = ['Owner', 'Pool', 'Beach', 'Services',
+        'Problem Reports', 'Maintenance Request', 'Visits',
+        'Gates', 'Security Man', 'Maintenance Fees', 'Appartment',
+        'For Rent & Sale', 'Rent', 'Village Page', 'News Feed',
+        'Maintenance Type', 'Payment', 'Home'];
 
         return response()->json([
             'admin_position' => $admin_position,

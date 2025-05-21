@@ -42,6 +42,10 @@ class Village extends Model
         return $this->hasMany(Appartment::class, 'village_id');
     }
 
+    public function package(){
+        return $this->hasMany(Package::class, 'package_id');
+    }
+
     public function getImageLinkAttribute(){
         return url('storage/' . $this->image);
     }

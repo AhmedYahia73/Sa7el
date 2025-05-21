@@ -67,6 +67,15 @@ class AdminController extends Controller
                 'errors' => $validator->errors(),
             ],400);
         }
+        $admin_num = $request->user()->village?->package?->admin_num ?? 0;
+        $admin_count = $this->admin
+        ->where('village_id', $request->user()->village_id)
+        ->count();
+        if ($admin_num <= $admin_count) {
+            return response()->json([
+                'errors' => 'You have exceeded the limit of add admin'
+            ], 400);
+        }
         $adminRequest = $request->validated();
         $adminRequest['role'] = 'village';
         $adminRequest['village_id'] = $request->user()->village_id;

@@ -26,8 +26,7 @@ class ZoneRequest extends FormRequest
         return [
             'name' => ['required'],
             'description' => ['sometimes'],
-            'status' => ['required', 'boolean'],
-            'zone_id' => ['required', 'exists:zones,id'],
+            'status' => ['required', 'boolean'], 
         ];
     }
 
