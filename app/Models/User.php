@@ -39,7 +39,11 @@ class User extends Authenticatable
         'provider_only',
         'qr_code',
     ];
-    protected $appends = ['image_link'];
+    protected $appends = ['image_link', 'qr_code_link'];
+
+    public function getQrCodeLinkAttribute(){
+        return url('storage/' . $this->qr_code);
+    }
 
     public function village(){
         return $this->belongsTo(Village::class, 'village_id');
