@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Gate;
 
 use App\Models\HrmEmployee; 
 
-class AdminGate
+class Gates
 {
     public static function defineGates()
     {
