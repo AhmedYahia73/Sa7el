@@ -13,12 +13,18 @@ use App\Http\Controllers\api\User\rent\RentController;
 use App\Http\Controllers\api\User\Offers\OfferController;
 use App\Http\Controllers\api\User\Posts\PostsController;
 use App\Http\Controllers\api\User\MaintenanceFeez\MaintenanceFeezController;
+use App\Http\Controllers\api\User\Visitors\MyVisitorsController;
 
 Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     Route::controller(PropertyController::class)->prefix('property')
     ->group(function() {
         Route::get('/', 'my_property'); 
         Route::post('/add', 'add_property'); 
+    });
+
+    Route::controller(MyVisitorsController::class)->prefix('my_visitors')
+    ->group(function() {
+        Route::get('/', 'view');  
     });
 
     Route::controller(VisitController::class)->prefix('visitor')
