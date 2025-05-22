@@ -90,13 +90,13 @@ class HomeController extends Controller
                 'errors' => $validator->errors(),
             ],400);
         }
-        $user_pool = $this->user_pool
+        $user_beach = $this->user_beach
         ->where('beach_id', $request->beach_id)
         ->whereDate('created_at', date('Y-m-d'))
         ->count();
 
         return response()->json([
-            'user_pool' => $user_pool,
+            'user_beach' => $user_beach,
         ]);
     }
 }
