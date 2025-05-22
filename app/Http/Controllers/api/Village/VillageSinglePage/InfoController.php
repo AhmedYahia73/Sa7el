@@ -14,6 +14,8 @@ class InfoController extends Controller
     public function view(Request $request){
         $village = $this->village
         ->where('id', $request->user()->village_id)
+        ->with('zone')
+        ->withCount(['units', 'population'])
         ->first();
 
         return response()->json([
