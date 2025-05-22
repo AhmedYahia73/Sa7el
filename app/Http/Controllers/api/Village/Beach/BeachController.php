@@ -52,8 +52,15 @@ class BeachController extends Controller
 
     public function create(BeachRequest $request){
         // name, from, to, status,
-        // ar_name
-    
+        // ar_name 
+        $validator = Validator::make($request->all(), [
+            'images' => ['required', 'array']
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
         $beachRequest = $request->validated();
         $beachRequest['village_id'] = $request->user()->village_id;
 
