@@ -19,11 +19,16 @@ class GateController extends Controller
     use image;
 
     public function read_qr(Request $request){
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'qr_code' => 'required|string',
             'gate_id' => 'required|exists:gates,id',
             'image' => 'sometimes',
         ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
 
         $base64 = $request->input('qr_code');
  
