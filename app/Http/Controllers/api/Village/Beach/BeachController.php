@@ -62,7 +62,7 @@ class BeachController extends Controller
                 $image_path = $this->uploadFile($item, '/village/beach');
                 $this->gallary
                 ->create([
-                    'pool_id' => $beach->id,
+                    'beach_id' => $beach->id,
                     'image' => $image_path,
                 ]);
             }
@@ -141,7 +141,7 @@ class BeachController extends Controller
 
     public function view_gallery($id){
         $gallary = $this->gallary
-        ->where('pool_id', $id)
+        ->where('beach_id', $id)
         ->get();
 
         return response()->json([
@@ -162,7 +162,7 @@ class BeachController extends Controller
             $image_path = $this->uploadFile($item, '/village/beach');
             $this->gallary
             ->create([
-                'pool_id' => $id,
+                'beach_id' => $id,
                 'image' => $image_path,
             ]);
         }
