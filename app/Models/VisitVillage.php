@@ -10,6 +10,7 @@ class VisitVillage extends Model
         'user_id', 
         'village_id', 
         'gate_id', 
-        'image', 
+        'image',
+        'type',
     ];
 }
