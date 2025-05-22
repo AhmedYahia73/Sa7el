@@ -24,7 +24,7 @@ class VisitController extends Controller
                 'errors' => $firstError,
             ],400);
         }
-        $data = $request->user()->id . '-' . $request->village_id . '-' . time();
+        $data = 'visitor_id-' . $request->user()->id . '-village_id-' . $request->village_id;
         $qrCode = QrCode::format('png')->size(300)->generate($data);
         $fileName = 'user/visit/qr/' . $data . '.png';
         Storage::disk('public')->put($fileName, $qrCode); // Save the image
