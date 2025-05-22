@@ -27,7 +27,7 @@ class PoolRequest extends FormRequest
             'name' => ['required'],
             'from' => ['sometimes', 'regex:/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/'],
             'to' => ['sometimes'],
-            'status' => ['required', 'boolean'], 
+            'status' => ['required', 'boolean'],
         ];
     }
 

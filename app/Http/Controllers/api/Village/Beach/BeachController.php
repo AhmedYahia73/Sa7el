@@ -7,11 +7,13 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Village\PoolRequest as BeachRequest;
 use Illuminate\Support\Facades\Validator;
 
+use App\Models\BeachGallary;
 use App\Models\Beach;
 
 class BeachController extends Controller
 {
-    public function __construct(private Beach $beach){}
+    public function __construct(private Beach $beach,
+    private BeachGallary $gallary){}
 
     public function view(Request $request){
         $beach = $this->beach
@@ -55,6 +57,16 @@ class BeachController extends Controller
 
         $beach = $this->beach
         ->create($beachRequest);
+        if ($request->has('images')) {
+            foreach ($request->images as $item) {
+                $image_path = $this->uploadFile($request->image, '/village/pool');
+                $this->gallary
+                ->create([
+                    'pool_id' => $beach->id,
+                    'image' => $image_path,
+                ]);
+            }
+        }
         $beach_translations = [[ 
             'locale' => 'en',
             'key' => 'name',
@@ -121,6 +133,53 @@ class BeachController extends Controller
         }
         $beach->translations()->delete();
         $beach->delete();
+
+        return response()->json([
+            'success' => 'You delete data success'
+        ]);
+    }
+
+    public function view_gallery($id){
+        $gallary = $this->gallary
+        ->where('pool_id', $id)
+        ->get();
+
+        return response()->json([
+            'gallary' => $gallary
+        ]);
+    }
+
+    public function add_gallery($id){
+        $validator = Validator::make($request->all(), [
+            'images' => ['required', 'array']
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+        if ($request->has('images')) {
+            foreach ($request->images as $item) {
+                $image_path = $this->uploadFile($request->image, '/village/pool');
+                $this->gallary
+                ->create([
+                    'pool_id' => $id,
+                    'image' => $image_path,
+                ]);
+            }
+        }
+
+        return response()->json([
+            'gallary' => $gallary
+        ]);
+    }
+
+    public function delete_gallery($id){ 
+        $gallary = $this->gallary
+        ->where('id', $id)
+        ->first();
+        $this->deleteImage($gallary->image);
+        $gallary->delete();
 
         return response()->json([
             'success' => 'You delete data success'

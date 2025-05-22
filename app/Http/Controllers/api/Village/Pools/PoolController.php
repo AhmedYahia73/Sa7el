@@ -6,12 +6,16 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Village\PoolRequest;
 use Illuminate\Support\Facades\Validator;
+use App\trait\image;
 
+use App\Models\PoolGallary;
 use App\Models\Pools;
 
 class PoolController extends Controller
 {
-    public function __construct(private Pools $pool){}
+    public function __construct(private Pools $pool,
+    private PoolGallary $gallary){}
+    use image;
 
     public function view(Request $request){
         $pool = $this->pool
@@ -48,13 +52,30 @@ class PoolController extends Controller
 
     public function create(PoolRequest $request){
         // name, from, to, status,
-        // ar_name
-    
+        // ar_name, images
+        $validator = Validator::make($request->all(), [
+            'images' => ['required', 'array']
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
         $poolRequest = $request->validated();
         $poolRequest['village_id'] = $request->user()->village_id;
 
         $pool = $this->pool
-        ->create($poolRequest);
+        ->create($poolRequest); 
+        if ($request->has('images')) {
+            foreach ($request->images as $item) {
+                $image_path = $this->uploadFile($request->image, '/village/pool');
+                $this->gallary
+                ->create([
+                    'pool_id' => $pool->id,
+                    'image' => $image_path,
+                ]);
+            }
+        }
         $pool_translations = [[ 
             'locale' => 'en',
             'key' => 'name',
@@ -121,6 +142,53 @@ class PoolController extends Controller
         }
         $pool->translations()->delete();
         $pool->delete();
+
+        return response()->json([
+            'success' => 'You delete data success'
+        ]);
+    }
+
+    public function view_gallery($id){
+        $gallary = $this->gallary
+        ->where('pool_id', $id)
+        ->get();
+
+        return response()->json([
+            'gallary' => $gallary
+        ]);
+    }
+
+    public function add_gallery($id){
+        $validator = Validator::make($request->all(), [
+            'images' => ['required', 'array']
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+        if ($request->has('images')) {
+            foreach ($request->images as $item) {
+                $image_path = $this->uploadFile($request->image, '/village/pool');
+                $this->gallary
+                ->create([
+                    'pool_id' => $id,
+                    'image' => $image_path,
+                ]);
+            }
+        }
+
+        return response()->json([
+            'gallary' => $gallary
+        ]);
+    }
+
+    public function delete_gallery($id){ 
+        $gallary = $this->gallary
+        ->where('id', $id)
+        ->first();
+        $this->deleteImage($gallary->image);
+        $gallary->delete();
 
         return response()->json([
             'success' => 'You delete data success'

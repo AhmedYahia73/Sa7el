@@ -27,4 +27,8 @@ class Pools extends Model
     {
         return $this->morphMany(Translation::class, 'translatable');
     }
+
+    public function gallery(){
+        return $this->hasMany(PoolGallary::class, 'pool_id');
+    }
 }
