@@ -114,6 +114,10 @@ class PropertyController extends Controller
                 'type' => 'owner',
                 'appartment_id' => $appartment->id,
             ]);
+
+            return response()->json([
+                'message' => 'You add data success'
+            ]);
         }
         $appartment_code = $this->appartment_code
         ->where('type', 'owner')
