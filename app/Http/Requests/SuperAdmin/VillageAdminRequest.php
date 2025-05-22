@@ -26,8 +26,7 @@ class VillageAdminRequest extends FormRequest
         return [ 
             'name' => ['required'],
             'email' => ['required', 'email'],
-            'phone' => ['required'],
-            'password' => ['required'],
+            'phone' => ['required'], 
             'admin_position_id' => ['required', 'exists:admin_positions,id'],
             'status' => ['required', 'boolean'],
         ];

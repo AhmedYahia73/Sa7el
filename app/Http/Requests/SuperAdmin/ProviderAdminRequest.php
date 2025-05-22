@@ -27,7 +27,6 @@ class ProviderAdminRequest extends FormRequest
             'name' => ['required'],
             'email' => ['required', 'email'],
             'phone' => ['required'],
-            'password' => ['required'],
             'admin_position_id' => ['required', 'exists:admin_positions,id'],
             'status' => ['required', 'boolean'],
         ];
