@@ -12,12 +12,14 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 use App\Models\Village;
 use App\Models\AppartmentType;
+use App\Models\SecurityMan;
 use App\Models\Zone;
 
 class LoginController extends Controller
 {
     public function __construct(private User $user, private Village $village,
-    private Zone $zones, private AppartmentType $appartment_types){}
+    private Zone $zones, private AppartmentType $appartment_types,
+    private SecurityMan $secuity){}
 
     public function sign_up_list(Request $request){
         $local = $request->local == 'ar' ? 1 : 0;
@@ -89,7 +91,41 @@ class LoginController extends Controller
             return response()->json(['errors'=>'creational not Valid'],403);
         }
     }
-    
+
+    public function security_login(Request $request){
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+        $user = $this->secuity
+        ->where('email', $request->email)
+        ->orWhere('phone', $request->email)
+        ->first();
+        if (empty($user)) {
+            return response()->json(['errors'=>'creational not Valid'],403);
+        }
+
+        if ($user->status == 0) {
+            return response()->json([
+                'errors' => 'security is banned'
+            ], 400);
+        }
+        if (password_verify($request->input('password'), $user->password)) {
+            $user->token = $user->createToken('security')->plainTextToken;
+            return response()->json([
+                'security' => $user,
+                'token' => $user->token,
+            ], 200);
+        }
+        else { 
+            return response()->json(['errors'=>'creational not Valid'],403);
+        }
+    }
 
     public function village_login(Request $request){
         $validator = Validator::make($request->all(), [

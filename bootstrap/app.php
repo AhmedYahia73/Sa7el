@@ -9,6 +9,7 @@ use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\VillageMiddleware;
+use App\Http\Middleware\SecurityMiddleware;
 use App\Http\Middleware\UserMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -30,6 +31,10 @@ return Application::configure(basePath: dirname(__DIR__))
             ->prefix('village')
             ->name('village.')
             ->group(base_path('routes/village.php'));
+            Route::middleware('api')
+            ->prefix('security')
+            ->name('security.')
+            ->group(base_path('routes/security.php'));
         }
     )
     ->withMiddleware(function (Middleware $middleware) {
@@ -37,6 +42,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'IsAdmin' => AdminMiddleware::class,
             'IsUser' => UserMiddleware::class,
             'IsVillage' => VillageMiddleware::class,
+            'IsSecurity' => SecurityMiddleware::class,
         ]);
         $middleware->redirectGuestsTo(function (Request $request) {
            if (!$request->is('api/*')) {
