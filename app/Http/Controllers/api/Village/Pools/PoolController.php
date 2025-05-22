@@ -68,7 +68,7 @@ class PoolController extends Controller
         ->create($poolRequest); 
         if ($request->has('images')) {
             foreach ($request->images as $item) {
-                $image_path = $this->uploadFile($request->image, '/village/pool');
+                $image_path = $this->uploadFile($item, '/village/pool');
                 $this->gallary
                 ->create([
                     'pool_id' => $pool->id,
@@ -169,7 +169,7 @@ class PoolController extends Controller
         }
         if ($request->has('images')) {
             foreach ($request->images as $item) {
-                $image_path = $this->uploadFile($request->image, '/village/pool');
+                $image_path = $this->uploadFile($item, '/village/pool');
                 $this->gallary
                 ->create([
                     'pool_id' => $id,

@@ -59,7 +59,7 @@ class BeachController extends Controller
         ->create($beachRequest);
         if ($request->has('images')) {
             foreach ($request->images as $item) {
-                $image_path = $this->uploadFile($request->image, '/village/pool');
+                $image_path = $this->uploadFile($item, '/village/beach');
                 $this->gallary
                 ->create([
                     'pool_id' => $beach->id,
@@ -160,7 +160,7 @@ class BeachController extends Controller
         }
         if ($request->has('images')) {
             foreach ($request->images as $item) {
-                $image_path = $this->uploadFile($request->image, '/village/pool');
+                $image_path = $this->uploadFile($item, '/village/beach');
                 $this->gallary
                 ->create([
                     'pool_id' => $id,
