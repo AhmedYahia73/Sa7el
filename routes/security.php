@@ -17,6 +17,6 @@ Route::middleware(['auth:sanctum', 'IsSecurity'])->group(function(){
 
     Route::controller(GateController::class)->prefix('gate_qr')
     ->group(function() {
-        Route::get('/', 'view');
+        Route::post('/', 'read_qr');
     });
 });
