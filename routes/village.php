@@ -37,7 +37,7 @@ Route::middleware(['auth:sanctum', 'IsVillage', 'can:package_roles'])->group(fun
     ->middleware('can:Service Type')->group(function() {
         Route::get('/', 'view'); 
         Route::post('/add', 'add'); 
-        Route::post('/delete', 'delete'); 
+        Route::delete('/delete', 'delete'); 
     });
 
     Route::controller(OwnerController::class)->prefix('owner')->middleware('can:owner')
