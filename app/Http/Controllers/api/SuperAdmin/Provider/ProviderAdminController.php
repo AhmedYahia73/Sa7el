@@ -75,6 +75,7 @@ class ProviderAdminController extends Controller
             'provider_id' => ['required', 'exists:providers,id'],
             'email' => ['unique:users'],
             'phone' => ['unique:users'],
+            'password' => ['required'],
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -84,6 +85,7 @@ class ProviderAdminController extends Controller
         $adminRequest = $request->validated();
         $adminRequest['role'] = 'provider';
         $adminRequest['provider_id'] = $request->provider_id;
+        $adminRequest['password'] = $request->password;
         $this->admin
         ->create($adminRequest);
 

@@ -61,6 +61,7 @@ class AdminController extends Controller
         $validator = Validator::make($request->all(), [ 
             'email' => ['unique:users'],
             'phone' => ['unique:users'],
+            'password' => ['required'],
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -79,6 +80,7 @@ class AdminController extends Controller
         $adminRequest = $request->validated();
         $adminRequest['role'] = 'village';
         $adminRequest['village_id'] = $request->user()->village_id;
+        $adminRequest['password'] = $request->password;
         $this->admin
         ->create($adminRequest);
 

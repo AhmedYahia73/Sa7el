@@ -75,6 +75,7 @@ class VillageAdminController extends Controller
             'village_id' => ['required', 'exists:villages,id'],
             'email' => ['unique:users'],
             'phone' => ['unique:users'],
+            'password' => ['required'],
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -96,6 +97,7 @@ class VillageAdminController extends Controller
         $adminRequest = $request->validated();
         $adminRequest['role'] = 'village';
         $adminRequest['village_id'] = $request->village_id;
+        $adminRequest['password'] = $request->password;
         $this->admin
         ->create($adminRequest);
 
@@ -117,7 +119,7 @@ class VillageAdminController extends Controller
         $adminRequest = $request->validated(); 
         if (!empty($request->password)) {
             $adminRequest['password'] = bcrypt($request->password);
-        }
+        } 
         $this->admin
         ->where('id', $id)
         ->where('role', 'village')
