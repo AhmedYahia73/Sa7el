@@ -13,7 +13,8 @@ use App\Models\Zone;
 class PropertyController extends Controller
 {
     public function __construct(private Appartment $appartment,
-    private AppartmentCode $appartment_code, private Zone $zones){}
+    private AppartmentCode $appartment_code, private Zone $zones
+    , private Village $village){}
 
     public function my_property(Request $request){
         $validator = Validator::make($request->all(), [
@@ -100,12 +101,16 @@ class PropertyController extends Controller
                     'errors' => $firstError,
                 ],400);
             }
+            $village = $this->village
+            ->where('id', $request->village_id)
+            ->first();
             $appartment = $this->appartment
             ->create([
                 'unit' => $request->unit,
                 'appartment_type_id' => $request->appartment_type_id,
                 'village_id' => $request->village_id,
                 'user_id' => $request->user()->id,
+                'zone_id' => $village->zone_id
             ]);
             $this->appartment_code
             ->create([
