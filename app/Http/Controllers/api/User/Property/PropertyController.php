@@ -8,14 +8,12 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Models\Appartment;
 use App\Models\AppartmentCode;
-use App\Models\Village;
 use App\Models\Zone;
 
 class PropertyController extends Controller
 {
     public function __construct(private Appartment $appartment,
-    private AppartmentCode $appartment_code, private Zone $zones
-    , private Village $village){}
+    private AppartmentCode $appartment_code, private Zone $zones){}
 
     public function my_property(Request $request){
         $validator = Validator::make($request->all(), [
@@ -66,9 +64,9 @@ class PropertyController extends Controller
                     'number_floors' => $appartment->number_floors,
                     'type' => $request->local == 'en' ? $appartment?->type?->name : 
                     $appartment?->type?->ar_name ?? $appartment?->type?->name,
-                    'zone' => $request->local == 'en' ? $appartment?->zone?->name
-                    : $appartment?->zone?->ar_name ?? $appartment?->zone?->name,
-                    'zone_id' => $appartment->zone_id,
+                    'zone' => $request->local == 'en' ? $appartment?->village?->zone?->name
+                    : $appartment?->village?->zone?->ar_name ?? $appartment?->village?->zone?->name,
+                    'zone_id' => $appartment?->village->zone_id,
                 ];
             }
         });
@@ -102,16 +100,12 @@ class PropertyController extends Controller
                     'errors' => $firstError,
                 ],400);
             }
-            $village = $this->village
-            ->where('id', $request->village_id)
-            ->first();
             $appartment = $this->appartment
             ->create([
                 'unit' => $request->unit,
                 'appartment_type_id' => $request->appartment_type_id,
                 'village_id' => $request->village_id,
                 'user_id' => $request->user()->id,
-                'zone_id' => $village->zone_id
             ]);
             $this->appartment_code
             ->create([
