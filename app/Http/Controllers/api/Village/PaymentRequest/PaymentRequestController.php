@@ -19,7 +19,7 @@ class PaymentRequestController extends Controller
         ->get();
         $history = $this->payment_request
         ->where('status', '!=', 'pending')
-        ->with('maintenance:id,name', 'user:id,name')
+        ->with('maintenance:id,name', 'user:id,name,phone')
         ->get();
 
         return response()->json([
