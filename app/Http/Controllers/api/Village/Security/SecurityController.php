@@ -111,7 +111,7 @@ class SecurityController extends Controller
             $securityRequest['image'] = $image_path;
         }
         if (!empty($request->password)) {
-            $securityRequest['password'] = $request->password;
+            $securityRequest['password'] = bcrypt($request->password);
         }
         $security->update($securityRequest);
    
