@@ -38,4 +38,8 @@ class Appartment extends Model
     public function zone(){
         return $this->belongsTo(Zone::class, 'zone_id');
     }
+
+    public function appartment_code(){
+        return $this->hasMany(AppartmentCode::class, 'appartment_id');
+    }
 }

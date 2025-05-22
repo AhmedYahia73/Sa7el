@@ -25,6 +25,11 @@ class AppartmentController extends Controller
         ->where('village_id', $request->user()->village_id)
         ->with('type:id,name,image', 'zone:id,name,image,description')
         ->get();
+        $units = $this->appartment
+        ->where('village_id', $request->user()->village_id)
+        ->whereDoesntHave('appartment_code')
+        ->with('type:id,name,image', 'zone:id,name,image,description')
+        ->get();
         $zones = $this->zones
         ->where('status', 1)
         ->get();
@@ -37,6 +42,7 @@ class AppartmentController extends Controller
 
         return response()->json([ 
             'appartments' => $appartments, 
+            'units' => $units, 
             'zones' => $zones, 
             'appartment_type' => $appartment_type, 
             'users' => $users, 
