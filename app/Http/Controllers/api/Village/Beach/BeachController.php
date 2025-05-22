@@ -149,7 +149,7 @@ class BeachController extends Controller
         ]);
     }
 
-    public function add_gallery($id){
+    public function add_gallery(Request $request, $id){
         $validator = Validator::make($request->all(), [
             'images' => ['required', 'array']
         ]);
