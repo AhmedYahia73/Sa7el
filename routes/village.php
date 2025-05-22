@@ -137,7 +137,7 @@ Route::middleware(['auth:sanctum', 'IsVillage', 'can:package_roles'])->group(fun
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
-        Route::get('/view_gallery', 'view_gallery');
+        Route::get('/view_gallery/{id}', 'view_gallery');
         Route::delete('/add_gallery/{id}', 'add_gallery');
         Route::delete('/delete_gallery/{id}', 'delete_gallery');
     });
@@ -149,6 +149,9 @@ Route::middleware(['auth:sanctum', 'IsVillage', 'can:package_roles'])->group(fun
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
+        Route::get('/view_gallery/{id}', 'view_gallery');
+        Route::delete('/add_gallery/{id}', 'add_gallery');
+        Route::delete('/delete_gallery/{id}', 'delete_gallery');
     });
 
     Route::controller(ServiceController::class)->prefix('service')->middleware('can:Services')
