@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Models\Appartment;
 use App\Models\AppartmentCode;
+use App\Models\Village;
 use App\Models\Zone;
 
 class PropertyController extends Controller
