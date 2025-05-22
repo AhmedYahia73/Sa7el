@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\api\Security\Home\HomeController;
 use App\Http\Controllers\api\Security\Gate\GateController;
+use App\Http\Controllers\api\Security\Pool\PoolController;
 
 Route::middleware(['auth:sanctum', 'IsSecurity'])->group(function(){
     Route::controller(HomeController::class)->prefix('home')
@@ -20,7 +21,7 @@ Route::middleware(['auth:sanctum', 'IsSecurity'])->group(function(){
         Route::post('/', 'read_qr');
     });
 
-    Route::controller(GateController::class)->prefix('gate_qr')
+    Route::controller(PoolController::class)->prefix('pool_qr')
     ->group(function() {
         Route::post('/', 'read_qr');
     });
