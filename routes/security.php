@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route; 
 
-use App\Http\Controllers\Security\Home\HomeController;
+use App\Http\Controllers\api\Security\Home\HomeController;
 
 Route::middleware(['auth:sanctum', 'IsSecurity'])->group(function(){
     Route::controller(HomeController::class)->prefix('home')
