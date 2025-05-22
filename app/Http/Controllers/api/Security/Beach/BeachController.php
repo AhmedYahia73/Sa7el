@@ -1,0 +1,89 @@
+<?php
+
+namespace App\Http\Controllers\api\Security\Beach;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Zxing\QrReader;
+use App\trait\image;
+use Illuminate\Support\Facades\Validator;
+
+use App\Models\AppartmentCode;
+use App\Models\UserBeach;
+use App\Models\User;
+
+class BeachController extends Controller
+{
+    public function __construct(private AppartmentCode $appartment,
+    private UserBeach $user_beach, private User $user){}
+    use image;
+
+    public function read_qr(Request $request){
+        $validator = Validator::make($request->all(), [
+            'qr_code' => 'required|string',
+            'beach_id' => 'required|exists:beaches,id', 
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+
+        $base64 = $request->input('qr_code');
+ 
+        if (strpos($base64, 'base64,') !== false) {
+            $base64 = explode('base64,', $base64)[1];
+        }
+
+        $imageData = base64_decode($base64);
+        $tempImagePath = storage_path('app/temp_qr.png');
+        file_put_contents($tempImagePath, $imageData);
+
+        $qrcode = new QrReader($tempImagePath);
+        $text = $qrcode->text();
+        $arr_text = explode('-', $text);
+        $userid = 0;
+        $beach_id = 0;
+        if ($arr_text[2] == 'beach_id') {
+            $userid = intval($arr_text[1]);
+            $beach_id = intval($arr_text[3]);
+        } 
+        else{
+            return response()->json([
+                'errors' => 'Qr code is wrong'
+            ], 400);
+        }
+         $appartment = $this->appartment
+         ->where('user_id', $userid)
+         ->where('type', 'owner')
+         ->where('village_id', $request->user()->village_id)
+         ->orWhere('user_id', $userid)
+         ->where('village_id', $request->user()->village_id)
+         ->where('type', 'renter')
+         ->where('from', '<=', date('Y-m-d'))
+         ->where('to', '>=', date('Y-m-d'))
+         ->first();
+         if (empty($appartment) || $beach_id != $request->beach_id) {
+            return response()->json([
+                'errors' => 'Qr code is wrong'
+            ], 400);
+         }
+         $user_beach = $this->user_beach
+         ->create([
+            'user_id' => $userid,
+            'beach_id' => $beach_id,
+            'village_id' => $request->user()->village_id,
+         ]);
+        $appartment = $appartment->appartment;
+        $appartment->type;
+        $user = $this->user
+        ->where('id', $userid)
+        ->first();
+
+         return response()->json([
+            'success' => 'Qr code is true',
+            'appartment' => $appartment,
+            'user' => $user,
+         ]);
+    }
+}
