@@ -14,6 +14,11 @@ class PaymentMaintenanceRequest extends Model
         'receipt',
         'status',
     ];
+    protected $appends = ['receipt_link'];
+
+    public function getReceiptLinkAttribute(){
+        return url('storage/' . $this->receipt);
+    }
 
     public function maintenance(){
         return $this->belongsTo(MaintenanceFeez::class, 'maintenance_feez_id');

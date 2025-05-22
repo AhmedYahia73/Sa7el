@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Beach;
 use App\Models\Pools;
 use App\Models\Gate;
+use App\Models\EntranceGate;
 
 class HomeController extends Controller
 {
@@ -30,5 +31,9 @@ class HomeController extends Controller
             'pools' => $pools,
             'gates' => $gates,
         ]);
+    }
+
+    public function entrance_gate(Request $request){
+
     }
 }
