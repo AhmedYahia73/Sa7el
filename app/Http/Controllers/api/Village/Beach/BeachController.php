@@ -168,7 +168,7 @@ class BeachController extends Controller
         }
 
         return response()->json([
-            'gallary' => $gallary
+            'success' => 'You add data success'
         ]);
     }
 
