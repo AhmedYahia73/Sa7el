@@ -158,15 +158,13 @@ class BeachController extends Controller
                 'errors' => $validator->errors(),
             ],400);
         }
-        if ($request->has('images')) {
-            foreach ($request->images as $item) {
-                $image_path = $this->uploadFile($item, '/village/beach');
-                $this->gallary
-                ->create([
-                    'pool_id' => $id,
-                    'image' => $image_path,
-                ]);
-            }
+        foreach ($request->images as $item) {
+            $image_path = $this->uploadFile($item, '/village/beach');
+            $this->gallary
+            ->create([
+                'pool_id' => $id,
+                'image' => $image_path,
+            ]);
         }
 
         return response()->json([
