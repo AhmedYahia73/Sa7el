@@ -49,7 +49,7 @@ class HomeController extends Controller
         }
         $visit_village = $this->visit_village
         ->where('gate_id', $request->gate_id)
-        ->whereData('created_at', date('Y-m-d'))
+        ->whereDate('created_at', date('Y-m-d'))
         ->get();
         $entrance = $visit_village->count();
         $entrance_owner = $visit_village->where('type', 'owner')->count();
@@ -73,7 +73,7 @@ class HomeController extends Controller
         }
         $user_pool = $this->user_pool
         ->where('pool_id', $request->pool_id)
-        ->whereData('created_at', date('Y-m-d'))
+        ->whereDate('created_at', date('Y-m-d'))
         ->count();
 
         return response()->json([
@@ -92,7 +92,7 @@ class HomeController extends Controller
         }
         $user_pool = $this->user_pool
         ->where('beach_id', $request->beach_id)
-        ->whereData('created_at', date('Y-m-d'))
+        ->whereDate('created_at', date('Y-m-d'))
         ->count();
 
         return response()->json([
