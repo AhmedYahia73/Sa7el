@@ -44,6 +44,7 @@ class MaintenanceFeezController extends Controller
 
             return [
                 'id' => $item->id,
+                'year' => $item->year,
                 'name' => $item->name,
                 'total' => $total,
                 'paid' => $my_appartment?->paid,
