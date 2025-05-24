@@ -219,9 +219,9 @@ class MaintenanceFeezController extends Controller
 
     public function create(Request $request){
         $validator = Validator::make($request->all(), [
-            'name' => 'required|exists:maintenance_feezs,id',
-            'year' => 'required|exists:appartments,id',
-            'price' => 'required|exists:users,id',
+            'name' => 'required',
+            'year' => 'required|numeric',
+            'price' => 'required|numeric',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -241,9 +241,9 @@ class MaintenanceFeezController extends Controller
 
     public function modify(Request $request, $id){
         $validator = Validator::make($request->all(), [
-            'name' => 'required|exists:maintenance_feezs,id',
-            'year' => 'required|exists:appartments,id',
-            'price' => 'required|exists:users,id',
+            'name' => 'required',
+            'year' => 'required|numeric',
+            'price' => 'required|numeric',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
