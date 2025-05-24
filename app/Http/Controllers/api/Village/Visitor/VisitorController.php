@@ -21,16 +21,16 @@ class VisitorController extends Controller
                 'id' => $item->id,
                 'unit' => $item?->appartment?->unit,
                 'unit_type' => $item?->appartment?->unit?->type?->name,
-                'user_name' => $item?->owner?->name,
-                'user_phone' => $item?->owner?->phone,
-                'visit_type' => $item->visitor_type,
-                'date' => $item->date,
-                'time' => $item->time,
+                'user_name' => $item?->user?->name,
+                'user_phone' => $item?->user?->phone,
+                'visitor_type' => $item->visitor_type,
+                'date' => $item->created_at->format('Y-m-d'),
+                'time' => $item->created_at->format('H:i:s'),
             ];
         });
 
         return response()->json([
-            'visit_villages' => $visit_villages
+            'visit_requests' => $visit_villages
         ]);
     }
 }
