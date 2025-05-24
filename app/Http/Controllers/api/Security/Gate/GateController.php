@@ -116,7 +116,7 @@ class GateController extends Controller
                 'errors' => $validator->errors(),
             ],400);
         }
- 
+
         $image_path = $this->storeBase64Image($request->image, 'images/visitors/id'); 
         $visit_village = $this->visit_village
         ->where('id', $request->visit_village_id)
