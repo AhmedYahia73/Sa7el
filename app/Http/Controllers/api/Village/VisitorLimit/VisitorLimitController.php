@@ -25,7 +25,7 @@ class VisitorLimitController extends Controller
     }
 
     public function create(Request $request){
-        // name, location, status,
+        // guest, worker, delivery,
         $validator = Validator::make($request->all(), [
             'guest' => 'required|numeric',
             'worker' => 'required|numeric',
@@ -48,7 +48,7 @@ class VisitorLimitController extends Controller
     }
 
     public function modify(Request $request, $id){
-        // name, location, status, 
+        // guest, worker, delivery,
         $validator = Validator::make($request->all(), [
             'guest' => 'required|numeric',
             'worker' => 'required|numeric',
