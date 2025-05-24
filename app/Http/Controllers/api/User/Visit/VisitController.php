@@ -9,14 +9,17 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\VisitorCode;
+use App\Models\VisitVillage;
 
 class VisitController extends Controller
 {
-    public function __construct(private VisitorCode $visitor_code){}
+    public function __construct(private VisitorCode $visitor_code,
+    private VisitVillage $visit_village){}
     
     public function create_qr_code(Request $request){
         $validator = Validator::make($request->all(), [
             'village_id' => 'required|exists:villages,id',
+            'visitor_type' => 'required|in:guest,worker,delivery',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -24,7 +27,8 @@ class VisitController extends Controller
                 'errors' => $firstError,
             ],400);
         }
-        $data = 'visitor_id-' . $request->user()->id . '-village_id-' . $request->village_id;
+        $data = 'visitor_id-' . $request->user()->id . '-village_id-' . $request->village_id . 
+        '-visitor_type-' . $request->visitor_type;
         $qrCode = QrCode::format('png')->size(300)->generate($data);
         $fileName = 'user/visit/qr/' . $data . '.png';
         Storage::disk('public')->put($fileName, $qrCode); // Save the image
@@ -33,6 +37,7 @@ class VisitController extends Controller
             'user_id' => $request->user()->id,
             'qr_code' => $fileName
         ]);
+        // $request->visitor_type
 
         return response()->json([
             'success' => url('storage/' . $fileName)

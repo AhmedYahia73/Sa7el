@@ -13,6 +13,7 @@ class VisitVillage extends Model
         'gate_id', 
         'image',
         'type',
+        'visitor_type',
     ];
 
     public function user(){
