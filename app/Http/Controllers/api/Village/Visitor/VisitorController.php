@@ -23,8 +23,8 @@ class VisitorController extends Controller
                 'user_name' => $item?->user?->name,
                 'user_phone' => $item?->user?->phone,
                 'visitor_type' => $item->visitor_type,
-                'date' => $item->created_at->format('Y-m-d'),
-                'time' => $item->created_at->format('H:i:s'),
+                'date' => $item->created_at?->format('Y-m-d'),
+                'time' => $item->created_at?->format('H:i:s'),
             ];
         });
 
