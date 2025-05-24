@@ -19,7 +19,7 @@ class VisitorController extends Controller
             return [
                 'id' => $item->id,
                 'unit' => $item?->appartment?->unit,
-                'unit_type' => $item?->appartment?->unit?->type?->name,
+                'unit_type' => $item?->appartment?->type?->name,
                 'user_name' => $item?->user?->name,
                 'user_phone' => $item?->user?->phone,
                 'visitor_type' => $item->visitor_type,
