@@ -10,8 +10,7 @@ use App\Models\VisitorLimit;
 
 class VisitorLimitController extends Controller
 {
-    public function __construct(private VisitorLimit $visitor_limit){}
-    use image;
+    public function __construct(private VisitorLimit $visitor_limit){} 
 
     public function view(Request $request){
         $visitor_limit = $this->visitor_limit
