@@ -218,10 +218,6 @@ class MaintenanceFeezController extends Controller
     }
 
     public function create(Request $request){
-    //     village_id Index	bigint(20)		UNSIGNED	Yes	NULL			Change Change	Drop Drop	
-	// 3		varchar(255)	utf8mb4_unicode_ci		No	None			Change Change	Drop Drop	
-	// 4		int(11)			No	None			Change Change	Drop Drop	
-	// 5	
         $validator = Validator::make($request->all(), [
             'name' => 'required|exists:maintenance_feezs,id',
             'year' => 'required|exists:appartments,id',
@@ -233,13 +229,45 @@ class MaintenanceFeezController extends Controller
             ],400);
         }
 
+        $maintenanceRequest = $validator->validated();
+        $maintenanceRequest['village_id'] = $request->user()->village_id;
+        $this->maintenance_fees
+        ->create($maintenanceRequest);
+
+        return response()->json([
+            'success' => 'You add data success'
+        ]);
     }
 
-    public function modify(){
-        
+    public function modify(Request $request, $id){
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|exists:maintenance_feezs,id',
+            'year' => 'required|exists:appartments,id',
+            'price' => 'required|exists:users,id',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+
+        $maintenanceRequest = $validator->validated();
+        $this->maintenance_fees
+        ->where('id', $id)
+        ->update($maintenanceRequest);
+
+        return response()->json([
+            'success' => 'You update data success'
+        ]);
     }
 
-    public function delete(){
-        
+    public function delete($id){
+        $this->maintenance_fees
+        ->where('id', $id)
+        ->delete();
+
+        return response()->json([
+            'success' => 'You delete data success'
+        ]);
     }
 }

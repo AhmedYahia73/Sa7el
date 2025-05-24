@@ -94,6 +94,10 @@ Route::middleware(['auth:sanctum', 'IsVillage', 'can:package_roles'])->group(fun
         Route::get('/maintenanace_users/{id}', 'maintenanace_users');
         Route::get('/year', 'view_year');
         Route::post('/add_payment', 'add_payment');
+        
+        Route::post('/add', 'create');
+        Route::post('/update/{id}', 'modify');
+        Route::delete('/delete/{id}', 'delete');
     });
 
     Route::controller(GallaryController::class)->prefix('gallery')->middleware('can:Village Page')
