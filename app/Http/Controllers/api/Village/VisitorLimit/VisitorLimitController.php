@@ -17,6 +17,12 @@ class VisitorLimitController extends Controller
         ->where('village_id', $request->user()->village_id)
         ->orderByDesc('id')
         ->first();
+        if (empty($visitor_limit)) { 
+            $visitor_limit = $this->visitor_limit
+            ->create([
+                'village_id' => $request->user()->village_id
+            ]);
+        }
 
         return response()->json([
             'visitor_limit' => $visitor_limit,
@@ -46,7 +52,7 @@ class VisitorLimitController extends Controller
         ]);
     }
 
-    public function modify(Request $request, $id){
+    public function modify(Request $request){
         // guest, worker, delivery,
         $validator = Validator::make($request->all(), [
             'guest' => 'required|numeric',
@@ -59,8 +65,7 @@ class VisitorLimitController extends Controller
             ],400);
         }
         $visitorRequest = $validator->validated();
-        $visitor_limit = $this->visitor_limit
-        ->where('id', $id)
+        $visitor_limit = $this->visitor_limit 
         ->where('village_id', $request->user()->village_id)
         ->first();
         if (empty($visitor_limit)) {
@@ -72,22 +77,6 @@ class VisitorLimitController extends Controller
    
         return response()->json([
             'success' => 'You update data success'
-        ]);
-    }
-
-    public function delete($id){
-        $visitor_limit = $this->visitor_limit
-        ->where('id', $id)
-        ->first();
-        if (empty($visitor_limit)) {
-            return response()->json([
-                'errors' => 'visitor_limit not found'
-            ], 400);
-        }
-        $visitor_limit->delete();
-
-        return response()->json([
-            'success' => 'You delete data success'
         ]);
     }
 }
