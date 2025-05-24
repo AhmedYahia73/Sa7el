@@ -110,7 +110,7 @@ Route::middleware(['auth:sanctum', 'IsVillage', 'can:package_roles'])->group(fun
     });
 
     Route::controller(VisitorLimitController::class)
-    ->prefix('admin_village')->middleware('can:Settings')
+    ->prefix('visitor_limit')->middleware('can:Settings')
     ->group(function() {
         Route::get('/', 'view'); 
         Route::post('/add', 'create');

@@ -27,7 +27,8 @@ class VillageRolesController extends Controller
         'Problem Reports', 'Maintenance Request', 'Visits',
         'Gates', 'Security Man', 'Maintenance Fees', 'Appartment',
         'For Rent & Sale', 'Rent', 'Village Page', 'News Feed',
-        'Maintenance Type', 'Payment', 'Home', 'Service Type'];
+        'Maintenance Type', 'Payment', 'Home', 'Service Type',
+        'Settings'];
 
         return response()->json([
             'admin_position' => $admin_position,
