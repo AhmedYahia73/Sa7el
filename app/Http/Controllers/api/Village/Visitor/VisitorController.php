@@ -13,8 +13,7 @@ class VisitorController extends Controller
 
     public function view(Request $request){
         $visit_villages = $this->visit_village
-        ->where('village_id', $request->user()->village_id)
-        ->with(['owner', 'appartment'])
+        ->where('village_id', $request->user()->village_id) 
         ->get()
         ->map(function($item){
             return [
