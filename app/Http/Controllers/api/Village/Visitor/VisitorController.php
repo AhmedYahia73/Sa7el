@@ -5,14 +5,14 @@ namespace App\Http\Controllers\api\Village\Visitor;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Models\VisitRequest;
+use App\Models\VisitVillage;
 
 class VisitorController extends Controller
 {
-    public function __construct(private VisitRequest $visit_request){}
+    public function __construct(private VisitVillage $visit_village){}
 
     public function view(Request $request){
-        $visit_requests = $this->visit_request
+        $visit_villages = $this->visit_village
         ->where('village_id', $request->user()->village_id)
         ->with(['owner', 'appartment'])
         ->get()
@@ -30,7 +30,7 @@ class VisitorController extends Controller
         });
 
         return response()->json([
-            'visit_requests' => $visit_requests
+            'visit_villages' => $visit_villages
         ]);
     }
 }

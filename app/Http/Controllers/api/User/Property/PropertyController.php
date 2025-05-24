@@ -53,6 +53,7 @@ class PropertyController extends Controller
                     'zone' => $request->local == 'en' ? $item?->village?->zone?->name
                     : $item?->village?->zone?->ar_name ?? $item?->village?->zone?->name,
                     'zone_id' => $item?->village?->zone_id,
+                    'flag' => empty($item->code) ? false : true,
                 ];
             } else {
                 return [
@@ -67,6 +68,7 @@ class PropertyController extends Controller
                     'zone' => $request->local == 'en' ? $appartment?->village?->zone?->name
                     : $appartment?->village?->zone?->ar_name ?? $appartment?->village?->zone?->name,
                     'zone_id' => $appartment?->village->zone_id,
+                    'flag' => empty($item->code) ? false : true,
                 ];
             }
         });
