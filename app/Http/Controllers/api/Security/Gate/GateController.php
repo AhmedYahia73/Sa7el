@@ -117,7 +117,7 @@ class GateController extends Controller
             ],400);
         }
  
-        $image_path = $this->upload($request, 'image', 'images/visitors/id'); 
+        $image_path = $this->storeBase64Image($request->image, 'images/visitors/id'); 
         $visit_village = $this->visit_village
         ->where('id', $request->visit_village_id)
         ->update([
