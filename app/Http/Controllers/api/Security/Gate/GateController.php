@@ -73,11 +73,7 @@ class GateController extends Controller
                 'errors' => 'Qr code is wrong'
             ], 400);
          }
-         if ($visitor) {
-            // $image_path = null;
-            // if ($request->has('image')) {
-            //     $image_path = $this->upload($request, 'image', 'images/visitors/id');
-            // }
+         if ($visitor) { 
             $visit_village = $this->visit_village
             ->create([
                 'user_id' => $userid,
@@ -120,17 +116,16 @@ class GateController extends Controller
                 'errors' => $validator->errors(),
             ],400);
         }
-        
-        // $image_path = null;
-        // if ($request->has('image')) {
-        //     $image_path = $this->upload($request, 'image', 'images/visitors/id');
-        // }
+ 
+        $image_path = $this->upload($request, 'image', 'images/visitors/id'); 
         $visit_village = $this->visit_village
-        ->create([
-            'user_id' => $userid,
-            'village_id' => $request->user()->village_id,
-            'gate_id' => $request->gate_id,
-            'type' => 'visitor',
+        ->where('id', $request->visit_village_id)
+        ->update([
+            'image' => $image_path, 
+        ]);
+
+        return response()->json([
+            'success' => 'You upload id success'
         ]);
     }
 }

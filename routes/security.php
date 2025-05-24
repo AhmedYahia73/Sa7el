@@ -20,6 +20,7 @@ Route::middleware(['auth:sanctum', 'IsSecurity'])->group(function(){
     Route::controller(GateController::class)->prefix('gate_qr')
     ->group(function() {
         Route::post('/', 'read_qr');
+        Route::post('/upload_id', 'upload_id');
     });
 
     Route::controller(PoolController::class)->prefix('pool_qr')
