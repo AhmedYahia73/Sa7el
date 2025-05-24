@@ -21,8 +21,7 @@ class GateController extends Controller
     public function read_qr(Request $request){
         $validator = Validator::make($request->all(), [
             'qr_code' => 'required|string',
-            'gate_id' => 'required|exists:gates,id',
-            'image' => 'sometimes',
+            'gate_id' => 'required|exists:gates,id', 
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -45,8 +44,10 @@ class GateController extends Controller
         $arr_text = explode('-', $text);
         $userid = 0;
         $visitor = 0;
+        $visitor_type = null;
         if ($arr_text[0] == 'visitor_id') {
             $userid = intval($arr_text[1]);
+            $visitor_type = intval($arr_text[5]);
             $visitor = 1;
         } 
         elseif(intval($arr_text[0])) {
@@ -73,21 +74,20 @@ class GateController extends Controller
             ], 400);
          }
          if ($visitor) {
-            $image_path = null;
-            if ($request->has('image')) {
-                $image_path = $this->upload($request, 'image', 'images/visitors/id');
-            }
-            $this->visit_village
+            // $image_path = null;
+            // if ($request->has('image')) {
+            //     $image_path = $this->upload($request, 'image', 'images/visitors/id');
+            // }
+            $visit_village = $this->visit_village
             ->create([
                 'user_id' => $userid,
                 'village_id' => $request->user()->village_id,
                 'gate_id' => $request->gate_id,
-                'image' => $image_path,
-                'type' => 'visitor'
+                'type' => 'visitor',
             ]);
          }
          else{ 
-            $this->visit_village
+            $visit_village = $this->visit_village
             ->create([
                 'user_id' => $userid,
                 'village_id' => $request->user()->village_id,
@@ -105,6 +105,32 @@ class GateController extends Controller
             'success' => 'Qr code is true',
             'appartment' => $appartment,
             'user' => $user,
+            'visit_village_id' => $visit_village,
+            'visitor_type' => $visitor_type
          ]);
+    }
+
+    public function upload_id(Request $request){
+        $validator = Validator::make($request->all(), [ 
+            'visit_village_id' => 'required|exists:visit_villages,id',
+            'image' => 'required',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+        
+        // $image_path = null;
+        // if ($request->has('image')) {
+        //     $image_path = $this->upload($request, 'image', 'images/visitors/id');
+        // }
+        $visit_village = $this->visit_village
+        ->create([
+            'user_id' => $userid,
+            'village_id' => $request->user()->village_id,
+            'gate_id' => $request->gate_id,
+            'type' => 'visitor',
+        ]);
     }
 }
