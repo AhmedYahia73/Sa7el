@@ -61,6 +61,7 @@ class GateController extends Controller
                 ], 400);
             }
             $qr_code_code = $arr_text[9];
+            $code = $qr_code_code;
             
             $visit_village = $this->visit_village
             ->where('user_id', $userid)
