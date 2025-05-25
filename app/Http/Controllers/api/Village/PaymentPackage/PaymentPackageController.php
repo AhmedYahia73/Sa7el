@@ -36,6 +36,8 @@ class PaymentPackageController extends Controller
             $image_path = $this->upload($request, 'receipt', 'images/payment_receipt');
             $paymentRequest['receipt'] = $image_path;
         }
+        $this->payment
+        ->create($paymentRequest);
 
         return response()->json([
             'success' => 'You upload data success'
