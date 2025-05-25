@@ -155,7 +155,7 @@ class LoginController extends Controller
         }
         if (password_verify($request->input('password'), $user->password) && $user->role == 'village') {
             $user->token = $user->createToken('village')->plainTextToken;
-            if ((!empt($user?->village?->from) && ($user->village->to < date('Y-m-d')
+            if ((!empty($user?->village?->from) && ($user->village->to < date('Y-m-d')
             || $user->village->from > date('Y-m-d'))) || empty($user?->village?->from)) {
                 $packages = $this->package
                 ->where('type', 'village')
