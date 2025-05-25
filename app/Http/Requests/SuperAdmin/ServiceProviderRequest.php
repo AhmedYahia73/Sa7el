@@ -31,7 +31,6 @@ class ServiceProviderRequest extends FormRequest
             'name' => ['required'],
             'description' => ['sometimes'],
             'phone' => ['required', ],
-            'image' => ['required'],
             'location' => ['required'],
             'status' => ['required'],
         ];

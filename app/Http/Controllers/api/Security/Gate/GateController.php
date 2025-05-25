@@ -35,12 +35,13 @@ class GateController extends Controller
             $base64 = explode('base64,', $base64)[1];
         }
 
-        $imageData = base64_decode($base64);
-        $tempImagePath = storage_path('app/temp_qr.png');
-        file_put_contents($tempImagePath, $imageData);
+        // $imageData = base64_decode($base64);
+        // $tempImagePath = storage_path('app/temp_qr.png');
+        // file_put_contents($tempImagePath, $imageData);
 
-        $qrcode = new QrReader($tempImagePath);
-        $text = $qrcode->text();
+        // $qrcode = new QrReader($tempImagePath);
+        // $text = $qrcode->text();
+        $text = $request->qr_code;
         $arr_text = explode('-', $text);
         $userid = 0;
         $visitor = 0;

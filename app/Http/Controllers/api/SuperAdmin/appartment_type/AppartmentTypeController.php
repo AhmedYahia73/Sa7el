@@ -59,13 +59,20 @@ class AppartmentTypeController extends Controller
         // name, image, status,
         // ar_name
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'image' => 'required',
+            'name' => 'required', 
             'status' => 'required|boolean',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
                 'errors' => $validator->errors(),
+            ],400);
+        }
+        $validator_2 = Validator::make($request->all(), [ 
+            'image' => 'required', 
+        ]);
+        if ($validator_2->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator_2->errors(),
             ],400);
         }
         $appartmentRequest = $validator->validated();

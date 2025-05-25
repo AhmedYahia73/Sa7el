@@ -60,6 +60,14 @@ class PaymentMethodController extends Controller
     public function create(PaymentMethodRequest $request){
         // logo, name, description, status
         // ar_name, ar_description
+        $validator = Validator::make($request->all(), [
+            'logo' => ['required'],
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
         $paymentMethodRequest = $request->validated();
         if (!is_string($request->logo)) {
             $image_path = $this->upload($request, 'logo', 'images/payment_methods');
@@ -103,6 +111,14 @@ class PaymentMethodController extends Controller
     public function modify(PaymentMethodRequest $request, $id){
         // logo, name, description, status
         // ar_name, ar_description
+        $validator = Validator::make($request->all(), [
+            'logo' => ['required'],
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
         $paymentMethodRequest = $request->validated();
         $payment_method = $this->payment_method
         ->where('id', $id)

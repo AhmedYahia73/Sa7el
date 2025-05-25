@@ -59,6 +59,14 @@ class ServiceProviderController extends Controller
     public function create(ServiceProviderRequest $request){
         // service_id, name, description, phone, status, location, village_id
         // ar_name, ar_description, image, open_from, open_to
+        $validator = Validator::make($request->all(), [
+            'image' => ['required'],
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
         $ServiceProviderRequest = $request->validated();
         if (!is_string($request->image)) {
             $image_path = $this->upload($request, 'image', 'images/service_providers');
@@ -102,6 +110,14 @@ class ServiceProviderController extends Controller
     public function modify(ServiceProviderRequest $request, $id){
         // service_id, name, description, phone, status, location, village_id
         // ar_name, ar_description, image
+        $validator = Validator::make($request->all(), [
+            'image' => ['required'],
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
         $ServiceProviderRequest = $request->validated();
         $provider = $this->provider
         ->where('id', $id)

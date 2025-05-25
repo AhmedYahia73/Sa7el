@@ -24,7 +24,6 @@ class PaymentMethodRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'logo' => ['required'],
             'name' => ['required'],
             'description' => ['sometimes'],
             'status' => ['required', 'boolean'],
