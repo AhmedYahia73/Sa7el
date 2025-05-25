@@ -44,7 +44,7 @@ Route::middleware(['auth:sanctum', 'IsVillage', 'can:package_roles'])->group(fun
 
     Route::controller(PaymentPackageController::class)->prefix('payment_package')
     ->group(function() {
-        Route::get('/', 'payment'); 
+        Route::post('/', 'payment'); 
     });
 
     Route::controller(OwnerController::class)->prefix('owner')->middleware('can:owner')

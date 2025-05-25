@@ -29,11 +29,11 @@ class PoolController extends Controller
             ],400);
         }
 
-        $base64 = $request->input('qr_code');
+        // $base64 = $request->input('qr_code');
  
-        if (strpos($base64, 'base64,') !== false) {
-            $base64 = explode('base64,', $base64)[1];
-        }
+        // if (strpos($base64, 'base64,') !== false) {
+        //     $base64 = explode('base64,', $base64)[1];
+        // }
 
         // $imageData = base64_decode($base64);
         // $tempImagePath = storage_path('app/temp_qr.png');
