@@ -29,7 +29,7 @@ use App\Http\Controllers\api\Village\ServiceType\ServiceTypeController;
 use App\Http\Controllers\api\Village\VisitorLimit\VisitorLimitController;
 use App\Http\Controllers\api\Village\PaymentPackage\PaymentPackageController;
 
-Route::middleware(['auth:sanctum', 'IsVillage', 'can:package_roles'])->group(function(){
+Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(HomeController::class)->prefix('home')->middleware('can:Home')
     ->group(function() {
         Route::get('/', 'view');

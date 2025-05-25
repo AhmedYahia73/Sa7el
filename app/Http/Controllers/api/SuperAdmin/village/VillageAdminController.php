@@ -85,7 +85,7 @@ class VillageAdminController extends Controller
         $village = $this->village
         ->where('id', $request->village_id)
         ->first();
-        $admin_num = $village?->package?->admin_num ?? 0;
+        $admin_num = $village?->package?->admin_num ?? 1;
         $admin_count = $this->admin
         ->where('village_id', $request->user()->village_id)
         ->count();

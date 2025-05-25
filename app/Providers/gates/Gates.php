@@ -10,15 +10,15 @@ class Gates
 {
     public static function defineGates()
     {
-        Gate::define('package_roles', function ($user) { 
-            $village = $user->village;
-            $from = $village->from;
-            $to = $village->to;
-            if ($from <= date('Y-m-d') && $to >= date('Y-m-d')) {
-                return true;
-            }
-            return false;
-        });
+        // Gate::define('package_roles', function ($user) { 
+        //     $village = $user->village;
+        //     $from = $village->from;
+        //     $to = $village->to;
+        //     if ($from <= date('Y-m-d') && $to >= date('Y-m-d')) {
+        //         return true;
+        //     }
+        //     return false;
+        // });
         Gate::define('Settings', function ($user) { 
             if ($user->position &&
             $user->position->roles->pluck('module')->contains('Settings')) {
