@@ -81,6 +81,7 @@ class GateController extends Controller
                 'village_id' => $request->user()->village_id,
                 'gate_id' => $request->gate_id,
                 'type' => 'visitor',
+                'visitor_type' => $visitor_type,
             ]);
          }
          else{ 
