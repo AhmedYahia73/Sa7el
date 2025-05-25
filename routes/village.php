@@ -44,6 +44,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
 
     Route::controller(PaymentPackageController::class)->prefix('payment_package')
     ->group(function() {
+        Route::get('/invoice', 'invoice'); 
         Route::post('/', 'payment'); 
     });
 

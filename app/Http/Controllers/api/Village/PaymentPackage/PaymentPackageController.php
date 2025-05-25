@@ -8,10 +8,11 @@ use Illuminate\Support\Facades\Validator;
 use App\trait\image;
 
 use App\Models\Payment;
+use App\Models\Package;
 
 class PaymentPackageController extends Controller
 {
-    public function __construct(private Payment $payment){}
+    public function __construct(private Payment $payment, private Package $package){}
     use image;
 
     public function payment(Request $request){
@@ -41,6 +42,18 @@ class PaymentPackageController extends Controller
 
         return response()->json([
             'success' => 'You upload data success'
+        ]);
+    }
+
+    public function invoice(Request $request){
+        $package = $this->package
+        ->where('id', $request?->user()?->village?->package_id)
+        ->first();
+        $village = $request->user()->village;
+
+        return response()->json([
+            'package' => $package,
+            'village' => $village,
         ]);
     }
 }
