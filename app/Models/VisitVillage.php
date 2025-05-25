@@ -14,6 +14,7 @@ class VisitVillage extends Model
         'image',
         'type',
         'visitor_type',
+        'code',
     ];
 
     public function user(){

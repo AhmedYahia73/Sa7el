@@ -47,6 +47,7 @@ class GateController extends Controller
         $userid = 0;
         $visitor = 0;
         $visitor_type = null;
+        $code = null;
         if ($arr_text[0] == 'visitor_id') {
             $userid = intval($arr_text[1]);
             $visitor_type = $arr_text[5];
@@ -103,6 +104,7 @@ class GateController extends Controller
                 'gate_id' => $request->gate_id,
                 'type' => 'visitor',
                 'visitor_type' => $visitor_type,
+                'code' => $code,
             ]);
          }
          else{ 
