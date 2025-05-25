@@ -48,7 +48,7 @@ class GateController extends Controller
         $visitor_type = null;
         if ($arr_text[0] == 'visitor_id') {
             $userid = intval($arr_text[1]);
-            $visitor_type = intval($arr_text[5]);
+            $visitor_type = $arr_text[5];
             $visitor = 1;
         } 
         elseif(intval($arr_text[0])) {
