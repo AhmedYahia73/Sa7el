@@ -26,7 +26,6 @@ class UserRequest extends FormRequest
         if ($this->input('user_type') == 'rent') {
             return [
                 'name' => ['required'],
-                'user_type' => ['required', 'in:owner,rent,visitor'],
                 'email' => ['required', 'email'],
                 'phone' => ['required'],
                 'status' => ['required', 'boolean'],

@@ -13,13 +13,14 @@ use App\Models\User;
 use App\Models\Village;
 use App\Models\AppartmentType;
 use App\Models\SecurityMan;
+use App\Models\Package;
 use App\Models\Zone;
 
 class LoginController extends Controller
 {
     public function __construct(private User $user, private Village $village,
     private Zone $zones, private AppartmentType $appartment_types,
-    private SecurityMan $secuity){}
+    private SecurityMan $secuity, private Package $package){}
 
     public function sign_up_list(Request $request){
         $local = $request->local == 'ar' ? 1 : 0;
@@ -154,6 +155,16 @@ class LoginController extends Controller
         }
         if (password_verify($request->input('password'), $user->password) && $user->role == 'village') {
             $user->token = $user->createToken('village')->plainTextToken;
+            if ((!empt($user?->village?->from) && ($user->village->to < date('Y-m-d')
+            || $user->village->from > date('Y-m-d'))) || empty($user?->village?->from)) {
+                $packages = $this->package
+                ->where('type', 'village')
+                ->get();
+                return response()->json([
+                    'village' => $user,
+                    'token' => $user->token,
+                ]);
+            }
             return response()->json([
                 'village' => $user,
                 'token' => $user->token,

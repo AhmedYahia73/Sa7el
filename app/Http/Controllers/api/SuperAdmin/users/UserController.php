@@ -21,11 +21,43 @@ class UserController extends Controller
 
     public function view(){
         $users = $this->user
-        ->select('id', 'name', 'email', 'phone', 'password', 'rent_from', 'birthDate',
-        'rent_to', 'user_type', 'village_id', 'image', 'parent_user_id', 'status', 'gender')
+        ->select('id', 'name', 'email', 'phone', 'birthDate',
+        'user_type', 'village_id', 'image', 'parent_user_id', 'status', 'gender')
         ->with('villages_user', 'parent')
         ->where('role', 'user')
-        ->get();
+        ->get()
+        ->map(function($item){
+            $user_type_owner = $item->appartment_code->where('type', 'owner')->values();
+            $user_type_renter = $item->appartment_code->where('type', 'renter')
+            ->where('from', '<=', date('Y-m-d'))
+            ->where('to', '>=', date('Y-m-d'))->values();
+            $type = 'Visitor';
+            if (count($item->appartment_code) > 0) {
+                if (count($user_type_owner) > 0) {
+                    $type = 'Owner';
+                }
+                elseif(count($user_type_renter) > 0){
+                    $type = 'Renter';
+                }
+                else{
+                    $type = 'Visitor';
+                }
+            }
+            return [
+                'id' => $item->id,
+                'name' => $item->name,
+                'email' => $item->email,
+                'phone' => $item->phone,
+                'user_type' => $type,
+                'village_id' => $item->village_id,
+                'image' => $item->image_link,
+                'parent_user_id' => $item->parent_user_id,
+                'status' => $item->status,
+                'gender' => $item->gender,
+                'villages_user' => $item->villages_user,
+                'parent' => $item->parent,
+            ];
+        });
         $village = $this->village
         ->get();
 
