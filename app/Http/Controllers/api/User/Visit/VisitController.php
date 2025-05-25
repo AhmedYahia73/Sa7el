@@ -27,8 +27,8 @@ class VisitController extends Controller
                 'errors' => $firstError,
             ],400);
         }
-        $data = 'visitor_id-' . $request->user()->id . '-village_id-' . $request->village_id . 
-        '-visitor_type-' . $request->visitor_type;
+        $data = 'visitor_id>' . $request->user()->id . '>village_id>' . $request->village_id . 
+        '>visitor_type>' . $request->visitor_type . '>time>' . now() . '>rand>' . rand(1, 100000);
         $qrCode = QrCode::format('png')->size(300)->generate($data);
         $fileName = 'user/visit/qr/' . $data . '.png';
         Storage::disk('public')->put($fileName, $qrCode); // Save the image

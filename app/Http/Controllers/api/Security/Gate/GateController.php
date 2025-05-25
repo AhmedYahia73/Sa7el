@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Zxing\QrReader;
 use App\trait\image;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\AppartmentCode;
@@ -42,7 +43,7 @@ class GateController extends Controller
         // $qrcode = new QrReader($tempImagePath);
         // $text = $qrcode->text();
         $text = $request->qr_code;
-        $arr_text = explode('-', $text);
+        $arr_text = explode('>', $text);
         $userid = 0;
         $visitor = 0;
         $visitor_type = null;
@@ -50,6 +51,26 @@ class GateController extends Controller
             $userid = intval($arr_text[1]);
             $visitor_type = $arr_text[5];
             $visitor = 1;
+            $tomorrow = Carbon::now()->addDay();
+            $qrcode_time = $arr_text[7];
+            $qrcode_time = Carbon::parse($qrcode_time);
+            if ($tomorrow < $qrcode_time) {
+                return response()->json([
+                    'errors' => 'Qr code is expired'
+                ], 400);
+            }
+            $qr_code_code = $arr_text[9];
+            
+            $visit_village = $this->visit_village
+            ->where('user_id', $userid)
+            ->where('village_id', $request->user()->village_id)
+            ->where('code', $qr_code_code)
+            ->first();
+            if (!empty($visit_village)) {
+                return response()->json([
+                    'errors' => 'Qr code is expired...'
+                ], 400);
+            }
         } 
         elseif(intval($arr_text[0])) {
             $userid = intval($arr_text[0]); 
