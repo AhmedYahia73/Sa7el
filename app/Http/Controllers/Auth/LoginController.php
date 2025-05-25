@@ -191,7 +191,6 @@ class LoginController extends Controller
             return response()->json(['errors'=>'creational not Valid'],403);
         }
     }
-    
 
     public function user_login(Request $request){
         $validator = Validator::make($request->all(), [

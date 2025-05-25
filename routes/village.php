@@ -27,6 +27,7 @@ use App\Http\Controllers\api\Village\PaymentRequest\PaymentRequestController;
 use App\Http\Controllers\api\Village\Home\HomeController;
 use App\Http\Controllers\api\Village\ServiceType\ServiceTypeController;
 use App\Http\Controllers\api\Village\VisitorLimit\VisitorLimitController;
+use App\Http\Controllers\api\Village\PaymentPackage\PaymentPackageController;
 
 Route::middleware(['auth:sanctum', 'IsVillage', 'can:package_roles'])->group(function(){
     Route::controller(HomeController::class)->prefix('home')->middleware('can:Home')
@@ -39,6 +40,11 @@ Route::middleware(['auth:sanctum', 'IsVillage', 'can:package_roles'])->group(fun
         Route::get('/', 'view'); 
         Route::post('/add', 'add'); 
         Route::delete('/delete', 'delete'); 
+    });
+
+    Route::controller(PaymentPackageController::class)->prefix('payment_package')
+    ->group(function() {
+        Route::get('/', 'payment'); 
     });
 
     Route::controller(OwnerController::class)->prefix('owner')->middleware('can:owner')
