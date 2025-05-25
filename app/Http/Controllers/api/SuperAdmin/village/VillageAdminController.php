@@ -87,7 +87,7 @@ class VillageAdminController extends Controller
         ->first();
         $admin_num = $village?->package?->admin_num ?? 1;
         $admin_count = $this->admin
-        ->where('village_id', $request->user()->village_id)
+        ->where('village_id', $request->village_id)
         ->count();
         if ($admin_num <= $admin_count) {
             return response()->json([
