@@ -161,6 +161,7 @@ class LoginController extends Controller
                 ->where('type', 'village')
                 ->get();
                 return response()->json([
+                    'packages' => $packages,
                     'village' => $user,
                     'token' => $user->token,
                 ]);
