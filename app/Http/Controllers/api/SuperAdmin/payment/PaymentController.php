@@ -5,12 +5,18 @@ namespace App\Http\Controllers\api\SuperAdmin\payment;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 use App\Models\Payment;
+use App\Models\Village;
+use App\Models\Provider;
+use App\Models\ServiceProvider;
 
 class PaymentController extends Controller
 {
-    public function __construct(private Payment $payments){}
+    public function __construct(private Payment $payments,
+    private ServiceProvider $service_provider,
+    private Village $village, private Provider $provider,){}
 
     public function view(){
         $pending_payments = $this->payments
@@ -29,9 +35,30 @@ class PaymentController extends Controller
     }
 
     public function approve(Request $request, $id){
-        $this->payments
+        $payment = $this->payments
         ->where('id', $id)
-        ->update([
+        ->first();
+        $nextYear = Carbon::now()->addYear();
+        if ($payment->type == 'village') {
+            $village = $this->village
+            ->where('id', $payment->village_id)
+            ->update([
+                'package_id' => $payment->package_id ,
+                'from' => date('Y-m-d'),
+                'to' => $nextYear,
+            ]);
+        }
+        elseif($payment->type == 'provider'){
+            $provider = $this->provider
+            ->where('id', $payment->provider_id)
+            ->update([
+                'package_id' => $payment->package_id ,
+                'from' => date('Y-m-d'),
+                'to' => $nextYear,
+            ]);
+        }
+
+        $payment->update([
             'status' => 'approved'
         ]);
 
