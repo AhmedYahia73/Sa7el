@@ -159,7 +159,23 @@ class LoginController extends Controller
             || $user->village->from > date('Y-m-d'))) || empty($user?->village?->from)) {
                 $packages = $this->package
                 ->where('type', 'village')
-                ->get();
+                ->get()
+                ->map(function($item) use($user){
+                    return [
+                        'id' => $item->id,
+                        'name' => $item->name,
+                        'description' => $item->description,
+                        'price' => $item->price,
+                        'feez' => $item->feez,
+                        'discount' => $item->discount,
+                        'beach_pool_module' => $item->beach_pool_module,
+                        'maintenance_module' => $item->maintenance_module,
+                        'security_num' => $item->security_num,
+                        'admin_num' => $item->admin_num,
+                        'admin_num' => $item->admin_num,
+                        'my_package' => $user?->village?->package_id == $item->id ? 1 : 0,
+                    ];
+                });
                 return response()->json([
                     'packages' => $packages,
                     'village' => $user,
