@@ -44,9 +44,11 @@ class PoolController extends Controller
         $arr_text = explode('-', $text);
         $userid = 0;
         $pool_id = 0;
+        $appartment_id = 0;
         if ($arr_text[2] == 'pool_id') {
             $userid = intval($arr_text[1]);
             $pool_id = intval($arr_text[3]);
+            $appartment_id = intval($arr_text[5]);
         } 
         else{
             return response()->json([
@@ -54,14 +56,7 @@ class PoolController extends Controller
             ], 400);
         }
          $appartment = $this->appartment
-         ->where('user_id', $userid)
-         ->where('type', 'owner')
-         ->where('village_id', $request->user()->village_id)
-         ->orWhere('user_id', $userid)
-         ->where('village_id', $request->user()->village_id)
-         ->where('type', 'renter')
-         ->where('from', '<=', date('Y-m-d'))
-         ->where('to', '>=', date('Y-m-d'))
+         ->where('id', $appartment_id) 
          ->first();
          if (empty($appartment) || $pool_id != $request->pool_id) {
             return response()->json([

@@ -48,6 +48,7 @@ class GateController extends Controller
         $visitor = 0;
         $visitor_type = null;
         $code = null;
+        $appartment_id = null;
         if ($arr_text[0] == 'visitor_id') {
             $userid = intval($arr_text[1]);
             $visitor_type = $arr_text[5];
@@ -73,9 +74,11 @@ class GateController extends Controller
                     'errors' => 'Qr code is expired...'
                 ], 400);
             }
+            $appartment_id = $arr_text[11];
         } 
         elseif(intval($arr_text[0])) {
             $userid = intval($arr_text[0]); 
+            $appartment_id = $arr_text[2];
         }
         else{
             return response()->json([
@@ -83,14 +86,7 @@ class GateController extends Controller
             ], 400);
         }
          $appartment = $this->appartment
-         ->where('user_id', $userid)
-         ->where('type', 'owner')
-         ->where('village_id', $request->user()->village_id)
-         ->orWhere('user_id', $userid)
-         ->where('village_id', $request->user()->village_id)
-         ->where('type', 'renter')
-         ->where('from', '<=', date('Y-m-d'))
-         ->where('to', '>=', date('Y-m-d'))
+         ->where('id', $appartment_id)
          ->first();
          if (empty($appartment)) {
             return response()->json([

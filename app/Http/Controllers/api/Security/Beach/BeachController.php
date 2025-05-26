@@ -47,6 +47,7 @@ class BeachController extends Controller
         if ($arr_text[2] == 'beach_id') {
             $userid = intval($arr_text[1]);
             $beach_id = intval($arr_text[3]);
+            $appartment_id = intval($arr_text[5]);
         } 
         else{
             return response()->json([
@@ -54,14 +55,7 @@ class BeachController extends Controller
             ], 400);
         }
          $appartment = $this->appartment
-         ->where('user_id', $userid)
-         ->where('type', 'owner')
-         ->where('village_id', $request->user()->village_id)
-         ->orWhere('user_id', $userid)
-         ->where('village_id', $request->user()->village_id)
-         ->where('type', 'renter')
-         ->where('from', '<=', date('Y-m-d'))
-         ->where('to', '>=', date('Y-m-d'))
+         ->where('id', $appartment_id) 
          ->first();
          if (empty($appartment) || $beach_id != $request->beach_id) {
             return response()->json([

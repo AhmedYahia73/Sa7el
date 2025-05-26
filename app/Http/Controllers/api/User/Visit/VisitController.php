@@ -20,6 +20,7 @@ class VisitController extends Controller
         $validator = Validator::make($request->all(), [
             'village_id' => 'required|exists:villages,id',
             'visitor_type' => 'required|in:guest,worker,delivery',
+            'appartment_id' => 'required|exists:appartments,id',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -28,7 +29,8 @@ class VisitController extends Controller
             ],400);
         }
         $data = 'visitor_id>' . $request->user()->id . '>village_id>' . $request->village_id . 
-        '>visitor_type>' . $request->visitor_type . '>time>' . now() . '>rand>' . rand(1, 100000);
+        '>visitor_type>' . $request->visitor_type . '>time>' . now() . '>rand>' . rand(1, 100000)
+        . '>appartment_id>' . $request->appartment_id;
         $qrCode = QrCode::format('png')->size(300)->generate($data);
         $fileName = 'user/visit/qr/' . $data . '.png';
         Storage::disk('public')->put($fileName, $qrCode); // Save the image

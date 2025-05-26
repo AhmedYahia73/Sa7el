@@ -19,6 +19,7 @@ class PoolBeachesController extends Controller
         $validator = Validator::make($request->all(), [
             'local' => 'required|in:en,ar',
             'village_id' => 'required|exists:villages,id',
+            'appartment_id' => 'required|exists:appartments,id',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -31,7 +32,8 @@ class PoolBeachesController extends Controller
         ->where('status', 1)
         ->get()
         ->map(function($item) use($request){
-            $data = 'user_id-' . $request->user()->id . '-beach_id-' . $item->id;
+            $data = 'user_id-' . $request->user()->id . '-beach_id-' . $item->id
+            . '-appartment_id-' . $request->appartment_id;
             $qrCode = base64_encode(
                 QrCode::format('png')->size(300)->generate($data)
             );
@@ -53,6 +55,7 @@ class PoolBeachesController extends Controller
         $validator = Validator::make($request->all(), [
             'local' => 'required|in:en,ar',
             'village_id' => 'required|exists:villages,id',
+            'appartment_id' => 'required|exists:appartments,id', 
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -65,7 +68,8 @@ class PoolBeachesController extends Controller
         ->where('status', 1)
         ->get()
         ->map(function($item) use($request){
-            $data = 'user_id-' . $request->user()->id . '-pool_id-' . $item->id;
+            $data = 'user_id-' . $request->user()->id . '-pool_id-' . $item->id
+            . '-appartment_id-' . $request->appartment_id;
             $qrCode = base64_encode(
                 QrCode::format('png')->size(300)->generate($data)
             );
