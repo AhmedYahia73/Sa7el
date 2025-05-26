@@ -127,6 +127,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(AdminController::class)->prefix('admin_village')->middleware('can:Village Page')
     ->group(function() {
         Route::get('/', 'view');
+        Route::get('/my_profile', 'my_profile');
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
