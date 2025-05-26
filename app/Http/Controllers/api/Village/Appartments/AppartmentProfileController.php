@@ -4,12 +4,15 @@ namespace App\Http\Controllers\api\Village\Appartments;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 use App\Models\Appartment;
+use App\Models\AppartmentCode;
 
 class AppartmentProfileController extends Controller
 {
-    public function __construct(private Appartment $appartment){}
+    public function __construct(private Appartment $appartment,
+    private AppartmentCode $appartment_code){}
 
     public function profile_unit(Request $request, $id){
         $appartment = $this->appartment
@@ -50,6 +53,36 @@ class AppartmentProfileController extends Controller
             'appartment' => $appartment,
             'owners' => $owners,
             'renters' => $renters,
+        ]);
+    }
+
+    public function update_user_type(Request $request, $id){
+        $validator = Validator::make($request->all(), [
+            'user_type' => ['required', 'in:follower,super'],  
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+        
+        $appartment_code = $this->appartment_code
+        ->where('id', $id)
+        ->first();
+        if ($request->user_type == 'super') {
+            $this->appartment_code
+            ->where('code', $appartment_code->code)
+            ->whereNotNull('code')
+            ->update([
+                'user_type' => 'follower'
+            ]);
+        }
+        $appartment_code->update([
+            'user_type' => $request->user_type
+        ]);
+
+        return response()->json([
+            'success' => 'You update data success'
         ]);
     }
 }

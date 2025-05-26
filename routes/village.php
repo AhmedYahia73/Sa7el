@@ -28,6 +28,7 @@ use App\Http\Controllers\api\Village\Home\HomeController;
 use App\Http\Controllers\api\Village\ServiceType\ServiceTypeController;
 use App\Http\Controllers\api\Village\VisitorLimit\VisitorLimitController;
 use App\Http\Controllers\api\Village\PaymentPackage\PaymentPackageController;
+use App\Http\Controllers\api\Village\Appartments\AppartmentProfileController;
 
 Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(HomeController::class)->prefix('home')->middleware('can:Home')
@@ -141,6 +142,13 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
+    });
+
+    Route::controller(AppartmentProfileController::class)
+    ->prefix('appartment_profile')->middleware('can:Appartment')
+    ->group(function() {
+        Route::get('/', 'profile_unit'); 
+        Route::post('/update', 'update_user_type'); 
     });
 
     Route::controller(PostsController::class)->prefix('post')->middleware('can:News Feed')
