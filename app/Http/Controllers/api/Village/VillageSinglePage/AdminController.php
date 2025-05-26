@@ -20,7 +20,9 @@ class AdminController extends Controller
 
     public function view(Request $request){
         $admins = $this->admin
+        ->with('position')
         ->where('village_id', $request->user()->village_id)
+        ->where('id', '!=', $request->user()->id)
         ->where('role', 'village')
         ->get();
         $village_positions = $this->admin_positions
@@ -35,6 +37,14 @@ class AdminController extends Controller
         ]);
     } 
 
+    public function my_profile(Request $request){
+        $admin = $request->user();
+        $admin->position;
+
+        return response()->json([
+            'admin' => $admin
+        ]);
+    }
 
     public function status(Request $request, $id){
         $validator = Validator::make($request->all(), [
