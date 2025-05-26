@@ -23,7 +23,7 @@ class EntranceController extends Controller
             ],400);
         }
         $user = $request->user();
-        $data = $user->id . '>appartment>' . $item->appartment_id;
+        $data = $user->id . '>appartment>' . $request->appartment_id;
         $qrCode = base64_encode(
             QrCode::format('png')->size(300)->generate($data)
         );
