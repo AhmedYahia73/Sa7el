@@ -14,11 +14,15 @@ class ProfileController extends Controller
     use image;
 
     public function profile(Request $request){
-        $security = $request->user()
-        ->select('name', 'email', 'phone', 'password', 'image');
+        $security = $request->user();
 
         return response()->json([
-            'security' => $security
+            'security' => [
+                'name' => $security->name,
+                'email' => $security->email,
+                'phone' => $security->phone,
+                'image' => $security->image_link,
+            ]
         ]);
     }
 
