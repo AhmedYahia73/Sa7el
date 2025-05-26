@@ -147,7 +147,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(AppartmentProfileController::class)
     ->prefix('appartment_profile')->middleware('can:Appartment')
     ->group(function() {
-        Route::get('/', 'profile_unit'); 
+        Route::get('/{id}', 'profile_unit'); 
         Route::post('/update', 'update_user_type'); 
     });
 
