@@ -260,4 +260,13 @@ class LoginController extends Controller
             ], 400);
         }
     }
+
+    public function delete_account(Request $request){
+        // /api/delete_account
+        $user = $request->user()->delete(); 
+        
+        return response()->json([
+            'success' => 'You delete data success'
+        ]);
+    }
 }
