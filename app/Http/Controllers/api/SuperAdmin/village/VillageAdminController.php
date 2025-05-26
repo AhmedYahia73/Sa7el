@@ -21,6 +21,7 @@ class VillageAdminController extends Controller
     public function view($id){
         $village = $this->village
         ->where('id', $id)
+        ->with('admin.position')
         ->first();
         $admins = $village?->admin ?? [];
         $village_positions = $this->admin_positions
