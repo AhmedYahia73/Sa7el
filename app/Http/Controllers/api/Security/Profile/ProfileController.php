@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\trait\image;
 
-use App\Modeles\SecurityMan;
+use App\Models\SecurityMan;
 
 class ProfileController extends Controller
 {
