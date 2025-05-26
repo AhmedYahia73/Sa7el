@@ -27,12 +27,8 @@ class SecuirtyRequest extends FormRequest
         // email , phone, , 
         return [
             'name' => ['required'],
-            'location' => ['required'],
-            'shift_from' => ['required', 'regex:/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/'],
-            'shift_to' => ['required', 'regex:/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/'],
             'email' => ['required', 'email'],
-            'phone' => ['required'],
-            'type' => ['required', 'in:pool,gate,beach'],
+            'phone' => ['required'], 
             'status' => ['required', 'boolean'],
         ];
     }

@@ -237,7 +237,6 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     
     Route::controller(InvoiceController::class)->prefix('invoice')
     ->group(function() {
-        Route::get('/', 'view'); 
-        Route::post('/update', 'modify');
+        Route::get('/', 'invoice');
     });
 });

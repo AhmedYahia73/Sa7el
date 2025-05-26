@@ -255,4 +255,8 @@ class VillageController extends Controller
             'success' => 'You delete data success',
         ]);
     }
+
+    public function invoice(Request $request, $id){
+        
+    }
 }
