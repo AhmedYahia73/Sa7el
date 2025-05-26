@@ -237,6 +237,6 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     
     Route::controller(InvoiceController::class)->prefix('invoice')
     ->group(function() {
-        Route::get('/', 'invoice');
+        Route::get('/{id}', 'invoice');
     });
 });
