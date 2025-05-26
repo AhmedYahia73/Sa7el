@@ -20,7 +20,7 @@ Route::middleware(['auth:sanctum', 'IsSecurity'])->group(function(){
 
     Route::controller(ProfileController::class)->prefix('profile')
     ->group(function() {
-        Route::post('/', 'profile');
+        Route::get('/', 'profile');
         Route::post('/update', 'update_profile');
     });
 
