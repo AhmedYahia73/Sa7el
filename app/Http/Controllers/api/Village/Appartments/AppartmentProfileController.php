@@ -19,9 +19,11 @@ class AppartmentProfileController extends Controller
         ->where('type', 'owner')->values()
         ->map(function($item){
             return [
+                'id' => $item->id,
                 'name' => $item?->user?->name,
                 'email' => $item?->user?->email,
                 'phone' => $item?->user?->phone,
+                'user_type' => $item->user_type,
                 'image' => $item?->user?->image_link,
             ];
         });
@@ -29,8 +31,10 @@ class AppartmentProfileController extends Controller
         ->where('type', 'renter')->values()
         ->map(function($item){
             return [
+                'id' => $item->id,
                 'rent_from' => $item->from,
                 'rent_to' => $item->to,
+                'user_type' => $item->user_type,
                 'renter_name' => $item?->user?->name,
                 'renter_email' => $item?->user?->email,
                 'renter_phone' => $item?->user?->phone,
