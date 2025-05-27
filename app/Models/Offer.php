@@ -28,4 +28,8 @@ class Offer extends Model
     public function appartment(){
         return $this->belongsTo(Appartment::class, 'appartment_id');
     }
+
+    public function offer_status(){
+        return $this->hasOne(OfferStatus::class, 'appartment_id', 'appartment_id');
+    }
 }

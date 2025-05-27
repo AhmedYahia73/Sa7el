@@ -13,11 +13,13 @@ use App\trait\image;
 use App\Models\User;
 use App\Models\Village;
 use App\Models\AppartmentCode;
+use App\Models\Offer;
 
 class UserController extends Controller
 {
     public function __construct(private User $user,
-    private Village $village, private AppartmentCode $appartment_code){}
+    private Village $village, private AppartmentCode $appartment_code,
+    private Offer $offer){}
     use image;
 
     public function view(){
@@ -76,10 +78,57 @@ class UserController extends Controller
         ->where('role', 'user')
         ->with('villages_user', 'parent')
         ->first();
-        $properties = $this->appartment_code;
+        $properties = $this->appartment_code
+        ->where('user_id', $id)
+        ->where('type', 'owner')
+        ->get()
+        ->map(function($item){
+            return [
+                'id' => $item->id,
+                'village' => $item?->village?->name,
+                'icon' => $item?->village?->image_link,
+                'cover_image' => $item?->village?->cover_image_link,
+                'unit' => $item?->appartment?->unit,
+            ];
+        });
+        $offer = $this->offer
+        ->where('owner_id', $id)
+        ->whereHas('offer_status', function($query){
+            $query->where('rent_status', 1)
+            ->orWhere('sale_status', 1);
+        })
+        ->get()
+        ->map(function($item){
+            $type_offer = null;
+            if ($item->offer_status->sale_status && $item->offer_status->rent_status) {
+                $type_offer = 'Sale & Rent';
+            }
+            elseif ($item->offer_status->sale_status) {
+                $type_offer = 'Sale';
+            }
+            elseif ($item->offer_status->rent_status) {
+                $type_offer = 'Rent';
+            }
+            return [
+                'id' => $item->id,
+                'village' => $item?->village?->name,
+                'image' => $item?->village?->image_link,
+                'cover_image' => $item?->village?->cover_image_link,
+                'owner' => $item?->owner?->name,
+                'unit' => $item?->appartment?->unit,
+                'unit' => $item?->appartment?->unit,
+                'description' => $item->description,
+                'type_offer' => $type_offer,
+                'price_day' => $item->price_day,
+                'price_month' => $item->price_month,
+                'price' => $item->price,
+            ];
+        });
 
         return response()->json([
             'user' => $user,
+            'properties' => $properties,
+            'offers' => $offer,
         ]);
     }
 

@@ -71,7 +71,8 @@ class OfferController extends Controller
 
     public function offer_status(Request $request, $appartment_id){
         $validator = Validator::make($request->all(), [
-            'status_offer' => 'required|in:rent,sale',
+            'rent_status' => 'required|boolean',
+            'sale_status' => 'required|boolean',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -85,12 +86,14 @@ class OfferController extends Controller
             $this->offer_status
             ->create([
                 'appartment_id' => $appartment_id,
-                'status_offer' => $request->status_offer,
+                'rent_status' => $request->rent_status,
+                'sale_status' => $request->sale_status,
             ]);
         } else {      
             $offers
             ->update([
-                'status_offer' => $request->status_offer,
+                'rent_status' => $request->rent_status,
+                'sale_status' => $request->sale_status,
             ]);
         }
         

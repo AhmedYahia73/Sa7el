@@ -8,6 +8,7 @@ class OfferStatus extends Model
 {
     protected $fillable =[
         'appartment_id',
-        'status_offer',
+        'rent_status',
+        'sale_status',
     ];
 }
