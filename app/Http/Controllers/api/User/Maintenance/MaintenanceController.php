@@ -101,10 +101,8 @@ class MaintenanceController extends Controller
         $maintenance->appartment;
         $admins = $this->admins
         ->where('role', 'village')
-        ->whereHas('parent', function($query){
-            $query->whereHas('roles', function($query){
-                $query->where('module', 'Maintenance Request');
-            });
+        ->whereHas('parent.roles', function($query){
+            $query->where('module', 'Maintenance Request');
         })
         ->get();
         foreach ($admins as $item) {
