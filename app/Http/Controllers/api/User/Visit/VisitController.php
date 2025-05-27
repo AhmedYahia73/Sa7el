@@ -95,7 +95,7 @@ class VisitController extends Controller
         ->get();
 
         return response()->json([
-            'visitors_count' => $visitors_count
+            'visitor_code' => $visitor_code
         ]);
     }
 }
