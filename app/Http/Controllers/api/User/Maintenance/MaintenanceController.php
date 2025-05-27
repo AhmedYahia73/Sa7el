@@ -103,6 +103,7 @@ class MaintenanceController extends Controller
         $admins = $this->admins
         ->where('role', 'village')
         ->where('village_id', $request->village_id)
+		->get()
         ->filter(function ($admin) {
             return $admin->parent && $admin->parent->roles->contains('module', 'Maintenance Request');
         });

@@ -26,9 +26,6 @@ class ServiceController extends Controller
             ],400);
         }
         $services = $this->services
-        ->whereHas('village', function($query) use($request){
-            $query->where('villages.id', $request->village_id);
-        })
         ->where('status', 1)
         ->with('providers') // load all providers
         ->get();

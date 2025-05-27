@@ -32,9 +32,5 @@ class ServiceType extends Model
 
     public function providers(){
         return $this->hasMany(Provider::class, 'service_id');
-    }
-
-    public function village(){
-        return $this->belongsToMany(Village::class, 'service_villages');
-    }
+    } 
 }

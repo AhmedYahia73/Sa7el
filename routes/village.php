@@ -148,7 +148,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     ->prefix('appartment_profile')->middleware('can:Appartment')
     ->group(function() {
         Route::get('/{id}', 'profile_unit'); 
-        Route::post('/update/{id}', 'update_user_type'); 
+        Route::put('/update/{id}', 'update_user_type'); 
     });
 
     Route::controller(PostsController::class)->prefix('post')->middleware('can:News Feed')

@@ -12,11 +12,12 @@ use App\trait\image;
 
 use App\Models\User;
 use App\Models\Village;
+use App\Models\AppartmentCode;
 
 class UserController extends Controller
 {
     public function __construct(private User $user,
-    private Village $village){}
+    private Village $village, private AppartmentCode $appartment_code){}
     use image;
 
     public function view(){
@@ -75,6 +76,7 @@ class UserController extends Controller
         ->where('role', 'user')
         ->with('villages_user', 'parent')
         ->first();
+        $properties = $this->appartment_code;
 
         return response()->json([
             'user' => $user,
