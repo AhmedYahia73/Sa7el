@@ -171,7 +171,7 @@ class ServiceController extends Controller
             $query->where('users.id', $request->user()->id);
         })
         ->get()
-        ->map(function($item){
+        ->map(function($item) use($request){
             return [
                 'id' => $item->id,
                 'name' => $request->local == 'en' ?
