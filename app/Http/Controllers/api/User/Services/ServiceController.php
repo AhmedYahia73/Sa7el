@@ -7,10 +7,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\ServiceType;
+use App\Models\Provider;
 
 class ServiceController extends Controller
 {
-    public function __construct(private ServiceType $services){}
+    public function __construct(private ServiceType $services,
+    private Provider $provider){}
 
     public function view(Request $request){
         $validator = Validator::make($request->all(), [
@@ -48,6 +50,8 @@ class ServiceController extends Controller
                     'description' => $request->local == 'en' ?
                     $item->description : $item->ar_description?? $item->description,
                     'loves_count' => count($item->love_user),
+                    'my_love' => count($item->love_user->where('id', $request->user()->id)) > 0
+                    ? true :false,
                 ];
             });
             $service->other_providers = $service->providers
@@ -66,7 +70,8 @@ class ServiceController extends Controller
                     'description' => $request->local == 'en' ?
                     $item->description : $item->ar_description?? $item->description,
                     'loves_count' => count($item->love_user),
-                    'my_love' => count($item->love_user->where('id')),
+                    'my_love' => count($item->love_user->where('id', $request->user()->id)) > 0
+                    ? true : false,
                 ];
             });
         });
@@ -121,6 +126,45 @@ class ServiceController extends Controller
 
         return response()->json([
             'services' => $services
+        ]);
+    }
+
+    public function love(Request $request, $id){
+        $validator = Validator::make($request->all(), [
+            'love' => 'required|boolean',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }
+        
+        $love = $request->love;
+        $provider = $this->provider
+        ->where('id', $id)
+        ->first();
+        if ($love) {
+            $provider->love_user()->detach($request->user()->id);
+            $provider->love_user()->attach($request->user()->id);
+        } else {
+            $provider->love_user()->detach($request->user()->id);
+        }
+        
+        return response()->json([
+            'success' => 'You update react success'
+        ]);
+    }
+
+    public function love_history(Request $request){
+        $providers = $this->provider
+        ->whereHas('love_user', function($query) use($request){
+            $query->where('users.id', $request->user()->id);
+        })
+        ->get();
+        
+        return response()->json([
+            'providers' => $providers
         ]);
     }
 }
