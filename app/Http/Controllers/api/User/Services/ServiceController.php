@@ -157,11 +157,38 @@ class ServiceController extends Controller
     }
 
     public function love_history(Request $request){
+        $validator = Validator::make($request->all(), [
+            'local' => 'required|in:en,ar',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }
         $providers = $this->provider
         ->whereHas('love_user', function($query) use($request){
             $query->where('users.id', $request->user()->id);
         })
-        ->get();
+        ->get()
+        ->map(function($item){
+            return [
+                'id' => $item->id,
+                'name' => $request->local == 'en' ?
+                $item->name : $item->ar_name?? $item->name,
+                'image' => $item->image_link,
+                'location' => $item->location,
+                'phone' => $item->phone,
+                'from' => $item->open_from,
+                'to' => $item->open_to,
+                'status' => $item->status,
+                'description' => $request->local == 'en' ?
+                $item->description : $item->ar_description?? $item->description,
+                'loves_count' => count($item->love_user),
+                'my_love' => count($item->love_user->where('id', $request->user()->id)) > 0
+                ? true : false,
+            ];
+        });
         
         return response()->json([
             'providers' => $providers
