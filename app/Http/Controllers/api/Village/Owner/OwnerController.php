@@ -78,7 +78,7 @@ class OwnerController extends Controller
         $visit_requests = $this->visit_request
         ->where('village_id', $request->user()->village_id)
         ->where('owner_id', $id)
-        ->with(['owner:id,name', 'appartment:id,unit,number_floors'])
+        ->with(['owner:id,name', 'appartment:id,unit'])
         ->get();
 
         return response()->json([
