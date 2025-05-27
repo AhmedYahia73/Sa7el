@@ -47,6 +47,7 @@ class ServiceController extends Controller
                     'status' => $item->status,
                     'description' => $request->local == 'en' ?
                     $item->description : $item->ar_description?? $item->description,
+                    'loves_count' => count($item->love_user),
                 ];
             });
             $service->other_providers = $service->providers
@@ -64,6 +65,8 @@ class ServiceController extends Controller
                     'status' => $item->status,
                     'description' => $request->local == 'en' ?
                     $item->description : $item->ar_description?? $item->description,
+                    'loves_count' => count($item->love_user),
+                    'my_love' => count($item->love_user->where('id')),
                 ];
             });
         });

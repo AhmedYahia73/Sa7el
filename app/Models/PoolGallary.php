@@ -13,6 +13,6 @@ class PoolGallary extends Model
     protected $appends = ['image_link'];
 
     public function getImageLinkAttribute(){
-        return url($this->image);
+        return url('storage/' . $this->image);
     }
 }

@@ -53,6 +53,10 @@ class User extends Authenticatable
         return $this->belongsToMany(Post::class, 'post_love');
     }
 
+    public function love_provider(){
+        return $this->belongsToMany(Provider::class, 'love_services', 'user_id', 'provider_id');
+    }
+
     public function villages_user(){
         return $this->belongsToMany(Village::class, 'user_village');
     }

@@ -33,6 +33,10 @@ class Provider extends Model
         ->first()?->value;
     }
 
+    public function love_user(){
+        return $this->belongsToMany(User::class, 'love_services', 'provider_id', 'user_id');
+    }
+
     public function getArDescriptionAttribute(){
         return $this->translations
         ->where('key', 'description')
