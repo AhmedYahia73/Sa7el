@@ -46,7 +46,7 @@ class PropertyController extends Controller
                     'id' => null,
                     'unit' => null,
                     'image' => $item->village->image_link,
-                    'image' => $item->village->cover_image_link,
+                    'cover_image' => $item->village->cover_image_link,
                     'village_id' => $item->village_id,
                     'village' => $item->village->name, 
                     'type' => null,
@@ -60,7 +60,7 @@ class PropertyController extends Controller
                     'id' => $appartment->id,
                     'unit' => $appartment->unit,
                     'image' => $appartment->village->image_link,
-                    'image' => $appartment->village->cover_image_link,
+                    'cover_image' => $appartment->village->cover_image_link,
                     'village_id' => $appartment->village_id,
                     'village' => $appartment->village->name, 
                     'type' => $request->local == 'en' ? $appartment?->type?->name : 
