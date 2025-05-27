@@ -46,4 +46,48 @@ class OwnerController extends Controller
         ]);
     }
  
+    public function owner(Request $request, $id){
+        $owner = $this->owners
+        ->with('appartments')
+        ->where('user_type', 'owner')
+        ->where('id', $id)
+        ->with('parent')
+        ->first();
+        $entrance =  [
+            'gates' => EntranceGate::with('gate')
+            ->where('user_id', $id)
+            ->where('village_id', $request->user()->village_id)->get(),
+            'beaches' => EntranceBeach::with('beach')
+            ->where('village_id', $request->user()->village_id)
+            ->where('user_id', $id)->get(),
+            'pools' => EntrancePool::with('pool')
+            ->where('village_id', $request->user()->village_id)
+            ->where('user_id', $id)->get(),
+        ]; 
+        $rent = $this->appartment_code
+        ->where('village_id', $request->user()->village_id)
+        ->where('owner_id', $id)
+        ->with('appartment')
+        ->get();
+        $problem_request = ProblemReport::where('user_id', $id)
+        ->where('village_id', $request->user()->village_id)->get();
+        $maintenance_request = Maintenance::
+        with('maintenance_type', 'appartment')
+        ->where('village_id', $request->user()->village_id)
+        ->where('user_id', $id)->get();
+        $visit_requests = $this->visit_request
+        ->where('village_id', $request->user()->village_id)
+        ->where('owner_id', $id)
+        ->with(['owner:id,name', 'appartment:id,unit,number_floors'])
+        ->get();
+
+        return response()->json([
+            'owner' => $owner,
+            'entrance' => $entrance,
+            'rent' => $rent,
+            'problem_request' => $problem_request,
+            'maintenance_request' => $maintenance_request,
+            'visit_requests' => $visit_requests,
+        ]);
+    }
 }
