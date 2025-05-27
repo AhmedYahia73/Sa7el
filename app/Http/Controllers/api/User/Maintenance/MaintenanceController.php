@@ -102,10 +102,10 @@ class MaintenanceController extends Controller
         $maintenance->maintenance_type;
         $admins = $this->admins
         ->where('role', 'village')
-        ->whereHas('parent.roles', function($query){
-            $query->where('module', 'Maintenance Request');
-        })
-        ->get();
+        ->where('village_id', $request->village_id)
+        ->filter(function ($admin) {
+            return $admin->parent && $admin->parent->roles->contains('module', 'Maintenance Request');
+        });
         foreach ($admins as $item) {
             $email = $item->email;
             Mail::to('ahmedahmadahmid73@gmail.com')->send(new MaintenanceRequestEmail($maintenance));
