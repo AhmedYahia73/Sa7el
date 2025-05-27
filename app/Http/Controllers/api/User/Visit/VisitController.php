@@ -37,7 +37,10 @@ class VisitController extends Controller
         $this->visitor_code
         ->create([
             'user_id' => $request->user()->id,
-            'qr_code' => $fileName
+            'qr_code' => $fileName,
+            'village_id' => $request->village_id,
+            'appartment_id' => $request->appartment_id,
+            'visitor_type' => $request->visitor_type
         ]);
         // $request->visitor_type
 
@@ -69,6 +72,30 @@ class VisitController extends Controller
 
         return response()->json([
             'success' => $code
+        ]);
+    }
+
+    public function visitor_qr(Request $request){
+        $validator = Validator::make($request->all(), [
+            'village_id' => 'required|exists:villages,id',
+            'appartment_id' => 'required|exists:appartments,id',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }
+
+        $visitor_code = $this->visitor_code
+        ->select('qr_code', 'visitor_type')
+        ->where('village_id', $request->village_id)
+        ->where('appartment_id', $request->appartment_id)
+        ->whereDate('created_at', date('Y-m-d'))
+        ->get();
+
+        return response()->json([
+            'visitors_count' => $visitors_count
         ]);
     }
 }

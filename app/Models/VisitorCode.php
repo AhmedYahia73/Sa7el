@@ -11,5 +11,12 @@ class VisitorCode extends Model
         'qr_code',
         'code',
         'village_id',
+        'appartment_id',
+        'visitor_type',
     ];
+    protected $appends = ['qr_code_link'];
+
+    public function getQrCodeLinkAttribute(){
+        return url('storage/' . $this->image);
+    }
 }

@@ -36,7 +36,8 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     Route::controller(VisitController::class)->prefix('visitor')
     ->group(function() {
         Route::get('/create_qr_code', 'create_qr_code'); 
-        Route::get('/create_code', 'create_code'); 
+        Route::get('/create_code', 'create_code');
+        Route::post('/visitor_qr', 'visitor_qr');
     });
 
     Route::controller(MaintenanceFeezController::class)->prefix('maintenance_feez')
