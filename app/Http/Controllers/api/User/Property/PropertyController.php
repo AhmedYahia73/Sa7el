@@ -58,7 +58,7 @@ class PropertyController extends Controller
                 return [
                     'id' => $appartment->id,
                     'unit' => $appartment->unit,
-                    'image' => $item->village->image_link,
+                    'image' => $appartment->village->image_link,
                     'village_id' => $appartment->village_id,
                     'village' => $appartment->village->name, 
                     'type' => $request->local == 'en' ? $appartment?->type?->name : 
