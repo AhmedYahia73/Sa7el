@@ -5,16 +5,20 @@ namespace App\Http\Controllers\api\User\Maintenance;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Mail\MaintenanceRequestEmail;
+use Illuminate\Support\Facades\Mail;
 use App\trait\image;
 
 use App\Models\Maintenance;
 use App\Models\MaintenanceType;
 use App\Models\AppartmentCode;
+use App\Models\User;
 
 class MaintenanceController extends Controller
 {
     public function __construct(private Maintenance $maintenance,
-    private MaintenanceType $maintenance_type, private AppartmentCode $appartment_code){}
+    private MaintenanceType $maintenance_type, private AppartmentCode $appartment_code,
+    private User $admins){}
     use image;
     
     public function maintenance_lists(Request $request){
@@ -91,8 +95,20 @@ class MaintenanceController extends Controller
             $maintenanceRequest['image'] = $image_path;
         }
         $maintenanceRequest['user_id'] = $request->user()->id;
-        $this->maintenance
+        $maintenance = $this->maintenance
         ->create($maintenanceRequest);
+        $maintenance->user;
+        $maintenance->appartment;
+        $admins = $this->admins
+        ->where('role', 'village')
+        ->whereHas('parent.roles', function($query){
+            $query->where('module', 'Maintenance Request');
+        })
+        ->get();
+        foreach ($admins as $item) {
+            $email = $item->email;
+            Mail::to('ahmedahmadahmid73@gmail.com')->send(new MaintenanceRequestEmail($maintenance));
+        }
 
         return response()->json([
             'success' => 'You add data success'
