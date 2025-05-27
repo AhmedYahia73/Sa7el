@@ -17,6 +17,7 @@ class InvoiceController extends Controller
     public function invoice(Request $request, $id){
         $village = $this->village
         ->where('id', $id)
+        ->with(['zone:id,name'])
         ->first();
         $package = $this->package
         ->where('id', $village->package_id)
