@@ -31,6 +31,7 @@ class RentController extends Controller
         ->where('appartment_id', $request->appartment_id)
         ->where('owner_id', $request->user()->id)
         ->where('type', 'renter')
+        ->where('to', '>', date('Y-m-d'))
         ->with('appartment')
         ->get();
 
@@ -53,6 +54,22 @@ class RentController extends Controller
             return response()->json([
                 'errors' => $firstError,
             ],400);
+        }
+        $appartment_code = $this->appartment_code
+        ->where('from', '<=', $request->from)
+        ->where('to', '>=', $request->from)
+        ->where('to', '<=', $request->to)
+        ->orWhere('from', '>=', $request->from)
+        ->where('to', '<=', $request->to)
+        ->orWhere('from', '>=', $request->from)
+        ->where('from', '<=', $request->to)
+        ->where('to', '>=', $request->to)
+        ->first();
+        if (!empty($appartment_code)) {
+            return response()->json([
+                'errors' => 'Unit is rented from ' . $appartment_code->from . 
+                ' to ' . $appartment_code->to
+            ], 400);
         }
         $rentRequest = $validator->validated();
         $rentRequest['owner_id'] = $request->user()->id;
