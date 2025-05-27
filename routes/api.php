@@ -7,7 +7,7 @@ use App\Http\Controllers\Auth\LoginController;
 
 Route::controller(LoginController::class)
 ->group(function() {
-    Route::get('logout', 'logout');
+    Route::get('logout', 'logout')->middleware(['auth:sanctum']);
     Route::post('security/login', 'security_login');
     Route::post('admin/login', 'admin_login');
     Route::post('village/login', 'village_login');

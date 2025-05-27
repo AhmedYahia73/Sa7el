@@ -99,6 +99,7 @@ class MaintenanceController extends Controller
         ->create($maintenanceRequest);
         $maintenance->user;
         $maintenance->appartment;
+        $maintenance->maintenance_type;
         $admins = $this->admins
         ->where('role', 'village')
         ->whereHas('parent.roles', function($query){

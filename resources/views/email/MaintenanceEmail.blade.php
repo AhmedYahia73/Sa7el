@@ -74,16 +74,20 @@
 
       <table class="details-table">
         <tr>
-          <td class="label">Resident Name:</td>
+          <td class="label">Name:</td>
           <td>{{ $maintenance['user']['name'] }}</td>
         </tr>
         <tr>
-          <td class="label">Resident Phone:</td>
+          <td class="label">Phone:</td>
           <td>{{ $maintenance['user']['phone'] }}</td>
         </tr>
         <tr>
           <td class="label">Unit:</td>
           <td>{{ $maintenance['appartment']['unit'] }}</td>
+        </tr>
+        <tr>
+          <td class="label">Maintenance Type:</td>
+          <td>{{ $maintenance['maintenance_type']['name'] }}</td>
         </tr>
         <tr>
           <td class="label">Request Date:</td>
