@@ -47,8 +47,7 @@ class PropertyController extends Controller
                     'unit' => null,
                     'image' => $item->village->image_link,
                     'village_id' => $item->village_id,
-                    'village' => $item->village->name,
-                    'number_floors' => null,
+                    'village' => $item->village->name, 
                     'type' => null,
                     'zone' => $request->local == 'en' ? $item?->village?->zone?->name
                     : $item?->village?->zone?->ar_name ?? $item?->village?->zone?->name,
@@ -59,15 +58,14 @@ class PropertyController extends Controller
                 return [
                     'id' => $appartment->id,
                     'unit' => $appartment->unit,
-                    'image' => $appartment->image_link,
+                    'image' => $item->village->image_link,
                     'village_id' => $appartment->village_id,
-                    'village' => $appartment->village->name,
-                    'number_floors' => $appartment->number_floors,
+                    'village' => $appartment->village->name, 
                     'type' => $request->local == 'en' ? $appartment?->type?->name : 
-                    $appartment?->type?->ar_name ?? $appartment?->type?->name,
-                    'zone' => $request->local == 'en' ? $appartment?->village?->zone?->name
-                    : $appartment?->village?->zone?->ar_name ?? $appartment?->village?->zone?->name,
-                    'zone_id' => $appartment?->village->zone_id,
+                    $appartment?->type?->ar_name ?? $appartment?->type?->name, 
+                    'zone' => $request->local == 'en' ? $item?->village?->zone?->name
+                    : $item?->village?->zone?->ar_name ?? $item?->village?->zone?->name,
+                    'zone_id' => $item?->village?->zone_id,
                     'flag' => empty($item->code) ? false : true,
                 ];
             }
