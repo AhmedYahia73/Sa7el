@@ -25,6 +25,7 @@ class PostsController extends Controller
         $posts = $this->posts
         ->where('village_id', $request->village_id)
         ->withCount('love')
+        ->orderByDesc('id')
         ->get()
         ->map(function($item){
             return [
