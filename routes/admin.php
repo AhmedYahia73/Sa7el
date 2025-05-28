@@ -44,7 +44,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin', 'can:Admin_Admin'])->group(functio
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
-    });
+    })->withoutMiddleware(['can:Admin_Admin']);
 
     Route::controller(MaintenanceTypeController::class)->prefix('maintenance_type')
     ->group(function() {
@@ -148,7 +148,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin', 'can:Admin_Admin'])->group(functio
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
-    });
+    })->withoutMiddleware(['can:Admin_Admin']);
     
     Route::controller(ProviderController::class)->prefix('provider')
     ->group(function() {
