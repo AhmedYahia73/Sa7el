@@ -23,6 +23,7 @@ class ServiceController extends Controller
                 'phone' => $item->phone,
                 'image' => $item->image_link,
                 'location' => $item->location,
+                'status' => $item->status,
                 'from' => $item->open_from,
                 'to' => $item->open_to,
                 'description' => $item->description,
