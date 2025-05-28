@@ -19,7 +19,7 @@ class BeachController extends Controller
 
     public function view(Request $request){
         $beach = $this->beach
-        ->with('translations')
+        ->with(['translations', 'gallery'])
         ->where('village_id', $request->user()->village_id)
         ->get();
 

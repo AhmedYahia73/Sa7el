@@ -19,7 +19,7 @@ class PoolController extends Controller
 
     public function view(Request $request){
         $pool = $this->pool
-        ->with('translations')
+        ->with(['translations', 'gallery'])
         ->where('village_id', $request->user()->village_id)
         ->get();
 

@@ -22,7 +22,7 @@ class Pools extends Model
         ->where('locale', 'ar')
         ->first()?->value;
     }
-    
+
     public function translations()
     {
         return $this->morphMany(Translation::class, 'translatable');

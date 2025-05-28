@@ -17,6 +17,7 @@ class AppartmentProfileController extends Controller
 
     public function profile_unit(Request $request, $id){
         $appartment = $this->appartment
+        ->with('type:id,name,image', 'zone:id,name,image,description')
         ->where('id', $id)
         ->first();
         $owners = $appartment->appartment_code
