@@ -25,6 +25,7 @@ class ProviderController extends Controller
         ->with(['translations', 'service', 'package', 'zone'])
         ->get();
         $services_types = $this->services_types
+        ->where('status', 1)
         ->get();
         $villages = $this->villages
         ->where('status', 1)
