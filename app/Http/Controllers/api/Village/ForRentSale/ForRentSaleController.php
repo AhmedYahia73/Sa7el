@@ -17,6 +17,7 @@ class ForRentSaleController extends Controller
             $query->where('rent_status', 1)
             ->orWhere('sale_status', 1);
         })
+        ->where('village_id', $request->user()->village_id)
         ->with('owner', 'appartment')
         ->get()
         ->map(function($item){
@@ -36,6 +37,7 @@ class ForRentSaleController extends Controller
                 'image' => $item?->village?->image_link,
                 'cover_image' => $item?->village?->cover_image_link,
                 'owner' => $item?->owner?->name,
+                'owner_phone' => $item?->owner?->phone,
                 'unit' => $item?->appartment?->unit,
                 'unit' => $item?->appartment?->unit,
                 'description' => $item->description,

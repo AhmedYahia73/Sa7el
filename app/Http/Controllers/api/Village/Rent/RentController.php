@@ -16,6 +16,7 @@ class RentController extends Controller
         ->with('owner', 'appartment', 'user')
         ->where('type', 'renter')
         ->whereNotNull('user_id')
+        ->where('village_id', $request->user()->village_id)
         ->orderByDesc('id')
         ->get();
 

@@ -51,6 +51,7 @@ class AppartmentProfileController extends Controller
         });
         $offer = $this->offer
         ->where('appartment_id', $id)
+        ->where('village_id', $request->user()->village_id)
         ->whereHas('offer_status', function($query){
             $query->where('rent_status', 1)
             ->orWhere('sale_status', 1);

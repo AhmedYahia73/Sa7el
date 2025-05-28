@@ -16,10 +16,12 @@ class PaymentRequestController extends Controller
         $upcoming = $this->payment_request
         ->where('status', 'pending')
         ->with('maintenance', 'user')
+        ->where('village_id', $request->user()->village_id)
         ->get();
         $history = $this->payment_request
         ->where('status', '!=', 'pending')
         ->with('maintenance:id,name', 'user:id,name,phone')
+        ->where('village_id', $request->user()->village_id)
         ->get();
 
         return response()->json([

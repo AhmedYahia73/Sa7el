@@ -26,12 +26,15 @@ class SecurityController extends Controller
         ->get();
         $gates = $this->gates
         ->where('status', 1)
+        ->where('village_id', $request->user()->village_id)
         ->get();
         $beaches = $this->beaches
         ->where('status', 1)
+        ->where('village_id', $request->user()->village_id)
         ->get();
         $pools = $this->pools
         ->where('status', 1)
+        ->where('village_id', $request->user()->village_id)
         ->get();
 
         return response()->json([
