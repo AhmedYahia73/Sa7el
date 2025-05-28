@@ -100,7 +100,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
 
     Route::controller(MaintenanceFeezController::class)->prefix('maintenance_feez')->middleware('can:Maintenance Fees')
     ->group(function() {
-        Route::get('/', 'view');
+        Route::get('/{id}', 'view');
         Route::get('/maintenanace_users/{id}', 'maintenanace_users');
         Route::get('/year', 'view_year');
         Route::post('/add_payment', 'add_payment');

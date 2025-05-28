@@ -14,9 +14,10 @@ class MaintenanceFeezController extends Controller
     public function __construct(private MaintenanceFeez $maintenance_fees,
     private AppartmentMaintenanceFeez $appartment_maintenance){}
 
-    public function view(Request $request){
+    public function view(Request $request, $id){
         $maintenance_fees = $this->maintenance_fees
         ->where('village_id', $request->user()->village_id)
+        ->where('id', $id)
         ->with(['appartments' => function($query){
             $query->with('users', 'appartment_unit');
         }])
@@ -42,6 +43,7 @@ class MaintenanceFeezController extends Controller
                     'unit' => $element->unit,
                     'unit_type' => $element?->type?->name,
                     'user_name' => $element?->user?->name,
+                    'user_phone' => $element?->user?->phone,
                     'paid' => $paid,
                     'total' => $total,
                 ];
@@ -58,10 +60,10 @@ class MaintenanceFeezController extends Controller
         });
 
         return response()->json([
-            'maintenance_fees' =>$maintenance_fees,
-            'total' =>$maintenance_fees->sum('total'),
-            'paid' =>$maintenance_fees->sum('paid'),
-            'remain' =>$maintenance_fees->sum('remain'),
+            'maintenance_fees' =>$maintenance_fees[0],
+            // 'total' =>$maintenance_fees->sum('total'),
+            // 'paid' =>$maintenance_fees->sum('paid'),
+            // 'remain' =>$maintenance_fees->sum('remain'),
         ]);
     }
 
