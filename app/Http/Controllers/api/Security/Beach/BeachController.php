@@ -8,13 +8,13 @@ use Zxing\QrReader;
 use App\trait\image;
 use Illuminate\Support\Facades\Validator;
 
-use App\Models\AppartmentCode;
+use App\Models\Appartment;
 use App\Models\UserBeach;
 use App\Models\User;
 
 class BeachController extends Controller
 {
-    public function __construct(private AppartmentCode $appartment,
+    public function __construct(private Appartment $appartment,
     private UserBeach $user_beach, private User $user){}
     use image;
 
@@ -67,8 +67,7 @@ class BeachController extends Controller
             'user_id' => $userid,
             'beach_id' => $beach_id,
             'village_id' => $request->user()->village_id,
-         ]);
-        $appartment = $appartment->appartment;
+         ]); 
         $appartment->type;
         $user = $this->user
         ->where('id', $userid)

@@ -8,13 +8,13 @@ use Zxing\QrReader;
 use App\trait\image;
 use Illuminate\Support\Facades\Validator;
 
-use App\Models\AppartmentCode;
+use App\Models\Appartment;
 use App\Models\UserPool;
 use App\Models\User;
 
 class PoolController extends Controller
 {
-    public function __construct(private AppartmentCode $appartment,
+    public function __construct(private Appartment $appartment,
     private UserPool $user_pool, private User $user){}
     use image;
 
@@ -69,7 +69,6 @@ class PoolController extends Controller
             'pool_id' => $pool_id,
             'village_id' => $request->user()->village_id,
          ]);
-        $appartment = $appartment->appartment;
         $appartment->type;
         $user = $this->user
         ->where('id', $userid)
