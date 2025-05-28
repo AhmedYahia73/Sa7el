@@ -114,7 +114,6 @@ class GateController extends Controller
                 'type' => 'owner'
             ]);
          }
-         $appartment = $appartment->appartment;
         $appartment->type;
         $user = $this->user
         ->where('id', $userid)
