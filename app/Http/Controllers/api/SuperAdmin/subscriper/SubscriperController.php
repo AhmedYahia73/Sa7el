@@ -111,6 +111,13 @@ class SubscriperController extends Controller
             ->where('id', $request->village_id)
             ->first();
         }
+        $old_subscriber = $user->where('from', '<=', date('Y-m-d'))
+        ->where('to', '>=', date('Y-m-d'));
+        if (!empty($old_subscriber)) {
+            return response()->json([
+                'errors' => 'Village is subscribed with our'
+            ]);
+        }
         $package = $this->packages
         ->where('id', $request->package_id)
         ->first();
