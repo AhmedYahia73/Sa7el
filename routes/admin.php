@@ -26,7 +26,7 @@ use App\Http\Controllers\api\SuperAdmin\village\VillageCoverController;
 use App\Http\Controllers\api\SuperAdmin\MaintenanceType\MaintenanceTypeController;
 use App\Http\Controllers\api\SuperAdmin\ServiceProvider\ServiceProviderController;
 
-Route::middleware(['auth:sanctum', 'IsAdmin', 'Admin_Admin'])->group(function(){
+Route::middleware(['auth:sanctum', 'IsAdmin', 'can:Admin_Admin'])->group(function(){
     Route::controller(ZoneController::class)->prefix('zone')
     ->group(function() {
         Route::get('/', 'view');
@@ -60,7 +60,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin', 'Admin_Admin'])->group(function(){
         Route::get('/{id}', 'view'); 
         Route::post('/add/{id}', 'create');
         Route::delete('/delete/{id}', 'delete');
-    });
+    })->withOutMiddleware(['can:Admin_Admin']);
     
     Route::controller(VillageCoverController::class)->prefix('village_cover')
     ->group(function() {
@@ -159,7 +159,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin', 'Admin_Admin'])->group(function(){
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
-    });
+    })->withOutMiddleware(['can:Admin_Admin']);
     
     Route::controller(ProviderGalleryController::class)->prefix('provider_gallary')
     ->group(function() {
@@ -167,7 +167,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin', 'Admin_Admin'])->group(function(){
         Route::put('/status/{id}', 'status');
         Route::post('/add/{id}', 'create');
         Route::delete('/delete/{id}', 'delete');
-    });
+    })->withOutMiddleware(['can:Admin_Admin']);
     
     Route::controller(ProviderAdminController::class)->prefix('provider_admin')
     ->group(function() {
@@ -177,7 +177,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin', 'Admin_Admin'])->group(function(){
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
-    });
+    })->withOutMiddleware(['can:Admin_Admin']);
     
     Route::controller(ProviderRolesController::class)->prefix('provider_roles')
     ->group(function() {
@@ -187,7 +187,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin', 'Admin_Admin'])->group(function(){
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
-    });
+    })->withOutMiddleware(['can:Admin_Admin']);
     
     Route::controller(PaymentMethodController::class)->prefix('payment_method')
     ->group(function() {
