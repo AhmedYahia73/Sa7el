@@ -8,11 +8,12 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Models\Appartment;
 use App\Models\AppartmentCode;
+use App\Models\Offer;
 
 class AppartmentProfileController extends Controller
 {
     public function __construct(private Appartment $appartment,
-    private AppartmentCode $appartment_code){}
+    private AppartmentCode $appartment_code, private Offer $offer){}
 
     public function profile_unit(Request $request, $id){
         $appartment = $this->appartment
@@ -48,11 +49,45 @@ class AppartmentProfileController extends Controller
                 'owner_image' => $item?->owner?->image_link,
             ];
         });
+        $offer = $this->offer
+        ->where('appartment_id', $id)
+        ->whereHas('offer_status', function($query){
+            $query->where('rent_status', 1)
+            ->orWhere('sale_status', 1);
+        })
+        ->get()
+        ->map(function($item){
+            $type_offer = null;
+            if ($item->offer_status->sale_status && $item->offer_status->rent_status) {
+                $type_offer = 'Sale & Rent';
+            }
+            elseif ($item->offer_status->sale_status) {
+                $type_offer = 'Sale';
+            }
+            elseif ($item->offer_status->rent_status) {
+                $type_offer = 'Rent';
+            }
+            return [
+                'id' => $item->id,
+                'village' => $item?->village?->name,
+                'image' => $item?->village?->image_link,
+                'cover_image' => $item?->village?->cover_image_link,
+                'owner' => $item?->owner?->name,
+                'unit' => $item?->appartment?->unit,
+                'unit' => $item?->appartment?->unit,
+                'description' => $item->description,
+                'type_offer' => $type_offer,
+                'price_day' => $item->price_day,
+                'price_month' => $item->price_month,
+                'price' => $item->price,
+            ];
+        });
 
         return response()->json([
             'appartment' => $appartment,
             'owners' => $owners,
             'renters' => $renters,
+            'offer' => $offer
         ]);
     }
 
