@@ -56,11 +56,11 @@ Route::middleware(['auth:sanctum', 'IsAdmin', 'Admin_Admin'])->group(function(){
     });
     
     Route::controller(ProviderCoverController::class)->prefix('provider_cover')
-    ->withOutMiddleware(['Admin_Admin'])->group(function() {
+    ->group(function() {
         Route::get('/{id}', 'view'); 
         Route::post('/add/{id}', 'create');
         Route::delete('/delete/{id}', 'delete');
-    });
+    })->withOutMiddleware(['Admin_Admin']);
     
     Route::controller(VillageCoverController::class)->prefix('village_cover')
     ->group(function() {
@@ -151,7 +151,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin', 'Admin_Admin'])->group(function(){
     });
     
     Route::controller(ProviderController::class)->prefix('provider')
-    ->withOutMiddleware(['Admin_Admin'])->group(function() {
+    ->group(function() {
         Route::get('/', 'view');
         Route::get('/item/{id}', 'provider');
         Route::put('/status/{id}', 'status');
@@ -159,35 +159,35 @@ Route::middleware(['auth:sanctum', 'IsAdmin', 'Admin_Admin'])->group(function(){
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
-    });
+    })->withOutMiddleware(['Admin_Admin']);
     
     Route::controller(ProviderGalleryController::class)->prefix('provider_gallary')
-    ->withOutMiddleware(['Admin_Admin'])->group(function() {
+    ->group(function() {
         Route::get('/{id}', 'view');
         Route::put('/status/{id}', 'status');
         Route::post('/add/{id}', 'create');
         Route::delete('/delete/{id}', 'delete');
-    });
+    })->withOutMiddleware(['Admin_Admin']);
     
     Route::controller(ProviderAdminController::class)->prefix('provider_admin')
-    ->withOutMiddleware(['Admin_Admin'])->group(function() {
+    ->group(function() {
         Route::get('/{id}', 'view');
         Route::get('/item/{id}', 'admin');
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
-    });
+    })->withOutMiddleware(['Admin_Admin']);
     
     Route::controller(ProviderRolesController::class)->prefix('provider_roles')
-    ->withOutMiddleware(['Admin_Admin'])->group(function() {
+    ->group(function() {
         Route::get('/', 'view');
         Route::get('/item/{id}', 'position');
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
-    });
+    })->withOutMiddleware(['Admin_Admin']);
     
     Route::controller(PaymentMethodController::class)->prefix('payment_method')
     ->group(function() {
