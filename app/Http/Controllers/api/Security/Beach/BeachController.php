@@ -62,21 +62,33 @@ class BeachController extends Controller
                 'errors' => 'Qr code is wrong'
             ], 400);
          }
-         $user_beach = $this->user_beach
-         ->create([
-            'user_id' => $userid,
-            'beach_id' => $beach_id,
-            'village_id' => $request->user()->village_id,
-         ]); 
         $appartment->type;
         $user = $this->user
         ->where('id', $userid)
         ->first();
-
+         $user_beach_now = $this->user_beach
+         ->where('user_id', $userid)
+         ->where('beach_id', $beach_id)
+         ->where('village_id', $request->user()->village_id)
+         ->whereDate('created_at', date('Y-m-d'))
+         ->first();
+        $old_time = null;
+         if (!empty($user_beach_now)) {
+            $old_time = $user_beach_now->created_at->format('H:i:s');
+         } else {
+            $user_beach = $this->user_beach
+            ->create([
+                'user_id' => $userid,
+                'beach_id' => $beach_id,
+                'village_id' => $request->user()->village_id,
+            ]); 
+         }
+         
          return response()->json([
             'success' => 'Qr code is true',
             'appartment' => $appartment,
             'user' => $user,
+            'time' => $old_time,
          ]);
     }
 }
