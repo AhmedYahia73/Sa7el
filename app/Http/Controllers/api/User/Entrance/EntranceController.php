@@ -8,10 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\User;
+use App\Models\Appartment;
 
 class EntranceController extends Controller
 {
-    public function __construct(private User $user){}
+    public function __construct(private User $user, private Appartment $appartment){}
 
     public function view(Request $request){
         $validator = Validator::make($request->all(), [
@@ -22,6 +23,9 @@ class EntranceController extends Controller
                 'errors' => $validator->errors(),
             ],400);
         }
+        $appartment = $this->appartment
+        ->where('id', $request->appartment_id)
+        ->first();
         $user = $request->user();
         $data = $user->id . '>appartment>' . $request->appartment_id;
         $qrCode = base64_encode(
@@ -34,6 +38,7 @@ class EntranceController extends Controller
             'name' => $user->name,
             'image_link' => $user->image_link,
             'qr_code_link' => $qrCodeImage,
+            'appartment' => $appartment->unit,
         ]);
     }
 }
