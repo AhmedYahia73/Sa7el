@@ -10,13 +10,14 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\AppartmentCode;
+use App\Models\Appartment;
 use App\Models\VisitVillage;
 use App\Models\User;
 
 class GateController extends Controller
 {
     public function __construct(private AppartmentCode $appartment,
-    private VisitVillage $visit_village, private User $user){}
+    private Appartment $appartment_data, private VisitVillage $visit_village, private User $user){}
     use image;
 
     public function read_qr(Request $request){
@@ -85,7 +86,7 @@ class GateController extends Controller
                 'errors' => 'Qr code is wrong'
             ], 400);
         }
-         $appartment = $this->appartment
+         $appartment = $this->appartment_data
          ->where('id', $appartment_id)
          ->first();
          if (empty($appartment)) {

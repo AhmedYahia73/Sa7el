@@ -23,6 +23,7 @@ class ServiceProviderController extends Controller
         ->with(['translations', 'maintenance', 'package'])
         ->get();
         $maintenance_types = $this->maintenance_types
+        ->where('status', 1)
         ->get();
         $villages = $this->villages
         ->where('status', 1)

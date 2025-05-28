@@ -99,6 +99,10 @@ class VillageAdminController extends Controller
         $adminRequest['role'] = 'village';
         $adminRequest['village_id'] = $request->village_id;
         $adminRequest['password'] = $request->password;
+        if (!empty($request->image) && !is_string($request->image)) {
+            $image_path = $this->upload($request, 'image', 'images/village_admin_image');
+            $adminRequest['image'] = $image_path;
+        } 
         $this->admin
         ->create($adminRequest);
 
@@ -117,14 +121,20 @@ class VillageAdminController extends Controller
                 'errors' => $validator->errors(),
             ],400);
         }
-        $adminRequest = $request->validated(); 
+        $adminRequest = $request->validated();
+        $admin = $this->admin
+        ->where('id', $id)
+        ->where('role', 'village')
+        ->first();
         if (!empty($request->password)) {
             $adminRequest['password'] = bcrypt($request->password);
         } 
-        $this->admin
-        ->where('id', $id)
-        ->where('role', 'village')
-        ->update($adminRequest);
+        if (!empty($request->image) && !is_string($request->image)) {
+            $image_path = $this->update_image($request, $admin->image, 'image', 'images/village_admin_image');
+            $adminRequest['image'] = $image_path;
+        }
+
+        $admin->update($adminRequest);
 
         return response()->json([
             'success' => 'You update data success',

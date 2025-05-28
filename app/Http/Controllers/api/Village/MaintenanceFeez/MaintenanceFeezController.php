@@ -217,6 +217,16 @@ class MaintenanceFeezController extends Controller
         ]);
     }
 
+    public function view_maintanence(Request $request){
+        $maintenance_fees = $this->maintenance_fees
+        ->where('village_id', $request->user()->village_id)
+        ->get();
+
+        return response()->json([
+            'maintenance_fees' => $maintenance_fees
+        ]);
+    }
+
     public function create(Request $request){
         $validator = Validator::make($request->all(), [
             'name' => 'required',

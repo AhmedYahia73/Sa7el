@@ -105,6 +105,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
         Route::get('/year', 'view_year');
         Route::post('/add_payment', 'add_payment');
         
+        Route::get('/view_maintanence', 'view_maintanence');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
