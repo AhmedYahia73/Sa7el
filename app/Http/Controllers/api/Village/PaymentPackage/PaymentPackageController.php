@@ -50,6 +50,7 @@ class PaymentPackageController extends Controller
         ->where('id', $request?->user()?->village?->package_id)
         ->first();
         $village = $request->user()->village;
+        $village->zone;
 
         return response()->json([
             'package' => $package,

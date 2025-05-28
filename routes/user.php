@@ -15,6 +15,7 @@ use App\Http\Controllers\api\User\Posts\PostsController;
 use App\Http\Controllers\api\User\MaintenanceFeez\MaintenanceFeezController;
 use App\Http\Controllers\api\User\Visitors\MyVisitorsController;
 use App\Http\Controllers\api\User\Entrance\EntranceController;
+use App\Http\Controllers\api\User\Profile\ProfileController;
 
 Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     Route::controller(PropertyController::class)->prefix('property')
@@ -98,5 +99,11 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     ->group(function() {
         Route::get('/', 'view');
         Route::post('/react', 'react');
+    });
+
+    Route::controller(ProfileController::class)->prefix('profile')
+    ->group(function() {
+        Route::get('/', 'profile');
+        Route::post('/update_profile', 'update_profile');
     });
 });
