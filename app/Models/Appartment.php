@@ -23,6 +23,10 @@ class Appartment extends Model
         return $this->hasMany(AppartmentMaintenanceFeez::class, 'appartment_id');
     }
 
+    public function visitors(){
+        return $this->hasMany(VisitVillage::class, 'appartment_id');
+    }
+
     public function type(){
         return $this->belongsTo(AppartmentType::class, 'appartment_type_id');
     }

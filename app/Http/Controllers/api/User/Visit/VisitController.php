@@ -10,11 +10,14 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Models\VisitorCode;
 use App\Models\VisitVillage;
+use App\Models\Appartment;
+use App\Models\VisitorLimit;
 
 class VisitController extends Controller
 {
     public function __construct(private VisitorCode $visitor_code,
-    private VisitVillage $visit_village){}
+    private VisitVillage $visit_village, private Appartment $appartment,
+    private VisitorLimit $visitor_limit){}
     
     public function create_qr_code(Request $request){
         $validator = Validator::make($request->all(), [
@@ -27,6 +30,28 @@ class VisitController extends Controller
             return response()->json([
                 'errors' => $firstError,
             ],400);
+        }
+
+        $my_unit = $this->appartment
+        ->where('id', $request->appartment_id)
+        ->with(['visitors' => function($query){
+            $query->whereDate('created_at', date('Y-m-d'));
+        }])
+        ->first();
+        $vistors = $my_unit->visitors;
+        $delivery = $vistors->where('visitor_type', 'delivery')->values();
+        $guest = $vistors->where('visitor_type', 'guest')->values();
+        $worker = $vistors->where('visitor_type', 'worker')->values();
+        $visitor_limit = $this->visitor_limit
+        ->where('village_id', $request->village_id)
+        ->first();
+        if (!empty($visitor_limit)) {
+            if (count($delivery) >= $visitor_limit->delivery ||
+            count($worker) >= $visitor_limit->worker || count($guest) >= $visitor_limit->guest) {
+                return response()->json([
+                    'errors' => 'You have exceeded the maximum limit to create qr code to ' . $request->visitor_type
+                ], 400);
+            }
         }
         $data = 'visitor_id>' . $request->user()->id . '>village_id>' . $request->village_id . 
         '>visitor_type>' . $request->visitor_type . '>time>' . now() . '>rand>' . rand(1, 100000)
