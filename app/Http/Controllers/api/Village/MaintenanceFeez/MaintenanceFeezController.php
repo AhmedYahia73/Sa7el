@@ -40,11 +40,14 @@ class MaintenanceFeezController extends Controller
                     $total = $item->price;
                 }
                 return [
+                    'appartment_id' => $element->id,
                     'unit' => $element->unit,
                     'unit_type' => $element?->type?->name,
+                    'user_id' => $element?->user?->id,
                     'user_name' => $element?->user?->name,
                     'user_phone' => $element?->user?->phone,
                     'paid' => $paid,
+                    'remaines' => $total - $paid,
                     'total' => $total,
                 ];
             });
