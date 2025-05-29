@@ -88,14 +88,16 @@ class PaymentPackageController extends Controller
                 'status' => 'paid'
             ];
         });
-        $new_invoices->push([
-            'name' => $package?->name,
-            'description' => $package?->description,
-            'amount' => empty($village->package_id) ? $package->price + $package->feez - $item->discount : $package->price - $item->discount,
-            'discount' => $item->discount,
-            'total' => empty($village->package_id) ? $package->price + $package->feez  : $package->price,
-            'status' => 'unpaid'
-        ]);
+        if (!empty($package)) {
+            $new_invoices->push([
+                'name' => $package?->name,
+                'description' => $package?->description,
+                'amount' => empty($village->package_id) ? $package->price + $package->feez - $item->discount : $package->price - $item->discount,
+                'discount' => $item->discount,
+                'total' => empty($village->package_id) ? $package->price + $package->feez  : $package->price,
+                'status' => 'unpaid'
+            ]);
+        }
 
         return response()->json([ 
             'village' => $village,
