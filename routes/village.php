@@ -70,6 +70,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(MaintenanceTypeController::class)->prefix('maintenance_type')->middleware('can:Maintenance Type')
     ->group(function() {
         Route::get('/', 'view'); 
+        Route::put('/status/{id}', 'status');
         Route::post('/add', 'add');
         Route::delete('/delete', 'delete');
     });

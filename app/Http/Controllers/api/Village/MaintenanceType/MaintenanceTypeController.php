@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\Village\MaintenanceType;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\MaintenanceType;
 
@@ -52,6 +53,17 @@ class MaintenanceTypeController extends Controller
                 'errors' => $validator->errors(),
             ],400);
         }
+
+        $pivot = DB::table('maintenance_type_villages')
+        ->where('maintenance_types_id', $id)
+        ->where('village_id', $request->user()->village_id)
+        ->update([
+            'status' => $request->status
+        ]);
+
+        return response()->json([
+            'success' => 'You add data success'
+        ]);
     }
 
     public function add(Request $request){
