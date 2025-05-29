@@ -63,15 +63,37 @@ class PaymentPackageController extends Controller
     }
 
     public function invoice(Request $request){
-        $package = $this->package
-        ->where('id', $request?->user()?->village?->package_id)
-        ->first();
+        $package = null;
         $village = $request->user()->village;
         $village->zone;
+        $date = Carbon::now()->subMonth();
+        $new_invoices = $this->payment
+        ->where('village_id', $request->user()->village_id)
+        ->where('expire_date', '<=', $date->format('Y-m-d'))
+        ->first();
+        if (empty($new_invoices)) {
+            $package = $this->package
+            ->where('id', $request?->user()?->village?->package_id)
+            ->first();
+        }
+        $old_invoices = $this->payment
+        ->where('village_id', $request->user()->village_id)
+        ->get()
+        ->map(function($item){
+            return [
+                'id' => $item->id,
+                'name' => $item?->package?->name,
+                'description' => $item?->package?->description,
+                'amount' => $item->amount,
+                'discount' => $item->discount,
+                'total' => $item->amount + $item->discount,
+            ];
+        });
 
         return response()->json([
             'package' => $package,
             'village' => $village,
+            'old_invoices' => $old_invoices,
         ]);
     }
 }
