@@ -24,6 +24,9 @@ class VisitorLimitController extends Controller
                 'renter_guest' => 1,
                 'renter_worker' => 1,
                 'renter_delivery' => 1,
+                'guest' => 1,
+                'worker' => 1,
+                'delivery' => 1,
             ]);
         }
 
