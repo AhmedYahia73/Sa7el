@@ -11,13 +11,14 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\VisitorCode;
 use App\Models\VisitVillage;
 use App\Models\Appartment;
+use App\Models\AppartmentCode;
 use App\Models\VisitorLimit;
 
 class VisitController extends Controller
 {
     public function __construct(private VisitorCode $visitor_code,
     private VisitVillage $visit_village, private Appartment $appartment,
-    private VisitorLimit $visitor_limit){}
+    private VisitorLimit $visitor_limit, private AppartmentCode $appartment_code){}
     
     public function create_qr_code(Request $request){
         $validator = Validator::make($request->all(), [
@@ -32,6 +33,22 @@ class VisitController extends Controller
             ],400);
         }
 
+        $appartment_code = $this->appartment_code 
+        ->where('appartment_id', $request->appartment_id)
+        ->where('user_id', $request->user()->id)
+        ->where('type', 'owner')
+        ->orWhere('appartment_id', $request->appartment_id)
+        ->where('user_id', $request->user()->id)
+        ->where('type', 'renter')
+        ->where('from', '<=', date('Y-m-d'))
+        ->where('to', '>=', date('Y-m-d'))
+        ->orderByDesc('id')
+        ->first();
+        if (empty($appartment_code)) {
+            return response()->json([
+                'errors' => "You don't have appartment"
+            ], 400);
+        }
         $my_unit = $this->appartment
         ->where('id', $request->appartment_id)
         ->with(['visitors' => function($query){
@@ -44,10 +61,22 @@ class VisitController extends Controller
         $worker = $vistors->where('visitor_type', 'worker')->values();
         $visitor_limit = $this->visitor_limit
         ->where('village_id', $request->village_id)
+        ->orderByDesc('id')
         ->first();
+        if ($appartment_code->type == 'owner') {
+            $visitor_limit_delivery = $visitor_limit->delivery;
+            $visitor_limit_worker = $visitor_limit->worker;
+            $visitor_limit_guest = $visitor_limit->guest;
+        } 
+        else {
+            $visitor_limit_delivery = $visitor_limit->renter_delivery;
+            $visitor_limit_worker = $visitor_limit->renter_worker;
+            $visitor_limit_guest = $visitor_limit->renter_guest;
+        }
+        
         if (!empty($visitor_limit)) {
-            if (count($delivery) >= $visitor_limit->delivery ||
-            count($worker) >= $visitor_limit->worker || count($guest) >= $visitor_limit->guest) {
+            if (count($delivery) >= $visitor_limit_delivery ||
+            count($worker) >= $visitor_limit_worker || count($guest) >= $visitor_limit_guest) {
                 return response()->json([
                     'errors' => 'You have exceeded the maximum limit to create qr code to ' . $request->visitor_type
                 ], 400);

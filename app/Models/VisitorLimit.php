@@ -10,6 +10,9 @@ class VisitorLimit extends Model
         'guest',
         'worker',
         'delivery',
+        'renter_guest',
+        'renter_worker',
+        'renter_delivery',
         'village_id',
     ];
 }
