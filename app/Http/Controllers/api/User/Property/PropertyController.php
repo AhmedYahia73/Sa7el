@@ -131,16 +131,8 @@ class PropertyController extends Controller
                 ->where('type', 'owner')
                 ->where('village_id', $request->village_id)
                 ->where('appartment_id', $request->appartment_id)
-                ->where('code', $request->code)
-                ->whereNotNull('code')
-                ->where('user_id', $request->user()->id)
-                ->orWhere('type', 'renter') 
-                ->where('from', '<=', date('Y-m-d'))
-                ->where('to', '>=', date('Y-m-d'))
-                ->where('village_id', $request->village_id)
-                ->where('appartment_id', $request->appartment_id)
-                ->where('user_id', $request->user()->id)
-                ->first();
+                ->whereNull('code')
+                ->delete();
                 
                 if (!empty($appartment_code)) {
                     return response()->json([
@@ -148,6 +140,26 @@ class PropertyController extends Controller
                     ]);
                 }
             }
+            $appartment_code = $this->appartment_code
+            ->where('type', 'owner')
+            ->where('village_id', $request->village_id)
+            ->where('code', $request->code)
+            ->whereNotNull('code')
+            ->where('user_id', $request->user()->id)
+            ->orWhere('type', 'renter')
+            ->whereNotNull('code')
+            ->where('from', '<=', date('Y-m-d'))
+            ->where('to', '>=', date('Y-m-d'))
+            ->where('village_id', $request->village_id)
+            ->where('code', $request->code)
+            ->where('user_id', $request->user()->id)
+            ->first();
+            if (!empty($appartment_code)) {
+                return response()->json([
+                    'message' => 'appartment already added'
+                ]);
+            }
+
             $appartment_code = $this->appartment_code
             ->where('type', 'owner')
             ->where('village_id', $request->village_id)
