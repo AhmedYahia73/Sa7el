@@ -68,17 +68,15 @@ class PaymentPackageController extends Controller
         $village = $request->user()->village;
         $village->zone;
         $date = Carbon::now()->subMonth();
-        $new_invoices = $this->payment
-        ->where('village_id', $request->user()->village_id)
-        ->where('expire_date', '<=', $date->format('Y-m-d'))
-        ->first();
-        if (empty($new_invoices)) {
+        
+        if ($village->to <= $date) {
             $package = $this->package
             ->where('id', $request?->user()?->village?->package_id)
             ->first();
         }
         $old_invoices = $this->payment
         ->where('village_id', $request->user()->village_id)
+        ->where('status', 'approved')
         ->get()
         ->map(function($item){
             return [
@@ -88,6 +86,7 @@ class PaymentPackageController extends Controller
                 'amount' => $item->amount,
                 'discount' => $item->discount,
                 'total' => $item->amount + $item->discount,
+                'status' => 'paid'
             ];
         });
 
