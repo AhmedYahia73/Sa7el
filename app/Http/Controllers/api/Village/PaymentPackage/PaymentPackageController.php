@@ -9,11 +9,28 @@ use App\trait\image;
 
 use App\Models\Payment;
 use App\Models\Package;
+use App\Models\PaymentMethod;
 
 class PaymentPackageController extends Controller
 {
-    public function __construct(private Payment $payment, private Package $package){}
+    public function __construct(private Payment $payment, private Package $package,
+    private PaymentMethod $payment_methods){}
     use image;
+    
+    public function view(Request $request){
+        $packages = $this->package
+        ->where('type', 'village')
+        ->where('status', 1)
+        ->get();
+        $payment_methods = $this->payment_methods
+        ->where('status', 1)
+        ->get();
+
+        return response()->json([
+            'packages' => $packages,
+            'payment_methods' => $payment_methods,
+        ]);
+    }
 
     public function payment(Request $request){
         $validator = Validator::make($request->all(), [

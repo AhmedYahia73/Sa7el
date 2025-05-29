@@ -45,7 +45,7 @@ class ProblemReportController extends Controller
         ->where('village_id', $request->village_id)
 		->get()
         ->filter(function ($admin) {
-            return $admin->parent && $admin->parent->roles->contains('module', 'Problem Reports');
+            return $admin->position && $admin->position->roles->contains('module', 'Problem Reports');
         });
         foreach ($admins as $item) {
             $email = $item->email;

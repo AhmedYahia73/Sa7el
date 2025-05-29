@@ -105,7 +105,7 @@ class MaintenanceController extends Controller
         ->where('village_id', $request->village_id)
 		->get()
         ->filter(function ($admin) {
-            return $admin->parent && $admin->parent->roles->contains('module', 'Maintenance Request');
+            return $admin->position && $admin->position->roles->contains('module', 'Maintenance Request');
         });
         foreach ($admins as $item) {
             $email = $item->email;
