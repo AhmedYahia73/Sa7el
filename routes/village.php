@@ -29,11 +29,17 @@ use App\Http\Controllers\api\Village\ServiceType\ServiceTypeController;
 use App\Http\Controllers\api\Village\VisitorLimit\VisitorLimitController;
 use App\Http\Controllers\api\Village\PaymentPackage\PaymentPackageController;
 use App\Http\Controllers\api\Village\Appartments\AppartmentProfileController;
+use App\Http\Controllers\api\Village\Notification\NotificationController;
 
 Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(HomeController::class)->prefix('home')->middleware('can:Home')
     ->group(function() {
         Route::get('/', 'view');
+    });
+
+    Route::controller(NotificationController::class)->prefix('notifications')
+    ->group(function() {
+        Route::get('/', 'notification');  
     });
 
     Route::controller(ServiceTypeController::class)->prefix('service_type')
