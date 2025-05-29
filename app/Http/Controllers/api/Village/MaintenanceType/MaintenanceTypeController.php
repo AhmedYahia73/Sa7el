@@ -22,7 +22,18 @@ class MaintenanceTypeController extends Controller
         ->whereHas('village', function($query) use($request){
             $query->where('villages.id', $request->user()->village_id);
         })
-        ->get();
+        ->with('village')
+        ->get()
+        ->map(function($item){
+            return [
+                'id' => $item->id,
+                'name' => $item->name,
+                'image' => $item->image,
+                'image_link' => $item->image_link,
+                'ar_name' => $item->ar_name,
+                'status' => $item->village->pivot->status,
+            ];
+        });
 
         return response()->json([
             'maintenance_types' => $maintenance_types,

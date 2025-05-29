@@ -15,7 +15,7 @@ class MaintenanceType extends Model
 
     public function village(){
         return $this->belongsToMany(Village::class, 'maintenance_type_villages', 
-        'maintenance_types_id', 'village_id');
+        'maintenance_types_id', 'village_id')->withPivot('status');
     }
 
     public function getImageLinkAttribute(){
