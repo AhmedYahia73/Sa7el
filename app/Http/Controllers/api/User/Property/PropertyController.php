@@ -127,18 +127,12 @@ class PropertyController extends Controller
         }
         else{
             if ($request->appartment_id) {
-                $appartment_code = $this->appartment_code
+                $this->appartment_code
                 ->where('type', 'owner')
                 ->where('village_id', $request->village_id)
                 ->where('appartment_id', $request->appartment_id)
                 ->whereNull('code')
                 ->delete();
-                
-                if (!empty($appartment_code)) {
-                    return response()->json([
-                        'message' => 'appartment already added'
-                    ]);
-                }
             }
             $appartment_code = $this->appartment_code
             ->where('type', 'owner')
