@@ -12,13 +12,14 @@ use Illuminate\Queue\SerializesModels;
 class ProblemRequestEmail extends Mailable
 {
     use Queueable, SerializesModels;
+    public $problem;
 
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct($problem)
     {
-        //
+        $this->problem = $problem;
     }
 
     /**
@@ -37,7 +38,7 @@ class ProblemRequestEmail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'email.ProblemEmail',
         );
     }
 

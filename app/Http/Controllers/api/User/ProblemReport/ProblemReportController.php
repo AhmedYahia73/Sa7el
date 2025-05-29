@@ -5,7 +5,7 @@ namespace App\Http\Controllers\api\User\ProblemReport;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Mail\MaintenanceRequestEmail;
+use App\Mail\ProblemRequestEmail;
 use Illuminate\Support\Facades\Mail;
 use App\trait\image;
 
@@ -37,8 +37,9 @@ class ProblemReportController extends Controller
             $reportRequest['image'] = $image_path;
         }
         $reportRequest['user_id'] = $request->user()->id;
-        $this->problem_report
+        $problem_report = $this->problem_report
         ->create($reportRequest);
+        $problem_report->user;
         $admins = $this->admins
         ->where('role', 'village')
         ->where('village_id', $request->village_id)
@@ -48,7 +49,7 @@ class ProblemReportController extends Controller
         });
         foreach ($admins as $item) {
             $email = $item->email;
-            Mail::to($email)->send(new MaintenanceRequestEmail($maintenance));
+            Mail::to($email)->send(new ProblemRequestEmail($problem_report));
         }
 
         return response()->json([
