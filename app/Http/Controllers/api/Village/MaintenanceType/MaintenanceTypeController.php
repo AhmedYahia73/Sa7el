@@ -22,7 +22,9 @@ class MaintenanceTypeController extends Controller
         ->whereHas('village', function($query) use($request){
             $query->where('villages.id', $request->user()->village_id);
         })
-        ->with('village')
+        ->with('village', function($query) use($request){
+            $query->where('villages.id', $request->user()->village_id);
+        })
         ->get()
         ->map(function($item){
             return [
@@ -31,7 +33,7 @@ class MaintenanceTypeController extends Controller
                 'image' => $item->image,
                 'image_link' => $item->image_link,
                 'ar_name' => $item->ar_name,
-                'status' => $item->village->pivot->status,
+                'status' => $item->village[0]->pivot->status,
             ];
         });
 
