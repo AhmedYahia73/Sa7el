@@ -109,7 +109,7 @@ class MaintenanceController extends Controller
         });
         foreach ($admins as $item) {
             $email = $item->email;
-            Mail::to('ahmedahmadahmid73@gmail.com')->send(new MaintenanceRequestEmail($maintenance));
+            Mail::to($email)->send(new MaintenanceRequestEmail($maintenance));
         }
 
         return response()->json([

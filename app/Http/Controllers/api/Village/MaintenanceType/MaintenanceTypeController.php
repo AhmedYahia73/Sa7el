@@ -62,7 +62,7 @@ class MaintenanceTypeController extends Controller
         ]);
 
         return response()->json([
-            'success' => 'You add data success'
+            'success' => 'You update status success'
         ]);
     }
 

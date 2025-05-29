@@ -5,13 +5,17 @@ namespace App\Http\Controllers\api\User\ProblemReport;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Mail\MaintenanceRequestEmail;
+use Illuminate\Support\Facades\Mail;
 use App\trait\image;
 
 use App\Models\ProblemReport as ProblemsReport;
+use App\Models\User;
 
 class ProblemReportController extends Controller
 {
-    public function __construct(private ProblemsReport $problem_report){}
+    public function __construct(private ProblemsReport $problem_report,
+    private User $admins){}
     use image;
     
     public function add_report(Request $request){
@@ -35,6 +39,17 @@ class ProblemReportController extends Controller
         $reportRequest['user_id'] = $request->user()->id;
         $this->problem_report
         ->create($reportRequest);
+        $admins = $this->admins
+        ->where('role', 'village')
+        ->where('village_id', $request->village_id)
+		->get()
+        ->filter(function ($admin) {
+            return $admin->parent && $admin->parent->roles->contains('module', 'Problem Reports');
+        });
+        foreach ($admins as $item) {
+            $email = $item->email;
+            Mail::to($email)->send(new MaintenanceRequestEmail($maintenance));
+        }
 
         return response()->json([
             'success' => 'You add data success'

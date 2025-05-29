@@ -91,7 +91,7 @@
         </tr>
         <tr>
           <td class="label">Request Date:</td>
-          <td>{{ $maintenance['appartment']['created_at'] }}</td>
+          <td>{{ $maintenance['created_at'] }}</td>
         </tr>
         <tr>
           <td class="label">Issue:</td>
