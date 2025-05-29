@@ -74,13 +74,12 @@ class PaymentPackageController extends Controller
             ->where('id', $request?->user()?->village?->package_id)
             ->first();
         }
-        $old_invoices = $this->payment
+        $new_invoices = $this->payment
         ->where('village_id', $request->user()->village_id)
         ->where('status', 'approved')
         ->get()
         ->map(function($item){
             return [
-                'id' => $item->id,
                 'name' => $item?->package?->name,
                 'description' => $item?->package?->description,
                 'amount' => $item->amount,
@@ -89,11 +88,18 @@ class PaymentPackageController extends Controller
                 'status' => 'paid'
             ];
         });
+        $new_invoices->push([
+            'name' => $package?->name,
+            'description' => $package?->description,
+            'amount' => empty($village->package_id) ? $package->price + $package->feez - $item->discount : $package->price - $item->discount,
+            'discount' => $item->discount,
+            'total' => empty($village->package_id) ? $package->price + $package->feez  : $package->price,
+            'status' => 'unpaid'
+        ]);
 
-        return response()->json([
-            'package' => $package,
+        return response()->json([ 
             'village' => $village,
-            'old_invoices' => $old_invoices,
+            'invoices' => $new_invoices,
         ]);
     }
 }
