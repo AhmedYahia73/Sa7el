@@ -92,7 +92,7 @@ class PaymentPackageController extends Controller
             $new_invoices->push([
                 'name' => $package?->name,
                 'description' => $package?->description,
-                'amount' => empty($village->package_id) ? $package->price + $package->feez - $item->discount : $package->price - $item->discount,
+                'amount' => empty($village->package_id) ? $package->price + $package->feez - $package->discount : $package->price - $package->discount,
                 'discount' => $item->discount,
                 'total' => empty($village->package_id) ? $package->price + $package->feez  : $package->price,
                 'status' => 'unpaid'
