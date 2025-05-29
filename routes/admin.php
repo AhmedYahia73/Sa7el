@@ -28,6 +28,7 @@ use App\Http\Controllers\api\SuperAdmin\ServiceProvider\ServiceProviderControlle
 
 Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     Route::controller(ZoneController::class)->prefix('zone')
+    ->middleware('can:Admin_Admin')
     ->group(function() {
         Route::get('/', 'view');
         Route::get('/item/{id}', 'zone');
@@ -35,7 +36,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
-    })->middleware('can:Admin_Admin');
+    });
     
     Route::controller(ServiceProviderController::class)->prefix('service_provider')
     ->group(function() {
