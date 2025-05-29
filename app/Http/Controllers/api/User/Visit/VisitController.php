@@ -65,18 +65,18 @@ class VisitController extends Controller
         ->where('village_id', $request->village_id)
         ->orderByDesc('id')
         ->first();
-        if ($appartment_code->type == 'owner') {
-            $visitor_limit_delivery = $visitor_limit->delivery;
-            $visitor_limit_worker = $visitor_limit->worker;
-            $visitor_limit_guest = $visitor_limit->guest;
-        } 
-        else {
-            $visitor_limit_delivery = $visitor_limit->renter_delivery;
-            $visitor_limit_worker = $visitor_limit->renter_worker;
-            $visitor_limit_guest = $visitor_limit->renter_guest;
-        }
         
         if (!empty($visitor_limit)) {
+            if ($appartment_code->type == 'owner') {
+                $visitor_limit_delivery = $visitor_limit->delivery;
+                $visitor_limit_worker = $visitor_limit->worker;
+                $visitor_limit_guest = $visitor_limit->guest;
+            } 
+            else {
+                $visitor_limit_delivery = $visitor_limit->renter_delivery;
+                $visitor_limit_worker = $visitor_limit->renter_worker;
+                $visitor_limit_guest = $visitor_limit->renter_guest;
+            }
             if ((count($delivery) >= $visitor_limit_delivery && $request->visitor_type == 'delivery') ||
             (count($worker) >= $visitor_limit_worker && $request->visitor_type == 'worker') || 
             (count($guest) >= $visitor_limit_guest && $request->visitor_type == 'guest')) {
