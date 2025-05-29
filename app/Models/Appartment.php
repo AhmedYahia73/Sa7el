@@ -24,7 +24,7 @@ class Appartment extends Model
     }
 
     public function visitors(){
-        return $this->hasMany(VisitVillage::class, 'appartment_id');
+        return $this->hasMany(VisitorCode::class, 'appartment_id');
     }
 
     public function type(){
