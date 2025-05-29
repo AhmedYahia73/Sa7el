@@ -19,6 +19,13 @@ class Gates
         //     }
         //     return false;
         // });
+        Gate::define('Admin_Admin', function ($user) { 
+            if (!$user->provider_only) {
+                return true;
+            }
+            return false;
+        });
+        
         Gate::define('Settings', function ($user) { 
             if ($user->position &&
             $user->position->roles->pluck('module')->contains('Settings')) {
