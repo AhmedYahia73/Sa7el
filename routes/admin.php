@@ -28,8 +28,7 @@ use App\Http\Controllers\api\SuperAdmin\ServiceProvider\ServiceProviderControlle
 
 Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     Route::controller(ZoneController::class)->prefix('zone')
-    ->middleware('can:Admin_Admin')
-    ->group(function() {
+    ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/', 'view');
         Route::get('/item/{id}', 'zone');
         Route::put('/status/{id}', 'status');
@@ -48,13 +47,13 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     });
 
     Route::controller(MaintenanceTypeController::class)->prefix('maintenance_type')
-    ->group(function() {
+    ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/', 'view'); 
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
-    })->middleware('can:Admin_Admin');
+    });
     
     Route::controller(ProviderCoverController::class)->prefix('provider_cover')
     ->group(function() {
@@ -64,23 +63,23 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     });
     
     Route::controller(VillageCoverController::class)->prefix('village_cover')
-    ->group(function() {
+    ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/{id}', 'view'); 
         Route::post('/add/{id}', 'create');
         Route::delete('/delete/{id}', 'delete');
-    })->middleware('can:Admin_Admin');
+    });
     
     Route::controller(AdminController::class)->prefix('admins')
-    ->group(function() {
+    ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/', 'view'); 
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
-    })->middleware('can:Admin_Admin');
+    });
     
     Route::controller(VillageController::class)->prefix('village')
-    ->group(function() {
+    ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/', 'view');
         Route::get('/item/{id}', 'village');
         Route::put('/status/{id}', 'status');
@@ -91,55 +90,55 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
 
         Route::post('/village_units', 'village_units');
         Route::post('/village_units_delete', 'village_units_delete');
-    })->middleware('can:Admin_Admin');
+    });
     
     Route::controller(VillageGallaryController::class)->prefix('village_gallery')
-    ->group(function() {
+    ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/{id}', 'view');
         Route::put('/status/{id}', 'status');
         Route::post('/add/{id}', 'create'); 
         Route::delete('/delete/{id}', 'delete');
-    })->middleware('can:Admin_Admin');
+    });
     
     Route::controller(VillageAdminController::class)->prefix('village_admin')
-    ->group(function() {
+    ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/{id}', 'view');
         Route::get('/item/{id}', 'admin');
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
-    })->middleware('can:Admin_Admin');
+    });
     
     Route::controller(VillageRolesController::class)->prefix('village_roles')
-    ->group(function() {
+    ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/', 'view');
         Route::get('/item/{id}', 'position');
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
-    })->middleware('can:Admin_Admin');
+    });
     
     Route::controller(AppartmentTypeController::class)->prefix('appartment_type')
-    ->group(function() {
+    ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/', 'view');
         Route::get('/item/{id}', 'appartment_type');
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
-    })->middleware('can:Admin_Admin');
+    });
     
     Route::controller(UserController::class)->prefix('user')
-    ->group(function() {
+    ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/', 'view');
         Route::get('/item/{id}', 'user');
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
-    })->middleware('can:Admin_Admin');
+    });
     
     Route::controller(ServiceTypeController::class)->prefix('service_type')
     ->group(function() {
@@ -191,53 +190,53 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     });
     
     Route::controller(PaymentMethodController::class)->prefix('payment_method')
-    ->group(function() {
+    ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/', 'view');
         Route::get('/item/{id}', 'payment_method');
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
-    })->middleware('can:Admin_Admin');
+    });
     
     Route::controller(PaymentMethodController::class)->prefix('payment_method')
-    ->group(function() {
+    ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/', 'view');
         Route::get('/item/{id}', 'payment_method');
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
-    })->middleware('can:Admin_Admin');
+    });
     
     Route::controller(SubscriptionController::class)->prefix('subscription')
-    ->group(function() {
+    ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/', 'view');
         Route::get('/item/{id}', 'package');
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
-    })->middleware('can:Admin_Admin');
+    });
     
     Route::controller(SubscriperController::class)->prefix('subscriper')
-    ->group(function() {
+    ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/', 'view'); 
         Route::get('/item/{id}', 'filter');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
-    })->middleware('can:Admin_Admin');
+    });
     
     Route::controller(PaymentController::class)->prefix('payments')
-    ->group(function() {
+    ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/', 'view');
         Route::put('/approve/{id}', 'approve');
         Route::put('/reject/{id}', 'reject');
-    })->middleware('can:Admin_Admin');
+    });
     
     Route::controller(InvoiceController::class)->prefix('invoice')
-    ->group(function() {
+    ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/{id}', 'invoice');
-    })->middleware('can:Admin_Admin');
+    });
 });
