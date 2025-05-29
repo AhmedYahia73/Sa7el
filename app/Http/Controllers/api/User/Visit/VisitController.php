@@ -77,8 +77,9 @@ class VisitController extends Controller
         }
         
         if (!empty($visitor_limit)) {
-            if (count($delivery) >= $visitor_limit_delivery ||
-            count($worker) >= $visitor_limit_worker || count($guest) >= $visitor_limit_guest) {
+            if ((count($delivery) >= $visitor_limit_delivery && $request->visitor_type == 'delivery') ||
+            (count($worker) >= $visitor_limit_worker && $request->visitor_type == 'worker') || 
+            (count($guest) >= $visitor_limit_guest && $request->visitor_type == 'guest')) {
                 return response()->json([
                     'errors' => 'You have exceeded the maximum limit to create qr code to ' . $request->visitor_type
                 ], 403);

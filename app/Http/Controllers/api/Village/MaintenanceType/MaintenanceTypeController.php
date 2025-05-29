@@ -43,6 +43,17 @@ class MaintenanceTypeController extends Controller
         ]);
     }
 
+    public function status(Request $request, $id){
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|boolean',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+    }
+
     public function add(Request $request){
         // maintenance_type_id,
         $validator = Validator::make($request->all(), [
