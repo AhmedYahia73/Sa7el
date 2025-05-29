@@ -20,7 +20,10 @@ class VisitorLimitController extends Controller
         if (empty($visitor_limit)) { 
             $visitor_limit = $this->visitor_limit
             ->create([
-                'village_id' => $request->user()->village_id
+                'village_id' => $request->user()->village_id,
+                'renter_guest' => 1,
+                'renter_worker' => 1,
+                'renter_delivery' => 1,
             ]);
         }
 
@@ -34,7 +37,10 @@ class VisitorLimitController extends Controller
         $validator = Validator::make($request->all(), [
             'guest' => 'required|numeric',
             'worker' => 'required|numeric',
-            'delivery' => 'required|numeric', 
+            'delivery' => 'required|numeric',
+            'renter_guest' => 'required|numeric',
+            'renter_worker' => 'required|numeric',
+            'renter_delivery' => 'required|numeric',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -57,7 +63,10 @@ class VisitorLimitController extends Controller
         $validator = Validator::make($request->all(), [
             'guest' => 'required|numeric',
             'worker' => 'required|numeric',
-            'delivery' => 'required|numeric', 
+            'delivery' => 'required|numeric',
+            'renter_guest' => 'required|numeric',
+            'renter_worker' => 'required|numeric',
+            'renter_delivery' => 'required|numeric',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
