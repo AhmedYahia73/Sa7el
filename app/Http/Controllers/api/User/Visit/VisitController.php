@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 use App\Models\VisitorCode;
 use App\Models\VisitVillage;
