@@ -49,10 +49,11 @@ class VisitController extends Controller
                 'errors' => "You don't have appartment"
             ], 400);
         }
+        $time_before_day = Carbon::now()->subHours(24);
         $my_unit = $this->appartment
         ->where('id', $request->appartment_id)
-        ->with(['visitors' => function($query){
-            $query->whereDate('created_at', date('Y-m-d'));
+        ->with(['visitors' => function($query) use($time_before_day){
+            $query->where('created_at', '>=', $time_before_day);
         }])
         ->first();
         $vistors = $my_unit->visitors;
