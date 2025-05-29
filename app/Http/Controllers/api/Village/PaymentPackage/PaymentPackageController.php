@@ -67,7 +67,7 @@ class PaymentPackageController extends Controller
         $package = null;
         $village = $request->user()->village;
         $village->zone;
-        $date = Carbon::now()->subMonth();
+        $date = Carbon::now()->addMonth();
         
         if ($village->to <= $date) {
             $package = $this->package
