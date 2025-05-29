@@ -81,7 +81,7 @@ class VisitController extends Controller
             count($worker) >= $visitor_limit_worker || count($guest) >= $visitor_limit_guest) {
                 return response()->json([
                     'errors' => 'You have exceeded the maximum limit to create qr code to ' . $request->visitor_type
-                ], 400);
+                ], 403);
             }
         }
         $data = 'visitor_id>' . $request->user()->id . '>village_id>' . $request->village_id . 
