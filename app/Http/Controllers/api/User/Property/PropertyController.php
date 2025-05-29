@@ -54,7 +54,8 @@ class PropertyController extends Controller
                     : $item?->village?->zone?->ar_name ?? $item?->village?->zone?->name,
                     'zone_id' => $item?->village?->zone_id,
                     'flag' => $item?->village?->form >= date('Y-m-d') && 
-                    $item?->village?->to <= date('Y-m-d') ? true : false,
+                    $item?->village?->to <= date('Y-m-d') && 
+                    !empty($item->code) ? true : false,
                 ];
             } else {
                 return [
@@ -70,8 +71,9 @@ class PropertyController extends Controller
                     : $item?->village?->zone?->ar_name ?? $item?->village?->zone?->name,
                     'zone_id' => $item?->village?->zone_id,
                     'flag' => $appartment?->village?->form >= date('Y-m-d') && 
-                    $appartment?->village?->to <= date('Y-m-d') ? true : false,
-                ];
+                    $appartment?->village?->to <= date('Y-m-d') && 
+                    !empty($item->code) ? true : false,
+                ]; 
             }
         });
 
