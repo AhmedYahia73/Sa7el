@@ -53,7 +53,7 @@ class PropertyController extends Controller
                     'zone' => $request->local == 'en' ? $item?->village?->zone?->name
                     : $item?->village?->zone?->ar_name ?? $item?->village?->zone?->name,
                     'zone_id' => $item?->village?->zone_id,
-                    'flag' => $item?->village?->form >= date('Y-m-d') && 
+                    'flag' => $item?->village?->from >= date('Y-m-d') && 
                     $item?->village?->to <= date('Y-m-d') && 
                     !empty($item->code) ? true : false,
                 ];
@@ -70,7 +70,7 @@ class PropertyController extends Controller
                     'zone' => $request->local == 'en' ? $item?->village?->zone?->name
                     : $item?->village?->zone?->ar_name ?? $item?->village?->zone?->name,
                     'zone_id' => $item?->village?->zone_id,
-                    'flag' => $appartment?->village?->form >= date('Y-m-d') && 
+                    'flag' => $appartment?->village?->from >= date('Y-m-d') && 
                     $appartment?->village?->to <= date('Y-m-d') && 
                     !empty($item->code) ? true : false,
                 ]; 
