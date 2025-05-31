@@ -20,7 +20,6 @@ class MallController extends Controller
     public function view(){
         $mall = $this->mall
         ->with(['translations', 'zone'])
-        ->withCount('population', 'units')
         ->get();
         $zones = $this->zones
         ->get();
