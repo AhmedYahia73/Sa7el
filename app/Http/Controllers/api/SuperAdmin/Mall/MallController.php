@@ -62,7 +62,7 @@ class MallController extends Controller
         ]);
     }
 
-    public function village($id){
+    public function mall($id){
         $mall = $this->mall
         ->with(['translations', 'zone']) 
         ->where('id', $id)

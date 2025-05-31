@@ -42,7 +42,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     ->group(function() {
         Route::get('/', 'view');
         Route::get('/update_profile_image', 'update_profile_image');
-        Route::get('/item/{id}', 'village');
+        Route::get('/item/{id}', 'mall');
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
