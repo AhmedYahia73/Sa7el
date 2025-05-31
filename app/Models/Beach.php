@@ -28,6 +28,10 @@ class Beach extends Model
         return $this->morphMany(Translation::class, 'translatable');
     }
 
+    public function security(){
+        return $this->belongsToMany(SecurityMan::class, 'security_position', 'beach_id', 'security_id');
+    }
+
     public function gallery(){
         return $this->hasMany(BeachGallary::class, 'beach_id');
     }

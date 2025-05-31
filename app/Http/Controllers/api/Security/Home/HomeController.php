@@ -23,12 +23,21 @@ class HomeController extends Controller
     public function view(Request $request){
         $beaches = $this->beaches
         ->where('village_id', $request->user()->village_id)
+        ->whereHas('security', function($query) use($request){
+            $query->where('security_men.id', $request->user()->id);
+        })
         ->get();
         $pools = $this->pools
         ->where('village_id', $request->user()->village_id)
+        ->whereHas('security', function($query) use($request){
+            $query->where('security_men.id', $request->user()->id);
+        })
         ->get();
         $gates = $this->gates
         ->where('village_id', $request->user()->village_id)
+        ->whereHas('security', function($query) use($request){
+            $query->where('security_men.id', $request->user()->id);
+        })
         ->get();
 
         return response()->json([

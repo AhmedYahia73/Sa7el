@@ -16,6 +16,10 @@ class Pools extends Model
     ];
     protected $appends = ['ar_name'];
 
+    public function security(){
+        return $this->belongsToMany(SecurityMan::class, 'security_position', 'pool_id', 'security_id');
+    }
+
     public function getArNameAttribute(){
         return $this->translations
         ->where('key', 'name')

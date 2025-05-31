@@ -15,6 +15,10 @@ class Gate extends Model
     ];
     protected $appends = ['image_link'];
 
+    public function security(){
+        return $this->belongsToMany(SecurityMan::class, 'security_position', 'gate_id', 'security_id');
+    }
+
     public function getImageLinkAttribute(){
         return url('storage/' . $this->image);
     }
