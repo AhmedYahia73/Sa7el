@@ -41,7 +41,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     Route::controller(MallController::class)->prefix('mall')
     ->group(function() {
         Route::get('/', 'view');
-        Route::get('/update_profile_image/{id}', 'update_profile_image');
+        Route::post('/update_profile_image/{id}', 'update_profile_image');
         Route::get('/item/{id}', 'mall');
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
