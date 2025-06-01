@@ -45,6 +45,10 @@ class Mall extends Model
         return url('storage/' . $this->image);
     }
 
+    public function providers(){
+        return $this->hasMany(ServiceProvider::class, 'mall_id');
+    }
+
     public function zone(){
         return $this->belongsTo(Zone::class, 'zone_id');
     }

@@ -36,8 +36,7 @@ class UserRequest extends FormRequest
         }
         else{
             return [
-                'name' => ['required'],
-                'user_type' => ['required', 'in:owner,rent,visitor'], 
+                'name' => ['required'], 
                 'email' => ['required', 'email'],
                 'phone' => ['required'], 
                 'status' => ['required', 'boolean'],
