@@ -20,8 +20,7 @@ class ServiceProvider extends Model
         'village_id', 
         'open_from', 
         'open_to', 
-        'cover_image',
-        'mall_id',
+        'cover_image', 
     ];
     protected $appends = ['image_link', 'ar_name', 'ar_description',
     'cover_image_link'];

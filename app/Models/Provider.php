@@ -22,6 +22,7 @@ class Provider extends Model
         'status', 
         'cover_image',
         'zone_id',
+        'mall_id',
     ];
     protected $appends = ['image_link', 'ar_name', 'ar_description', 'rate',
     'cover_image_link'];

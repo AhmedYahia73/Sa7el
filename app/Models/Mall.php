@@ -46,7 +46,7 @@ class Mall extends Model
     }
 
     public function providers(){
-        return $this->hasMany(ServiceProvider::class, 'mall_id');
+        return $this->hasMany(Provider::class, 'mall_id');
     }
 
     public function zone(){
