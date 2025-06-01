@@ -220,30 +220,12 @@ class MallController extends Controller
             ],400);
         }
         $provider = $this->provider
+        ->with(['translations', 'service', 'package', 'zone'])
         ->where('mall_id', $request->mall_id)
         ->get();
 
         return response()->json([
             'provider' => $provider,
-        ]);
-    }
-
-    public function village_units_delete(Request $request){
-        $validator = Validator::make($request->all(), [
-            'appartment_ids' => 'required|array',
-            'appartment_ids.*' => 'required|exists:appartments,id',
-        ]);
-        if ($validator->fails()) { // if Validate Make Error Return Message Error
-            return response()->json([
-                'errors' => $validator->errors(),
-            ],400);
-        }
-        $units = $this->appartment
-        ->whereIn('id', $request->appartment_ids)
-        ->delete();
-
-        return response()->json([
-            'success' => 'You delete data success',
         ]);
     }
 
