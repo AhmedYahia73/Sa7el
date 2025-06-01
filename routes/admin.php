@@ -27,6 +27,7 @@ use App\Http\Controllers\api\SuperAdmin\MaintenanceType\MaintenanceTypeControlle
 use App\Http\Controllers\api\SuperAdmin\ServiceProvider\ServiceProviderController;
 use App\Http\Controllers\api\SuperAdmin\Mall\MallController;
 use App\Http\Controllers\api\SuperAdmin\Mall\MallGallaryController;
+use App\Http\Controllers\api\SuperAdmin\Mall\MallCoverController;
 
 Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     Route::controller(ZoneController::class)->prefix('zone')
@@ -55,6 +56,13 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     ->group(function() {
         Route::get('/{id}', 'view'); 
         Route::put('/status/{id}', 'status');
+        Route::post('/add/{id}', 'create');
+        Route::delete('/delete/{id}', 'delete');
+    });
+
+    Route::controller(MallCoverController::class)->prefix('mall_cover')
+    ->group(function() {
+        Route::get('/{id}', 'view');
         Route::post('/add/{id}', 'create');
         Route::delete('/delete/{id}', 'delete');
     });
