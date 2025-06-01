@@ -28,6 +28,7 @@ class ProviderRequest extends FormRequest
             'open_to' => ['regex:/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/'], 
             'service_id' => ['required', 'exists:service_types,id'],
             'village_id' => ['exists:villages,id'],
+            'mall_id' => ['exists:malls,id'],
             'name' => ['required'],
             'description' => ['sometimes'],
             'phone' => ['required', ],

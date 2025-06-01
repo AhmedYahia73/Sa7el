@@ -47,6 +47,8 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
+
+        Route::get('/providers', 'provider_mall');
     });
 
     

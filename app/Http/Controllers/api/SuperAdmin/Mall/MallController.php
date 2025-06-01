@@ -9,11 +9,12 @@ use Illuminate\Support\Facades\Validator;
 use App\trait\image;
 
 use App\Models\Zone;
-use App\Models\Mall; 
+use App\Models\Mall;
+use App\Models\ServiceProvider;
 
 class MallController extends Controller
 {
-    public function __construct(private Mall $mall
+    public function __construct(private Mall $mall, private ServiceProvider $service_provider
     , private Zone $zones){}
     use image;
 
@@ -209,30 +210,21 @@ class MallController extends Controller
 
  // _____________________________________________________________
 
-    public function village_units(Request $request){
+    public function provider_mall(Request $request){
         $validator = Validator::make($request->all(), [
-            'village_id' => 'required|exists:villages,id',
+            'mall_id' => 'required|exists:malls,id',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
                 'errors' => $validator->errors(),
             ],400);
         }
-        $units = $this->appartment
-        ->where('village_id', $request->village_id)
-        ->get()
-        ->map(function($item){
-            return [
-                'id' => $item?->id,
-                'name' => $item?->user?->name,
-                'phone' => $item?->user?->phone,
-                'type_unit' => $item?->type?->name,
-                'unit_name' => $item?->unit,
-            ];
-        });
+        $provider = $this->service_provider
+        ->where('mall_id', $request->mall_id)
+        ->get();
 
         return response()->json([
-            'units' => $units,
+            'provider' => $provider,
         ]);
     }
 
