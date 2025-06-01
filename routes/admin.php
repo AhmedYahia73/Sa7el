@@ -53,9 +53,9 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
 
     Route::controller(MallGallaryController::class)->prefix('mall_gallery')
     ->group(function() {
-        Route::get('/', 'view'); 
+        Route::get('/{id}', 'view'); 
         Route::put('/status/{id}', 'status');
-        Route::post('/add', 'create');
+        Route::post('/add/{id}', 'create');
         Route::delete('/delete/{id}', 'delete');
     });
 
