@@ -11,11 +11,12 @@ use App\trait\image;
 use App\Models\Zone;
 use App\Models\Mall;
 use App\Models\Provider;
+use App\Models\ServiceType;
 
 class MallController extends Controller
 {
     public function __construct(private Mall $mall, private Provider $provider
-    , private Zone $zones){}
+    , private Zone $zones, private ServiceType $service_type){}
     use image;
 
     public function view(){
@@ -224,9 +225,17 @@ class MallController extends Controller
         'super_admin:id,name'])
         ->where('mall_id', $request->mall_id)
         ->get();
+        $zones = $this->zones
+        ->where('status', 1)
+        ->get();
+        $service_type = $this->service_type
+        ->where('status', 1)
+        ->get();
 
         return response()->json([
             'provider' => $provider,
+            'zones' => $zones,
+            'service_type' => $service_type,
         ]);
     }
 
