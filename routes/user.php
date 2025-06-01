@@ -84,9 +84,10 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     Route::controller(OfferController::class)->prefix('offer')
     ->group(function() {
         Route::get('/', 'view');
-        Route::post('/offer_status/{appartment_id}', 'offer_status');
+        Route::post('/offer_status/{id}', 'offer_status');
+        Route::get('/appartment_rent', 'appartment_rent');
+        Route::get('/appartment_sale', 'appartment_sale');
         Route::get('/appartment_image', 'appartment_image');
-        Route::get('/appartment', 'appartment');
         Route::post('/upload_appartment_image', 'upload_appartment_image');
         Route::post('/add_rent', 'add_rent');
         Route::post('/add_sale', 'add_sale');

@@ -15,6 +15,7 @@ class Offer extends Model
         'price',
         'description',
         'type',
+        'status',
     ];
 
     public function village(){
