@@ -10,11 +10,11 @@ use App\trait\image;
 
 use App\Models\Zone;
 use App\Models\Mall;
-use App\Models\ServiceProvider;
+use App\Models\Provider;
 
 class MallController extends Controller
 {
-    public function __construct(private Mall $mall, private ServiceProvider $service_provider
+    public function __construct(private Mall $mall, private Provider $provider
     , private Zone $zones){}
     use image;
 
@@ -219,7 +219,7 @@ class MallController extends Controller
                 'errors' => $validator->errors(),
             ],400);
         }
-        $provider = $this->service_provider
+        $provider = $this->provider
         ->where('mall_id', $request->mall_id)
         ->get();
 
