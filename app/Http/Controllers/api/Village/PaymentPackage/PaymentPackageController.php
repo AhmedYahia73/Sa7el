@@ -94,7 +94,7 @@ class PaymentPackageController extends Controller
                 'description' => $package?->description,
                 'amount' => empty($village->package_id) ? $package->price + $package->feez - $package->discount : $package->price - $package->discount,
                 'discount' => $package->discount,
-                'total_before_discount' => empty($village->package_id) ? $package->price + $package->feez + $item->discount : $package->price + $item->discount,
+                'total_before_discount' => empty($village->package_id) ? $package->price + $package->feez + $package->discount : $package->price + $package->discount,
                 'status' => 'unpaid'
             ]);
         }

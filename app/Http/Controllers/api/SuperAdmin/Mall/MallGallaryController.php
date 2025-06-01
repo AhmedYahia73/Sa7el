@@ -7,18 +7,20 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\trait\image;
 
+use App\Models\MallGallery;
+
 class MallGallaryController extends Controller
 {
-    public function __construct(private ProviderGallary $provider_gallary){}
+    public function __construct(private MallGallery $mall_gallery){}
     use image;
 
     public function view($id){
-        $provider_gallary = $this->provider_gallary
+        $mall_gallery = $this->mall_gallery
         ->where('provider_id', $id)
         ->get();
 
         return response()->json([
-            'provider_gallary' => $provider_gallary
+            'mall_gallery' => $mall_gallery
         ]);
     }
 
@@ -31,7 +33,7 @@ class MallGallaryController extends Controller
                 'errors' => $validator->errors(),
             ],400);
         }
-        $this->provider_gallary
+        $this->mall_gallery
         ->where('id', $id)
         ->update([
             'status' => $request->status
@@ -53,8 +55,8 @@ class MallGallaryController extends Controller
             ],400);
         }
 
-        $image_path = $this->upload($request, 'image', 'images/provider_gallary');
-        $this->provider_gallary
+        $image_path = $this->upload($request, 'image', 'images/mall_gallery');
+        $this->mall_gallery
         ->create([
             'image' => $image_path,
             'status' => $request->status,
@@ -67,16 +69,16 @@ class MallGallaryController extends Controller
     }
 
     public function delete($id){
-        $provider_gallary = $this->provider_gallary
+        $mall_gallery = $this->mall_gallery
         ->where('id', $id)
         ->first();
-        if (empty($provider_gallary)) {
+        if (empty($mall_gallery)) {
             return response()->json([
                 'errors' => 'village not found'
             ], 400);
         }
-        $this->deleteImage($provider_gallary->image);
-        $provider_gallary->delete();
+        $this->deleteImage($mall_gallery->image);
+        $mall_gallery->delete();
 
         return response()->json([
             'success' => 'You delete data success'
