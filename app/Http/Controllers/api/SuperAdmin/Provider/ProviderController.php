@@ -22,7 +22,8 @@ class ProviderController extends Controller
 
     public function view(){
         $provider = $this->provider
-        ->with(['translations', 'service', 'package', 'zone'])
+        ->with(['translations', 'service', 'package', 'zone',
+        'super_admin:id,name'])
         ->get();
         $services_types = $this->services_types
         ->where('status', 1)
@@ -114,6 +115,7 @@ class ProviderController extends Controller
             $image_path = $this->upload($request, 'image', 'images/providers');
             $providerRequest['image'] = $image_path;
         }
+        $providerRequest['admin_id'] = $request->user()->id;
         $provider = $this->provider
         ->create($providerRequest);
         $provider_translations = [[ 

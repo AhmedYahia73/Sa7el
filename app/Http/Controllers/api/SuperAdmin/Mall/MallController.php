@@ -220,7 +220,8 @@ class MallController extends Controller
             ],400);
         }
         $provider = $this->provider
-        ->with(['translations', 'service', 'package', 'zone'])
+        ->with(['translations', 'service', 'package', 'zone', 
+        'admin_id:id,name'])
         ->where('mall_id', $request->mall_id)
         ->get();
 

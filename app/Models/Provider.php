@@ -23,6 +23,7 @@ class Provider extends Model
         'cover_image',
         'zone_id',
         'mall_id',
+        'admin_id',
     ];
     protected $appends = ['image_link', 'ar_name', 'ar_description', 'rate',
     'cover_image_link'];
@@ -95,5 +96,9 @@ class Provider extends Model
     public function admin(){
         return $this->hasMany(User::class, 'provider_id')
         ->where('role', 'provider');
+    }
+
+    public function super_admin(){
+        return $this->belongsTo(User::class, 'admin_id');
     }
 }
