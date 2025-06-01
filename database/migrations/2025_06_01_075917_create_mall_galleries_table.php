@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('image');
             $table->foreignId('mall_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
-            $table->boolean('status');
+            $table->boolean('status')->default(1);
             $table->timestamps();
         });
     }

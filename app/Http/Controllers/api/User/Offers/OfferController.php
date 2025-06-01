@@ -99,29 +99,35 @@ class OfferController extends Controller
         
 
         return response()->json([
-            'success' => $request->status_offer,
+            'success' => $request->rent_status,
         ]);
     }
 
     public function appartment(Request $request){
         $validator = Validator::make($request->all(), [
             'appartment_id' => 'required|exists:appartments,id',
-            'type' => 'in:rent,sale|required'
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
                 'errors' => $validator->errors(),
             ],400);
         }
-        $offers = $this->offers
-        ->where('type', $request->type)
+        $sale = $this->offers
+        ->where('type', 'sale')
+        ->where('appartment_id', $request->appartment_id)
+        ->where('owner_id', $request->user()->id)
+        ->orderByDesc('id')
+        ->first();
+        $rent = $this->offers
+        ->where('type', 'rent')
         ->where('appartment_id', $request->appartment_id)
         ->where('owner_id', $request->user()->id)
         ->orderByDesc('id')
         ->first();
 
         return response()->json([
-            'offer' => $offers,
+            'sale' => $sale,
+            'rent' => $rent,
         ]);
     }
 
