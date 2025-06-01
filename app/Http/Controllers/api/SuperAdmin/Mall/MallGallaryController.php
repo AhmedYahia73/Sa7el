@@ -16,7 +16,7 @@ class MallGallaryController extends Controller
 
     public function view($id){
         $mall_gallery = $this->mall_gallery
-        ->where('provider_id', $id)
+        ->where('mall_id', $id)
         ->get();
 
         return response()->json([
@@ -60,7 +60,7 @@ class MallGallaryController extends Controller
         ->create([
             'image' => $image_path,
             'status' => $request->status,
-            'provider_id' => $id
+            'mall_id' => $id
         ]);
 
         return response()->json([
