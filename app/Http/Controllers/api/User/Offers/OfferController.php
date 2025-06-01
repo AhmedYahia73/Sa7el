@@ -30,7 +30,7 @@ class OfferController extends Controller
         ->select('id', 'village_id', 'owner_id', 'appartment_id', 'price_day', 'price_month', 'description')
         ->where('type', 'rent')
         ->where('village_id', $request->village_id)
-        ->with('village:id,name', 'owner:id,name,email,phone', 'appartment:id,unit,image,number_floors')
+        ->with('village:id,name', 'owner:id,name,email,phone', 'appartment:id,unit,location')
         ->get();
         $sale = $this->offers
         ->select('id', 'village_id', 'owner_id', 'appartment_id', 'price', 'description')
