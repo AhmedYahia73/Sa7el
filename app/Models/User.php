@@ -49,6 +49,10 @@ class User extends Authenticatable
         return $this->belongsTo(Village::class, 'village_id');
     }
 
+    public function super_roles(){
+        return $this->hasMany(SuperRole::class, 'user_id');
+    }
+
     public function love(){
         return $this->belongsToMany(Post::class, 'post_love');
     }

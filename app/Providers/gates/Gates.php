@@ -2,9 +2,7 @@
 
 namespace App\Providers\gates;
 use Illuminate\Support\Facades\Gate;
-
-
-use App\Models\HrmEmployee; 
+ 
 
 class Gates
 {
@@ -19,12 +17,6 @@ class Gates
         //     }
         //     return false;
         // });
-        Gate::define('Admin_Admin', function ($user) { 
-            if (!$user->provider_only) {
-                return true;
-            }
-            return false;
-        });
         
         Gate::define('Settings', function ($user) { 
             if ($user->position &&

@@ -8,19 +8,31 @@ use Illuminate\Support\Facades\Validator;
 use App\trait\image;
 
 use App\Models\User;
+use App\Models\SuperRole;
 
 class AdminController extends Controller
 {
-    public function __construct(private User $admin){}
+    public function __construct(private User $admin,
+    private SuperRole $super_role){}
     use image;
 
     public function view(){
         $admins = $this->admin
+        ->with('super_roles')
         ->where('role', 'admin')
         ->get();
+        $actions = [
+            'all',
+            'view',
+            'add',
+            'edit',
+            'status',
+            'delete',
+        ];
 
         return response()->json([ 
-            'admins' => $admins, 
+            'admins' => $admins,
+            'actions' => $actions,
         ]);
     }
 
@@ -53,6 +65,8 @@ class AdminController extends Controller
             'status' => ['required', 'boolean'],
             'gender' => ['required', 'in:male,female'],
             'provider_only' => ['required', 'boolean'],
+            'action' => ['required'],
+            'action.*' => ['required', 'in:all,view,status,add,edit,delete'],
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -61,8 +75,16 @@ class AdminController extends Controller
         }
         $adminRequest = $validator->validated();
         $adminRequest['role'] = 'admin';
-        $this->admin
+        $admin = $this->admin
         ->create($adminRequest);
+        foreach ($request->action as $action) {
+            $this->super_role
+            ->create([
+                'action' => $action,
+                'user_id' => $admin->id,
+            ]);
+        }
+        
 
         return response()->json([
             'success' => 'You add data success',
@@ -77,6 +99,8 @@ class AdminController extends Controller
             'status' => ['required', 'boolean'],
             'gender' => ['required', 'in:male,female'],
             'provider_only' => ['required', 'boolean'],
+            'action' => ['required'],
+            'action.*' => ['required', 'in:all,view,status,add,edit,delete'],
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -87,9 +111,20 @@ class AdminController extends Controller
         if (!empty($request->password)) {
             $adminRequest['password'] = bcrypt($request->password);
         }
-        $this->admin
-        ->where('id', $id) 
-        ->update($adminRequest);
+        $admin = $this->admin
+        ->where('id', $id)
+        ->first();
+        $admin->update($adminRequest);
+        $this->super_role
+        ->where('user_id', $admin->id)
+        ->delete();
+        foreach ($request->action as $action) {
+            $this->super_role
+            ->create([
+                'action' => $action,
+                'user_id' => $admin->id,
+            ]);
+        }
 
         return response()->json([
             'success' => 'You update data success',

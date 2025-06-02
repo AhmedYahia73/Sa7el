@@ -47,7 +47,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     });
 
     Route::controller(MallController::class)->prefix('mall')
-    ->group(function() {
+    ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/', 'view');
         Route::post('/update_profile_image/{id}', 'update_profile_image');
         Route::get('/item/{id}', 'mall');
@@ -59,7 +59,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     });
 
     Route::controller(MallGallaryController::class)->prefix('mall_gallery')
-    ->group(function() {
+    ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/{id}', 'view'); 
         Route::put('/status/{id}', 'status');
         Route::post('/add/{id}', 'create');
@@ -67,7 +67,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     });
 
     Route::controller(MallCoverController::class)->prefix('mall_cover')
-    ->group(function() {
+    ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/{id}', 'view');
         Route::post('/add/{id}', 'create');
         Route::delete('/delete/{id}', 'delete');
@@ -75,7 +75,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
 
     
     Route::controller(ServiceProviderController::class)->prefix('service_provider')
-    ->group(function() {
+    ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/', 'view');
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
@@ -93,7 +93,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     });
     
     Route::controller(ProviderCoverController::class)->prefix('provider_cover')
-    ->group(function() {
+    ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/{id}', 'view'); 
         Route::post('/add/{id}', 'create');
         Route::delete('/delete/{id}', 'delete');
@@ -178,7 +178,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     });
     
     Route::controller(ServiceTypeController::class)->prefix('service_type')
-    ->group(function() {
+    ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/', 'view');
         Route::get('/item/{id}', 'service_type');
         Route::put('/status/{id}', 'status');
@@ -189,17 +189,17 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     
     Route::controller(ProviderController::class)->prefix('provider')
     ->group(function() {
-        Route::get('/', 'view');
-        Route::get('/item/{id}', 'provider');
-        Route::put('/status/{id}', 'status');
-        Route::post('/update_profile_image/{id}', 'update_profile_image');
-        Route::post('/add', 'create');
-        Route::post('/update/{id}', 'modify');
-        Route::delete('/delete/{id}', 'delete');
+        Route::get('/', 'view')->middleware('can:Admin_Provider_View');
+        Route::get('/item/{id}', 'provider')->middleware('can:Admin_Provider_View');
+        Route::put('/status/{id}', 'status')->middleware('can:Admin_Provider_Status');
+        Route::post('/update_profile_image/{id}', 'update_profile_image')->middleware('can:Admin_Provider_Update');
+        Route::post('/add', 'create')->middleware('can:Admin_Provider_Add');
+        Route::post('/update/{id}', 'modify')->middleware('can:Admin_Provider_Update');
+        Route::delete('/delete/{id}', 'delete')->middleware('can:Admin_Provider_Delete');
     });
     
     Route::controller(ProviderGalleryController::class)->prefix('provider_gallary')
-    ->group(function() {
+    ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/{id}', 'view');
         Route::put('/status/{id}', 'status');
         Route::post('/add/{id}', 'create');
@@ -207,7 +207,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     });
     
     Route::controller(ProviderAdminController::class)->prefix('provider_admin')
-    ->group(function() {
+    ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/{id}', 'view');
         Route::get('/item/{id}', 'admin');
         Route::put('/status/{id}', 'status');
@@ -217,7 +217,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     });
     
     Route::controller(ProviderRolesController::class)->prefix('provider_roles')
-    ->group(function() {
+    ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/', 'view');
         Route::get('/item/{id}', 'position');
         Route::put('/status/{id}', 'status');
