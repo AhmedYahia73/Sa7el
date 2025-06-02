@@ -12,7 +12,7 @@ class PaymentRequestController extends Controller
 {
     public function __construct(private PaymentMaintenanceRequest $payment_request){}
 
-    public function view(){
+    public function view(Request $request){
         $upcoming = $this->payment_request
         ->where('status', 'pending')
         ->with('maintenance', 'user')
