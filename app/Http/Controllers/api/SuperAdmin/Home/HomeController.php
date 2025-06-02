@@ -39,7 +39,7 @@ class HomeController extends Controller
         $pending_payment = $this->payment
         ->where('status', 'pending')
         ->count();
-        $provider += $this->provider
+        $provider = $this->provider
         ->count();
         $maintenance_providers += $this->service_provider
         ->count();
