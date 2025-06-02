@@ -90,7 +90,7 @@ class OfferController extends Controller
         ]);
     }
 
-    public function appartment_rent(Request $request){
+    public function appartment_offer(Request $request){
         $validator = Validator::make($request->all(), [
             'appartment_id' => 'required|exists:appartments,id',
         ]);
@@ -105,21 +105,6 @@ class OfferController extends Controller
         ->where('owner_id', $request->user()->id)
         ->orderByDesc('id')
         ->first();
-
-        return response()->json([ 
-            'rent' => $rent,
-        ]);
-    }
-
-    public function appartment_sale(Request $request){
-        $validator = Validator::make($request->all(), [
-            'appartment_id' => 'required|exists:appartments,id',
-        ]);
-        if ($validator->fails()) { // if Validate Make Error Return Message Error
-            return response()->json([
-                'errors' => $validator->errors(),
-            ],400);
-        }
         $sale = $this->offers
         ->where('type', 'sale')
         ->where('appartment_id', $request->appartment_id)
@@ -127,8 +112,9 @@ class OfferController extends Controller
         ->orderByDesc('id')
         ->first(); 
 
-        return response()->json([
-            'sale' => $sale, 
+        return response()->json([ 
+            'rent' => $rent,
+            'sale' => $sale,
         ]);
     }
 
