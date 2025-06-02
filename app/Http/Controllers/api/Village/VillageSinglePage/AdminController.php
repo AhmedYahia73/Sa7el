@@ -42,7 +42,8 @@ class AdminController extends Controller
         $admin->position;
 
         return response()->json([
-            'admin' => $admin
+            'admin' => $admin,
+            'village' => $admin->village,
         ]);
     }
 
