@@ -41,7 +41,7 @@ class HomeController extends Controller
         ->count();
         $provider = $this->provider
         ->count();
-        $maintenance_providers += $this->service_provider
+        $maintenance_providers = $this->service_provider
         ->count();
 
         return response()->json([
