@@ -28,8 +28,14 @@ use App\Http\Controllers\api\SuperAdmin\ServiceProvider\ServiceProviderControlle
 use App\Http\Controllers\api\SuperAdmin\Mall\MallController;
 use App\Http\Controllers\api\SuperAdmin\Mall\MallGallaryController;
 use App\Http\Controllers\api\SuperAdmin\Mall\MallCoverController;
+use App\Http\Controllers\api\SuperAdmin\Home\HomeController;
 
 Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
+    Route::controller(HomeController::class)->prefix('home')
+    ->group(function() {
+        Route::get('/', 'view'); 
+    });
+
     Route::controller(ZoneController::class)->prefix('zone')
     ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/', 'view');
