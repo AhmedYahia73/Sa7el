@@ -11,4 +11,8 @@ class PostImage extends Model
         'image', 
     ];
     protected $appends = ['image_link'];
+    
+    public function getImageLinkAttribute(){
+        return url('storage/' . $this->image);
+    }
 }

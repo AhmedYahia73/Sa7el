@@ -10,12 +10,7 @@ class Post extends Model
         'village_id',
         'admin_id',
         'description',
-    ];
-    protected $appends = ['image_link'];
-
-    public function getImageLinkAttribute(){
-        return url('storage/' . $this->image);
-    }
+    ]; 
 
     public function images(){
         return $this->hasMany(PostImage::class, 'post_id');
