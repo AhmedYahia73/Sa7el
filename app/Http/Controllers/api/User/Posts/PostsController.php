@@ -57,7 +57,7 @@ class PostsController extends Controller
         }
 
         if ($request->react) {
-            $request->user()->love()->sync($request->post_id);
+            $request->user()->love()->attach($request->post_id);
         } else {
             $request->user()->love()->detach($request->post_id);
         }
