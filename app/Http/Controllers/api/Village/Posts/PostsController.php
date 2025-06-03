@@ -42,14 +42,18 @@ class PostsController extends Controller
         $postRequest['description'] = $request->description;
         $postRequest['village_id'] = $request->user()->village_id;
         $postRequest['admin_id'] = $request->user()->id;
+        $post = $this->post
+        ->create($postRequest);
         if ($request->has('images')) {
             foreach ($request->images as $item) {
                 $image_path = $this->uploadFile($item, '/village/post');
-                $postRequest['image'] = $image_path;
+                $this->post_image
+                ->create([
+                    'image' => $image_path,
+                    'post_id' => $post->id,
+                ]);
             }
         } 
-        $post = $this->post
-        ->create($postRequest);
       
         return response()->json([
             'success' => 'You add data success'
@@ -77,10 +81,14 @@ class PostsController extends Controller
         ->whereNotIn('post_id', $id)
         ->delete();
         $postRequest['admin_id'] = $request->user()->id;
-        if ($request->image) {
+        if ($request->images) {
             foreach ($request->images as $item) {
                 $image_path = $this->uploadFile($item, '/village/post');
-                $postRequest['image'] = $image_path;
+                $this->post_image
+                ->create([
+                    'image' => $image_path,
+                    'post_id' => $id,
+                ]);
             }
         }
         $post->update($postRequest); 
