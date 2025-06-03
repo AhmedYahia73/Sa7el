@@ -106,8 +106,7 @@ class PostsController extends Controller
             return response()->json([
                 'errors' => 'post not found'
             ], 400);
-        }
-        $this->deleteImage($post->image);
+        } 
         $post->delete();
 
         return response()->json([
