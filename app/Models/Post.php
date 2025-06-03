@@ -9,13 +9,16 @@ class Post extends Model
     protected $fillable =[
         'village_id',
         'admin_id',
-        'image',
         'description',
     ];
     protected $appends = ['image_link'];
 
     public function getImageLinkAttribute(){
         return url('storage/' . $this->image);
+    }
+
+    public function images(){
+        return $this->hasMany(PostImage::class, 'post_id');
     }
 
     public function admin(){

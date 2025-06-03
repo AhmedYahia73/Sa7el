@@ -8,14 +8,17 @@ use Illuminate\Support\Facades\Validator;
 use App\trait\image;
 
 use App\Models\Post;
+use App\Models\PostImage;
 
 class PostsController extends Controller
 {
-    public function __construct(private Post $post){}
+    public function __construct(private Post $post,
+    private PostImage $post_image){}
     use image;
 
     public function view(Request $request){
         $post = $this->post
+        ->with('images')
         ->where('village_id', $request->user()->village_id)
         ->get();
 
@@ -25,9 +28,9 @@ class PostsController extends Controller
     } 
 
     public function create(Request $request){
-        // image, description
+        // images[], description
         $validator = Validator::make($request->all(), [
-            'image' => 'sometimes',
+            'images' => 'sometimes|array',
             'description' => 'sometimes',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
@@ -36,11 +39,14 @@ class PostsController extends Controller
             ],400);
         }
         $postRequest = $validator->validated();
+        $postRequest['description'] = $request->description;
         $postRequest['village_id'] = $request->user()->village_id;
         $postRequest['admin_id'] = $request->user()->id;
-        if ($request->has('image')) {
-            $image_path = $this->upload($request, 'image', '/village/post');
-            $postRequest['image'] = $image_path;
+        if ($request->has('images')) {
+            foreach ($request->images as $item) {
+                $image_path = $this->uploadFile($item, '/village/post');
+                $postRequest['image'] = $image_path;
+            }
         } 
         $post = $this->post
         ->create($postRequest);
@@ -53,8 +59,9 @@ class PostsController extends Controller
     public function modify(Request $request, $id){
         // image, description
         $validator = Validator::make($request->all(), [
-            'email' => 'unique:post_men,email,' . $id,
-            'phone' => 'unique:post_men,phone,' . $id,
+            'images' => 'sometimes|array',
+            'images_id' => 'sometimes|array',
+            'description' => 'sometimes',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -66,10 +73,15 @@ class PostsController extends Controller
         ->where('id', $id)
         ->where('village_id', $request->user()->village_id)
         ->first();
+        $this->post_image
+        ->whereNotIn('post_id', $id)
+        ->delete();
         $postRequest['admin_id'] = $request->user()->id;
-        if ($request->image && !is_string($request->image)) {
-            $image_path = $this->update_image($request, $post->image, 'image', '/village/post');
-            $postRequest['image'] = $image_path;
+        if ($request->image) {
+            foreach ($request->images as $item) {
+                $image_path = $this->uploadFile($item, '/village/post');
+                $postRequest['image'] = $image_path;
+            }
         }
         $post->update($postRequest); 
       
