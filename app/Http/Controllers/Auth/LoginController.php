@@ -226,7 +226,8 @@ class LoginController extends Controller
 
     public function sign_up(SignupRequest $request){
         $userRequest = $request->validated();
-        $userRequest['user_type'] = 'visitor'; 
+        $userRequest['user_type'] = 'visitor';
+        $userRequest['user'] = 'role';  
         $user = $this->user
         ->create($userRequest);
         $data = $user->id;
