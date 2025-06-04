@@ -76,7 +76,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::delete('/delete/{id}', 'delete');
     });
     
-    Route::controller(ServiceProviderController::class)->prefix('maintenance_provider')
+    Route::controller(ServiceProviderController::class)->prefix('service_provider')
     ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/', 'view');
         Route::put('/status/{id}', 'status');
