@@ -27,22 +27,22 @@ class UserRequest extends FormRequest
             return [
                 'name' => ['required'],
                 'email' => ['required', 'email'],
-                'phone' => ['required'],
+                'phone' => ['sometimes'],
                 'status' => ['required', 'boolean'],
                 'parent_user_id' => ['nullable', 'exists:users,id'],
-                'gender' => ['required', 'in:male,female'], 
-                'birthDate' => ['required', 'date'],
+                'gender' => ['in:male,female'], 
+                'birthDate' => ['date'],
             ];
         }
         else{
             return [
                 'name' => ['required'], 
                 'email' => ['required', 'email'],
-                'phone' => ['required'], 
+                'phone' => ['sometimes'], 
                 'status' => ['required', 'boolean'],
                 'parent_user_id' => ['nullable', 'exists:users,id'],
-                'gender' => ['required', 'in:male,female'], 
-                'birthDate' => ['required', 'date'],
+                'gender' => ['in:male,female'], 
+                'birthDate' => ['date'],
             ];
         }
     }

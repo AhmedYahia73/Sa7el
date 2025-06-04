@@ -70,7 +70,6 @@ class LoginController extends Controller
         }
         $user = $this->user
         ->where('email', $request->email)
-        ->orWhere('phone', $request->email)
         ->first();
         if (empty($user)) {
             return response()->json(['errors'=>'creational not Valid'],403);
@@ -105,7 +104,6 @@ class LoginController extends Controller
         }
         $user = $this->secuity
         ->where('email', $request->email)
-        ->orWhere('phone', $request->email)
         ->first();
         if (empty($user)) {
             return response()->json(['errors'=>'creational not Valid'],403);
@@ -141,7 +139,6 @@ class LoginController extends Controller
         }
         $user = $this->user
         ->where('email', $request->email)
-        ->orWhere('phone', $request->email)
         ->with('village.zone')
         ->first();
         if (empty($user)) {
@@ -205,7 +202,6 @@ class LoginController extends Controller
         }
         $user = $this->user
         ->where('email', $request->email)
-        ->orWhere('phone', $request->email)
         ->first();
         if (empty($user)) {
             return response()->json(['errors'=>'creational not Valid'],403);

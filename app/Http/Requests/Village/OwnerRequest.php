@@ -25,10 +25,10 @@ class OwnerRequest extends FormRequest
     {
         return [
             'name' => ['required'],
-            'gender' => ['required', 'in:male,female'],
-            'birthDate' => ['required', 'date'],
+            'gender' => ['in:male,female'],
+            'birthDate' => ['date'],
             'email' => ['required', 'email'],
-            'phone' => ['required'],
+            'phone' => ['sometimes'],
             'parent_user_id' => ['exists:users,id'],
             'status' => ['required', 'boolean'],
         ];

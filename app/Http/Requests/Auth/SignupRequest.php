@@ -18,11 +18,11 @@ class SignupRequest extends FormRequest
         return [
             'name' => ['required'],
             'email' => ['required', 'email', 'unique:users'],
-            'phone' => ['required', 'unique:users'],
+            'phone' => ['unique:users'],
             'password' => ['required'],
             'parent_user_id' => ['nullable', 'exists:users,id'],
             'gender' => ['in:male,female'], 
-            'birthDate' => ['required', 'date'],
+            'birthDate' => ['date'],
         ];
     }
 
