@@ -29,6 +29,7 @@ class User extends Authenticatable
         'user_type',
         'village_id',
         'provider_id',
+        'maintenance_provider',
         'admin_position_id',
         'image',
         'role',
