@@ -30,7 +30,7 @@ class PostsController extends Controller
         ->map(function($item){
             return [
                 'id' => $item->id,
-                'image' => $item->images,
+                'image' => $item->images->pluck('image_link'),
                 'description' => $item->description,
                 'love_count' => $item->love_count,
                 'my_love' => count($item->my_love) > 0 ? 1 : 0,

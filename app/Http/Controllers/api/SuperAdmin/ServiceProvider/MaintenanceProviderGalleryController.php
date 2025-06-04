@@ -74,7 +74,7 @@ class MaintenanceProviderGalleryController extends Controller
         ->first();
         if (empty($provider_gallary)) {
             return response()->json([
-                'errors' => 'village not found'
+                'errors' => 'maintenance provider not found'
             ], 400);
         }
         $this->deleteImage($provider_gallary->image);
