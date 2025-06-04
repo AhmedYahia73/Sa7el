@@ -72,7 +72,7 @@ class MaintenanceProviderAdminController extends Controller
     
     public function create(ProviderAdminRequest $request){
         $validator = Validator::make($request->all(), [
-            'provider_id' => ['required', 'exists:providers,id'],
+            'maintenance_provider_id' => ['required', 'exists:service_providers,id'],
             'email' => ['unique:users'],
             'phone' => ['unique:users'],
             'password' => ['required'],
@@ -83,11 +83,11 @@ class MaintenanceProviderAdminController extends Controller
             ],400);
         }
         $adminRequest = $request->validated();
-        $adminRequest['role'] = 'provider';
-        $adminRequest['provider_id'] = $request->provider_id;
+        $adminRequest['role'] = 'maintenance_provider';
+        $adminRequest['maintenance_provider_id'] = $request->maintenance_provider_id;
         $adminRequest['password'] = $request->password;
         if (!empty($request->image) && !is_string($request->image)) {
-            $image_path = $this->upload($request, 'image', 'images/provider_admin_image');
+            $image_path = $this->upload($request, 'image', 'images/maintenance_provider_image');
             $adminRequest['image'] = $image_path;
         } 
         $this->admin
@@ -110,14 +110,14 @@ class MaintenanceProviderAdminController extends Controller
         }
         $admin = $this->admin
         ->where('id', $id)
-        ->where('role', 'provider')
+        ->where('role', 'maintenance_provider')
         ->first();
         $adminRequest = $request->validated();
         if (!empty($request->password)) {
             $adminRequest['password'] = bcrypt($request->password);
         } 
         if (!empty($request->image) && !is_string($request->image)) {
-            $image_path = $this->update_image($request, $admin->image, 'image', 'images/provider_admin_image');
+            $image_path = $this->update_image($request, $admin->image, 'image', 'images/maintenance_provider_image');
             $adminRequest['image'] = $image_path;
         }
         $admin->update($adminRequest);
@@ -130,7 +130,7 @@ class MaintenanceProviderAdminController extends Controller
     public function delete($id){
         $admin = $this->admin
         ->where('id', $id)
-        ->where('role', 'provider')
+        ->where('role', 'maintenance_provider')
         ->first();
         if (empty($admin)) {
             return response()->json([

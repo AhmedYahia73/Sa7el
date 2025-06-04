@@ -7,11 +7,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\trait\image;
 
-use App\Models\Provider;
+use App\Models\ServiceProvider;
 
 class MaintenanceProviderCoverController extends Controller
 {
-    public function __construct(private Provider $provider){}
+    public function __construct(private ServiceProvider $provider){}
     use image;
 
     public function view($id){
@@ -39,13 +39,13 @@ class MaintenanceProviderCoverController extends Controller
         ->where('id', $id)
         ->first();
         if (empty($provider->cover_image)) {
-            $image_path = $this->upload($request, 'cover_image', 'images/provider_cover_image');
+            $image_path = $this->upload($request, 'cover_image', 'images/maintenance_provider_cover_image');
             $provider->update([
                 'cover_image' => $image_path
             ]);
         } 
         else {
-            $image_path = $this->update_image($request, $provider->cover_image ,'cover_image', 'images/provider_cover_image');
+            $image_path = $this->update_image($request, $provider->cover_image ,'cover_image', 'images/maintenance_provider_cover_image');
             $provider->update([
                 'cover_image' => $image_path
             ]);

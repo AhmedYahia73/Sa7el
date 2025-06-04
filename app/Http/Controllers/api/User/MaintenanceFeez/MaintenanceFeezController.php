@@ -49,7 +49,7 @@ class MaintenanceFeezController extends Controller
                 'total' => $total,
                 'paid' => $my_appartment?->paid ?? 0,
                 'remain' => $my_appartment?->remain ?? $total, 
-                'status' => $my_appartment?->status,
+                'status' => $my_appartment?->status ?? 'unpaid',
             ];
         });
 
