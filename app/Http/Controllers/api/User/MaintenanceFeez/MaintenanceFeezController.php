@@ -105,6 +105,7 @@ class MaintenanceFeezController extends Controller
         $validator = Validator::make($request->all(), [
             'village_id' => 'required|exists:villages,id',
             'maintenance_feez_id' => 'required|exists:maintenance_feezs,id',
+            'appartment_id' => 'required|exists:appartments,id',
             'paid' => 'required|numeric',
             'receipt' => 'required',
         ]);

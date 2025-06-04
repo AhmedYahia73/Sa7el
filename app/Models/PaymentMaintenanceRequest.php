@@ -13,6 +13,7 @@ class PaymentMaintenanceRequest extends Model
         'paid',
         'receipt',
         'status',
+        'appartment_id',
     ];
     protected $appends = ['receipt_link'];
 
