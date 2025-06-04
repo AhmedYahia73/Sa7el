@@ -274,7 +274,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     
     Route::controller(InvoiceController::class)->prefix('invoice')
     ->middleware('can:Admin_Admin')->group(function() {
-        Route::get('invoice_village/{id}', 'invoice_village');
-        Route::get('invoice_provider/{id}', 'invoice_provider');
+        Route::get('village/{id}', 'invoice_village');
+        Route::get('provider/{id}', 'invoice_provider');
     });
 });
