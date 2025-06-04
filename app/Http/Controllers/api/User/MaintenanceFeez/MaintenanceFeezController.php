@@ -50,14 +50,13 @@ class MaintenanceFeezController extends Controller
                 'paid' => $my_appartment?->paid,
                 'remain' => $my_appartment?->remain, 
                 'status' => $my_appartment?->status,
-                'paid_status' => $my_appartment?->remain <= 0 ? 1 : 0,
             ];
         });
 
         return response()->json([
             'maintenance_fees' =>$maintenance_fees, 
-            'fees_unpaid' =>$maintenance_fees->where('paid', 0), 
-            'fees_paid' =>$maintenance_fees->where('paid', 1), 
+            'fees_unpaid' =>$maintenance_fees->where('status', 'unpaid')->values(), 
+            'fees_paid' =>$maintenance_fees->where('status', 'paid')->values(), 
         ]);
     }
     
