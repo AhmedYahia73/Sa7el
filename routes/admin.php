@@ -87,7 +87,8 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     
     Route::controller(MaintenanceProviderAdminController::class)->prefix('maintenance_provider_admin')
     ->middleware('can:Admin_Admin')->group(function() {
-        Route::get('/', 'view');
+        Route::get('/{id}', 'view');
+        Route::get('/item/{id}', 'admin');
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
@@ -96,22 +97,23 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     
     Route::controller(MaintenanceProviderCoverController::class)->prefix('maintenance_provider_cover')
     ->middleware('can:Admin_Admin')->group(function() {
-        Route::get('/', 'view');
-        Route::post('/add', 'create');
+        Route::get('/{id}', 'view'); 
+        Route::post('/add/{id}', 'create');
         Route::delete('/delete/{id}', 'delete');
     });
     
     Route::controller(MaintenanceProviderGalleryController::class)->prefix('maintenance_provider_gallary')
     ->middleware('can:Admin_Admin')->group(function() {
-        Route::get('/', 'view');
+        Route::get('/{id}', 'view');
         Route::put('/status/{id}', 'status');
-        Route::post('/add', 'create');
+        Route::post('/add/{id}', 'create');
         Route::delete('/delete/{id}', 'delete');
     });
     
     Route::controller(MaintenanceProviderRolesController::class)->prefix('maintenance_provider_roles')
     ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/', 'view');
+        Route::get('/item/{id}', 'position');
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
