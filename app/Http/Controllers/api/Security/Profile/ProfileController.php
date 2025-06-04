@@ -33,7 +33,9 @@ class ProfileController extends Controller
         $security->name = $request->name ?? $security->name;
         $security->email = $request->email ?? $security->email;
         $security->phone = $request->phone ?? $security->phone;
-        $security->password = bcrypt($request->password) ?? $security->password;
+        if (!empty($security->password)) {
+            $security->password = bcrypt($request->password) ?? $security->password;
+        }
         if ($request->has('image')) {
             $image_path =$this->storeBase64Image($request->image, '/images/user_profile');
             $security->image = $image_path;

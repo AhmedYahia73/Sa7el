@@ -61,7 +61,7 @@ class PostsController extends Controller
     }
 
     public function modify(Request $request, $id){
-        // image, description
+        // images[], description, images_id[]
         $validator = Validator::make($request->all(), [
             'images' => 'sometimes|array',
             'images_id' => 'sometimes|array',
