@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\api\SuperAdmin\Provider;
+namespace App\Http\Controllers\api\SuperAdmin\ServiceProvider;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
