@@ -7,11 +7,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\trait\image;
 
-use App\Models\ProviderGallary;
+use App\Models\MaintenanceProviderGallery;
 
 class MaintenanceProviderGalleryController extends Controller
 {
-    public function __construct(private ProviderGallary $provider_gallary){}
+    public function __construct(private MaintenanceProviderGallery $provider_gallary){}
     use image;
 
     public function view($id){
@@ -55,7 +55,7 @@ class MaintenanceProviderGalleryController extends Controller
             ],400);
         }
 
-        $image_path = $this->upload($request, 'image', 'images/provider_gallary');
+        $image_path = $this->upload($request, 'image', 'images/maintenance_provider_gallary');
         $this->provider_gallary
         ->create([
             'image' => $image_path,

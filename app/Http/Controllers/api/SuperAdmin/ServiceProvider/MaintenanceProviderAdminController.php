@@ -21,6 +21,7 @@ class MaintenanceProviderAdminController extends Controller
     public function view($id){
         $provider = $this->provider
         ->where('id', $id)
+        ->with('admin.position.roles')
         ->first();
         $admins = $provider?->admin ?? [];
         $provider_positions = $this->admin_positions

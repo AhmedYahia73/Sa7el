@@ -20,7 +20,7 @@ class MaintenanceProviderRolesController extends Controller
 
     public function view(){
         $admin_position = $this->admin_position
-        ->where('type', 'provider')
+        ->where('type', 'maintenance_provider')
         ->with('roles')
         ->get();
         $roles = ['Test'];
@@ -33,7 +33,7 @@ class MaintenanceProviderRolesController extends Controller
 
     public function position($id){
         $admin_position = $this->admin_position
-        ->where('type', 'provider')
+        ->where('type', 'maintenance_provider')
         ->where('id', $id)
         ->with('roles')
         ->first();
@@ -53,7 +53,7 @@ class MaintenanceProviderRolesController extends Controller
             ],400);
         }
         $admin_position = $this->admin_position
-        ->where('type', 'provider')
+        ->where('type', 'maintenance_provider')
         ->where('id', $id) 
         ->update([
             'status' => $request->status
@@ -77,7 +77,7 @@ class MaintenanceProviderRolesController extends Controller
             ],400);
         }
         $positionRequest = $request->only($this->roleRequest);
-        $positionRequest['type'] = 'provider';
+        $positionRequest['type'] = 'maintenance_provider';
         $admin_position = $this->admin_position
         ->create($positionRequest);
         if ($request->roles) {
@@ -108,7 +108,7 @@ class MaintenanceProviderRolesController extends Controller
             ],400);
         }
         $positionRequest = $request->only($this->roleRequest);
-        $positionRequest['type'] = 'provider';
+        $positionRequest['type'] = 'maintenance_provider';
         $admin_position = $this->admin_position
         ->where('id', $id)
         ->update($positionRequest);
@@ -133,7 +133,7 @@ class MaintenanceProviderRolesController extends Controller
     public function delete($id){
         $admin_position = $this->admin_position
         ->where('id', $id)
-        ->where('type', 'provider')
+        ->where('type', 'maintenance_provider')
         ->delete();
 
         return response()->json([

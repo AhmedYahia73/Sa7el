@@ -24,12 +24,15 @@ use App\Http\Controllers\api\SuperAdmin\invoice\InvoiceController;
 use App\Http\Controllers\api\SuperAdmin\Provider\ProviderCoverController;
 use App\Http\Controllers\api\SuperAdmin\village\VillageCoverController;
 use App\Http\Controllers\api\SuperAdmin\MaintenanceType\MaintenanceTypeController;
-use App\Http\Controllers\api\SuperAdmin\ServiceProvider\ServiceProviderController;
 use App\Http\Controllers\api\SuperAdmin\Mall\MallController;
 use App\Http\Controllers\api\SuperAdmin\Mall\MallGallaryController;
 use App\Http\Controllers\api\SuperAdmin\Mall\MallCoverController;
 use App\Http\Controllers\api\SuperAdmin\Home\HomeController;
-
+use App\Http\Controllers\api\SuperAdmin\ServiceProvider\ServiceProviderController;
+use App\Http\Controllers\api\SuperAdmin\ServiceProvider\MaintenanceProviderAdminController;
+use App\Http\Controllers\api\SuperAdmin\ServiceProvider\MaintenanceProviderCoverController;
+use App\Http\Controllers\api\SuperAdmin\ServiceProvider\MaintenanceProviderGalleryController;
+use App\Http\Controllers\api\SuperAdmin\ServiceProvider\MaintenanceProviderRolesController;
 Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     Route::controller(HomeController::class)->prefix('home')
     ->group(function() {
@@ -72,9 +75,41 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::post('/add/{id}', 'create');
         Route::delete('/delete/{id}', 'delete');
     });
-
     
-    Route::controller(ServiceProviderController::class)->prefix('service_provider')
+    Route::controller(ServiceProviderController::class)->prefix('maintenance_provider')
+    ->middleware('can:Admin_Admin')->group(function() {
+        Route::get('/', 'view');
+        Route::put('/status/{id}', 'status');
+        Route::post('/add', 'create');
+        Route::post('/update/{id}', 'modify');
+        Route::delete('/delete/{id}', 'delete');
+    });
+    
+    Route::controller(MaintenanceProviderAdminController::class)->prefix('maintenance_provider_admin')
+    ->middleware('can:Admin_Admin')->group(function() {
+        Route::get('/', 'view');
+        Route::put('/status/{id}', 'status');
+        Route::post('/add', 'create');
+        Route::post('/update/{id}', 'modify');
+        Route::delete('/delete/{id}', 'delete');
+    });
+    
+    Route::controller(MaintenanceProviderCoverController::class)->prefix('maintenance_provider_cover')
+    ->middleware('can:Admin_Admin')->group(function() {
+        Route::get('/', 'view');
+        Route::post('/add', 'create');
+        Route::delete('/delete/{id}', 'delete');
+    });
+    
+    Route::controller(MaintenanceProviderGalleryController::class)->prefix('maintenance_provider_gallary')
+    ->middleware('can:Admin_Admin')->group(function() {
+        Route::get('/', 'view');
+        Route::put('/status/{id}', 'status');
+        Route::post('/add', 'create');
+        Route::delete('/delete/{id}', 'delete');
+    });
+    
+    Route::controller(MaintenanceProviderRolesController::class)->prefix('maintenance_provider_roles')
     ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/', 'view');
         Route::put('/status/{id}', 'status');
