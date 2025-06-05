@@ -8,6 +8,7 @@ use Zxing\QrReader;
 use App\trait\image;
 use Illuminate\Support\Facades\Validator;
 
+use App\Models\EntrancePool;
 use App\Models\Appartment;
 use App\Models\UserPool;
 use App\Models\User;
@@ -82,6 +83,12 @@ class PoolController extends Controller
             ->create([
                 'user_id' => $userid,
                 'pool_id' => $pool_id,
+                'village_id' => $request->user()->village_id,
+            ]);
+            EntrancePool::create([
+                'pool_id' => $pool_id,
+                'user_id' => $userid,
+                'time' => date('H:i:s'),
                 'village_id' => $request->user()->village_id,
             ]);
          }

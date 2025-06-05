@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Models\Appartment;
 use App\Models\UserBeach;
+use App\Models\EntranceBeach;
 use App\Models\User;
 
 class BeachController extends Controller
@@ -81,7 +82,13 @@ class BeachController extends Controller
                 'user_id' => $userid,
                 'beach_id' => $beach_id,
                 'village_id' => $request->user()->village_id,
-            ]); 
+            ]);
+            EntranceBeach::create([
+                'beach_id' => $beach_id,
+                'user_id' => $userid,
+                'time' => date('H:i:s'),
+                'village_id' => $request->user()->village_id,
+            ]);
          }
          
          return response()->json([

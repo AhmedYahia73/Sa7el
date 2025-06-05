@@ -14,13 +14,14 @@ use App\Models\Village;
 use App\Models\Provider;
 use App\Models\Package;
 use App\Models\ServiceType;
+use App\Models\ServiceProvider;
 
 class SubscriperController extends Controller
 {
     public function __construct(private Payment $payments,
     private PaymentMethod $payment_methods, private Village $village,
     private Package $packages, private ServiceType $service_types
-    , private Provider $provider){}
+    , private Provider $provider, private ServiceProvider $maintenance_provider){}
 
     public function view(){
         $payment_methods = $this->payment_methods
@@ -32,11 +33,17 @@ class SubscriperController extends Controller
         $providers = $this->provider
         ->where('status', 1)
         ->get();
+        $maintenance_provider = $this->maintenance_provider
+        ->where('status', 1)
+        ->get();
         $services = $this->service_types
         ->where('status', 1)
         ->get();
         $provider_packages = $this->packages
         ->where('type', 'provider')
+        ->get();
+        $maintenance_provider_packages = $this->packages
+        ->where('type', 'maintenance_provider')
         ->get();
         $village_packages = $this->packages
         ->where('type', 'village')
@@ -60,6 +67,7 @@ class SubscriperController extends Controller
                 'package' => $item->package,
                 'payment_method_item' => $item->payment_method,
                 'service_item' => $item->service,
+                'maintenance_provider' => $item->maintenance_provider,
             ];
         });
         $subscribers_village = $subscribers->where('type', 'village')->values();
@@ -75,6 +83,7 @@ class SubscriperController extends Controller
             'subscribers_provider' => $subscribers_provider,
             'provider_packages' => $provider_packages,
             'village_packages' => $village_packages,
+            'maintenance_provider_packages' => $maintenance_provider_packages,
         ]);
     }
 
@@ -93,7 +102,7 @@ class SubscriperController extends Controller
 
     public function create(SubscriperRequest $request){
         $validator = Validator::make($request->all(), [
-            'type' => 'required|in:provider,village',
+            'type' => 'required|in:provider,village,maintenance_provider',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -109,6 +118,11 @@ class SubscriperController extends Controller
         elseif($request->type == 'village'){
             $user = $this->village
             ->where('id', $request->village_id)
+            ->first();
+        } 
+        elseif($request->type == 'maintenance_provider'){
+            $user = $this->maintenance_provider
+            ->where('id', $request->maintenance_provider_id)
             ->first();
         } 
         if ($user->from <= date('Y-m-d') && $user->to >= date('Y-m-d')) {
@@ -159,6 +173,11 @@ class SubscriperController extends Controller
             ->where('id', $request->village_id)
             ->first();
         }
+        elseif($request->type == 'maintenance_provider'){
+            $user = $this->maintenance_provider
+            ->where('id', $request->maintenance_provider_id)
+            ->first();
+        } 
         $old_package = $this->packages
         ->where('id', $user?->package_id)
         ->first();

@@ -10,6 +10,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Storage;
 
 use App\Models\User;
+use App\Models\PersonalAccessToken;
 use App\Models\Village;
 use App\Models\AppartmentType;
 use App\Models\SecurityMan;
@@ -102,11 +103,22 @@ class LoginController extends Controller
                 'errors' => $validator->errors(),
             ],400);
         }
+        PersonalAccessToken::
+        whereDate('created_at', '<', date('Y-m-d'))
+        ->delete();
         $user = $this->secuity
         ->where('email', $request->email)
         ->first();
         if (empty($user)) {
             return response()->json(['errors'=>'creational not Valid'],403);
+        }
+        $personal = PersonalAccessToken::
+        where('tokenable_id', $user->id)
+        ->first();
+        if (!empty($personal)) {
+            return response()->json([
+                'errors' => 'You log from another device'
+            ], 400);
         }
 
         if ($user->status == 0) {

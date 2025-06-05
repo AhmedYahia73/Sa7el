@@ -9,6 +9,7 @@ use App\trait\image;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 
+use App\Models\EntranceGate;
 use App\Models\AppartmentCode;
 use App\Models\Appartment;
 use App\Models\VisitVillage;
@@ -114,6 +115,12 @@ class GateController extends Controller
                 'type' => 'owner'
             ]);
          }
+         EntranceGate::create([
+            'gate_id' => $request->gate_id,
+            'user_id' => $userid,
+            'time' => date('H:i:s'),
+            'village_id' => $request->user()->village_id,
+         ]);
         $appartment->type;
         $user = $this->user
         ->where('id', $userid)
