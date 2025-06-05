@@ -105,6 +105,7 @@ class LoginController extends Controller
         }
         PersonalAccessToken::
         whereDate('created_at', '<', date('Y-m-d'))
+        ->where('name', 'security')
         ->delete();
         $user = $this->secuity
         ->where('email', $request->email)
@@ -114,6 +115,7 @@ class LoginController extends Controller
         }
         $personal = PersonalAccessToken::
         where('tokenable_id', $user->id)
+        ->where('name', 'security')
         ->first();
         if (!empty($personal)) {
             return response()->json([
