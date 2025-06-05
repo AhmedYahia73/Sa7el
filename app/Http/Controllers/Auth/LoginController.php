@@ -159,6 +159,20 @@ class LoginController extends Controller
             return response()->json(['errors'=>'creational not Valid'],403);
         }
 
+        PersonalAccessToken::
+        whereDate('created_at', '<', date('Y-m-d'))
+        ->where('name', 'village')
+        ->delete(); 
+        $personal = PersonalAccessToken::
+        where('tokenable_id', $user->id)
+        ->where('name', 'village')
+        ->first();
+        if (!empty($personal)) {
+            return response()->json([
+                'errors' => 'You log from another device'
+            ], 400);
+        }
+
         if ($user->status == 0) {
             return response()->json([
                 'errors' => 'user is banned'
