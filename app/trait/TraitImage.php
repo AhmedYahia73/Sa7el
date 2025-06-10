@@ -79,7 +79,7 @@ trait TraitImage
     // This to upload file
     public function uploadFile($file, $directory, $file_num = 1) {
         if ($file) {
-            $image = $request->file($file);
+            $image = $request->{$file};
 
             // Load image
             $img = Image::make($image);
