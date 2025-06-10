@@ -14,7 +14,7 @@ trait TraitImage
         if($request->has($fileName)){// if Request has a Image
             $imageFile = $request->file($fileName);
 
-            $manager = new ImageManager();
+            $manager = new ImageManager(['driver' => 'gd']);
             $img = $manager->read($imageFile->getPathname());
 
             $img->resize(1920, null);
@@ -42,7 +42,7 @@ trait TraitImage
         if($request->has($fileName)){// if Request has a Image
             $imageFile = $request->file($fileName);
 
-            $manager = new ImageManager();
+            $manager = new ImageManager(['driver' => 'gd']);
             $img = $manager->read($imageFile->getPathname());
 
             $img->resize(1920, null);
@@ -73,7 +73,7 @@ trait TraitImage
         if ($file) {
             $imageFile = $file;
 
-            $manager = new ImageManager();
+            $manager = new ImageManager(['driver' => 'gd']);
             $img = $manager->read($imageFile->getPathname());
 
             $img->resize(1920, null);
