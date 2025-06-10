@@ -5,7 +5,7 @@ namespace App\Http\Controllers\api\Village\Owner;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\trait\image;
+use App\trait\TraitImage;
 use App\Http\Requests\Village\OwnerRequest;
 
 use App\Models\VisitRequest;
@@ -23,7 +23,7 @@ class OwnerController extends Controller
     public function __construct(private User $owners, 
     private AppartmentCode $appartment_code,
     private VisitRequest $visit_request){}
-    use image;
+    use TraitImage;
 
     public function view(Request $request){
         $owners = $this->owners

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\api\Village\Posts;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\trait\image;
+use App\trait\TraitImage;
 
 use App\Models\Post;
 use App\Models\PostImage;
@@ -14,7 +14,7 @@ class PostsController extends Controller
 {
     public function __construct(private Post $post,
     private PostImage $post_image){}
-    use image;
+    use TraitImage;
 
     public function view(Request $request){
         $post = $this->post
@@ -46,7 +46,7 @@ class PostsController extends Controller
         ->create($postRequest);
         if ($request->has('images')) {
             foreach ($request->images as $item) {
-                $image_path = $this->uploadFile($item, '/village/post');
+                $image_path = $this->uploadFile($item, '/village/post', count($request->images));
                 $this->post_image
                 ->create([
                     'image' => $image_path,
@@ -83,7 +83,7 @@ class PostsController extends Controller
         $postRequest['admin_id'] = $request->user()->id;
         if ($request->images) {
             foreach ($request->images as $item) {
-                $image_path = $this->uploadFile($item, '/village/post');
+                $image_path = $this->uploadFile($item, '/village/post', count($request->images));
                 $this->post_image
                 ->create([
                     'image' => $image_path,

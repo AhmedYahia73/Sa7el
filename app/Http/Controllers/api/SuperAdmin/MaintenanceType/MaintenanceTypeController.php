@@ -5,14 +5,14 @@ namespace App\Http\Controllers\api\SuperAdmin\MaintenanceType;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\trait\image;
+use App\trait\TraitImage;
 
 use App\Models\MaintenanceType;
 
 class MaintenanceTypeController extends Controller
 {
     public function __construct(private MaintenanceType $maintenance_type){}
-    use image;
+    use TraitImage;
 
     public function view(){
         $maintenance_type = $this->maintenance_type

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\SuperAdmin\ProviderAdminRequest;
 use Illuminate\Support\Facades\Validator;
-use App\trait\image;
+use App\trait\TraitImage;
 
 use App\Models\Provider;
 use App\Models\User;
@@ -16,7 +16,7 @@ class ProviderAdminController extends Controller
 {
     public function __construct(private Provider $provider,
     private User $admin, private AdminPosition $admin_positions){}
-    use image;
+    use TraitImage;
 
     public function view($id){
         $provider = $this->provider

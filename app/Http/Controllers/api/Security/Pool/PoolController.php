@@ -5,7 +5,7 @@ namespace App\Http\Controllers\api\Security\Pool;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Zxing\QrReader;
-use App\trait\image;
+use App\trait\TraitImage;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\EntrancePool;
@@ -17,7 +17,7 @@ class PoolController extends Controller
 {
     public function __construct(private Appartment $appartment,
     private UserPool $user_pool, private User $user){}
-    use image;
+    use TraitImage;
 
     public function read_qr(Request $request){
         $validator = Validator::make($request->all(), [

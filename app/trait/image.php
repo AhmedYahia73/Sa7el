@@ -4,15 +4,39 @@ namespace App\trait;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
-trait image
+trait TraitImage
 {
     // This Trait Aboute Image
 
     public function upload(Request $request,$fileName = 'image',$directory){
         if($request->has($fileName)){// if Request has a Image
-            $uploadImage = new request();
-            $imagePath = $request->file($fileName)->store($directory,'public'); // Take Image from Request And Save inStorage;
+            $image = $request->file($fileName);
+
+            // Load image
+            $img = Image::make($image);
+
+            // Optional: Resize if needed (preserve aspect ratio)
+            $img->resize(1920, null, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+
+            // Save to a temporary file with reduced quality
+            $path = storage_path('app/public/' . $directory . '/' . uniqid() . '.jpg');
+            $quality = 90;
+
+            // Try reducing quality until size is under 2MB (2048 KB)
+            do {
+                $img->save($path, $quality);
+                $filesize = filesize($path) / 1024; // in KB
+                $quality -= 5;
+            } while ($filesize > 2048 && $quality > 10);
+
+
+            // $uploadImage = new request();
+            // $imagePath = $request->file($fileName)->store($directory,'public'); // Take Image from Request And Save inStorage;
             return $imagePath;
         }
         return Null;
@@ -20,8 +44,30 @@ trait image
     
     public function update_image(Request $request, $old_image_path,$fileName = 'image',$directory){
         if($request->has($fileName)){// if Request has a Image
-            $uploadImage = new request();
-            $imagePath = $request->file($fileName)->store($directory,'public'); // Take Image from Request And Save inStorage;
+            $image = $request->file($fileName);
+
+            // Load image
+            $img = Image::make($image);
+
+            // Optional: Resize if needed (preserve aspect ratio)
+            $img->resize(1920, null, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+
+            // Save to a temporary file with reduced quality
+            $path = storage_path('app/public/' . $directory . '/' . uniqid() . '.jpg');
+            $quality = 90;
+
+            // Try reducing quality until size is under 2MB (2048 KB)
+            do {
+                $img->save($path, $quality);
+                $filesize = filesize($path) / 1024; // in KB
+                $quality -= 5;
+            } while ($filesize > 2048 && $quality > 10);
+
+            // $uploadImage = new request();
+            // $imagePath = $request->file($fileName)->store($directory,'public'); // Take Image from Request And Save inStorage;
             if ($old_image_path && Storage::disk('public')->exists($old_image_path)) {
                 Storage::disk('public')->delete($old_image_path);
             }
@@ -31,8 +77,29 @@ trait image
     }
 
     // This to upload file
-    public function uploadFile($file, $directory) {
+    public function uploadFile($file, $directory, $file_num = 1) {
         if ($file) {
+            $image = $request->file($file);
+
+            // Load image
+            $img = Image::make($image);
+
+            // Optional: Resize if needed (preserve aspect ratio)
+            $img->resize(1920 / $file_num, null, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+
+            // Save to a temporary file with reduced quality
+            $path = storage_path('app/public/' . $directory . '/' . uniqid() . '.jpg');
+            $quality = 90;
+
+            // Try reducing quality until size is under 2MB (2048 KB)
+            do {
+                $img->save($path, $quality);
+                $filesize = filesize($path) / 1024; // in KB
+                $quality -= 5;
+            } while ($filesize > 2048 / $file_num && $quality > 10);
             $filePath = $file->store($directory, 'public');
             return $filePath;
         }

@@ -6,14 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\SuperAdmin\PaymentMethodRequest;
-use App\trait\image;
+use App\trait\TraitImage;
 
 use App\Models\PaymentMethod;
 
 class PaymentMethodController extends Controller
 {
     public function __construct(private PaymentMethod $payment_method){}
-    use image;
+    use TraitImage;
 
     public function view(){
         $payment_method = $this->payment_method

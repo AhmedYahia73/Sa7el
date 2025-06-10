@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\Village\SecuirtyRequest;
-use App\trait\image;
+use App\trait\TraitImage;
 
 use App\Models\SecurityMan;
 use App\Models\Gate;
@@ -17,7 +17,7 @@ class SecurityController extends Controller
 {
     public function __construct(private SecurityMan $security, private Gate $gates,
      private Beach $beaches, private Pools $pools){}
-    use image;
+    use TraitImage;
 
     public function view(Request $request){
         $security = $this->security

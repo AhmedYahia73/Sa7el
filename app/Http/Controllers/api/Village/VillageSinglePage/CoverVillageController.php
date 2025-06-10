@@ -5,14 +5,14 @@ namespace App\Http\Controllers\api\Village\VillageSinglePage;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\trait\image;
+use App\trait\TraitImage;
 
 use App\Models\Village;
 
 class CoverVillageController extends Controller
 {
     public function __construct(private Village $village){}
-    use image;
+    use TraitImage;
 
     public function view(Request $request){
         $village = $this->village

@@ -4,14 +4,14 @@ namespace App\Http\Controllers\api\Security\Profile;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\trait\image;
+use App\trait\TraitImage;
 
 use App\Models\SecurityMan;
 
 class ProfileController extends Controller
 {
     public function __construct(private SecurityMan $security_man){}
-    use image;
+    use TraitImage;
 
     public function profile(Request $request){
         $security = $request->user();

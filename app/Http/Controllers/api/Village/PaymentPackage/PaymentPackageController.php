@@ -5,7 +5,7 @@ namespace App\Http\Controllers\api\Village\PaymentPackage;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\trait\image;
+use App\trait\TraitImage;
 use Carbon\Carbon;
 
 use App\Models\Payment;
@@ -16,7 +16,7 @@ class PaymentPackageController extends Controller
 {
     public function __construct(private Payment $payment, private Package $package,
     private PaymentMethod $payment_methods){}
-    use image;
+    use TraitImage;
     
     public function view(Request $request){
         $packages = $this->package

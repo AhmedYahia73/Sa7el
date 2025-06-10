@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Mail\MaintenanceRequestEmail;
 use Illuminate\Support\Facades\Mail;
-use App\trait\image;
+use App\trait\TraitImage;
 
 use App\Models\Maintenance;
 use App\Models\MaintenanceType;
@@ -19,7 +19,7 @@ class MaintenanceController extends Controller
     public function __construct(private Maintenance $maintenance,
     private MaintenanceType $maintenance_type, private AppartmentCode $appartment_code,
     private User $admins){}
-    use image;
+    use TraitImage;
     
     public function maintenance_lists(Request $request){
         $validator = Validator::make($request->all(), [

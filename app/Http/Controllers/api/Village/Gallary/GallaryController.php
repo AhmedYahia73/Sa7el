@@ -5,7 +5,7 @@ namespace App\Http\Controllers\api\Village\Gallary;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\trait\image;
+use App\trait\TraitImage;
 
 use App\Models\VillageGallary;
 use App\Models\Village;
@@ -14,7 +14,7 @@ class GallaryController extends Controller
 {
     public function __construct(private VillageGallary $village_gallary,
     private Village $village){}
-    use image;
+    use TraitImage;
 
     public function view(Request $request){
         $village_gallary = $this->village_gallary

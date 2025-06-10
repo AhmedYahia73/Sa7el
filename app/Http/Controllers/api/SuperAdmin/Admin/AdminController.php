@@ -5,7 +5,7 @@ namespace App\Http\Controllers\api\SuperAdmin\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\trait\image;
+use App\trait\TraitImage;
 
 use App\Models\User;
 use App\Models\SuperRole;
@@ -14,7 +14,7 @@ class AdminController extends Controller
 {
     public function __construct(private User $admin,
     private SuperRole $super_role){}
-    use image;
+    use TraitImage;
 
     public function view(){
         $admins = $this->admin

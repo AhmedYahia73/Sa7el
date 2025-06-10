@@ -5,7 +5,7 @@ namespace App\Http\Controllers\api\User\MaintenanceFeez;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\trait\image;
+use App\trait\TraitImage;
 
 use App\Models\MaintenanceFeez;
 use App\Models\AppartmentMaintenanceFeez;
@@ -16,7 +16,7 @@ class MaintenanceFeezController extends Controller
     public function __construct(private MaintenanceFeez $maintenance_fees,
     private AppartmentMaintenanceFeez $appartment_maintenance,
     private PaymentMaintenanceRequest $payment_request){}
-    use image;
+    use TraitImage;
 
     public function view(Request $request){
         $validator = Validator::make($request->all(), [

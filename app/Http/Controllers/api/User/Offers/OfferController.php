@@ -5,7 +5,7 @@ namespace App\Http\Controllers\api\User\Offers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\trait\image;
+use App\trait\TraitImage;
 
 use App\Models\Offer;
 use App\Models\OfferImage;
@@ -15,7 +15,7 @@ class OfferController extends Controller
 {
     public function __construct(private Offer $offers, private OfferImage $offer_image,
     private OfferStatus $offer_status){}
-    use image;
+    use TraitImage;
 
     public function view(Request $request){
         $validator = Validator::make($request->all(), [

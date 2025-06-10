@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\SuperAdmin\ProviderRequest;
 use Illuminate\Support\Facades\Validator;
-use App\trait\image;
+use App\trait\TraitImage;
 
 use App\Models\Provider;
 use App\Models\ServiceType;
@@ -18,7 +18,7 @@ class ProviderController extends Controller
     public function __construct(private Provider $provider,
     private ServiceType $services_types, private Village $villages,
     private Zone $zones){}
-    use image;
+    use TraitImage;
 
     public function view(){
         $provider = $this->provider

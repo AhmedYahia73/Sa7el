@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Mail\ProblemRequestEmail;
 use Illuminate\Support\Facades\Mail;
-use App\trait\image;
+use App\trait\TraitImage;
 
 use App\Models\ProblemReport as ProblemsReport;
 use App\Models\User;
@@ -16,7 +16,7 @@ class ProblemReportController extends Controller
 {
     public function __construct(private ProblemsReport $problem_report,
     private User $admins){}
-    use image;
+    use TraitImage;
     
     public function add_report(Request $request){
         $validator = Validator::make($request->all(), [

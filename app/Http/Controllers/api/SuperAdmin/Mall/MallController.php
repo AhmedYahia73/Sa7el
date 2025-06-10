@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\SuperAdmin\MallRequest;
 use Illuminate\Support\Facades\Validator;
-use App\trait\image;
+use App\trait\TraitImage;
 
 use App\Models\Zone;
 use App\Models\Mall;
@@ -17,7 +17,7 @@ class MallController extends Controller
 {
     public function __construct(private Mall $mall, private Provider $provider
     , private Zone $zones, private ServiceType $service_type){}
-    use image;
+    use TraitImage;
 
     public function view(){
         $mall = $this->mall

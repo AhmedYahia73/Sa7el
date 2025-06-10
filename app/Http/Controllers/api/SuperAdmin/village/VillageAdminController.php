@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\SuperAdmin\VillageAdminRequest;
 use Illuminate\Support\Facades\Validator;
-use App\trait\image;
+use App\trait\TraitImage;
 
 use App\Models\Village;
 use App\Models\User;
@@ -16,7 +16,7 @@ class VillageAdminController extends Controller
 {
     public function __construct(private Village $village,
     private User $admin, private AdminPosition $admin_positions){}
-    use image;
+    use TraitImage;
 
     public function view($id){
         $village = $this->village

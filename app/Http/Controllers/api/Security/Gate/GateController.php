@@ -5,7 +5,7 @@ namespace App\Http\Controllers\api\Security\Gate;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Zxing\QrReader;
-use App\trait\image;
+use App\trait\TraitImage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 
@@ -19,7 +19,7 @@ class GateController extends Controller
 {
     public function __construct(private AppartmentCode $appartment,
     private Appartment $appartment_data, private VisitVillage $visit_village, private User $user){}
-    use image;
+    use TraitImage;
 
     public function read_qr(Request $request){
         $validator = Validator::make($request->all(), [

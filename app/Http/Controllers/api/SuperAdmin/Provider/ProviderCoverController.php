@@ -5,14 +5,14 @@ namespace App\Http\Controllers\api\SuperAdmin\Provider;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\trait\image;
+use App\trait\TraitImage;
 
 use App\Models\Provider;
 
 class ProviderCoverController extends Controller
 {
     public function __construct(private Provider $provider){}
-    use image;
+    use TraitImage;
 
     public function view($id){
         $provider = $this->provider

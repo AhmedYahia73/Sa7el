@@ -5,14 +5,14 @@ namespace App\Http\Controllers\api\User\rent;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\trait\image;
+use App\trait\TraitImage;
 
 use App\Models\AppartmentCode;
 
 class RentController extends Controller
 {
     public function __construct(private AppartmentCode $appartment_code){}
-    use image;
+    use TraitImage;
 
     public function view(Request $request){
         $validator = Validator::make($request->all(), [

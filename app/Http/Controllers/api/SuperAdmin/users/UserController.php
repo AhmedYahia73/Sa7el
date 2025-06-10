@@ -8,7 +8,7 @@ use App\Http\Requests\SuperAdmin\UserRequest;
 use Illuminate\Support\Facades\Validator;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Storage;
-use App\trait\image;
+use App\trait\TraitImage;
 
 use App\Models\User;
 use App\Models\Village;
@@ -20,7 +20,7 @@ class UserController extends Controller
     public function __construct(private User $user,
     private Village $village, private AppartmentCode $appartment_code,
     private Offer $offer){}
-    use image;
+    use TraitImage;
 
     public function view(){
         $users = $this->user

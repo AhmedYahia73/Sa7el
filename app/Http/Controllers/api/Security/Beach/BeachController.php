@@ -5,7 +5,7 @@ namespace App\Http\Controllers\api\Security\Beach;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Zxing\QrReader;
-use App\trait\image;
+use App\trait\TraitImage;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\Appartment;
@@ -17,7 +17,7 @@ class BeachController extends Controller
 {
     public function __construct(private Appartment $appartment,
     private UserBeach $user_beach, private User $user){}
-    use image;
+    use TraitImage;
 
     public function read_qr(Request $request){
         $validator = Validator::make($request->all(), [

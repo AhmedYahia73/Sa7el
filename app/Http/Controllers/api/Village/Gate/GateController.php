@@ -5,14 +5,14 @@ namespace App\Http\Controllers\api\Village\Gate;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\trait\image;
+use App\trait\TraitImage;
 
 use App\Models\Gate;
 
 class GateController extends Controller
 {
     public function __construct(private Gate $gates){}
-    use image;
+    use TraitImage;
 
     public function view(Request $request){
         $gates = $this->gates

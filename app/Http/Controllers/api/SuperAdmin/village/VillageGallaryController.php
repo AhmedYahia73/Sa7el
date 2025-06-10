@@ -5,14 +5,14 @@ namespace App\Http\Controllers\api\SuperAdmin\village;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\trait\image;
+use App\trait\TraitImage;
 
 use App\Models\VillageGallary;
 
 class VillageGallaryController extends Controller
 {
     public function __construct(private VillageGallary $village_gallary){}
-    use image;
+    use TraitImage;
 
     public function view($id){
         $village_gallary = $this->village_gallary

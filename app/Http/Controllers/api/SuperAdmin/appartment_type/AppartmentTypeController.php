@@ -5,14 +5,14 @@ namespace App\Http\Controllers\api\SuperAdmin\appartment_type;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\trait\image;
+use App\trait\TraitImage;
 
 use App\Models\AppartmentType;
 
 class AppartmentTypeController extends Controller
 {
     public function __construct(private AppartmentType $appartment_type){}
-    use image;
+    use TraitImage;
 
     public function view(){
         $appartment_type = $this->appartment_type

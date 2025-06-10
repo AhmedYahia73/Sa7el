@@ -6,14 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\SuperAdmin\ZoneRequest;
-use App\trait\image;
+use App\trait\TraitImage;
 
 use App\Models\Zone;
 
 class ZoneController extends Controller
 {
     public function __construct(private Zone $zone){}
-    use image;
+    use TraitImage;
 
     public function view(){
         $zone = $this->zone

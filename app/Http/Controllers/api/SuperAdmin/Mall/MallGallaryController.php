@@ -5,14 +5,14 @@ namespace App\Http\Controllers\api\SuperAdmin\Mall;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\trait\image;
+use App\trait\TraitImage;
 
 use App\Models\MallGallery;
 
 class MallGallaryController extends Controller
 {
     public function __construct(private MallGallery $mall_gallery){}
-    use image;
+    use TraitImage;
 
     public function view($id){
         $mall_gallery = $this->mall_gallery

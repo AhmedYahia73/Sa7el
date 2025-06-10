@@ -5,7 +5,7 @@ namespace App\Http\Controllers\api\Village\Appartments;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\trait\image;
+use App\trait\TraitImage;
 
 use App\Models\Appartment;
 use App\Models\AppartmentCode;
@@ -18,7 +18,7 @@ class AppartmentController extends Controller
     public function __construct(private Appartment $appartment,
     private AppartmentCode $appartment_code, private Zone $zones,
     private AppartmentType $appartment_type, private User $users){}
-    use image;
+    use TraitImage;
 
     public function view(Request $request){
         $appartments = $this->appartment

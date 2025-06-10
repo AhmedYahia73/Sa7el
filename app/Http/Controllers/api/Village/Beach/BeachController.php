@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Village\PoolRequest as BeachRequest;
 use Illuminate\Support\Facades\Validator;
-use App\trait\image;
+use App\trait\TraitImage;
 
 use App\Models\BeachGallary;
 use App\Models\Beach;
@@ -15,7 +15,7 @@ class BeachController extends Controller
 {
     public function __construct(private Beach $beach,
     private BeachGallary $gallary){}
-    use image;
+    use TraitImage;
 
     public function view(Request $request){
         $beach = $this->beach
