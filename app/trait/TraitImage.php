@@ -4,7 +4,7 @@ namespace App\trait;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\ImageManager;
 
 trait TraitImage
 {
@@ -12,16 +12,12 @@ trait TraitImage
 
     public function upload(Request $request,$fileName = 'image',$directory){
         if($request->has($fileName)){// if Request has a Image
-            $image = $request->file($fileName);
+            $imageFile = $request->file($fileName);
 
-            // Load image
-            $img = Image::make($image);
+            $manager = new ImageManager();
+            $img = $manager->read($imageFile->getPathname());
 
-            // Optional: Resize if needed (preserve aspect ratio)
-            $img->resize(1920, null, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
+            $img->resize(1920, null);
 
             // Save to a temporary file with reduced quality
             $path = storage_path('app/public/' . $directory . '/' . uniqid() . '.jpg');
@@ -44,16 +40,12 @@ trait TraitImage
     
     public function update_image(Request $request, $old_image_path,$fileName = 'image',$directory){
         if($request->has($fileName)){// if Request has a Image
-            $image = $request->file($fileName);
+            $imageFile = $request->file($fileName);
 
-            // Load image
-            $img = Image::make($image);
+            $manager = new ImageManager();
+            $img = $manager->read($imageFile->getPathname());
 
-            // Optional: Resize if needed (preserve aspect ratio)
-            $img->resize(1920, null, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
+            $img->resize(1920, null);
 
             // Save to a temporary file with reduced quality
             $path = storage_path('app/public/' . $directory . '/' . uniqid() . '.jpg');
@@ -79,16 +71,12 @@ trait TraitImage
     // This to upload file
     public function uploadFile($file, $directory, $file_num = 1) {
         if ($file) {
-            $image = $file;
+            $imageFile = $file;
 
-            // Load image
-            $img = Image::make($image);
+            $manager = new ImageManager();
+            $img = $manager->read($imageFile->getPathname());
 
-            // Optional: Resize if needed (preserve aspect ratio)
-            $img->resize(1920 / $file_num, null, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
+            $img->resize(1920, null);
 
             // Save to a temporary file with reduced quality
             $path = storage_path('app/public/' . $directory . '/' . uniqid() . '.jpg');
