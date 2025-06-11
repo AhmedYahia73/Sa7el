@@ -21,7 +21,8 @@ trait TraitImage
             $img->resize(1920, null);
 
             // Save to a temporary file with reduced quality
-            $path = storage_path('app/public/' . $directory . '/' . uniqid() . '.jpg');
+            $image_path = $directory . '/' . uniqid() . '.jpg';
+            $path = storage_path('app/public/' . $image_path);
             $quality = 90;
 
             // Try reducing quality until size is under 2MB (2048 KB)
@@ -34,7 +35,7 @@ trait TraitImage
 
             // $uploadImage = new request();
             // $imagePath = $request->file($fileName)->store($directory,'public'); // Take Image from Request And Save inStorage;
-            return $path;
+            return $image_path;
         }
         return Null;
     }
@@ -49,7 +50,8 @@ trait TraitImage
             $img->resize(1920, null);
 
             // Save to a temporary file with reduced quality
-            $path = storage_path('app/public/' . $directory . '/' . uniqid() . '.jpg');
+            $image_path = $directory . '/' . uniqid() . '.jpg';
+            $path = storage_path('app/public/' . $image_path);
             $quality = 90;
 
             // Try reducing quality until size is under 2MB (2048 KB)
@@ -64,7 +66,7 @@ trait TraitImage
             if ($old_image_path && Storage::disk('public')->exists($old_image_path)) {
                 Storage::disk('public')->delete($old_image_path);
             }
-            return $path;
+            return $image_path;
         }
         return Null;
     }
