@@ -78,7 +78,7 @@ class PostsController extends Controller
         ->where('village_id', $request->user()->village_id)
         ->first();
         $this->post_image
-        ->whereNotIn('id', $request->images_id)
+        ->whereNotIn('id', $request->images_id ?? [])
         ->where('post_id', $id)
         ->delete();
         $postRequest['admin_id'] = $request->user()->id;
