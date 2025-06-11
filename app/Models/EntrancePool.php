@@ -16,4 +16,8 @@ class EntrancePool extends Model
     public function pool(){
         return $this->belongsTo(Pools::class);
     }
+
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

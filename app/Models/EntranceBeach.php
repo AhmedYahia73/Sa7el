@@ -16,4 +16,8 @@ class EntranceBeach extends Model
     public function beach(){
         return $this->belongsTo(Beach::class);
     }
+
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

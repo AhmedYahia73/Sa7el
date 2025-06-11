@@ -34,7 +34,7 @@ trait TraitImage
 
             // $uploadImage = new request();
             // $imagePath = $request->file($fileName)->store($directory,'public'); // Take Image from Request And Save inStorage;
-            return $imagePath;
+            return $path;
         }
         return Null;
     }
@@ -60,11 +60,11 @@ trait TraitImage
             } while ($filesize > 2048 && $quality > 10);
 
             // $uploadImage = new request();
-            // $imagePath = $request->file($fileName)->store($directory,'public'); // Take Image from Request And Save inStorage;
+            // $path = $request->file($fileName)->store($directory,'public'); // Take Image from Request And Save inStorage;
             if ($old_image_path && Storage::disk('public')->exists($old_image_path)) {
                 Storage::disk('public')->delete($old_image_path);
             }
-            return $imagePath;
+            return $path;
         }
         return Null;
     }
