@@ -30,6 +30,7 @@ use App\Http\Controllers\api\Village\VisitorLimit\VisitorLimitController;
 use App\Http\Controllers\api\Village\PaymentPackage\PaymentPackageController;
 use App\Http\Controllers\api\Village\Appartments\AppartmentProfileController;
 use App\Http\Controllers\api\Village\Notification\NotificationController;
+use App\Http\Controllers\api\Village\Entrance\EntranceController;
 
 Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(HomeController::class)->prefix('home')->middleware('can:Home')
@@ -47,6 +48,13 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
         Route::get('/', 'view'); 
         Route::post('/add', 'add'); 
         Route::delete('/delete', 'delete'); 
+    });
+
+    Route::controller(EntranceController::class)->prefix('entrance')
+    ->group(function() {
+        Route::get('/gate', 'entrance_gate');
+        Route::get('/beach', 'entrance_beach');
+        Route::get('/pool', 'entrance_pool');
     });
 
     Route::controller(PaymentPackageController::class)->prefix('payment_package')
