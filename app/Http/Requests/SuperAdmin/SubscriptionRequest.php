@@ -28,7 +28,7 @@ class SubscriptionRequest extends FormRequest
             'name' => ['required'],
             'description' => ['nullable'],
             'price' => ['required', 'numeric'],
-            'type' => ['required', 'in:provider,village'],
+            'type' => ['required', 'in:provider,village,maintenance_provider'],
             'feez' => ['required', 'numeric'],
             'discount' => ['required', 'numeric'],
             'admin_num' => ['numeric'],

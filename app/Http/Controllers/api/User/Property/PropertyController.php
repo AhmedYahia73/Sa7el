@@ -77,7 +77,9 @@ class PropertyController extends Controller
                     'flag' => $appartment?->village?->from <= date('Y-m-d') && 
                     $appartment?->village?->to >= date('Y-m-d') && 
                     !empty($item->code) ? true : false,
-                ]; 
+                    'pool_beach_flag' => $item?->village?->package?->beach_pool_module ? 1 : 0,
+                    'maintenance_flag' => $item?->village?->package?->maintenance_module ? 1 : 0,
+                ];
             }
         });
 
