@@ -28,7 +28,7 @@ class ServiceController extends Controller
         $services = $this->services
         ->where('status', 1)
         ->whereHas('providers', function($query) use($request){
-            $query->where('village_id', $request->user()->village_id);
+            $query->where('village_id', $request->village_id);
         })
         ->with('providers') // load all providers
         ->get();
@@ -37,6 +37,7 @@ class ServiceController extends Controller
             $service->my_providers = $service->providers
             ->where('status', 1)->where('village_id', $request->village_id)->values()
             ->map(function($item) use($request){
+                
                 return [
                     'id' => $item->id,
                     'name' => $request->local == 'en' ?
@@ -107,6 +108,7 @@ class ServiceController extends Controller
         }
         $services = $this->services
         ->where('status', 1)
+        ->whereHas('providers')
         ->with('providers') // load all providers
         ->get();
         
