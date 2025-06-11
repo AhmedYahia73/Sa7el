@@ -57,6 +57,8 @@ class PropertyController extends Controller
                     'flag' => $item?->village?->from >= date('Y-m-d') && 
                     $item?->village?->to <= date('Y-m-d') && 
                     !empty($item->code) ? true : false,
+                    'pool_beach_flag' => $item?->village?->package?->beach_pool_module ? 1 : 0,
+                    'maintenance_flag' => $item?->village?->package?->maintenance_module ? 1 : 0,
                 ];
             } else {
                 return [
