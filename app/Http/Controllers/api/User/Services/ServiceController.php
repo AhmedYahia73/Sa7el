@@ -55,7 +55,7 @@ class ServiceController extends Controller
                     'mall' => $item?->mall?->translations
                     ->where('locale', $request->local)->first()?->value ?? $item?->mall?->name,
                     'village' => $item?->village?->name,
-                    'gallery' => $item->gallery->pluck('image_link'),
+                    'gallery' => optional($item->gallery)->pluck('image_link') ?? collect([]),
                     'description' => $request->local == 'en' ?
                     $item->description : $item->ar_description?? $item->description,
                     'loves_count' => count($item->love_user),
