@@ -109,7 +109,7 @@ class ProviderController extends Controller
 
     public function create(ProviderRequest $request){
         // service_id, name, description, phone, status, location, village_id
-        // ar_name, ar_description, image, open_from, open_to, zone_id
+        // ar_name, ar_description, image, open_from, open_to, zone_id, location_map
         $providerRequest = $request->validated();
         if (!is_string($request->image)) {
             $image_path = $this->upload($request, 'image', 'images/providers');
@@ -153,7 +153,7 @@ class ProviderController extends Controller
 
     public function modify(ProviderRequest $request, $id){
         // service_id, name, description, phone, status, location, village_id
-        // ar_name, ar_description, image, zone_id
+        // ar_name, ar_description, image, zone_id, location_map
         $providerRequest = $request->validated();
         $provider = $this->provider
         ->where('id', $id)

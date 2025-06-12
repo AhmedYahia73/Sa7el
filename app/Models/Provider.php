@@ -24,6 +24,7 @@ class Provider extends Model
         'zone_id',
         'mall_id',
         'admin_id',
+        'location_map',
     ];
     protected $appends = ['image_link', 'ar_name', 'ar_description', 'rate',
     'cover_image_link'];
@@ -57,6 +58,21 @@ class Provider extends Model
     public function zone()
     {
         return $this->belongsTo(Zone::class, 'zone_id');
+    }
+    
+    public function menue()
+    {
+        return $this->belongsTo(ProviderMenue::class, 'provider_id');
+    }
+    
+    public function videos()
+    {
+        return $this->belongsTo(ProviderVideos::class, 'provider_id');
+    }
+    
+    public function contact()
+    {
+        return $this->belongsTo(ProviderContact::class, 'provider_id');
     }
     
     public function package()
