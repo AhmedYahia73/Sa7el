@@ -52,8 +52,8 @@ class ServiceController extends Controller
                     'cover_image' => $item->cover_image_link,
                     'location_map' => $item->location_map,
 
-                    'menue' => optional($item?->menue?->where('status', 1))->pluck('image'),
-                    'videos' => $item?->videos?->where('status', 1)?->values(),
+                    'menue' => optional($item?->menue?->where('status', 1))->pluck('image') ?? collect([]),
+                    'videos' => $item?->videos?->where('status', 1)?->values() ?? collect([]),
                     'watts_status' => $item?->contact?->watts_status ?? 0,
                     'phone_status' => $item?->contact?->phone_status ?? 0,
                     'website_status' => $item?->contact?->website_status ?? 0,
