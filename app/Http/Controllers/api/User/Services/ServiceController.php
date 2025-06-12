@@ -63,26 +63,6 @@ class ServiceController extends Controller
                     ? true :false,
                 ];
             });
-            $service->other_providers = $service->providers
-            ->where('status', 1)->where('village_id', '!=', $request->village_id)->values()
-            ->map(function($item) use($request){
-                return [
-                    'id' => $item->id,
-                    'name' => $request->local == 'en' ?
-                    $item->name : $item->ar_name?? $item->name,
-                    'image' => $item->image_link,
-                    'location' => $item->location,
-                    'phone' => $item->phone,
-                    'from' => $item->open_from,
-                    'to' => $item->open_to,
-                    'status' => $item->status,
-                    'description' => $request->local == 'en' ?
-                    $item->description : $item->ar_description?? $item->description,
-                    'loves_count' => count($item->love_user),
-                    'my_love' => count($item->love_user->where('id', $request->user()->id)) > 0
-                    ? true : false,
-                ];
-            });
         });
         $services = $services
         ->map(function($item) use($request){
