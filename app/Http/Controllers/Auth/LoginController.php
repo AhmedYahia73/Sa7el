@@ -160,68 +160,133 @@ class LoginController extends Controller
         }
 
         if ($user->role == 'village') {
-            # code...
-        } 
-        elseif($user->role == 'village') {
-            # code...
-        }
-
-        PersonalAccessToken::
-        whereDate('created_at', '<', date('Y-m-d'))
-        ->where('name', 'village')
-        ->delete(); 
-        $personal = PersonalAccessToken::
-        where('tokenable_id', $user->id)
-        ->where('name', 'village')
-        ->first();
-        if (!empty($personal)) {
-            return response()->json([
-                'errors' => 'You log from another device'
-            ], 400);
-        }
-
-        if ($user->status == 0) {
-            return response()->json([
-                'errors' => 'user is banned'
-            ], 400);
-        }
-        if (password_verify($request->input('password'), $user->password) && $user->role == 'village') {
-            $user->token = $user->createToken('village')->plainTextToken;
-            if ((!empty($user?->village?->from) && ($user->village->to < date('Y-m-d')
-            || $user->village->from > date('Y-m-d'))) || empty($user?->village?->from)) {
-                $packages = $this->package
-                ->where('type', 'village')
-                ->get()
-                ->map(function($item) use($user){
-                    return [
-                        'id' => $item->id,
-                        'name' => $item->name,
-                        'description' => $item->description,
-                        'price' => $item->price,
-                        'feez' => $item->feez,
-                        'discount' => $item->discount,
-                        'beach_pool_module' => $item->beach_pool_module,
-                        'maintenance_module' => $item->maintenance_module,
-                        'security_num' => $item->security_num,
-                        'admin_num' => $item->admin_num,
-                        'admin_num' => $item->admin_num,
-                        'my_package' => $user?->village?->package_id == $item->id ? 1 : 0,
-                    ];
-                });
+            $user->village->zone;
+            PersonalAccessToken::
+            whereDate('created_at', '<', date('Y-m-d'))
+            ->where('name', 'village')
+            ->delete(); 
+            $personal = PersonalAccessToken::
+            where('tokenable_id', $user->id)
+            ->where('name', 'village')
+            ->first();
+            if (!empty($personal)) {
                 return response()->json([
-                    'packages' => $packages,
+                    'errors' => 'You log from another device'
+                ], 400);
+            }
+
+            if ($user->status == 0) {
+                return response()->json([
+                    'errors' => 'user is banned'
+                ], 400);
+            }
+            if (password_verify($request->input('password'), $user->password) && $user->role == 'village') {
+                $user->token = $user->createToken('village')->plainTextToken;
+                if ((!empty($user?->village?->from) && ($user->village->to < date('Y-m-d')
+                || $user->village->from > date('Y-m-d'))) || empty($user?->village?->from)) {
+                    $packages = $this->package
+                    ->where('type', 'village')
+                    ->get()
+                    ->map(function($item) use($user){
+                        return [
+                            'id' => $item->id,
+                            'name' => $item->name,
+                            'description' => $item->description,
+                            'price' => $item->price,
+                            'feez' => $item->feez,
+                            'discount' => $item->discount,
+                            'beach_pool_module' => $item->beach_pool_module,
+                            'maintenance_module' => $item->maintenance_module,
+                            'security_num' => $item->security_num,
+                            'admin_num' => $item->admin_num,
+                            'admin_num' => $item->admin_num,
+                            'my_package' => $user?->village?->package_id == $item->id ? 1 : 0,
+                        ];
+                    });
+                    return response()->json([
+                        'packages' => $packages,
+                        'village' => $user,
+                        'token' => $user->token,
+                        'role' => $user->role,
+                    ]);
+                }
+                return response()->json([
                     'village' => $user,
                     'token' => $user->token,
-                ]);
+                    'role' => $user->role,
+                ], 200);
             }
-            return response()->json([
-                'village' => $user,
-                'token' => $user->token,
-            ], 200);
+            else { 
+                return response()->json(['errors'=>'creational not Valid'],403);
+            }
+        } 
+        elseif($user->role == 'provider') {
+            $user->provider->zone;
+            $user->provider->village;
+            PersonalAccessToken::
+            whereDate('created_at', '<', date('Y-m-d'))
+            ->where('name', 'provider')
+            ->delete(); 
+            $personal = PersonalAccessToken::
+            where('tokenable_id', $user->id)
+            ->where('name', 'provider')
+            ->first();
+            if (!empty($personal)) {
+                return response()->json([
+                    'errors' => 'You log from another device'
+                ], 400);
+            }
+
+            if ($user->status == 0) {
+                return response()->json([
+                    'errors' => 'user is banned'
+                ], 400);
+            }
+            if (password_verify($request->input('password'), $user->password) && $user->role == 'provider') {
+                $user->token = $user->createToken('provider')->plainTextToken;
+                if ((!empty($user?->provider?->from) && ($user->provider->to < date('Y-m-d')
+                || $user->provider->from > date('Y-m-d'))) || empty($user?->provider?->from)) {
+                    $packages = $this->package
+                    ->where('type', 'provider')
+                    ->get()
+                    ->map(function($item) use($user){
+                        return [
+                            'id' => $item->id,
+                            'name' => $item->name,
+                            'description' => $item->description,
+                            'price' => $item->price,
+                            'feez' => $item->feez,
+                            'discount' => $item->discount,
+                            'beach_pool_module' => $item->beach_pool_module,
+                            'maintenance_module' => $item->maintenance_module,
+                            'security_num' => $item->security_num,
+                            'admin_num' => $item->admin_num,
+                            'admin_num' => $item->admin_num,
+                            'my_package' => $user?->provider?->package_id == $item->id ? 1 : 0,
+                        ];
+                    });
+                    return response()->json([
+                        'packages' => $packages,
+                        'provider' => $user,
+                        'token' => $user->token,
+                        'role' => $user->role,
+                    ]);
+                }
+                return response()->json([
+                    'provider' => $user,
+                    'token' => $user->token,
+                    'role' => $user->role,
+                ], 200);
+            }
+            else { 
+                return response()->json(['errors'=>'creational not Valid'],403);
+            }
         }
-        else { 
-            return response()->json(['errors'=>'creational not Valid'],403);
-        }
+
+        return response()->json([
+            'errors' => 'You do not provider or village',
+        ], 400);
+
     }
 
     public function user_login(Request $request){
