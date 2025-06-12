@@ -16,7 +16,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('video')->nullable();
             $table->boolean('status')->default(1);
-            $table->foreignId('provider_id')->nullable()->constrained('service_providers')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('provider_id')->nullable()->constrained('providers')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('website')->nullable();
             $table->string('instagram')->nullable();
-            $table->foreignId('provider_id')->nullable()->constrained('service_providers')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('provider_id')->nullable()->constrained('providers')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

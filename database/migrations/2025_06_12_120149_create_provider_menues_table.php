@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('image');
             $table->boolean('status')->default(1);
-            $table->foreignId('provider_id')->nullable()->constrained('service_providers')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('provider_id')->nullable()->constrained('providers')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

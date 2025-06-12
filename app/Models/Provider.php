@@ -62,17 +62,17 @@ class Provider extends Model
     
     public function menue()
     {
-        return $this->belongsTo(ProviderMenue::class, 'provider_id');
+        return $this->hasMany(ProviderMenue::class, 'provider_id');
     }
     
     public function videos()
     {
-        return $this->belongsTo(ProviderVideos::class, 'provider_id');
+        return $this->hasMany(ProviderVideos::class, 'provider_id');
     }
     
     public function contact()
     {
-        return $this->belongsTo(ProviderContact::class, 'provider_id');
+        return $this->hasOne(ProviderContact::class, 'provider_id');
     }
     
     public function package()
