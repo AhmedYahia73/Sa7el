@@ -52,7 +52,7 @@ class ServiceController extends Controller
                     'cover_image' => $item->cover_image_link,
                     'location_map' => $item->location_map,
 
-                    'menue' => optional($item->menue)->where('status', 1)->pluck('image'),
+                    'menue' => optional($item->menue->where('status', 1))->pluck('image'),
                     'videos' => $item?->videos->where('status', 1)->values(),
                     'watts_status' => $item?->contact?->watts_status ?? 0,
                     'phone_status' => $item?->contact?->phone_status ?? 0,
