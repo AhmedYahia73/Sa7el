@@ -37,7 +37,6 @@ class ServiceController extends Controller
             $service->my_providers = $service->providers
             ->where('status', 1)->where('village_id', $request->village_id)->values()
             ->map(function($item) use($request){
-                
                 return [
                     'id' => $item->id,
                     'name' => $request->local == 'en' ?
@@ -48,6 +47,15 @@ class ServiceController extends Controller
                     'from' => $item->open_from,
                     'to' => $item->open_to,
                     'status' => $item->status,
+                    'service' => $item?->service?->name,
+                    'village' => $item?->village?->name,
+                    'cover_image' => $item->cover_image_link,
+                    'zone' => $item?->zone?->translations
+                    ->where('locale', $request->local)->first()?->value ?? $item?->zone?->name,
+                    'mall' => $item?->mall?->translations
+                    ->where('locale', $request->local)->first()?->value ?? $item?->mall?->name,
+                    'village' => $item?->village?->name,
+                    'gallery' => $item->gallery->pluck('image_link'),
                     'description' => $request->local == 'en' ?
                     $item->description : $item->ar_description?? $item->description,
                     'loves_count' => count($item->love_user),

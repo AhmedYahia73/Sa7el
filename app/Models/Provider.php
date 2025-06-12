@@ -101,4 +101,13 @@ class Provider extends Model
     public function super_admin(){
         return $this->belongsTo(User::class, 'admin_id');
     }
+
+    public function mall(){
+        return $this->belongsTo(Mall::class, 'mall_id');
+    }
+
+
+    public function gallery(){
+        return $this->belongsTo(ProviderGallary::class, 'provider_id');
+    }
 }
