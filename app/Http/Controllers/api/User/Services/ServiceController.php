@@ -74,8 +74,7 @@ class ServiceController extends Controller
                 'status' => $item->status,
                 'description' => $request->local == 'en' ?
                 $item->description : $item->ar_description?? $item->description,
-                'my_providers' => $item->my_providers,
-                'other_providers' => $item->other_providers,
+                'my_providers' => $item->my_providers, 
             ];
         });
 
