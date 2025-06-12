@@ -124,6 +124,6 @@ class Provider extends Model
 
 
     public function gallery(){
-        return $this->belongsTo(ProviderGallary::class, 'provider_id');
+        return $this->hasMany(ProviderGallary::class, 'provider_id');
     }
 }
