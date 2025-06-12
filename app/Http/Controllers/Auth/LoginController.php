@@ -153,10 +153,17 @@ class LoginController extends Controller
         }
         $user = $this->user
         ->where('email', $request->email)
-        ->with('village.zone')
         ->first();
+        
         if (empty($user)) {
             return response()->json(['errors'=>'creational not Valid'],403);
+        }
+
+        if ($user->role == 'village') {
+            # code...
+        } 
+        elseif($user->role == 'village') {
+            # code...
         }
 
         PersonalAccessToken::
