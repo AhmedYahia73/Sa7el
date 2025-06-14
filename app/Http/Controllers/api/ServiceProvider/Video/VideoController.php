@@ -84,6 +84,11 @@ class VideoController extends Controller
         ->where('id', $id)
         ->where('provider_id', $request->user()->provider_id)
         ->first();
+        if (empty($provider_video)) {
+            return response()->json([
+                'errors' => 'provider not found'
+            ], 400);
+        }
         $video_path = $this->update_image($request, $provider_video->video, 'video', 'provider/video/provider_video');
 
         $provider_video->update([

@@ -17,4 +17,13 @@ class ProviderVideos extends Model
     public function getVideoLinkAttribute(){
         return url('storage/' . $this->video);
     }
+
+    public function love(){
+        return $this->belongsToMany(User::class, 'provider_videos', 'provider_video_id', 'user_id');
+    } 
+
+    public function my_love(){
+        return $this->belongsToMany(User::class, 'provider_videos', 'provider_video_id', 'user_id')
+        ->where('users.id', auth()->user()->id);
+    }
 }
