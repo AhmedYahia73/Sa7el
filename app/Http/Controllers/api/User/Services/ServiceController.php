@@ -231,10 +231,10 @@ class ServiceController extends Controller
         ->where('id', $id)
         ->first();
         if ($love) {
-            $provider_gallery->love_user()->detach($request->user()->id);
-            $provider_gallery->love_user()->attach($request->user()->id);
+            $provider_gallery->love()->detach($request->user()->id);
+            $provider_gallery->love()->attach($request->user()->id);
         } else {
-            $provider_gallery->love_user()->detach($request->user()->id);
+            $provider_gallery->love()->detach($request->user()->id);
         }
         
         return response()->json([
@@ -258,10 +258,10 @@ class ServiceController extends Controller
         ->where('id', $id)
         ->first();
         if ($love) {
-            $provider_video->love_user()->detach($request->user()->id);
-            $provider_video->love_user()->attach($request->user()->id);
+            $provider_video->love()->detach($request->user()->id);
+            $provider_video->love()->attach($request->user()->id);
         } else {
-            $provider_video->love_user()->detach($request->user()->id);
+            $provider_video->love()->detach($request->user()->id);
         }
         
         return response()->json([
