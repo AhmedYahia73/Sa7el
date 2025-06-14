@@ -46,14 +46,14 @@ class OfferController extends Controller
     }
 
     public function create(Request $request){
-        $validator = Validator::make($request->all(), [
+        $validated = Validator::make($request->all(), [
             'description' => 'sometimes',
             'image' => 'required',
             'status' => 'required|boolean',
         ]);
-        if ($validator->fails()) { // if Validate Make Error Return Message Error
+        if ($validated->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
-                'errors' => $validator->errors(),
+                'errors' => $validated->errors(),
             ],400);
         }
 
@@ -80,6 +80,17 @@ class OfferController extends Controller
     }
 
     public function modify(Request $request, $id){
+        $validated = Validator::make($request->all(), [
+            'description' => 'sometimes',
+            'image' => 'required',
+            'status' => 'required|boolean',
+        ]);
+        if ($validated->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validated->errors(),
+            ],400);
+        }
+
         $offerRequest = $request->validated();
         $provider_offer = $this->provider_offer
         ->where('id', $id)
