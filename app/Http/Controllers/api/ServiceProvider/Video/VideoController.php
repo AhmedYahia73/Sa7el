@@ -65,7 +65,7 @@ class VideoController extends Controller
         ]);
 
         return response()->json([
-            'success' => 'You add image success'
+            'success' => 'You add video success'
         ]);
     }
 
@@ -80,17 +80,20 @@ class VideoController extends Controller
             ],400);
         }
 
-        $video_path = $this->upload($request, 'video', 'provider/video/provider_video');
-        $this->provider_video
+        $provider_video = $this->provider_video
+        ->where('id', $id)
         ->where('provider_id', $request->user()->provider_id)
-        ->update([
+        ->first();
+        $video_path = $this->update_image($request, $provider_video->video, 'video', 'provider/video/provider_video');
+
+        $provider_video->update([
             'description' => $request->description ?? null,
             'video' => $video_path,
             'status' => $request->status,
         ]);
 
         return response()->json([
-            'success' => 'You add video success'
+            'success' => 'You update video success'
         ]);
     }
 
