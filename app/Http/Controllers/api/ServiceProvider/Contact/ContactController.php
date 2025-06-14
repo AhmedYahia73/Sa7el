@@ -10,8 +10,7 @@ use App\Models\ProviderContact;
 
 class ContactController extends Controller
 {
-    public function __construct(private ProviderContact $contact){}
-    use TraitImage;
+    public function __construct(private ProviderContact $contact){} 
 
     public function view(){
         $contact = $this->contact
