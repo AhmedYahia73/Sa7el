@@ -15,7 +15,8 @@ class ContactController extends Controller
     public function view(Request $request){
         $contact = $this->contact
         ->where('provider_id', $request->user()->provider_id)
-        ->get(); 
+        ->orderByDesc('id')
+        ->first();
 
         return response()->json([ 
             'contact' => $contact, 
