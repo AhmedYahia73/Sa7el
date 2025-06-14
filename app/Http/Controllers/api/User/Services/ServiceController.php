@@ -58,6 +58,7 @@ class ServiceController extends Controller
                     'menue' => optional($item?->menue?->where('status', 1))->pluck('image_link') ?? collect([]),
                     'videos' => $item?->videos?->where('status', 1)?->values()->map(function($element){
                         return [
+                            'id' => $element->id,
                             'description' => $element->description,
                             'video_link' => $element->video_link,
                             'love_count' => $element->love->count(),
@@ -80,6 +81,7 @@ class ServiceController extends Controller
                     'village' => $item?->village?->name,
                     'gallery' => $item->gallery->map(function($element){
                         return [
+                            'id' => $element->id_link,
                             'image' => $element->image_link,
                             'love_count' => $element->love->count(),
                             'my_love' => $element->my_love->count() > 0 ? true : false,
