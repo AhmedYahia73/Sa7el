@@ -14,8 +14,7 @@ class ContactController extends Controller
 
     public function view(){
         $contact = $this->contact
-        ->with('super_roles')
-        ->where('role', 'admin')
+        ->where('provider_id', $request->user()->provider_id)
         ->get(); 
 
         return response()->json([ 
