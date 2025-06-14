@@ -11,4 +11,12 @@ Route::middleware(['auth:sanctum', 'IsProvider'])->group(function(){
         Route::get('/', 'view'); 
         Route::post('/update', 'update');
     });
+    
+    Route::controller(GalleryController::class)->prefix('gallery')
+    ->group(function() {
+        Route::get('/', 'view'); 
+        Route::put('/status/{id}', 'status');
+        Route::post('/add', 'create');
+        Route::delete('/delete/{id}', 'delete');
+    });
 });
