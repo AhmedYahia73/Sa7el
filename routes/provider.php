@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\ServiceProvider\Contact\ContactController;
 use App\Http\Controllers\api\ServiceProvider\Menue\MenueController;
 use App\Http\Controllers\api\ServiceProvider\Gallery\GalleryController;
+use App\Http\Controllers\api\ServiceProvider\Video\VideoController;
 
 Route::middleware(['auth:sanctum', 'IsProvider'])->group(function(){
     Route::controller(ContactController::class)->prefix('contact')
@@ -27,6 +28,15 @@ Route::middleware(['auth:sanctum', 'IsProvider'])->group(function(){
         Route::get('/', 'view'); 
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
+        Route::delete('/delete/{id}', 'delete');
+    });
+    
+    Route::controller(VideoController::class)->prefix('videos')
+    ->group(function() {
+        Route::get('/', 'view'); 
+        Route::put('/status/{id}', 'status');
+        Route::post('/add', 'create');
+        Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
     });
 });
