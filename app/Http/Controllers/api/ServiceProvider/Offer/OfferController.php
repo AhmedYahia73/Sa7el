@@ -46,14 +46,14 @@ class OfferController extends Controller
     }
 
     public function create(Request $request){
-        $validated = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'description' => 'sometimes',
             'image' => 'required',
             'status' => 'required|boolean',
         ]);
-        if ($validated->fails()) { // if Validate Make Error Return Message Error
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
-                'errors' => $validated->errors(),
+                'errors' => $validator->errors(),
             ],400);
         }
 
@@ -65,7 +65,7 @@ class OfferController extends Controller
                 'errors' => 'You add more than 3 offers you should know your limit 3 offers'
             ], 400);
         }
-        $offerRequest = $request->validated();
+        $offerRequest = $validator->validated();
         $offerRequest['provider_id'] = $request->user()->provider_id;
         if (!is_string($request->image)) {
             $image_path = $this->upload($request, 'image', 'provider/images/offer');
@@ -80,18 +80,18 @@ class OfferController extends Controller
     }
 
     public function modify(Request $request, $id){
-        $validated = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'description' => 'sometimes',
             'image' => 'required',
             'status' => 'required|boolean',
         ]);
-        if ($validated->fails()) { // if Validate Make Error Return Message Error
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
-                'errors' => $validated->errors(),
+                'errors' => $validator->errors(),
             ],400);
         }
 
-        $offerRequest = $request->validated();
+        $offerRequest = $validator->validated();
         $provider_offer = $this->provider_offer
         ->where('id', $id)
         ->first();
