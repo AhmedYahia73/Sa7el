@@ -22,6 +22,7 @@ trait TraitImage
 
             // Save to a temporary file with reduced quality
             $image_path = $directory . '/' . uniqid() . '.jpg';
+            Storage::disk('public')->makeDirectory($directory);
             $path = storage_path('app/public/' . $image_path);
             $quality = 90;
 
@@ -51,6 +52,7 @@ trait TraitImage
 
             // Save to a temporary file with reduced quality
             $image_path = $directory . '/' . uniqid() . '.jpg';
+            Storage::disk('public')->makeDirectory($directory);
             $path = storage_path('app/public/' . $image_path);
             $quality = 90;
 
@@ -80,6 +82,7 @@ trait TraitImage
             $img = $manager->read($imageFile->getPathname());
 
             $img->resize(1920, null);
+            Storage::disk('public')->makeDirectory($directory);
 
             // Save to a temporary file with reduced quality
             $path = storage_path('app/public/' . $directory . '/' . uniqid() . '.jpg');
