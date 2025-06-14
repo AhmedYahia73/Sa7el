@@ -12,7 +12,7 @@ class ContactController extends Controller
 {
     public function __construct(private ProviderContact $contact){} 
 
-    public function view(){
+    public function view(Request $request){
         $contact = $this->contact
         ->where('provider_id', $request->user()->provider_id)
         ->get(); 
