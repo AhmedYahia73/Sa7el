@@ -8,6 +8,7 @@ use App\Http\Controllers\api\ServiceProvider\Menue\MenueController;
 use App\Http\Controllers\api\ServiceProvider\Gallery\GalleryController;
 use App\Http\Controllers\api\ServiceProvider\Video\VideoController;
 use App\Http\Controllers\api\ServiceProvider\Invoice\InvoicesController;
+use App\Http\Controllers\api\ServiceProvider\Offer\OfferController;
 
 Route::middleware(['auth:sanctum', 'IsProvider'])->group(function(){
     Route::controller(ContactController::class)->prefix('contact')
@@ -38,6 +39,15 @@ Route::middleware(['auth:sanctum', 'IsProvider'])->group(function(){
     });
     
     Route::controller(VideoController::class)->prefix('videos')
+    ->group(function() {
+        Route::get('/', 'view'); 
+        Route::put('/status/{id}', 'status');
+        Route::post('/add', 'create');
+        Route::post('/update/{id}', 'modify');
+        Route::delete('/delete/{id}', 'delete');
+    });
+    
+    Route::controller(OfferController::class)->prefix('offer')
     ->group(function() {
         Route::get('/', 'view'); 
         Route::put('/status/{id}', 'status');
