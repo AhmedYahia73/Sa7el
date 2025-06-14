@@ -46,7 +46,27 @@ class OfferController extends Controller
     }
 
     public function create(Request $request){
+        $validator = Validator::make($request->all(), [
+            'description' => 'sometimes',
+            'image' => 'required',
+            'status' => 'required|boolean',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+
+        $provider_offer = $this->provider_offer
+        ->where('provider_id', $request->user()->provider_id)
+        ->get();
+        if (count($provider_offer) > 2) {
+            return response()->json([
+                'errors' => 'You add more than 3 offers you should know your limit 3 offers'
+            ], 400);
+        }
         $offerRequest = $request->validated();
+        $offerRequest['provider_id'] = $request->user()->provider_id;
         if (!is_string($request->image)) {
             $image_path = $this->upload($request, 'image', 'provider/images/offer');
             $offerRequest['image'] = $image_path;
