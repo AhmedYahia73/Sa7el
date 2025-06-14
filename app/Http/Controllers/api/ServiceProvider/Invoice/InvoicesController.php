@@ -5,8 +5,16 @@ namespace App\Http\Controllers\api\ServiceProvider\Invoice;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use App\Models\Package;
+use App\Models\Payment;
+use App\Models\Provider;
+
 class InvoicesController extends Controller
 {
+    public function __construct(private Payment $payment, 
+    private Package $package,
+    private Provider $provider){}
+
     public function view(Request $request){
         $package = null; 
         $provider = $this->provider
