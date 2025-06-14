@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('provider_offers', function (Blueprint $table) {
             $table->id();
-            $table->string('decription', 500)->nullable();
+            $table->string('description', 500)->nullable();
             $table->string('image')->nullable();
             $table->foreignId('provider_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->boolean('status')->default(1);

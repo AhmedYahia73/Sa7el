@@ -92,6 +92,9 @@ class OfferController extends Controller
         }
 
         $offerRequest = $validator->validated();
+        if (empty($request->description)) {
+            $offerRequest['description'] = null;
+        }
         $provider_offer = $this->provider_offer
         ->where('id', $id)
         ->first();
