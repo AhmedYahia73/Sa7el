@@ -19,11 +19,11 @@ class ProviderVideos extends Model
     }
 
     public function love(){
-        return $this->belongsToMany(User::class, 'provider_videos', 'provider_video_id', 'user_id');
+        return $this->belongsToMany(User::class, 'provider_video_love', 'provider_video_id', 'user_id');
     } 
 
     public function my_love(){
-        return $this->belongsToMany(User::class, 'provider_videos', 'provider_video_id', 'user_id')
+        return $this->belongsToMany(User::class, 'provider_video_love', 'provider_video_id', 'user_id')
         ->where('users.id', auth()->user()->id);
     }
 }
