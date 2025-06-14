@@ -26,12 +26,12 @@ trait TraitImage
             $path = storage_path('app/public/' . $image_path);
             $quality = 90;
 
-            // Try reducing quality until size is under 2MB (2048 KB)
+            // Try reducing quality until size is under 2MB (1024 KB)
             do {
                 $img->save($path, $quality);
                 $filesize = filesize($path) / 1024; // in KB
                 $quality -= 5;
-            } while ($filesize > 2048 && $quality > 10);
+            } while ($filesize > 1024 && $quality > 10);
 
 
             // $uploadImage = new request();
@@ -56,12 +56,12 @@ trait TraitImage
             $path = storage_path('app/public/' . $image_path);
             $quality = 90;
 
-            // Try reducing quality until size is under 2MB (2048 KB)
+            // Try reducing quality until size is under 2MB (1024 KB)
             do {
                 $img->save($path, $quality);
                 $filesize = filesize($path) / 1024; // in KB
                 $quality -= 5;
-            } while ($filesize > 2048 && $quality > 10);
+            } while ($filesize > 1024 && $quality > 10);
 
             // $uploadImage = new request();
             // $path = $request->file($fileName)->store($directory,'public'); // Take Image from Request And Save inStorage;
@@ -88,12 +88,12 @@ trait TraitImage
             $path = storage_path('app/public/' . $directory . '/' . uniqid() . '.jpg');
             $quality = 90;
 
-            // Try reducing quality until size is under 2MB (2048 KB)
+            // Try reducing quality until size is under 2MB (1024 KB)
             do {
                 $img->save($path, $quality);
                 $filesize = filesize($path) / 1024; // in KB
                 $quality -= 5;
-            } while ($filesize > 2048 / $file_num && $quality > 10);
+            } while ($filesize > 1024 / $file_num && $quality > 10);
             $filePath = $file->store($directory, 'public');
             return $filePath;
         }
@@ -139,17 +139,43 @@ trait TraitImage
             $imageData = substr($base64Image, strpos($base64Image, ',') + 1);
             $imageData = base64_decode($imageData);
 
-            // Generate a unique file name with the appropriate extension
-            $fileName = uniqid() . '.' . $imageType;
+            // low storage
+            $manager = new ImageManager(new GdDriver());
+            $image = $manager->read($imageData);
+            $quality = 90;
+            $minQuality = 10;
+            $width = $image->width();
+            $minWidth = 800;
+            $step = 200;
+            $maxSizeKB = 1024;
 
+            // Generate a unique file name with the appropriate extension
+            $tmpPath = storage_path('app/tmp_' . uniqid() . '.jpg');
+            do {
+                $resized = $image->resize($width, null);
+                $resized->save($tmpPath, $quality);
+
+                $filesize = filesize($tmpPath) / 1024;
+
+                if ($filesize > $maxSizeKB) {
+                    $quality -= 10;
+                    if ($quality < $minQuality && $width > $minWidth) {
+                        $width -= $step;
+                        $quality = 90;
+                    }
+                }
+            } while ($filesize > $maxSizeKB && $quality >= $minQuality && $width >= $minWidth);
+            $fileName = uniqid() . '.' . $imageType;
+            Storage::disk('public')->makeDirectory($folderPath);
+            $finalPath = $folderPath . '/' . $fileName;
+            Storage::disk('public')->put($finalPath, file_get_contents($tmpPath));
             // Define the folder path in storage
 
 
-            // Save the image to the storage disk (default is local)
-            Storage::disk('public')->put($folderPath . '/' . $fileName, $imageData);
+            @unlink($tmpPath);
 
             // Return the image path
-            return $folderPath . '/' . $fileName;
+            return $finalPath;
         }
 
         return response()->json(['error' => 'Invalid base64 image string'], 400);
