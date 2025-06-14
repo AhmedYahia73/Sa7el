@@ -7,12 +7,18 @@ use App\Http\Controllers\api\ServiceProvider\Contact\ContactController;
 use App\Http\Controllers\api\ServiceProvider\Menue\MenueController;
 use App\Http\Controllers\api\ServiceProvider\Gallery\GalleryController;
 use App\Http\Controllers\api\ServiceProvider\Video\VideoController;
+use App\Http\Controllers\api\ServiceProvider\Invoice\InvoicesController;
 
 Route::middleware(['auth:sanctum', 'IsProvider'])->group(function(){
     Route::controller(ContactController::class)->prefix('contact')
     ->group(function() {
         Route::get('/', 'view'); 
         Route::post('/update', 'update');
+    });
+        
+    Route::controller(InvoicesController::class)->prefix('invoice')
+    ->group(function() {
+        Route::get('/', 'view');
     });
     
     Route::controller(MenueController::class)->prefix('menue')
