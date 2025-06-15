@@ -37,7 +37,6 @@ class User extends Authenticatable
         'status',
         'rent_from',
         'rent_to',
-        'provider_only',
         'qr_code',
     ];
     protected $appends = ['image_link', 'qr_code_link'];
@@ -48,10 +47,6 @@ class User extends Authenticatable
 
     public function village(){
         return $this->belongsTo(Village::class, 'village_id');
-    }
-
-    public function super_roles(){
-        return $this->hasMany(SuperRole::class, 'user_id');
     }
 
     public function love(){

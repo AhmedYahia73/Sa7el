@@ -8,31 +8,27 @@ use Illuminate\Support\Facades\Validator;
 use App\trait\TraitImage;
 
 use App\Models\User;
-use App\Models\SuperRole;
+use App\Models\AdminPosition;
 
 class AdminController extends Controller
 {
     public function __construct(private User $admin,
-    private SuperRole $super_role){}
+    private AdminPosition $position){}
     use TraitImage;
 
     public function view(){
         $admins = $this->admin
-        ->with('super_roles')
+        ->with('position.sup_roles')
         ->where('role', 'admin')
         ->get();
-        $actions = [
-            'all',
-            'view',
-            'add',
-            'edit',
-            'status',
-            'delete',
-        ];
+        $position = $this->position
+        ->where('type', 'admin')
+        ->where('status', 1)
+        ->get();
 
         return response()->json([ 
             'admins' => $admins,
-            'actions' => $actions,
+            'position' => $position,
         ]);
     }
 
@@ -64,9 +60,7 @@ class AdminController extends Controller
             'password' => ['required'],
             'status' => ['required', 'boolean'],
             'gender' => ['in:male,female'],
-            'provider_only' => ['required', 'boolean'],
-            'action' => ['required'],
-            'action.*' => ['required', 'in:all,view,status,add,edit,delete'],
+            'admin_position_id' => ['required', 'exists:admin_positions,id'],
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -77,15 +71,7 @@ class AdminController extends Controller
         $adminRequest['role'] = 'admin';
         $admin = $this->admin
         ->create($adminRequest);
-        foreach ($request->action as $action) {
-            $this->super_role
-            ->create([
-                'action' => $action,
-                'user_id' => $admin->id,
-            ]);
-        }
         
-
         return response()->json([
             'success' => 'You add data success',
         ]);
@@ -98,9 +84,7 @@ class AdminController extends Controller
             'phone' => ['unique:users,phone,' . $id],
             'status' => ['required', 'boolean'],
             'gender' => ['in:male,female'],
-            'provider_only' => ['required', 'boolean'],
-            'action' => ['required'],
-            'action.*' => ['required', 'in:all,view,status,add,edit,delete'],
+            'admin_position_id' => ['required', 'exists:admin_positions,id'],
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -115,16 +99,6 @@ class AdminController extends Controller
         ->where('id', $id)
         ->first();
         $admin->update($adminRequest);
-        $this->super_role
-        ->where('user_id', $admin->id)
-        ->delete();
-        foreach ($request->action as $action) {
-            $this->super_role
-            ->create([
-                'action' => $action,
-                'user_id' => $admin->id,
-            ]);
-        }
 
         return response()->json([
             'success' => 'You update data success',
