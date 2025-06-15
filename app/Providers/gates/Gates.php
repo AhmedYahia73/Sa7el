@@ -89,7 +89,7 @@ class Gates
             return false;
         });
         Gate::define('Maintenance Fees', function ($user) { 
-            if ($user->position && $user->village->package->maintenance_module &&
+            if ($user->position && 
             $user->position->roles->pluck('module')->contains('Maintenance Fees')) {
                 return true;
             }
