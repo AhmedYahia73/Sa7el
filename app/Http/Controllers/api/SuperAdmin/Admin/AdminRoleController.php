@@ -69,18 +69,6 @@ class AdminRoleController extends Controller
         ]);
     }
 
-    public function position($id){
-        $admin_position = $this->admin_position
-        ->where('type', 'admin')
-        ->where('id', $id)
-        ->with('roles')
-        ->first();
-
-        return response()->json([
-            'admin_position' => $admin_position,
-        ]);
-    }
-
     public function status(Request $request, $id){
         $validator = Validator::make($request->all(), [
             'status' => 'required|boolean',

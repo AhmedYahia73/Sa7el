@@ -20,6 +20,7 @@ use App\Http\Controllers\api\SuperAdmin\subscription\SubscriptionController;
 use App\Http\Controllers\api\SuperAdmin\subscriper\SubscriperController;
 use App\Http\Controllers\api\SuperAdmin\payment\PaymentController;
 use App\Http\Controllers\api\SuperAdmin\Admin\AdminController;
+use App\Http\Controllers\api\SuperAdmin\Admin\AdminRoleController;
 use App\Http\Controllers\api\SuperAdmin\invoice\InvoiceController;
 use App\Http\Controllers\api\SuperAdmin\Provider\ProviderCoverController;
 use App\Http\Controllers\api\SuperAdmin\village\VillageCoverController;
@@ -33,6 +34,7 @@ use App\Http\Controllers\api\SuperAdmin\ServiceProvider\MaintenanceProviderAdmin
 use App\Http\Controllers\api\SuperAdmin\ServiceProvider\MaintenanceProviderCoverController;
 use App\Http\Controllers\api\SuperAdmin\ServiceProvider\MaintenanceProviderGalleryController;
 use App\Http\Controllers\api\SuperAdmin\ServiceProvider\MaintenanceProviderRolesController;
+
 Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     Route::controller(HomeController::class)->prefix('home')
     ->group(function() {
@@ -140,6 +142,15 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     ->middleware('can:Admin_Admin')->group(function() {
         Route::get('/{id}', 'view'); 
         Route::post('/add/{id}', 'create');
+        Route::delete('/delete/{id}', 'delete');
+    });
+    
+    Route::controller(AdminRoleController::class)->prefix('admin_role')
+    ->middleware('can:Admin_Admin')->group(function() {
+        Route::get('/', 'view'); 
+        Route::put('/status/{id}', 'status');
+        Route::post('/add', 'create');
+        Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
     });
     
