@@ -61,7 +61,7 @@ class AdminRoleController extends Controller
             'Mall Cover' => ['all', 'view', 'status', 'add', 'delete'],
             'Mall Profile' => ['all', 'edit', 'delete'],
             'Home' => ['all', 'view'],
-        ]; 
+        ];
 
         return response()->json([
             'admin_position' => $admin_position,
