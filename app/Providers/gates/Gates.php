@@ -33,14 +33,14 @@ class Gates
             return false;
         });
         Gate::define('Pool', function ($user) { 
-            if ($user->position && $user->village->package->beach_pool_module &&
+            if ($user->position && $user->village->package->beach_pool_module ?? 0 &&
             $user->position->roles->pluck('module')->contains('Pool')) {
                 return true;
             }
             return false;
         });
         Gate::define('Beach', function ($user) { 
-            if ($user->position && $user->village->package->beach_pool_module &&  
+            if ($user->position && $user->village->package->beach_pool_module ?? 0 &&  
             $user->position->roles->pluck('module')->contains('Beach')) {
                 return true;
             }
