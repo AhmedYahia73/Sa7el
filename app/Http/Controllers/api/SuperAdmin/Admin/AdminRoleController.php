@@ -21,7 +21,7 @@ class AdminRoleController extends Controller
     public function view(){
         $admin_position = $this->admin_position
         ->where('type', 'admin')
-        ->with('roles')
+        ->with('sup_roles')
         ->get();
         $roles = [
             'Zone' => ['all', 'view', 'status', 'add', 'edit', 'delete'],

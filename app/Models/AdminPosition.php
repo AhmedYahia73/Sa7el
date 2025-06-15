@@ -15,4 +15,8 @@ class AdminPosition extends Model
     public function roles(){
         return $this->hasMany(AdminRole::class, 'position_id');
     }
+
+    public function sup_roles(){
+        return $this->hasMany(SuperRole::class, 'position_id');
+    }
 }
