@@ -81,7 +81,7 @@ class ServiceController extends Controller
                     'village' => $item?->village?->name,
                     'gallery' => $item->gallery->map(function($element){
                         return [
-                            'id' => $element->id_link,
+                            'id' => $element->id,
                             'image' => $element->image_link,
                             'love_count' => $element->love->count(),
                             'my_love' => $element->my_love->count() > 0 ? true : false,
