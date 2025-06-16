@@ -53,114 +53,114 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
 
     Route::controller(MallController::class)->prefix('mall')
     ->group(function() {
-        Route::get('/', 'view');
-        Route::post('/update_profile_image/{id}', 'update_profile_image');
-        Route::get('/item/{id}', 'mall');
-        Route::put('/status/{id}', 'status');
-        Route::post('/add', 'create');
-        Route::post('/update/{id}', 'modify');
-        Route::delete('/delete/{id}', 'delete');
-        Route::get('/providers', 'provider_mall');
+        Route::get('/', 'view')->middleware('can:admin_Mall_view');
+        Route::post('/update_profile_image/{id}', 'update_profile_image')->middleware('can:admin_zone_delete');
+        Route::get('/item/{id}', 'mall')->middleware('can:admin_Mall_view');
+        Route::put('/status/{id}', 'status')->middleware('can:admin_Mall_status');
+        Route::post('/add', 'create')->middleware('can:admin_Mall_add');
+        Route::post('/update/{id}', 'modify')->middleware('can:admin_Mall_edit');
+        Route::delete('/delete/{id}', 'delete')->middleware('can:admin_Mall_delete');
+        Route::get('/providers', 'provider_mall')->middleware('can:update_profile');
     });
 
     Route::controller(MallGallaryController::class)->prefix('mall_gallery')
     ->group(function() {
-        Route::get('/{id}', 'view'); 
-        Route::put('/status/{id}', 'status');
-        Route::post('/add/{id}', 'create');
-        Route::delete('/delete/{id}', 'delete');
+        Route::get('/{id}', 'view')->middleware('can:admin_mall_gallery_view');
+        Route::put('/status/{id}', 'status')->middleware('can:admin_mall_gallery_status');
+        Route::post('/add/{id}', 'create')->middleware('can:admin_mall_gallery_add');
+        Route::delete('/delete/{id}', 'delete')->middleware('can:admin_mall_gallery_delete');
     });
 
     Route::controller(MallCoverController::class)->prefix('mall_cover')
     ->group(function() {
-        Route::get('/{id}', 'view');
-        Route::post('/add/{id}', 'create');
-        Route::delete('/delete/{id}', 'delete');
+        Route::get('/{id}', 'view')->middleware('can:admin_mall_cover_view');
+        Route::post('/add/{id}', 'create')->middleware('can:admin_mall_cover_add');
+        Route::delete('/delete/{id}', 'delete')->middleware('can:admin_mall_cover_delete');
     });
     
     Route::controller(ServiceProviderController::class)->prefix('service_provider')
     ->group(function() {
-        Route::get('/', 'view');
-        Route::put('/status/{id}', 'status');
-        Route::post('/add', 'create');
-        Route::post('/update/{id}', 'modify');
-        Route::delete('/delete/{id}', 'delete');
+        Route::get('/', 'view')->middleware('can:admin_provider_maintenance_view');
+        Route::put('/status/{id}', 'status')->middleware('can:admin_provider_maintenance_status');
+        Route::post('/add', 'create')->middleware('can:admin_provider_maintenance_add');
+        Route::post('/update/{id}', 'modify')->middleware('can:admin_provider_maintenance_edit');
+        Route::delete('/delete/{id}', 'delete')->middleware('can:admin_provider_maintenance_delete');
     });
     
     Route::controller(MaintenanceProviderAdminController::class)->prefix('maintenance_provider_admin')
     ->group(function() {
-        Route::get('/{id}', 'view');
-        Route::get('/item/{id}', 'admin');
-        Route::put('/status/{id}', 'status');
-        Route::post('/add', 'create');
-        Route::post('/update/{id}', 'modify');
-        Route::delete('/delete/{id}', 'delete');
+        Route::get('/{id}', 'view')->middleware('can:admin_provider_maintenance_admin_view');
+        Route::get('/item/{id}', 'admin')->middleware('can:admin_provider_maintenance_admin_view');
+        Route::put('/status/{id}', 'status')->middleware('can:admin_provider_maintenance_admin_status');
+        Route::post('/add', 'create')->middleware('can:admin_provider_maintenance_admin_add');
+        Route::post('/update/{id}', 'modify')->middleware('can:admin_provider_maintenance_admin_edit');
+        Route::delete('/delete/{id}', 'delete')->middleware('can:admin_provider_maintenance_admin_delete');
     });
     
     Route::controller(MaintenanceProviderCoverController::class)->prefix('maintenance_provider_cover')
     ->group(function() {
-        Route::get('/{id}', 'view'); 
-        Route::post('/add/{id}', 'create');
-        Route::delete('/delete/{id}', 'delete');
+        Route::get('/{id}', 'view')->middleware('can:admin_provider_maintenance_cover_view');
+        Route::post('/add/{id}', 'create')->middleware('can:admin_provider_maintenance_cover_add');
+        Route::delete('/delete/{id}', 'delete')->middleware('can:admin_provider_maintenance_cover_delete');
     });
     
     Route::controller(MaintenanceProviderGalleryController::class)->prefix('maintenance_provider_gallary')
     ->group(function() {
-        Route::get('/{id}', 'view');
-        Route::put('/status/{id}', 'status');
-        Route::post('/add/{id}', 'create');
-        Route::delete('/delete/{id}', 'delete');
+        Route::get('/{id}', 'view')->middleware('can:admin_provider_maintenance_gallery_view');
+        Route::put('/status/{id}', 'status')->middleware('can:admin_provider_maintenance_gallery_status');
+        Route::post('/add/{id}', 'create')->middleware('can:admin_provider_maintenance_gallery_add');
+        Route::delete('/delete/{id}', 'delete')->middleware('can:admin_provider_maintenance_gallery_delete');
     });
     
     Route::controller(MaintenanceProviderRolesController::class)->prefix('maintenance_provider_roles')
     ->group(function() {
-        Route::get('/', 'view');
-        Route::get('/item/{id}', 'position');
-        Route::put('/status/{id}', 'status');
-        Route::post('/add', 'create');
-        Route::post('/update/{id}', 'modify');
-        Route::delete('/delete/{id}', 'delete');
+        Route::get('/', 'view')->middleware('can:admin_provider_maintenance_admin_role_view');
+        Route::get('/item/{id}', 'position')->middleware('can:admin_provider_maintenance_admin_role_view');
+        Route::put('/status/{id}', 'status')->middleware('can:admin_provider_maintenance_admin_role_status');
+        Route::post('/add', 'create')->middleware('can:admin_provider_maintenance_admin_role_add');
+        Route::post('/update/{id}', 'modify')->middleware('can:admin_provider_maintenance_admin_role_edit');
+        Route::delete('/delete/{id}', 'delete')->middleware('can:admin_provider_maintenance_admin_role_delete');
     });
 
     Route::controller(MaintenanceTypeController::class)->prefix('maintenance_type')
     ->group(function() {
-        Route::get('/', 'view'); 
-        Route::put('/status/{id}', 'status');
-        Route::post('/add', 'create');
-        Route::post('/update/{id}', 'modify');
-        Route::delete('/delete/{id}', 'delete');
+        Route::get('/', 'view')->middleware('can:admin_maintenance_type_view'); 
+        Route::put('/status/{id}', 'status')->middleware('can:admin_maintenance_type_status');
+        Route::post('/add', 'create')->middleware('can:admin_maintenance_type_add');
+        Route::post('/update/{id}', 'modify')->middleware('can:admin_maintenance_type_edit');
+        Route::delete('/delete/{id}', 'delete')->middleware('can:admin_maintenance_type_delete');
     });
     
     Route::controller(ProviderCoverController::class)->prefix('provider_cover')
     ->group(function() {
-        Route::get('/{id}', 'view'); 
-        Route::post('/add/{id}', 'create');
-        Route::delete('/delete/{id}', 'delete');
+        Route::get('/{id}', 'view')->middleware('can:admin_provider_cover_view');
+        Route::post('/add/{id}', 'create')->middleware('can:admin_provider_cover_add');
+        Route::delete('/delete/{id}', 'delete')->middleware('can:admin_provider_cover_delete');
     });
     
     Route::controller(VillageCoverController::class)->prefix('village_cover')
     ->group(function() {
-        Route::get('/{id}', 'view'); 
-        Route::post('/add/{id}', 'create');
-        Route::delete('/delete/{id}', 'delete');
+        Route::get('/{id}', 'view')->middleware('can:admin_village_cover_view');
+        Route::post('/add/{id}', 'create')->middleware('can:admin_village_cover_add');
+        Route::delete('/delete/{id}', 'delete')->middleware('can:admin_village_cover_delete');
     });
     
     Route::controller(AdminRoleController::class)->prefix('admin_role')
     ->group(function() {
-        Route::get('/', 'view'); 
-        Route::put('/status/{id}', 'status');
-        Route::post('/add', 'create');
-        Route::post('/update/{id}', 'modify');
-        Route::delete('/delete/{id}', 'delete');
+        Route::get('/', 'view')->middleware('can:admin_admin_role_view');
+        Route::put('/status/{id}', 'status')->middleware('can:admin_admin_role_status');
+        Route::post('/add', 'create')->middleware('can:admin_admin_role_add');
+        Route::post('/update/{id}', 'modify')->middleware('can:admin_admin_role_edit');
+        Route::delete('/delete/{id}', 'delete')->middleware('can:admin_admin_role_delete');
     });
     
     Route::controller(AdminController::class)->prefix('admins')
     ->group(function() {
-        Route::get('/', 'view'); 
-        Route::put('/status/{id}', 'status');
-        Route::post('/add', 'create');
-        Route::post('/update/{id}', 'modify');
-        Route::delete('/delete/{id}', 'delete');
+        Route::get('/', 'view')->middleware('can:admin_Admin_view');
+        Route::put('/status/{id}', 'status')->middleware('can:admin_Admin_status');
+        Route::post('/add', 'create')->middleware('can:admin_Admin_add');
+        Route::post('/update/{id}', 'modify')->middleware('can:admin_Admin_edit');
+        Route::delete('/delete/{id}', 'delete')->middleware('can:admin_Admin_delete');
     });
     
     Route::controller(VillageController::class)->prefix('village')

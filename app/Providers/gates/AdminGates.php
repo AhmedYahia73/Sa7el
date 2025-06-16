@@ -180,25 +180,13 @@ class AdminGates
                 return true;
             }
             return false;
-        });
-        Gate::define('admin_village_cover_status', function ($user) {
-            if (!$user->position && !empty($user->position->sup_roles->where('module', 'Village Cover')->whereIn('action', ['all', 'status'])->first())) {
-                return true;
-            }
-            return false;
-        });
+        }); 
         Gate::define('admin_village_cover_add', function ($user) {
             if (!$user->position && !empty($user->position->sup_roles->where('module', 'Village Cover')->whereIn('action', ['all', 'add'])->first())) {
                 return true;
             }
             return false;
-        });
-        Gate::define('admin_village_cover_edit', function ($user) {
-            if (!$user->position && !empty($user->position->sup_roles->where('module', 'Village Cover')->whereIn('action', ['all', 'edit'])->first())) {
-                return true;
-            }
-            return false;
-        });
+        }); 
         Gate::define('admin_village_cover_delete', function ($user) {
             if (!$user->position && !empty($user->position->sup_roles->where('module', 'Village Cover')->whereIn('action', ['all', 'delete'])->first())) {
                 return true;
@@ -453,21 +441,9 @@ class AdminGates
                 return true;
             }
             return false;
-        });
-        Gate::define('admin_provider_cover_status', function ($user) {
-            if (!$user->position && !empty($user->position->sup_roles->where('module', 'Provider Cover')->whereIn('action', ['all', 'status'])->first())) {
-                return true;
-            }
-            return false;
-        });
+        }); 
         Gate::define('admin_provider_cover_add', function ($user) {
             if (!$user->position && !empty($user->position->sup_roles->where('module', 'Provider Cover')->whereIn('action', ['all', 'add'])->first())) {
-                return true;
-            }
-            return false;
-        });
-        Gate::define('admin_provider_cover_edit', function ($user) {
-            if (!$user->position && !empty($user->position->sup_roles->where('module', 'Provider Cover')->whereIn('action', ['all', 'edit'])->first())) {
                 return true;
             }
             return false;
@@ -758,13 +734,7 @@ class AdminGates
                 return true;
             }
             return false;
-        });
-        Gate::define('admin_provider_maintenance_gallery_edit', function ($user) {
-            if (!$user->position && !empty($user->position->sup_roles->where('module', 'Provider Maintenance Gallery')->whereIn('action', ['all', 'edit'])->first())) {
-                return true;
-            }
-            return false;
-        });
+        }); 
         Gate::define('admin_provider_maintenance_gallery_delete', function ($user) {
             if (!$user->position && !empty($user->position->sup_roles->where('module', 'Provider Maintenance Gallery')->whereIn('action', ['all', 'delete'])->first())) {
                 return true;
@@ -839,58 +809,15 @@ class AdminGates
                 return true;
             }
             return false;
-        });
-        Gate::define('admin_provider_maintenance_cover_status', function ($user) {
-            if (!$user->position && !empty($user->position->sup_roles->where('module', 'Provider Maintenance Cover')->whereIn('action', ['all', 'status'])->first())) {
-                return true;
-            }
-            return false;
-        });
+        }); 
         Gate::define('admin_provider_maintenance_cover_add', function ($user) {
             if (!$user->position && !empty($user->position->sup_roles->where('module', 'Provider Maintenance Cover')->whereIn('action', ['all', 'add'])->first())) {
                 return true;
             }
             return false;
-        });
-        Gate::define('admin_provider_maintenance_cover_edit', function ($user) {
-            if (!$user->position && !empty($user->position->sup_roles->where('module', 'Provider Maintenance Cover')->whereIn('action', ['all', 'edit'])->first())) {
-                return true;
-            }
-            return false;
-        });
+        }); 
         Gate::define('admin_provider_maintenance_cover_delete', function ($user) {
             if (!$user->position && !empty($user->position->sup_roles->where('module', 'Provider Maintenance Cover')->whereIn('action', ['all', 'delete'])->first())) {
-                return true;
-            }
-            return false;
-        });
-        // ____________________ provider_maintenance_profile ___________________________________________________
-        Gate::define('admin_provider_maintenance_profile_view', function ($user) {
-            if (!$user->position && !empty($user->position->sup_roles->where('module', 'Provider Maintenance Profile')->whereIn('action', ['all', 'view'])->first())) {
-                return true;
-            }
-            return false;
-        });
-        Gate::define('admin_provider_maintenance_profile_status', function ($user) {
-            if (!$user->position && !empty($user->position->sup_roles->where('module', 'Provider Maintenance Profile')->whereIn('action', ['all', 'status'])->first())) {
-                return true;
-            }
-            return false;
-        });
-        Gate::define('admin_provider_maintenance_profile_add', function ($user) {
-            if (!$user->position && !empty($user->position->sup_roles->where('module', 'Provider Maintenance Profile')->whereIn('action', ['all', 'add'])->first())) {
-                return true;
-            }
-            return false;
-        });
-        Gate::define('admin_provider_maintenance_profile_edit', function ($user) {
-            if (!$user->position && !empty($user->position->sup_roles->where('module', 'Provider Maintenance Profile')->whereIn('action', ['all', 'edit'])->first())) {
-                return true;
-            }
-            return false;
-        });
-        Gate::define('admin_provider_maintenance_profile_delete', function ($user) {
-            if (!$user->position && !empty($user->position->sup_roles->where('module', 'Provider Maintenance Profile')->whereIn('action', ['all', 'delete'])->first())) {
                 return true;
             }
             return false;
@@ -898,6 +825,12 @@ class AdminGates
         // ____________________ Mall ___________________________________________________
         Gate::define('admin_Mall_view', function ($user) {
             if (!$user->position && !empty($user->position->sup_roles->where('module', 'Mall')->whereIn('action', ['all', 'view'])->first())) {
+                return true;
+            }
+            return false;
+        });
+        Gate::define('admin_Mall_update_profile', function ($user) {
+            if (!$user->position && !empty($user->position->sup_roles->where('module', 'Mall')->whereIn('action', ['all', 'update_profile'])->first())) {
                 return true;
             }
             return false;
@@ -944,13 +877,7 @@ class AdminGates
                 return true;
             }
             return false;
-        });
-        Gate::define('admin_mall_gallery_edit', function ($user) {
-            if (!$user->position && !empty($user->position->sup_roles->where('module', 'Mall Gallery')->whereIn('action', ['all', 'edit'])->first())) {
-                return true;
-            }
-            return false;
-        });
+        }); 
         Gate::define('admin_mall_gallery_delete', function ($user) {
             if (!$user->position && !empty($user->position->sup_roles->where('module', 'Mall Gallery')->whereIn('action', ['all', 'delete'])->first())) {
                 return true;
@@ -1025,25 +952,13 @@ class AdminGates
                 return true;
             }
             return false;
-        });
-        Gate::define('admin_mall_cover_status', function ($user) {
-            if (!$user->position && !empty($user->position->sup_roles->where('module', 'Mall Cover')->whereIn('action', ['all', 'status'])->first())) {
-                return true;
-            }
-            return false;
-        });
+        }); 
         Gate::define('admin_mall_cover_add', function ($user) {
             if (!$user->position && !empty($user->position->sup_roles->where('module', 'Mall Cover')->whereIn('action', ['all', 'add'])->first())) {
                 return true;
             }
             return false;
-        });
-        Gate::define('admin_mall_cover_edit', function ($user) {
-            if (!$user->position && !empty($user->position->sup_roles->where('module', 'Mall Cover')->whereIn('action', ['all', 'edit'])->first())) {
-                return true;
-            }
-            return false;
-        });
+        }); 
         Gate::define('admin_mall_cover_delete', function ($user) {
             if (!$user->position && !empty($user->position->sup_roles->where('module', 'Mall Cover')->whereIn('action', ['all', 'delete'])->first())) {
                 return true;

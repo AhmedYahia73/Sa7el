@@ -51,7 +51,7 @@ class AdminRoleController extends Controller
             'Provider Maintenance Admin' => ['all', 'view', 'status', 'add', 'edit', 'delete'],
             'Provider Maintenance Admin Role' => ['all', 'view', 'status', 'add', 'edit', 'delete'],
             'Provider Maintenance Cover' => ['all', 'view', 'status', 'add', 'delete'],
-            'Mall' => ['all', 'view', 'status', 'add', 'edit', 'delete'],
+            'Mall' => ['all', 'view', 'status', 'add', 'edit', 'delete', 'update_profile'],
             'Mall Gallery' => ['all', 'view', 'status', 'add', 'delete'],
             'Mall Admin' => ['all', 'view', 'status', 'add', 'edit', 'delete'],
             'Mall Admin Role' => ['all', 'view', 'status', 'add', 'edit', 'delete'],
