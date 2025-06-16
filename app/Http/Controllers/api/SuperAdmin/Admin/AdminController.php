@@ -69,6 +69,10 @@ class AdminController extends Controller
         }
         $adminRequest = $validator->validated();
         $adminRequest['role'] = 'admin';
+        if (!is_string($request->image)) {
+            $image_path = $this->upload($request, 'image', 'images/admin');
+            $adminRequest['image'] = $image_path;
+        }
         $admin = $this->admin
         ->create($adminRequest);
         
@@ -98,6 +102,10 @@ class AdminController extends Controller
         $admin = $this->admin
         ->where('id', $id)
         ->first();
+        if (!is_string($request->image)) {
+            $image_path = $this->update_image($request, $payment_method->image, 'image', 'images/admin');
+            $paymentMethodRequest['image'] = $image_path;
+        }
         $admin->update($adminRequest);
 
         return response()->json([
