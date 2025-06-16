@@ -73,6 +73,27 @@ trait TraitImage
         return Null;
     }
 
+    public function upload_file(Request $request,$fileName = 'image',$directory){        
+        if($request->has($fileName)){// if Request has a Image
+            $uploadImage = new request();
+            $imagePath = $request->file($fileName)->store($directory,'public'); // Take Image from Request And Save inStorage;
+            return $imagePath;
+        }
+        return Null;
+    }
+    
+    public function update_file(Request $request, $old_image_path,$fileName = 'image',$directory){
+        if($request->has($fileName)){// if Request has a Image
+            $uploadImage = new request();
+            $imagePath = $request->file($fileName)->store($directory,'public'); // Take Image from Request And Save inStorage;
+            if ($old_image_path && Storage::disk('public')->exists($old_image_path)) {
+                Storage::disk('public')->delete($old_image_path);
+            }
+            return $imagePath;
+        }
+        return Null;
+    }
+
     // This to upload file
     public function uploadFile($file, $directory, $file_num = 1) {
         if ($file) {
