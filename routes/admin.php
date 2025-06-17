@@ -34,6 +34,7 @@ use App\Http\Controllers\api\SuperAdmin\ServiceProvider\MaintenanceProviderAdmin
 use App\Http\Controllers\api\SuperAdmin\ServiceProvider\MaintenanceProviderCoverController;
 use App\Http\Controllers\api\SuperAdmin\ServiceProvider\MaintenanceProviderGalleryController;
 use App\Http\Controllers\api\SuperAdmin\ServiceProvider\MaintenanceProviderRolesController;
+use App\Http\Controllers\api\User\Profile\ProfileController;
 
 Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     Route::controller(HomeController::class)->prefix('home')
@@ -314,5 +315,11 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     ->group(function() {
         Route::get('village/{id}', 'invoice_village')->middleware('can:admin_Invoice_view');
         Route::get('provider/{id}', 'invoice_provider')->middleware('can:admin_Invoice_view');
+    });
+
+    Route::controller(ProfileController::class)->prefix('profile')
+    ->group(function() {
+        Route::get('/', 'profile');
+        Route::post('/update_profile', 'update_profile');
     });
 });
