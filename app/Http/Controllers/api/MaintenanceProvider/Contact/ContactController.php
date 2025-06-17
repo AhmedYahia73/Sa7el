@@ -14,7 +14,7 @@ class ContactController extends Controller
 
     public function view(Request $request){
         $contact = $this->contact
-        ->where('maintenance_provider_id', $request->user()->maintenance_provider_id)
+        ->where('m_provider_id', $request->user()->maintenance_provider_id)
         ->orderByDesc('id')
         ->first();
 
@@ -41,11 +41,11 @@ class ContactController extends Controller
         }
         
         $contact = $this->contact
-        ->where('maintenance_provider_id', $request->user()->maintenance_provider_id)
+        ->where('m_provider_id', $request->user()->maintenance_provider_id)
         ->orderByDesc('id')
         ->first();
         $adminRequest = $validator->validated();
-        $adminRequest['provider_id'] = $request->user()->maintenance_provider_id;
+        $adminRequest['m_provider_id'] = $request->user()->maintenance_provider_id;
         if (empty($contact)) {
             $this->contact
             ->create($adminRequest);

@@ -15,6 +15,6 @@ class MProviderContact extends Model
         'phone',
         'website',
         'instagram',
-        'maintenance_provider_id',
+        'm_provider_id',
     ];
 }
