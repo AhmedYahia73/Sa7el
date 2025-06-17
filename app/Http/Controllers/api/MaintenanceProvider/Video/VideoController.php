@@ -16,7 +16,7 @@ class VideoController extends Controller
 
     public function view(Request $request){
         $provider_video = $this->provider_video
-        ->where('maintenance_provider_id', $request->user()->maintenance_provider_id)
+        ->where('m_provider_id', $request->user()->maintenance_provider_id)
         ->get(); 
 
         return response()->json([
@@ -61,7 +61,7 @@ class VideoController extends Controller
             'description' => $request->description ?? null,
             'video' => $video_path,
             'status' => $request->status,
-            'maintenance_provider_id' => $request->user()->maintenance_provider_id,
+            'm_provider_id' => $request->user()->maintenance_provider_id,
         ]);
 
         return response()->json([
@@ -82,7 +82,7 @@ class VideoController extends Controller
 
         $provider_video = $this->provider_video
         ->where('id', $id)
-        ->where('maintenance_provider_id', $request->user()->maintenance_provider_id)
+        ->where('m_provider_id', $request->user()->maintenance_provider_id)
         ->first();
         if (empty($provider_video)) {
             return response()->json([

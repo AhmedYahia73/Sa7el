@@ -10,7 +10,7 @@ class MProviderVideos extends Model
         'description',
         'video',
         'status',
-        'maintenance_provider_id',
+        'm_provider_id',
     ];
     protected $appends = ['video_link'];
 
