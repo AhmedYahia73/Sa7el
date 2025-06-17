@@ -21,7 +21,7 @@ class VillageController extends Controller
     public function view(){
         $village = $this->village
         ->with(['translations', 'zone'])
-        ->withCount('population', 'units')
+        ->withCount('population', 'units', 'providers', 'maintenance_providers')
         ->get();
         $zones = $this->zones
         ->get();

@@ -59,6 +59,14 @@ class Village extends Model
         ->where('role', 'user');
     }
 
+    public function providers(){
+        return $this->hasMany(Provider::class, 'village_id');
+    }
+
+    public function maintenance_providers(){
+        return $this->hasMany(Provider::class, 'village_id');
+    } 
+
     public function admin(){
         return $this->hasMany(User::class, 'village_id')
         ->where('role', 'village');
