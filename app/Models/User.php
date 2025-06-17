@@ -69,6 +69,10 @@ class User extends Authenticatable
         return $this->belongsTo(Provider::class, 'provider_id');
     }
 
+    public function maintenance_provider(){
+        return $this->belongsTo(ServiceProvider::class, 'maintenance_provider_id');
+    }
+
     public function position(){
         return $this->belongsTo(AdminPosition::class, 'admin_position_id');
     }

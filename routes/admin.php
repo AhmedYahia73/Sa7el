@@ -238,13 +238,13 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     
     Route::controller(ProviderController::class)->prefix('provider')
     ->group(function() {
-        Route::get('/', 'view')->middleware('can:Admin_Provider_View');
-        Route::get('/item/{id}', 'provider')->middleware('can:Admin_Provider_View');
-        Route::put('/status/{id}', 'status')->middleware('can:Admin_Provider_Status');
-        Route::post('/update_profile_image/{id}', 'update_profile_image')->middleware('can:Admin_Provider_Update');
-        Route::post('/add', 'create')->middleware('can:Admin_Provider_Add');
-        Route::post('/update/{id}', 'modify')->middleware('can:Admin_Provider_Update');
-        Route::delete('/delete/{id}', 'delete')->middleware('can:Admin_Provider_Delete');
+        Route::get('/', 'view')->middleware('can:admin_provider_view');
+        Route::get('/item/{id}', 'provider')->middleware('can:admin_provider_view');
+        Route::put('/status/{id}', 'status')->middleware('can:admin_provider_status');
+        Route::post('/update_profile_image/{id}', 'update_profile_image')->middleware('can:admin_provider_profile');
+        Route::post('/add', 'create')->middleware('can:admin_provider_add');
+        Route::post('/update/{id}', 'modify')->middleware('can:admin_provider_edit');
+        Route::delete('/delete/{id}', 'delete')->middleware('can:admin_provider_delete');
     });
     
     Route::controller(ProviderGalleryController::class)->prefix('provider_gallary')

@@ -348,6 +348,13 @@ class AdminGates
             }
             return false;
         });
+
+        Gate::define('admin_provider_profile', function ($user) {
+            if ($user->position && !empty($user->position->sup_roles->where('module', 'Provider')->whereIn('action', ['all', 'update_profile'])->first())) {
+                return true;
+            }
+            return false;
+        });
         // ____________________ provider_gallery ___________________________________________________
         Gate::define('admin_provider_gallery_view', function ($user) {
             if ($user->position && !empty($user->position->sup_roles->where('module', 'Provider Gallery')->whereIn('action', ['all', 'view'])->first())) {

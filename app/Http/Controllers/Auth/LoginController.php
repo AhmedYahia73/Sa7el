@@ -283,6 +283,67 @@ class LoginController extends Controller
                 return response()->json(['errors'=>'creational not Valid'],403);
             }
         }
+        elseif($user->role == 'maintenance_provider') {
+            $user->maintenance_provider->village;
+            PersonalAccessToken::
+            whereDate('created_at', '<', date('Y-m-d'))
+            ->where('name', 'maintenance_provider')
+            ->delete(); 
+            $personal = PersonalAccessToken::
+            where('tokenable_id', $user->id)
+            ->where('name', 'maintenance_provider')
+            ->first();
+            if (!empty($personal)) {
+                return response()->json([
+                    'errors' => 'You log from another device'
+                ], 400);
+            }
+
+            if ($user->status == 0) {
+                return response()->json([
+                    'errors' => 'user is banned'
+                ], 400);
+            }
+            if (password_verify($request->input('password'), $user->password) && $user->role == 'maintenance_provider') {
+                $user->token = $user->createToken('maintenance_provider')->plainTextToken;
+                if ((!empty($user?->maintenance_provider?->from) && ($user->maintenance_provider->to < date('Y-m-d')
+                || $user->maintenance_provider->from > date('Y-m-d'))) || empty($user?->maintenance_provider?->from)) {
+                    $packages = $this->package
+                    ->where('type', 'maintenance_provider')
+                    ->get()
+                    ->map(function($item) use($user){
+                        return [
+                            'id' => $item->id,
+                            'name' => $item->name,
+                            'description' => $item->description,
+                            'price' => $item->price,
+                            'feez' => $item->feez,
+                            'discount' => $item->discount,
+                            'beach_pool_module' => $item->beach_pool_module,
+                            'maintenance_module' => $item->maintenance_module,
+                            'security_num' => $item->security_num,
+                            'admin_num' => $item->admin_num,
+                            'admin_num' => $item->admin_num,
+                            'my_package' => $user?->maintenance_provider?->package_id == $item->id ? 1 : 0,
+                        ];
+                    });
+                    return response()->json([
+                        'packages' => $packages,
+                        'maintenance_provider' => $user,
+                        'token' => $user->token,
+                        'role' => $user->role,
+                    ]);
+                }
+                return response()->json([
+                    'maintenance_provider' => $user,
+                    'token' => $user->token,
+                    'role' => $user->role,
+                ], 200);
+            }
+            else { 
+                return response()->json(['errors'=>'creational not Valid'],403);
+            }
+        }
 
         return response()->json([
             'errors' => 'You do not provider or village',
