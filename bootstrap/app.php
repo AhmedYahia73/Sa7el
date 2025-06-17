@@ -40,6 +40,10 @@ return Application::configure(basePath: dirname(__DIR__))
             ->prefix('security')
             ->name('security.')
             ->group(base_path('routes/security.php'));
+            Route::middleware('api')
+            ->prefix('maintenance_provider')
+            ->name('maintenance_provider.')
+            ->group(base_path('routes/maintenance_provider.php'));
         }
     )
     ->withMiddleware(function (Middleware $middleware) {
@@ -49,6 +53,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'IsVillage' => VillageMiddleware::class,
             'IsSecurity' => SecurityMiddleware::class,
             'IsProvider' => ProviderMiddleware::class,
+            'IsMaintenanceProvider' => MaintenanceProviderMiddleware::class,
         ]);
         $middleware->redirectGuestsTo(function (Request $request) {
            if (!$request->is('api/*')) {

@@ -3,15 +3,15 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\api\ServiceProvider\Contact\ContactController;
-use App\Http\Controllers\api\ServiceProvider\Menue\MenueController;
-use App\Http\Controllers\api\ServiceProvider\Gallery\GalleryController;
-use App\Http\Controllers\api\ServiceProvider\Video\VideoController;
-use App\Http\Controllers\api\ServiceProvider\Invoice\InvoicesController;
-use App\Http\Controllers\api\ServiceProvider\Offer\OfferController;
+use App\Http\Controllers\api\MaintenanceProvider\Contact\ContactController;
+use App\Http\Controllers\api\MaintenanceProvider\Menue\MenueController;
+use App\Http\Controllers\api\MaintenanceProvider\Gallery\GalleryController;
+use App\Http\Controllers\api\MaintenanceProvider\Video\VideoController;
+use App\Http\Controllers\api\MaintenanceProvider\Invoice\InvoicesController;
+use App\Http\Controllers\api\MaintenanceProvider\Offer\OfferController;
 use App\Http\Controllers\api\User\Profile\ProfileController;
 
-Route::middleware(['auth:sanctum', 'IsProvider'])->group(function(){
+Route::middleware(['auth:sanctum', 'IsMaintenanceProvider'])->group(function(){
     Route::controller(ContactController::class)->prefix('contact')
     ->group(function() {
         Route::get('/', 'view'); 
