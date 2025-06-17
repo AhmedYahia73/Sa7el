@@ -319,10 +319,6 @@ class LoginController extends Controller
                             'price' => $item->price,
                             'feez' => $item->feez,
                             'discount' => $item->discount,
-                            'beach_pool_module' => $item->beach_pool_module,
-                            'maintenance_module' => $item->maintenance_module,
-                            'security_num' => $item->security_num,
-                            'admin_num' => $item->admin_num,
                             'admin_num' => $item->admin_num,
                             'my_package' => $user?->maintenance_provider?->package_id == $item->id ? 1 : 0,
                         ];

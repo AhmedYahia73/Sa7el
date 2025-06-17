@@ -7,6 +7,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 
+use App\Http\Middleware\MaintenanceProviderMiddleware;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\VillageMiddleware;
 use App\Http\Middleware\SecurityMiddleware;
