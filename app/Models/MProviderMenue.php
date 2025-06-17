@@ -9,7 +9,7 @@ class MProviderMenue extends Model
     protected $fillable = [
         'image',
         'status',
-        'maintenance_provider_id',
+        'm_provider_id',
     ];
     protected $appends = ['image_link'];
 

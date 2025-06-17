@@ -61,7 +61,7 @@ class GalleryController extends Controller
             ],400);
         }
 
-        $image_path = $this->upload($request, 'image', 'provider/images/provider_gallary');
+        $image_path = $this->upload($request, 'image', 'provider/images/maintenance_provider_gallary');
         $this->provider_gallary
         ->create([
             'image' => $image_path,

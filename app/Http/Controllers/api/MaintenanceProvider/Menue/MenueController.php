@@ -18,7 +18,7 @@ class MenueController extends Controller
 
     public function view(Request $request){
         $provider_menue = $this->provider_menue
-        ->where('maintenance_provider_id', $request->user()->maintenance_provider_id)
+        ->where('m_provider_id', $request->user()->maintenance_provider_id)
         ->get();
         $provider = $this->provider
         ->where('id', $request->user()->maintenance_provider_id)
@@ -66,7 +66,7 @@ class MenueController extends Controller
         ->create([
             'image' => $image_path,
             'status' => $request->status,
-            'maintenance_provider_id' => $request->user()->maintenance_provider_id,
+            'm_provider_id' => $request->user()->maintenance_provider_id,
         ]);
 
         return response()->json([
