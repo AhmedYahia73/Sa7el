@@ -18,6 +18,10 @@ class MaintenanceType extends Model
         'maintenance_types_id', 'village_id')->withPivot('status');
     }
 
+    public function maintenance_provider(){
+        return $this->hasMany(ServiceProvider::class, 'maintenance_type_id');
+    }
+
     public function getImageLinkAttribute(){
         return url('storage/' . $this->image);
     }

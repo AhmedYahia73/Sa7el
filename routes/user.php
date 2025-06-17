@@ -16,12 +16,18 @@ use App\Http\Controllers\api\User\MaintenanceFeez\MaintenanceFeezController;
 use App\Http\Controllers\api\User\Visitors\MyVisitorsController;
 use App\Http\Controllers\api\User\Entrance\EntranceController;
 use App\Http\Controllers\api\User\Profile\ProfileController;
+use App\Http\Controllers\api\User\MaintenanceProvider\MaintenanceProviderController;
 
 Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     Route::controller(PropertyController::class)->prefix('property')
     ->group(function() {
         Route::get('/', 'my_property'); 
         Route::post('/add', 'add_property'); 
+    });
+
+    Route::controller(MaintenanceProviderController::class)->prefix('maintenance_provider')
+    ->group(function() {
+        Route::get('/', 'view');  
     });
 
     Route::controller(EntranceController::class)->prefix('entranance')
