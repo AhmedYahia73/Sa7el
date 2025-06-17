@@ -46,7 +46,6 @@ class ServiceController extends Controller
                     $item->name : $item->ar_name?? $item->name,
                     'image' => $item->image_link,
                     'location' => $item->location,
-                    'phone' => $item->phone,
                     'from' => $item->open_from,
                     'to' => $item->open_to,
                     'status' => $item->status,

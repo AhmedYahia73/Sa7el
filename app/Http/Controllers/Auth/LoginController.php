@@ -85,6 +85,7 @@ class LoginController extends Controller
             $user->token = $user->createToken('admin')->plainTextToken;
             return response()->json([
                 'admin' => $user,
+                'roles' => $user->position->sup_roles,
                 'token' => $user->token,
             ], 200);
         }
