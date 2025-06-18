@@ -25,7 +25,7 @@ class WorkHoursController extends Controller
 
     public function update(Request $request){
         $validator = Validator::make($request->all(), [
-            'open_from' => "required|regex:/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/",
+            "open_from" => "required|regex:/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/",
             "open_to" => "required|regex:/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/",
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
