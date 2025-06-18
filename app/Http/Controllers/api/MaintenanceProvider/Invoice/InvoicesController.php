@@ -20,7 +20,7 @@ class InvoicesController extends Controller
         $package = null; 
         $provider = $this->provider
         ->where('id', $request->user()->maintenance_provider_id)
-        ->with(['zone:id,name'])
+        ->with(['village:id,name', 'maintenance:id,name'])
         ->first();
         $date = Carbon::now()->addMonth();
         
@@ -30,7 +30,7 @@ class InvoicesController extends Controller
             ->first();
         }
         $new_invoices = $this->payment
-        ->where('provider_id', $request->user()->maintenance_provider_id)
+        ->where('maintenance_provider_id', $request->user()->maintenance_provider_id)
         ->where('status', 'approved')
         ->get()
         ->map(function($item){
@@ -55,7 +55,7 @@ class InvoicesController extends Controller
         }
 
         return response()->json([ 
-            'provider' => $provider,
+            'maintenance_provider' => $provider,
             'invoices' => $new_invoices,
         ]);
     }
