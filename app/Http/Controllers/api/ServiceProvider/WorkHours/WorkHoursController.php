@@ -14,7 +14,7 @@ class WorkHoursController extends Controller
 
     public function view(Request $request){
         $provider = $this->provider
-        ->where('id', $request->user()->maintenance_provider_id)
+        ->where('id', $request->user()->provider_id)
         ->first();
 
         return response()->json([
@@ -35,7 +35,7 @@ class WorkHoursController extends Controller
         }
 
         $provider = $this->provider
-        ->where('id', $request->user()->maintenance_provider_id)
+        ->where('id', $request->user()->provider_id)
         ->update([
             'open_from' => $request->open_from,
             'open_to' => $request->open_to,
