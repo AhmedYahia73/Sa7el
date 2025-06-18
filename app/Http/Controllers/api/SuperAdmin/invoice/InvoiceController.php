@@ -109,10 +109,10 @@ class InvoiceController extends Controller
     }
 
 
-    public function invoice_maintenance_provider(Request $request){
+    public function invoice_maintenance_provider(Request $request, $id){
         $package = null; 
         $maintenance_provider = $this->maintenance_provider
-        ->where('id', $request->user()->maintenance_provider_id)
+        ->where('id', $id)
         ->with(['village:id,name', 'maintenance:id,name'])
         ->first();
         $date = Carbon::now()->addMonth();
