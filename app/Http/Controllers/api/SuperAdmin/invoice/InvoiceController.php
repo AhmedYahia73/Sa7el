@@ -108,6 +108,50 @@ class InvoiceController extends Controller
         ]);
     }
 
+
+    public function invoice_maintenance_provider(Request $request){
+        $package = null; 
+        $maintenance_provider = $this->maintenance_provider
+        ->where('id', $request->user()->maintenance_provider_id)
+        ->with(['village:id,name', 'maintenance:id,name'])
+        ->first();
+        $date = Carbon::now()->addMonth();
+        
+        if ($maintenance_provider->to <= $date) {
+            $package = $this->package
+            ->where('id', $maintenance_provider->package_id)
+            ->first();
+        }
+        $new_invoices = $this->payment
+        ->where('maintenance_provider_id', $request->user()->maintenance_provider_id)
+        ->where('status', 'approved')
+        ->get()
+        ->map(function($item){
+            return [
+                'name' => $item?->package?->name,
+                'description' => $item?->package?->description,
+                'amount' => $item->amount,
+                'discount' => $item->discount,
+                'total_before_discount' => $item->amount + $item->discount,
+                'status' => 'paid'
+            ];
+        });
+        if (!empty($package)) {
+            $new_invoices->push([
+                'name' => $package?->name,
+                'description' => $package?->description,
+                'amount' => empty($maintenance_provider->package_id) ? $package->price + $package->feez - $package->discount : $package->price - $package->discount,
+                'discount' => $package->discount,
+                'total_before_discount' => empty($maintenance_provider->package_id) ? $package->price + $package->feez + $package->discount : $package->price + $package->discount,
+                'status' => 'unpaid'
+            ]);
+        }
+
+        return response()->json([ 
+            'maintenance_provider' => $maintenance_provider,
+            'invoices' => $new_invoices,
+        ]);
+    }
     // public function invoice_village(Request $request, $id){
     //     $package = null; 
     //     $village = $this->village

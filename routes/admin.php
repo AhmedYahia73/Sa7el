@@ -315,6 +315,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     ->group(function() {
         Route::get('village/{id}', 'invoice_village')->middleware('can:admin_Invoice_view');
         Route::get('provider/{id}', 'invoice_provider')->middleware('can:admin_Invoice_view');
+        Route::get('maintenance_provider/{id}', 'invoice_maintenance_provider')->middleware('can:admin_Invoice_view');
     });
 
     Route::controller(ProfileController::class)->prefix('profile')
