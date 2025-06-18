@@ -126,7 +126,7 @@ class SubscriperController extends Controller
         } 
         elseif($request->type == 'maintenance_provider'){
             $user = $this->maintenance_provider
-            ->where('id', $request->m_provider_id)
+            ->where('id', $request->maintenance_provider_id)
             ->first();
         } 
         if ($user->from <= date('Y-m-d') && $user->to >= date('Y-m-d')) {
@@ -179,7 +179,7 @@ class SubscriperController extends Controller
         }
         elseif($request->type == 'maintenance_provider'){
             $user = $this->maintenance_provider
-            ->where('id', $request->m_provider_id)
+            ->where('id', $request->maintenance_provider_id)
             ->first();
         } 
         $old_package = $this->packages
