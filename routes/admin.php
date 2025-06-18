@@ -61,7 +61,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::post('/add', 'create')->middleware('can:admin_Mall_add');
         Route::post('/update/{id}', 'modify')->middleware('can:admin_Mall_edit');
         Route::delete('/delete/{id}', 'delete')->middleware('can:admin_Mall_delete');
-        Route::get('/providers', 'provider_mall')->middleware('can:update_profile');
+        Route::get('/providers', 'provider_mall')->middleware('can:admin_Mall_providers');
     });
 
     Route::controller(MallGallaryController::class)->prefix('mall_gallery')

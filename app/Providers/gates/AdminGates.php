@@ -836,8 +836,8 @@ class AdminGates
             }
             return false;
         });
-        Gate::define('admin_Mall_update_profile', function ($user) {
-            if ($user->position && !empty($user->position->sup_roles->where('module', 'Mall')->whereIn('action', ['all', 'update_profile'])->first())) {
+        Gate::define('admin_Mall_providers', function ($user) {
+            if ($user->position && !empty($user->position->sup_roles->where('module', 'Mall')->whereIn('action', ['all', 'mall_providers'])->first())) {
                 return true;
             }
             return false;
