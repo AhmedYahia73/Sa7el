@@ -55,7 +55,7 @@ class VideoController extends Controller
             ],400);
         }
 
-        $video_path = $this->upload_file($request, 'video', 'provider/video/provider_video');
+        $video_path = $this->upload_file($request, 'video', 'maintenance_provider/video/provider_video');
         $this->provider_video
         ->create([
             'description' => $request->description ?? null,
@@ -89,7 +89,7 @@ class VideoController extends Controller
                 'errors' => 'provider not found'
             ], 400);
         }
-        $video_path = $this->update_file($request, $provider_video->video, 'video', 'provider/video/provider_video');
+        $video_path = $this->update_file($request, $provider_video->video, 'video', 'maintenance_provider/video/provider_video');
 
         $provider_video->update([
             'description' => $request->description ?? null,

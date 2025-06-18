@@ -61,7 +61,7 @@ class MenueController extends Controller
             ],400);
         }
 
-        $image_path = $this->upload($request, 'image', 'provider/images/provider_menue');
+        $image_path = $this->upload($request, 'image', 'maintenance_provider/images/provider_menue');
         $this->provider_menue
         ->create([
             'image' => $image_path,

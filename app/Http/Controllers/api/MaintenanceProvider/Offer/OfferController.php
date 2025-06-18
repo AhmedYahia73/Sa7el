@@ -58,7 +58,7 @@ class OfferController extends Controller
         }
 
         $provider_offer = $this->provider_offer
-        ->where('maintenance_provider_id', $request->user()->maintenance_provider_id)
+        ->where('m_provider_id', $request->user()->maintenance_provider_id)
         ->get();
         if (count($provider_offer) > 2) {
             return response()->json([
@@ -66,9 +66,9 @@ class OfferController extends Controller
             ], 400);
         }
         $offerRequest = $validator->validated();
-        $offerRequest['maintenance_provider_id'] = $request->user()->maintenance_provider_id;
+        $offerRequest['m_provider_id'] = $request->user()->maintenance_provider_id;
         if (!is_string($request->image)) {
-            $image_path = $this->upload($request, 'image', 'provider/images/offer');
+            $image_path = $this->upload($request, 'image', 'maintenance_provider/images/offer');
             $offerRequest['image'] = $image_path;
         }
         $provider_offer = $this->provider_offer
@@ -104,7 +104,7 @@ class OfferController extends Controller
             ], 400);
         }
         if (!is_string($request->image)) {
-            $image_path = $this->update_image($request, $provider_offer->image, 'image', 'provider/images/offer');
+            $image_path = $this->update_image($request, $provider_offer->image, 'image', 'maintenance_provider/images/offer');
             $offerRequest['image'] = $image_path;
         }
         $provider_offer
