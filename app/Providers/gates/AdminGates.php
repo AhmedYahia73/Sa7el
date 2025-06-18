@@ -286,6 +286,12 @@ class AdminGates
             }
             return false;
         });
+        Gate::define('admin_user_single_page', function ($user) {
+            if ($user->position && !empty($user->position->sup_roles->where('module', 'User')->whereIn('action', ['all', 'single_page'])->first())) {
+                return true;
+            }
+            return false;
+        });
         // ____________________ service_type ___________________________________________________
         Gate::define('admin_service_type_view', function ($user) {
             if ($user->position && !empty($user->position->sup_roles->where('module', 'Service Type')->whereIn('action', ['all', 'view'])->first())) {
