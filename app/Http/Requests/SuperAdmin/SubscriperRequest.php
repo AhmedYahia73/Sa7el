@@ -29,6 +29,7 @@ class SubscriperRequest extends FormRequest
             'service_id' => ['required_if:type,provider', 'exists:service_types,id'],
             'provider_id' => ['required_if:type,provider', 'exists:providers,id'],
             'village_id' => ['required_if:type,village', 'exists:villages,id'],
+            'm_provider_id' => ['required_if:type,maintenance_provider', 'exists:service_providers,id'],
         ];
     }
 

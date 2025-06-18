@@ -19,6 +19,7 @@ class Payment extends Model
         'village_id',
         'provider_id',
         'receipt',
+        'maintenance_provider_id',
         'status',
     ];
     protected $appends = ['receipt_link'];

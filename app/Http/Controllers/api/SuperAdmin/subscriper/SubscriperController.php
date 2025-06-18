@@ -72,18 +72,22 @@ class SubscriperController extends Controller
         });
         $subscribers_village = $subscribers->where('type', 'village')->values();
         $subscribers_provider = $subscribers->where('type', 'provider')->values();
+        $subscribers_maintenance_provider = $subscribers->where('type', 'maintenance_provider')->values();
 
         return response()->json([
             'payment_methods' => $payment_methods,
             'villages' => $villages,
             'providers' => $providers,
+            'maintenance_provider' => $maintenance_provider,
             'services' => $services,
             'subscribers' => $subscribers,
             'subscribers_village' => $subscribers_village,
             'subscribers_provider' => $subscribers_provider,
+            'subscribers_maintenance_provider' => $subscribers_maintenance_provider,
             'provider_packages' => $provider_packages,
             'village_packages' => $village_packages,
             'maintenance_provider_packages' => $maintenance_provider_packages,
+            
         ]);
     }
 
@@ -122,7 +126,7 @@ class SubscriperController extends Controller
         } 
         elseif($request->type == 'maintenance_provider'){
             $user = $this->maintenance_provider
-            ->where('id', $request->maintenance_provider_id)
+            ->where('id', $request->m_provider_id)
             ->first();
         } 
         if ($user->from <= date('Y-m-d') && $user->to >= date('Y-m-d')) {
@@ -175,7 +179,7 @@ class SubscriperController extends Controller
         }
         elseif($request->type == 'maintenance_provider'){
             $user = $this->maintenance_provider
-            ->where('id', $request->maintenance_provider_id)
+            ->where('id', $request->m_provider_id)
             ->first();
         } 
         $old_package = $this->packages
