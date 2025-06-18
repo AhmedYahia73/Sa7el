@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\api\MaintenanceProvider\Contact\ContactController;
-use App\Http\Controllers\api\MaintenanceProvider\Menue\MenueController;
+use App\Http\Controllers\api\MaintenanceProvider\ServicePrice\ServicePriceController;
 use App\Http\Controllers\api\MaintenanceProvider\Gallery\GalleryController;
 use App\Http\Controllers\api\MaintenanceProvider\Video\VideoController;
 use App\Http\Controllers\api\MaintenanceProvider\Invoice\InvoicesController;
@@ -23,7 +23,7 @@ Route::middleware(['auth:sanctum', 'IsMaintenanceProvider'])->group(function(){
         Route::get('/', 'view');
     });
     
-    Route::controller(MenueController::class)->prefix('menue')
+    Route::controller(ServicePriceController::class)->prefix('service_price')
     ->group(function() {
         Route::get('/', 'view'); 
         Route::put('/status/{id}', 'status');

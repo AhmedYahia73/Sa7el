@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\api\MaintenanceProvider\Menue;
+namespace App\Http\Controllers\api\MaintenanceProvider\ServicePrice;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -10,7 +10,7 @@ use App\trait\TraitImage;
 use App\Models\MProviderMenue;
 use App\Models\ServiceProvider;
 
-class MenueController extends Controller
+class ServicePriceController extends Controller
 {
     public function __construct(private MProviderMenue $provider_menue,
     private ServiceProvider $provider){}
