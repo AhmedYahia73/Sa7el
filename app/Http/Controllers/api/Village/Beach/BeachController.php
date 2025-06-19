@@ -125,6 +125,27 @@ class BeachController extends Controller
         $beach->translations()->delete();
         $beach->translations()->createMany($beach_translations);
 
+        if (!empty($request->image) && !is_string($request->image)) {
+            if (!empty($request->image_id)) {
+                $beach_gallary = $this->gallary
+                ->where('id', $request->image_id)
+                ->first();
+                $image_path = $this->update_image($request, $beach_gallary->image, 'image', '/village/beach');
+                $beach_gallary
+                ->update([
+                    'image' => $image_path,
+                ]);
+            } 
+            else {
+                $image_path = $this->uploadFile($item, '/village/beach');
+                $this->gallary
+                ->create([
+                    'beach_id' => $id,
+                    'image' => $image_path,
+                ]);
+            }
+        }
+
         return response()->json([
             'success' => 'You update data success'
         ]);

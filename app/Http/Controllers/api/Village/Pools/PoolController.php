@@ -98,6 +98,15 @@ class PoolController extends Controller
     public function modify(PoolRequest $request, $id){
         // name, image, status,
         // ar_name
+        $validator = Validator::make($request->all(), [
+            'image' => '',
+            'image_id' => 'exists:pool_gallaries,id',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
         $poolRequest = $request->validated();
         $pool = $this->pool
         ->where('id', $id)
@@ -124,6 +133,25 @@ class PoolController extends Controller
         }
         $pool->translations()->delete();
         $pool->translations()->createMany($pool_translations);
+        if (!empty($request->image) && !is_string($request->image)) {
+            if (!empty($request->image_id)) {
+                $pool_gallary = $this->gallary
+                ->where('id', $request->image_id)
+                ->first();
+                $image_path = $this->update_image($request, $pool_gallary->image, 'image', '/village/pool');
+                $pool_gallary->update([
+                    'image' => $image_path,
+                ]);
+            } 
+            else {
+                $image_path = $this->uploadFile($item, '/village/pool');
+                $this->gallary
+                ->create([
+                    'pool_id' => $id,
+                    'image' => $image_path,
+                ]);
+            }
+        }
 
         return response()->json([
             'success' => 'You update data success'
