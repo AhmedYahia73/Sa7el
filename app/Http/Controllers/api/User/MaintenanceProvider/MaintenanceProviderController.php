@@ -27,16 +27,16 @@ class MaintenanceProviderController extends Controller
                 ->map(function($element) use($request){
                     return [
                         'name' => $request->local == 'en' ?
-                        $maintenance_provider->name : $maintenance_provider->ar_name?? $maintenance_provider->name,
-                        'location' => $maintenance_provider->location,
-                        'from' => $maintenance_provider->open_from,
-                        'to' => $maintenance_provider->open_to,
-                        'status' => $maintenance_provider->status,
-                        'village' => $maintenance_provider?->village?->name,
-                        'cover_image' => $maintenance_provider->cover_image_link,
+                        $element->name : $element->ar_name?? $element->name,
+                        'location' => $element->location,
+                        'from' => $element->open_from,
+                        'to' => $element->open_to,
+                        'status' => $element->status,
+                        'village' => $element?->village?->name,
+                        'cover_image' => $element->cover_image_link,
 
-                        'service_price' => optional($maintenance_provider?->service_price?->where('status', 1))->pluck('image_link') ?? collect([]),
-                        'videos' => $maintenance_provider?->videos?->where('status', 1)?->values()->map(function($element){
+                        'service_price' => optional($element?->service_price?->where('status', 1))->pluck('image_link') ?? collect([]),
+                        'videos' => $element?->videos?->where('status', 1)?->values()->map(function($element){
                             return [
                                 'id' => $element->id,
                                 'description' => $element->description,
@@ -45,16 +45,16 @@ class MaintenanceProviderController extends Controller
                                 'my_love' => $element->my_love->count() > 0 ? true : false,
                             ];
                         }),
-                        'watts_status' => $maintenance_provider?->contact?->watts_status ?? 0,
-                        'phone_status' => $maintenance_provider?->contact?->phone_status ?? 0,
-                        'website_status' => $maintenance_provider?->contact?->website_status ?? 0,
-                        'instagram_status' => $maintenance_provider?->contact?->instagram_status ?? 0,
-                        'watts' => $maintenance_provider?->contact?->watts ?? null,
-                        'phone' => $maintenance_provider?->contact?->phone ?? null,
-                        'website' => $maintenance_provider?->contact?->website ?? null,
-                        'instagram' => $maintenance_provider?->contact?->instagram ?? null,
+                        'watts_status' => $element?->contact?->watts_status ?? 0,
+                        'phone_status' => $element?->contact?->phone_status ?? 0,
+                        'website_status' => $element?->contact?->website_status ?? 0,
+                        'instagram_status' => $element?->contact?->instagram_status ?? 0,
+                        'watts' => $element?->contact?->watts ?? null,
+                        'phone' => $element?->contact?->phone ?? null,
+                        'website' => $element?->contact?->website ?? null,
+                        'instagram' => $element?->contact?->instagram ?? null,
     
-                        'gallery' => $maintenance_provider->gallery->map(function($element){
+                        'gallery' => $element->gallery->map(function($element){
                             return [
                                 'id' => $element->id,
                                 'image' => $element->image_link,
@@ -63,9 +63,9 @@ class MaintenanceProviderController extends Controller
                             ];
                         }),
                         'description' => $request->local == 'en' ?
-                        $maintenance_provider->description : $maintenance_provider->ar_description?? $maintenance_provider->description,
-                        'loves_count' => count($maintenance_provider->love_user),
-                        'my_love' => count($maintenance_provider->love_user->where('id', $request->user()->id)) > 0
+                        $element->description : $element->ar_description?? $element->description,
+                        'loves_count' => count($element->love_user),
+                        'my_love' => count($element->love_user->where('id', $request->user()->id)) > 0
                         ? true :false,
                     ];
                 })
