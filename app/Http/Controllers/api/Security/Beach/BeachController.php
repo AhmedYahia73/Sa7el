@@ -75,9 +75,9 @@ class BeachController extends Controller
          ->first();
         $old_time = null;
          if (!empty($user_beach_now)) {
-            $old_time = $user_beach_now->updated_at->format('h:i A');
             $user_beach_now->updated_at = now();
             $user_beach_now->save();
+            $old_time = $user_beach_now->updated_at->format('H:i:s');
          } else {
             $user_beach = $this->user_beach
             ->create([
