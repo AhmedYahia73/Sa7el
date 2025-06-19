@@ -98,6 +98,14 @@ class BeachController extends Controller
     public function modify(BeachRequest $request, $id){
         // name, image, status,
         // ar_name
+        $validator = Validator::make($request->all(), [
+            'image_id' => 'exists:pool_gallaries,id',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
         $beachRequest = $request->validated();
         $beach = $this->beach
         ->where('id', $id)

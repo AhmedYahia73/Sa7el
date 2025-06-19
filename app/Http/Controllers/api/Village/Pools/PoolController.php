@@ -99,7 +99,6 @@ class PoolController extends Controller
         // name, image, status,
         // ar_name
         $validator = Validator::make($request->all(), [
-            'image' => '',
             'image_id' => 'exists:pool_gallaries,id',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
