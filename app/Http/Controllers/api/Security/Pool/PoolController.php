@@ -76,7 +76,7 @@ class PoolController extends Controller
         ->first();
         $old_time = null;
          if (!empty($user_pool_now)) {
-            $old_time = $user_pool_now->created_at->format('H:i:s');
+            $old_time = $user_pool_now->updateed_at->format('H:i:s');
          }
          else{
             $user_pool = $this->user_pool
