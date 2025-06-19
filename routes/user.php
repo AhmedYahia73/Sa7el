@@ -27,7 +27,11 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
 
     Route::controller(MaintenanceProviderController::class)->prefix('maintenance_provider')
     ->group(function() {
-        Route::get('/', 'view');  
+        Route::get('/', 'view');
+        Route::put('/love/{id}', 'love');
+        Route::get('/love_history', 'love_history');
+        Route::put('/image_love/{id}', 'image_love');
+        Route::put('/video_love/{id}', 'video_love');
     });
 
     Route::controller(EntranceController::class)->prefix('entranance')

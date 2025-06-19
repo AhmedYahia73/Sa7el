@@ -7,10 +7,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\MaintenanceType;
+use App\Models\ServiceProvider;
+use App\Models\MProviderVideos;
+use App\Models\MaintenanceProviderGallery;
 
 class MaintenanceProviderController extends Controller
 {
-    public function __construct(private MaintenanceType $maintenance_type){}
+    public function __construct(private MaintenanceType $maintenance_type,
+    private ServiceProvider $maintenance_provider, 
+    private MaintenanceProviderGallery $maintenance_provider_gallery,
+    private MProviderVideos $maintenance_provider_video){}
 
     public function view(Request $request){
         $maintenance_type = $this->maintenance_type
@@ -74,6 +80,126 @@ class MaintenanceProviderController extends Controller
 
         return response()->json([
             'maintenance_type' => $maintenance_type
+        ]);
+    }
+
+    public function love(Request $request, $id){
+        $validator = Validator::make($request->all(), [
+            'love' => 'required|boolean',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }
+        
+        $love = $request->love;
+        $maintenance_provider = $this->maintenance_provider
+        ->where('id', $id)
+        ->first();
+        if ($love) {
+            $maintenance_provider->love_user()->detach($request->user()->id);
+            $maintenance_provider->love_user()->attach($request->user()->id);
+        } else {
+            $maintenance_provider->love_user()->detach($request->user()->id);
+        }
+        
+        return response()->json([
+            'success' => 'You update react success'
+        ]);
+    }
+
+    public function love_history(Request $request){
+        $validator = Validator::make($request->all(), [
+            'local' => 'required|in:en,ar',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }
+        $maintenance_providers = $this->maintenance_provider
+        ->whereHas('love_user', function($query) use($request){
+            $query->where('users.id', $request->user()->id);
+        })
+        ->get()
+        ->map(function($item) use($request){
+            return [
+                'id' => $item->id,
+                'name' => $request->local == 'en' ?
+                $item->name : $item->ar_name?? $item->name,
+                'image' => $item->image_link,
+                'location' => $item->location,
+                'phone' => $item->phone,
+                'from' => $item->open_from,
+                'to' => $item->open_to,
+                'status' => $item->status,
+                'description' => $request->local == 'en' ?
+                $item->description : $item->ar_description?? $item->description,
+                'loves_count' => count($item->love_user),
+                'my_love' => count($item->love_user->where('id', $request->user()->id)) > 0
+                ? true : false,
+            ];
+        });
+        
+        return response()->json([
+            'maintenance_providers' => $maintenance_providers
+        ]);
+    }
+
+    public function image_love(Request $request, $id){
+        $validator = Validator::make($request->all(), [
+            'love' => 'required|boolean',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }
+        
+        $love = $request->love;
+        $maintenance_provider_gallery = $this->maintenance_provider_gallery
+        ->where('id', $id)
+        ->first();
+        if ($love) {
+            $maintenance_provider_gallery->love()->detach($request->user()->id);
+            $maintenance_provider_gallery->love()->attach($request->user()->id);
+        } else {
+            $maintenance_provider_gallery->love()->detach($request->user()->id);
+        }
+        
+        return response()->json([
+            'success' => 'You update react success'
+        ]);
+    }
+
+    public function video_love(Request $request, $id){
+        $validator = Validator::make($request->all(), [
+            'love' => 'required|boolean',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }
+        
+        $love = $request->love;
+        $maintenance_provider_video = $this->maintenance_provider_video
+        ->where('id', $id)
+        ->first();
+        if ($love) {
+            $maintenance_provider_video->love()->detach($request->user()->id);
+            $maintenance_provider_video->love()->attach($request->user()->id);
+        } else {
+            $maintenance_provider_video->love()->detach($request->user()->id);
+        }
+        
+        return response()->json([
+            'success' => 'You update react success'
         ]);
     }
 }
