@@ -32,6 +32,7 @@ class MaintenanceProviderController extends Controller
                 'maintenance_provider' => $item->maintenance_provider
                 ->map(function($element) use($request){
                     return [
+                        'id' => $element->id,
                         'name' => $request->local == 'en' ?
                         $element->name : $element->ar_name?? $element->name,
                         'location' => $element->location,
