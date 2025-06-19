@@ -18,7 +18,7 @@ trait TraitImage
             $manager = new ImageManager(new GdDriver());
             $img = $manager->read($imageFile->getPathname());
 
-            $img->resize(1920, null);
+            $img = $img->scale(width: 1920);
 
             // Save to a temporary file with reduced quality
             $image_path = $directory . '/' . uniqid() . '.jpg';
@@ -48,7 +48,7 @@ trait TraitImage
             $manager = new ImageManager(new GdDriver());
             $img = $manager->read($imageFile->getPathname());
 
-            $img->resize(1920, null);
+            $img = $img->scale(width: 1920);
 
             // Save to a temporary file with reduced quality
             $image_path = $directory . '/' . uniqid() . '.jpg';
@@ -102,7 +102,7 @@ trait TraitImage
             $manager = new ImageManager(new GdDriver());
             $img = $manager->read($imageFile->getPathname());
 
-            $img->resize(1920, null);
+            $img = $img->scale(width: 1920);
             Storage::disk('public')->makeDirectory($directory);
 
             // Save to a temporary file with reduced quality
