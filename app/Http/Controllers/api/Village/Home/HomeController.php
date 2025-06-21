@@ -107,11 +107,11 @@ class HomeController extends Controller
         }
         if ($request->date_to) {
             $users_beach = $users_beach
-            ->whereDate('updated_at', '>=', $request->date_to);
+            ->whereDate('updated_at', '<=', $request->date_to);
             $users_pool = $users_pool
-            ->whereDate('updated_at', '>=', $request->date_to);
+            ->whereDate('updated_at', '<=', $request->date_to);
             $visits_village = $visits_village
-            ->whereDate('updated_at', '>=', $request->date_to);
+            ->whereDate('updated_at', '<=', $request->date_to);
         }
         $users_beach = $users_beach
         ->get();
