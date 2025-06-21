@@ -64,21 +64,17 @@ class PoolController extends Controller
         //         'errors' => 'Qr code is wrong'
         //     ], 400);
         //  }
-        //  $user_pool_now = $this->user_pool
-        //  ->where('user_id', $userid)
-        //  ->where('pool_id', $pool_id)
-        //  ->where('village_id', $request->user()->village_id)
-        //  ->whereDate('created_at', date('Y-m-d'))
-        //  ->first();
+         $user_pool_now = $this->user_pool
+         ->first();
         // $appartment->type;
         // $user = $this->user
         // ->where('id', $userid)
         // ->first();
         // $old_time = null;
         //  if (!empty($user_pool_now)) {
+            $old_time = $user_pool_now->updated_at->format('H:i:s');
             $user_pool_now->updated_at = now();
             $user_pool_now->save();
-            $old_time = $user_pool_now->updated_at->format('H:i:s');
             return $old_time;
         // }
         // else{
