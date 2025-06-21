@@ -36,6 +36,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(HomeController::class)->prefix('home')->middleware('can:Home')
     ->group(function() {
         Route::get('/', 'view');
+        Route::get('/filter', 'filter');
     });
 
     Route::controller(NotificationController::class)->prefix('notifications')
