@@ -41,65 +41,66 @@ class PoolController extends Controller
         // file_put_contents($tempImagePath, $imageData);
         // $qrcode = new QrReader($tempImagePath);
         // $text = $qrcode->text();
-        $text = $request->qr_code;
-        $arr_text = explode('-', $text);
-        $userid = 0;
-        $pool_id = 0;
-        $appartment_id = 0;
-        if ($arr_text[2] == 'pool_id') {
-            $userid = intval($arr_text[1]);
-            $pool_id = intval($arr_text[3]);
-            $appartment_id = intval($arr_text[5]);
-        } 
-        else{
-            return response()->json([
-                'errors' => 'Qr code is wrong'
-            ], 400);
-        }
-         $appartment = $this->appartment
-         ->where('id', $appartment_id) 
-         ->first();
-         if (empty($appartment) || $pool_id != $request->pool_id) {
-            return response()->json([
-                'errors' => 'Qr code is wrong'
-            ], 400);
-         }
-         $user_pool_now = $this->user_pool
-         ->where('user_id', $userid)
-         ->where('pool_id', $pool_id)
-         ->where('village_id', $request->user()->village_id)
-         ->whereDate('created_at', date('Y-m-d'))
-         ->first();
-        $appartment->type;
-        $user = $this->user
-        ->where('id', $userid)
-        ->first();
-        $old_time = null;
-         if (!empty($user_pool_now)) {
+        // $text = $request->qr_code;
+        // $arr_text = explode('-', $text);
+        // $userid = 0;
+        // $pool_id = 0;
+        // $appartment_id = 0;
+        // if ($arr_text[2] == 'pool_id') {
+        //     $userid = intval($arr_text[1]);
+        //     $pool_id = intval($arr_text[3]);
+        //     $appartment_id = intval($arr_text[5]);
+        // } 
+        // else{
+        //     return response()->json([
+        //         'errors' => 'Qr code is wrong'
+        //     ], 400);
+        // }
+        //  $appartment = $this->appartment
+        //  ->where('id', $appartment_id) 
+        //  ->first();
+        //  if (empty($appartment) || $pool_id != $request->pool_id) {
+        //     return response()->json([
+        //         'errors' => 'Qr code is wrong'
+        //     ], 400);
+        //  }
+        //  $user_pool_now = $this->user_pool
+        //  ->where('user_id', $userid)
+        //  ->where('pool_id', $pool_id)
+        //  ->where('village_id', $request->user()->village_id)
+        //  ->whereDate('created_at', date('Y-m-d'))
+        //  ->first();
+        // $appartment->type;
+        // $user = $this->user
+        // ->where('id', $userid)
+        // ->first();
+        // $old_time = null;
+        //  if (!empty($user_pool_now)) {
             $user_pool_now->updated_at = now();
             $user_pool_now->save();
             $old_time = $user_pool_now->updated_at->format('H:i:s');
-         }
-         else{
-            $user_pool = $this->user_pool
-            ->create([
-                'user_id' => $userid,
-                'pool_id' => $pool_id,
-                'village_id' => $request->user()->village_id,
-            ]);
-            EntrancePool::create([
-                'pool_id' => $pool_id,
-                'user_id' => $userid,
-                'time' => date('H:i:s'),
-                'village_id' => $request->user()->village_id,
-            ]);
-         }
+            return $old_time;
+        // }
+        // else{
+        // $user_pool = $this->user_pool
+        // ->create([
+        //     'user_id' => $userid,
+        //     'pool_id' => $pool_id,
+        //     'village_id' => $request->user()->village_id,
+        // ]);
+        //     EntrancePool::create([
+        //         'pool_id' => $pool_id,
+        //         'user_id' => $userid,
+        //         'time' => date('H:i:s'),
+        //         'village_id' => $request->user()->village_id,
+        //     ]);
+        //  }
 
-         return response()->json([
-            'success' => 'Qr code is true',
-            'appartment' => $appartment,
-            'user' => $user,
-            'time' => $old_time,
-         ]);
+        //  return response()->json([
+        //     'success' => 'Qr code is true',
+        //     'appartment' => $appartment,
+        //     'user' => $user,
+        //     'time' => $old_time,
+        //  ]);
     }
 }
