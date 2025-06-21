@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Storage;
 use App\trait\TraitImage;
+use Illuminate\Validation\Rule;
 
 use App\Models\User;
 use App\Models\Village;
@@ -158,8 +159,14 @@ class UserController extends Controller
         // name, user_type, email, phone
         // password, status, parent_user_id, gender, birthDate
         $validator = Validator::make($request->all(), [ 
-            'email' => ['unique:users'],
-            'phone' => ['unique:users'],
+            'email' => [
+            Rule::unique('users')->where(function ($query) {
+                return $query->where('role', 'user');
+            })],
+            'phone' => [
+            Rule::unique('users')->where(function ($query) {
+                return $query->where('role', 'user');
+            })],
             'password' => ['required'],
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
@@ -192,8 +199,14 @@ class UserController extends Controller
         // name, user_type, email, phone
         // password, status, parent_user_id, gender, birthDate
         $validator = Validator::make($request->all(), [
-            'email' => ['email', 'unique:users,email,' . $id],
-            'phone' => ['unique:users,phone,' . $id],
+            'email' => ['email', Rule::unique('users')->where(function ($query) {
+                return $query->where('role', 'user')
+                ->where('id', '!=', $id);
+            })],
+            'phone' => [Rule::unique('users')->where(function ($query) {
+                return $query->where('role', 'user')
+                ->where('id', '!=', $id);
+            })],
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([

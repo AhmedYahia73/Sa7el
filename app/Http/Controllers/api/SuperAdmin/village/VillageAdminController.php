@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\SuperAdmin\VillageAdminRequest;
 use Illuminate\Support\Facades\Validator;
 use App\trait\TraitImage;
+use Illuminate\Validation\Rule;
 
 use App\Models\Village;
 use App\Models\User;
@@ -74,8 +75,14 @@ class VillageAdminController extends Controller
     public function create(VillageAdminRequest $request){
         $validator = Validator::make($request->all(), [
             'village_id' => ['required', 'exists:villages,id'],
-            'email' => ['unique:users'],
-            'phone' => ['unique:users'],
+            'email' => [ 'email',
+            Rule::unique('users')->where(function ($query) {
+                return $query->whereIn('role', ['village', 'maintenance_provider', 'provider']);
+            })],
+            'phone' => [
+            Rule::unique('users')->where(function ($query) {
+                return $query->whereIn('role', ['village', 'maintenance_provider', 'provider']);
+            })],
             'password' => ['required'],
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
@@ -113,8 +120,20 @@ class VillageAdminController extends Controller
     
     public function modify(VillageAdminRequest $request, $id){
         $validator = Validator::make($request->all(), [
-            'email' => ['email', 'unique:users,email,' . $id],
-            'phone' => ['unique:users,phone,' . $id],
+            'email' => ['email' ,
+                Rule::unique('users')
+                ->ignore($id)
+                ->where(function ($query) {
+                    return $query->whereIn('role', ['provider', 'village', 'maintenance_provider']);
+                }),
+            ],
+            'phone' => [
+                Rule::unique('users')
+                ->ignore($id)
+                ->where(function ($query) {
+                    return $query->whereIn('role', ['provider', 'village', 'maintenance_provider']);
+                }),
+            ],
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([

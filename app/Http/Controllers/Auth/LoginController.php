@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\Auth\SignupRequest;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 use App\Models\User;
 use App\Models\PersonalAccessToken;

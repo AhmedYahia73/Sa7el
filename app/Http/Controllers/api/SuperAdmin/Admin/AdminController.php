@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\trait\TraitImage;
+use Illuminate\Validation\Rule;
 
 use App\Models\User;
 use App\Models\AdminPosition;
@@ -55,8 +56,14 @@ class AdminController extends Controller
     public function create(Request $request){
         $validator = Validator::make($request->all(), [
             'name' => ['required'],
-            'email' => ['required', 'email', 'unique:users,email'],
-            'phone' => ['unique:users,phone'],
+            'email' => [ 'required', 'email',
+            Rule::unique('users')->where(function ($query) {
+                return $query->where('role', 'admin');
+            })],
+            'phone' => [
+            Rule::unique('users')->where(function ($query) {
+                return $query->where('role', 'admin');
+            })],
             'password' => ['required'],
             'status' => ['required', 'boolean'],
             'gender' => ['in:male,female'],
@@ -84,8 +91,15 @@ class AdminController extends Controller
     public function modify(Request $request, $id){
         $validator = Validator::make($request->all(), [
             'name' => ['required'],
-            'email' => ['required', 'email', 'unique:users,email,' . $id],
-            'phone' => ['unique:users,phone,' . $id],
+            'email' => ['email', 'required', 
+            Rule::unique('users')->where(function ($query) {
+                return $query->where('role', 'admin')
+                ->where('id', '!=', $id);
+            })],
+            'phone' => [Rule::unique('users')->where(function ($query) {
+                return $query->where('role', 'admin')
+                ->where('id', '!=', $id);
+            })],
             'status' => ['required', 'boolean'],
             'gender' => ['in:male,female'],
             'admin_position_id' => ['required', 'exists:admin_positions,id'],
