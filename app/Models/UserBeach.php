@@ -11,4 +11,12 @@ class UserBeach extends Model
         'beach_id',
         'village_id',
     ];
+
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function beach(){
+        return $this->belongsTo(Beach::class, 'beach_id');
+    }
 }

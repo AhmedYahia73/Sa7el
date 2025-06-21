@@ -48,6 +48,19 @@ class HomeController extends Controller
         $visits_village = $this->visit_village
         ->where('village_id', $request->user()->village_id)
         ->whereDate('updated_at', date('Y-m-d'))
+        ->get();
+ 
+        $visitor_visits_village_count = [
+            'guest' => $visits_village->where('type', 'visitor')
+            ->where('visitor_type', 'guest')->count(),
+            'worker' => $visits_village->where('type', 'visitor')
+            ->where('visitor_type', 'worker')->count(),
+            'delivery' => $visits_village->where('type', 'visitor')
+            ->where('visitor_type', 'delivery')->count(),
+        ];
+        $owner_visits_village = $visits_village->where('type', 'owner')
+        ->count();
+        $renter_visits_village = $visits_village->where('type', 'renter')
         ->count();
 
         return response()->json([
@@ -58,6 +71,9 @@ class HomeController extends Controller
             'users_beach' => $users_beach,
             'users_pool' => $users_pool,
             'visits_village' => $visits_village,
+            'owner_visits_village_count' => $owner_visits_village,
+            'visitor_visits_village_count' => $visitor_visits_village_count,
+            'renter_visits_village_count' => $renter_visits_village,
         ]);
     }
 
@@ -73,11 +89,15 @@ class HomeController extends Controller
         }
 
         $users_beach = $this->user_beach
-        ->where('village_id', $request->user()->village_id);
+        ->where('village_id', $request->user()->village_id)
+        ->with(['user:id,name,email,phone', 'beach:id,name']);
         $users_pool = $this->user_pool
-        ->where('village_id', $request->user()->village_id);
+        ->where('village_id', $request->user()->village_id)
+        ->with(['user:id,name,email,phone', 'pool:id,name']);
         $visits_village = $this->visit_village
-        ->where('village_id', $request->user()->village_id);
+        ->where('village_id', $request->user()->village_id)
+        ->with(['user:id,name,email,phone', 'gate:id,name', 
+        'appartment:id,unit,location']);
         if ($request->date_from) {
             $users_beach = $users_beach
             ->whereDate('updated_at', '>=', $request->date_from);
@@ -100,14 +120,38 @@ class HomeController extends Controller
         ->get();
         $visits_village = $visits_village
         ->get();
+        $visitor_visits_village = [
+            'guest' => $visits_village->where('type', 'visitor')
+            ->where('visitor_type', 'guest')->values(),
+            'worker' => $visits_village->where('type', 'visitor')
+            ->where('visitor_type', 'worker')->values(),
+            'delivery' => $visits_village->where('type', 'visitor')
+            ->where('visitor_type', 'delivery')->values(),
+        ];
+        $visitor_visits_village_count = [
+            'guest' => $visits_village->where('type', 'visitor')
+            ->where('visitor_type', 'guest')->count(),
+            'worker' => $visits_village->where('type', 'visitor')
+            ->where('visitor_type', 'worker')->count(),
+            'delivery' => $visits_village->where('type', 'visitor')
+            ->where('visitor_type', 'delivery')->count(),
+        ];
+        $owner_visits_village = $visits_village->where('type', 'owner')
+        ->values();
+        $renter_visits_village = $visits_village->where('type', 'renter')
+        ->values();
 
         return response()->json([ 
             'users_beach' => $users_beach,
             'users_pool' => $users_pool,
-            'visits_village' => $visits_village,
+            'owner_visits_village' => $owner_visits_village,
+            'renter_visits_village' => $renter_visits_village,
+            'visitor_visits_village' => $visitor_visits_village,
             'users_beach_count' => $users_beach->count(),
             'users_pool_count' => $users_pool->count(),
-            'visits_village_count' => $visits_village->count(),
+            'owner_visits_village_count' => $owner_visits_village->count(),
+            'visitor_visits_village_count' => $visitor_visits_village_count,
+            'renter_visits_village_count' => $renter_visits_village->count(),
         ]);
     }
 }

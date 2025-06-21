@@ -13,4 +13,8 @@ class UserVillage extends Model
         'rent_from',
         'rent_to',
     ];
+
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

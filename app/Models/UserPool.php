@@ -11,4 +11,12 @@ class UserPool extends Model
         'pool_id',
         'village_id',
     ];
+
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function pool(){
+        return $this->belongsTo(Pools::class, 'pool_id');
+    }
 }
