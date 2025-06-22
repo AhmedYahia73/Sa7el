@@ -26,7 +26,7 @@ class EntranceController extends Controller
                 'user_name' => $item?->user?->name,
                 'user_phone' => $item?->user?->phone,
                 'user_email' => $item?->user?->email,
-                'date' => $item->created_at->format('Y-m-d'),
+                'date' => $item?->created_at?->format('Y-m-d') ?? null,
             ];
         });
 
@@ -46,7 +46,7 @@ class EntranceController extends Controller
                 'user_name' => $item?->user?->name,
                 'user_phone' => $item?->user?->phone,
                 'user_email' => $item?->user?->email,
-                'date' => $item->created_at->format('Y-m-d'),
+                'date' => $item?->created_at?->format('Y-m-d') ?? null,
             ];
         });
 
@@ -66,7 +66,7 @@ class EntranceController extends Controller
                 'user_name' => $item?->user?->name,
                 'user_phone' => $item?->user?->phone,
                 'user_email' => $item?->user?->email,
-                'date' => $item->created_at->format('Y-m-d'),
+                'date' => $item?->created_at?->format('Y-m-d') ?? null,
             ];
         });
 
