@@ -41,6 +41,7 @@ class AdminController extends Controller
     public function my_profile(Request $request){
         $admin = $request->user();
         $admin->position;
+        $package = $admin->village->package;
 
         return response()->json([
             'admin' => $admin,
