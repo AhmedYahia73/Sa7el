@@ -35,8 +35,8 @@ class PaymentPackageController extends Controller
 
     public function payment(Request $request){
         $validator = Validator::make($request->all(), [
-            'payment_method_id' => 'required',
-            'package_id' => 'required',
+            'payment_method_id' => 'required|exists:payment_methods,id',
+            'package_id' => 'required|exists:packages,id',
             'amount' => 'required',
             'discount' => 'required',
         ]);
