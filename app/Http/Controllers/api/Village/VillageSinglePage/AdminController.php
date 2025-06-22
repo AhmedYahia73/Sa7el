@@ -46,6 +46,7 @@ class AdminController extends Controller
         return response()->json([
             'admin' => $admin,
             'village' => $admin->village,
+            'package' => $package,
         ]);
     }
 
