@@ -131,7 +131,9 @@ class GateController extends Controller
             'appartment' => $appartment,
             'user' => $user,
             'visit_village_id' => $visit_village,
-            'visitor_type' => $visitor_type
+            'visitor_type' => $visitor_type,
+            'date' => date('Y-m-d'),
+            'date' => date('h:i A'),
          ]);
     }
 
