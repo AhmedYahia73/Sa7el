@@ -99,7 +99,7 @@ class VillageAdminController extends Controller
         ->count();
         if ($admin_num <= $admin_count) {
             return response()->json([
-                'errors' => 'You have exceeded the limit of add admin'
+                'errors' => 'You don’t have a package, so you should subscribe.'
             ], 400);
         }
         $adminRequest = $request->validated();

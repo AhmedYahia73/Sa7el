@@ -93,7 +93,7 @@ class SecurityController extends Controller
         ->count();
         if ($security_num <= $security_count) {
             return response()->json([
-                'errors' => 'You have exceeded the limit of add admin'
+                'errors' => 'You don’t have a package, so you should subscribe.'
             ], 400);
         }
         $securityRequest = $request->validated();
