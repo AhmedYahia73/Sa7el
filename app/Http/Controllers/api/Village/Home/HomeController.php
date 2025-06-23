@@ -73,6 +73,7 @@ class HomeController extends Controller
             'visits_village' => $visits_village,
             'owner_visits_village_count' => $owner_visits_village,
             'visitor_visits_village_count' => $visitor_visits_village_count,
+            'total_visits_count' => $visits_village->count(),
         ]);
     }
 
@@ -145,10 +146,12 @@ class HomeController extends Controller
             'users_pool' => $users_pool,
             'owner_visits_village' => $owner_visits_village,
             'visitor_visits_village' => $visitor_visits_village,
+            'total_visits' => $visits_village,
             'users_beach_count' => $users_beach->count(),
             'users_pool_count' => $users_pool->count(),
             'owner_visits_village_count' => $owner_visits_village->count(),
-            'visitor_visits_village_count' => $visitor_visits_village_count,
+            'visitor_visits_village_count' => $visitor_visits_village_count, 
+            'total_visits_count' => $visits_village->count(),
         ]);
     }
 }
