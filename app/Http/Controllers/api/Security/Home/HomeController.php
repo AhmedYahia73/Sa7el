@@ -63,6 +63,7 @@ class HomeController extends Controller
         ->map(function($item){
             $item->date = $item->created_at->format('Y-m-d');
             $item->time = $item->created_at->format('h:i A');
+            return $item;
         });
         $entrance = $visit_village->count();
         $entrance_owner = $visit_village->where('type', 'owner')->count();
