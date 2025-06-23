@@ -59,7 +59,11 @@ class HomeController extends Controller
         $visit_village = $this->visit_village
         ->where('gate_id', $request->gate_id)
         ->whereDate('created_at', date('Y-m-d'))
-        ->get();
+        ->get()
+        ->map(function($item){
+            $item->date = $item->created_at->format('Y-m-d');
+            $item->time = $item->created_at->format('h:i A');
+        });
         $entrance = $visit_village->count();
         $entrance_owner = $visit_village->where('type', 'owner')->count();
         $entrance_visitor = $visit_village->where('type', 'visitor');
