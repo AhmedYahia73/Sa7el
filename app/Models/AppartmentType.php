@@ -11,8 +11,11 @@ class AppartmentType extends Model
         'image',
         'status',
     ];
-    protected $appends = ['ar_name'];
+    protected $appends = ['ar_name', 'image_link'];
  
+    public function getImageLinkAttribute(){
+        return url('storage/' . $this->image);
+    }
 
     public function getArNameAttribute(){
         return $this->translations
