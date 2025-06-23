@@ -79,7 +79,7 @@ class SubscriperController extends Controller
             'villages' => $villages,
             'providers' => $providers,
             'maintenance_provider' => $maintenance_provider,
-            'services' => $services,
+            'service_type' => $services,
             'subscribers' => $subscribers,
             'subscribers_village' => $subscribers_village,
             'subscribers_provider' => $subscribers_provider,

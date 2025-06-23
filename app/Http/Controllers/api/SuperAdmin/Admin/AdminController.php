@@ -92,11 +92,11 @@ class AdminController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => ['required'],
             'email' => ['email', 'required', 
-            Rule::unique('users')->where(function ($query) {
+            Rule::unique('users')->where(function ($query) use($id) {
                 return $query->where('role', 'admin')
                 ->where('id', '!=', $id);
             })],
-            'phone' => [Rule::unique('users')->where(function ($query) {
+            'phone' => [Rule::unique('users')->where(function ($query) use($id){
                 return $query->where('role', 'admin')
                 ->where('id', '!=', $id);
             })],

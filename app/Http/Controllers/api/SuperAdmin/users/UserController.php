@@ -199,11 +199,11 @@ class UserController extends Controller
         // name, user_type, email, phone
         // password, status, parent_user_id, gender, birthDate
         $validator = Validator::make($request->all(), [
-            'email' => ['email', Rule::unique('users')->where(function ($query) {
+            'email' => ['email', Rule::unique('users')->where(function ($query) use($id) {
                 return $query->where('role', 'user')
                 ->where('id', '!=', $id);
             })],
-            'phone' => [Rule::unique('users')->where(function ($query) {
+            'phone' => [Rule::unique('users')->where(function ($query) use($id) {
                 return $query->where('role', 'user')
                 ->where('id', '!=', $id);
             })],
