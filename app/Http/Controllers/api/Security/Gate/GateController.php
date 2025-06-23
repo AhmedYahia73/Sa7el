@@ -133,7 +133,7 @@ class GateController extends Controller
             'visit_village_id' => $visit_village,
             'visitor_type' => $visitor_type,
             'date' => date('Y-m-d'),
-            'date' => date('h:i A'),
+            'time' => date('h:i A'),
          ]);
     }
 
