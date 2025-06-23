@@ -101,7 +101,7 @@ class MallController extends Controller
         // ar_name, ar_description, image
         $MallRequest = $request->validated();
         if (!is_string($request->image)) {
-            $image_path = $this->upload($request, 'image', 'images/malls');
+            $image_path = $this->storeBase64Image($request->image, 'images/malls');
             $MallRequest['image'] = $image_path;
         }
         $mall = $this->mall
@@ -152,7 +152,8 @@ class MallController extends Controller
             ], 400);
         }
         if (!is_string($request->image)) {
-            $image_path = $this->update_image($request, $mall->image, 'image', 'images/malls');
+            $image_path = $this->storeBase64Image($request->image, 'images/malls');
+            $this->deleteImage($mall->image);
             $MallRequest['image'] = $image_path;
         }
         $mall

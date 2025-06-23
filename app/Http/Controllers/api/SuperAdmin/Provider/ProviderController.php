@@ -112,7 +112,7 @@ class ProviderController extends Controller
         // ar_name, ar_description, image, open_from, open_to, zone_id, location_map
         $providerRequest = $request->validated();
         if (!is_string($request->image)) {
-            $image_path = $this->upload($request, 'image', 'images/providers');
+            $image_path = $this->storeBase64Image($request->image, 'images/providers');
             $providerRequest['image'] = $image_path;
         }
         $providerRequest['admin_id'] = $request->user()->id;
@@ -164,7 +164,8 @@ class ProviderController extends Controller
             ], 400);
         }
         if (!is_string($request->image)) {
-            $image_path = $this->update_image($request, $provider->image, 'image', 'images/providers');
+            $image_path = $this->storeBase64Image($request->image, 'images/providers');
+            $this->deleteImage($provider->image);
             $providerRequest['image'] = $image_path;
         }
         $provider

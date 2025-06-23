@@ -70,7 +70,7 @@ class ServiceProviderController extends Controller
         }
         $ServiceProviderRequest = $request->validated();
         if (!is_string($request->image)) {
-            $image_path = $this->upload($request, 'image', 'images/service_providers');
+            $image_path = $this->storeBase64Image($request->image, 'images/service_providers');
             $ServiceProviderRequest['image'] = $image_path;
         }
         $provider = $this->provider
@@ -129,7 +129,8 @@ class ServiceProviderController extends Controller
             ], 400);
         }
         if (!is_string($request->image)) {
-            $image_path = $this->update_image($request, $provider->image, 'image', 'images/service_providers');
+            $image_path = $this->storeBase64Image($request->image, 'images/service_providers');
+            $this->deleteImage($provider->image);
             $ServiceProviderRequest['image'] = $image_path;
         }
         $provider

@@ -102,7 +102,7 @@ class VillageController extends Controller
         // ar_name, ar_description, image
         $villageRequest = $request->validated();
         if (!is_string($request->image)) {
-            $image_path = $this->upload($request, 'image', 'images/villages');
+            $image_path = $this->storeBase64Image($request->image, 'images/villages');
             $villageRequest['image'] = $image_path;
         }
         $village = $this->village
@@ -153,7 +153,8 @@ class VillageController extends Controller
             ], 400);
         }
         if (!is_string($request->image)) {
-            $image_path = $this->update_image($request, $village->image, 'image', 'images/villages');
+            $image_path = $this->storeBase64Image($request->image, 'images/villages');
+            $this->deleteImage($village->image); 
             $villageRequest['image'] = $image_path;
         }
         $village
