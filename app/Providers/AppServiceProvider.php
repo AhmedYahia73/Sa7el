@@ -28,9 +28,15 @@ class AppServiceProvider extends ServiceProvider
     {
         Gates::defineGates();
         AdminGates::defineGates();
-        
+
         Validator::extend('base64image', function ($attribute, $value, $parameters, $validator) {
-            return (new Base64Image())->passes($attribute, $value);
-        });
+            $rule = new Base64Image();
+
+            $failed = false;
+            $rule->validate($attribute, $value, function () use (&$failed) {
+                $failed = true;
+            });
+        return !$failed;
+    });
     }
 }
