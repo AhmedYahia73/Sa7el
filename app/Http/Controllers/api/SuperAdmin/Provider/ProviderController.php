@@ -44,7 +44,7 @@ class ProviderController extends Controller
     }
 
     public function update_profile_image(Request $request, $id){
-           $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'image' => 'required', 
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
@@ -110,6 +110,14 @@ class ProviderController extends Controller
     public function create(ProviderRequest $request){
         // service_id, name, description, phone, status, location, village_id
         // ar_name, ar_description, image, open_from, open_to, zone_id, location_map
+        $validator = Validator::make($request->all(), [
+            'image' => 'required', 
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
         $providerRequest = $request->validated();
         if (!empty($request->image)) {
             $image_path = $this->storeBase64Image($request->image, 'images/providers');

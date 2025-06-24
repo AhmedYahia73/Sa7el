@@ -32,7 +32,6 @@ class ProviderRequest extends FormRequest
             'name' => ['required'],
             'description' => ['sometimes'],
             'phone' => ['required', ],
-            'image' => ['required'],
             'location' => ['required'],
             'status' => ['required'],
             'location_map' => ['required'],
