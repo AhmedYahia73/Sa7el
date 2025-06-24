@@ -100,7 +100,7 @@ class MallController extends Controller
         // name, description, status, zone_id, open_from, open_to
         // ar_name, ar_description, image
         $MallRequest = $request->validated();
-        if (!is_string($request->image)) {
+        if (!empty($request->image)) {
             $image_path = $this->storeBase64Image($request->image, 'images/malls');
             $MallRequest['image'] = $image_path;
         }
@@ -151,7 +151,7 @@ class MallController extends Controller
                 'errors' => 'mall not found'
             ], 400);
         }
-        if (!is_string($request->image)) {
+        if (!empty($request->image)) {
             $image_path = $this->storeBase64Image($request->image, 'images/malls');
             $this->deleteImage($mall->image);
             $MallRequest['image'] = $image_path;

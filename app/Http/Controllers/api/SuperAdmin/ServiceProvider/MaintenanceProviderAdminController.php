@@ -94,7 +94,7 @@ class MaintenanceProviderAdminController extends Controller
         $adminRequest['role'] = 'maintenance_provider';
         $adminRequest['maintenance_provider_id'] = $request->maintenance_provider_id;
         $adminRequest['password'] = $request->password;
-        if (!empty($request->image) && !is_string($request->image)) {
+        if (!empty($request->image)) {
             $image_path = $this->upload($request, 'image', 'images/maintenance_provider_image');
             $adminRequest['image'] = $image_path;
         } 
@@ -136,7 +136,7 @@ class MaintenanceProviderAdminController extends Controller
         if (!empty($request->password)) {
             $adminRequest['password'] = bcrypt($request->password);
         } 
-        if (!empty($request->image) && !is_string($request->image)) {
+        if (!empty($request->image)) {
             $image_path = $this->update_image($request, $admin->image, 'image', 'images/maintenance_provider_image');
             $adminRequest['image'] = $image_path;
         }

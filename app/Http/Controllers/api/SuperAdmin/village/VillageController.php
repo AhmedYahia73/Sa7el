@@ -101,7 +101,7 @@ class VillageController extends Controller
         // name, description, status, zone_id, location
         // ar_name, ar_description, image
         $villageRequest = $request->validated();
-        if (!is_string($request->image)) {
+        if (!empty($request->image)) {
             $image_path = $this->storeBase64Image($request->image, 'images/villages');
             $villageRequest['image'] = $image_path;
         }
@@ -152,7 +152,7 @@ class VillageController extends Controller
                 'errors' => 'village not found'
             ], 400);
         }
-        if (!is_string($request->image)) {
+        if (!empty($request->image)) {
             $image_path = $this->storeBase64Image($request->image, 'images/villages');
             $this->deleteImage($village->image); 
             $villageRequest['image'] = $image_path;

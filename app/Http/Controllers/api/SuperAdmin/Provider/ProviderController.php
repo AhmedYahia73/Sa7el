@@ -111,7 +111,7 @@ class ProviderController extends Controller
         // service_id, name, description, phone, status, location, village_id
         // ar_name, ar_description, image, open_from, open_to, zone_id, location_map
         $providerRequest = $request->validated();
-        if (!is_string($request->image)) {
+        if (!empty($request->image)) {
             $image_path = $this->storeBase64Image($request->image, 'images/providers');
             $providerRequest['image'] = $image_path;
         }
@@ -163,7 +163,7 @@ class ProviderController extends Controller
                 'errors' => 'provider not found'
             ], 400);
         }
-        if (!is_string($request->image)) {
+        if (!empty($request->image)) {
             $image_path = $this->storeBase64Image($request->image, 'images/providers');
             $this->deleteImage($provider->image);
             $providerRequest['image'] = $image_path;
