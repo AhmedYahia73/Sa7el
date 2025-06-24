@@ -74,7 +74,7 @@ class ServiceProviderController extends Controller
             ],400);
         }
         $ServiceProviderRequest = $request->validated();
-        if (!is_string($request->image)) {
+        if (!empty($request->image)) {
             $image_path = $this->storeBase64Image($request->image, 'images/service_providers');
             $ServiceProviderRequest['image'] = $image_path;
         }
@@ -133,7 +133,7 @@ class ServiceProviderController extends Controller
                 'errors' => 'provider not found'
             ], 400);
         }
-        if (!is_string($request->image)) {
+        if (!empty($request->image)) {
             $image_path = $this->storeBase64Image($request->image, 'images/service_providers');
             $this->deleteImage($provider->image);
             $ServiceProviderRequest['image'] = $image_path;
