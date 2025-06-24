@@ -104,6 +104,7 @@ class GateController extends Controller
                 'type' => 'visitor',
                 'visitor_type' => $visitor_type,
                 'code' => $code,
+                'appartment_id' => $appartment_id,
             ]);
          }
          else{ 
