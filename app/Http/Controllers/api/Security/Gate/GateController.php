@@ -113,7 +113,8 @@ class GateController extends Controller
                 'user_id' => $userid,
                 'village_id' => $request->user()->village_id,
                 'gate_id' => $request->gate_id,
-                'type' => 'owner'
+                'type' => 'owner',
+                'appartment_id' => $appartment_id,
             ]);
          }
          EntranceGate::create([
