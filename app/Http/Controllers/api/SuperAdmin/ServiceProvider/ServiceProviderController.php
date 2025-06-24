@@ -61,8 +61,13 @@ class ServiceProviderController extends Controller
         // service_id, name, description, phone, status, location, village_id
         // ar_name, ar_description, image, open_from, open_to
         $validator = Validator::make($request->all(), [
-            'image' => ['required'],
+            'image' => 'required|base64image', 
         ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
                 'errors' => $validator->errors(),
@@ -112,7 +117,7 @@ class ServiceProviderController extends Controller
         // service_id, name, description, phone, status, location, village_id
         // ar_name, ar_description, image
         $validator = Validator::make($request->all(), [
-            'image' => ['required'],
+            'image' => 'nullable|base64image', 
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([

@@ -99,6 +99,14 @@ class MallController extends Controller
     public function create(MallRequest $request){
         // name, description, status, zone_id, open_from, open_to
         // ar_name, ar_description, image
+        $validator = Validator::make($request->all(), [
+            'image' => 'base64image', 
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
         $MallRequest = $request->validated();
         if (!empty($request->image)) {
             $image_path = $this->storeBase64Image($request->image, 'images/malls');
@@ -142,6 +150,15 @@ class MallController extends Controller
     public function modify(MallRequest $request, $id){
         // name, description, status, zone_id, open_from, open_to
         // ar_name, ar_description, image
+        $validator = Validator::make($request->all(), [
+            'image' => 'nullable|base64image', 
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+
         $MallRequest = $request->validated();
         $mall = $this->mall
         ->where('id', $id)

@@ -111,7 +111,7 @@ class ProviderController extends Controller
         // service_id, name, description, phone, status, location, village_id
         // ar_name, ar_description, image, open_from, open_to, zone_id, location_map
         $validator = Validator::make($request->all(), [
-            'image' => 'required', 
+            'image' => 'required|base64image', 
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -162,6 +162,14 @@ class ProviderController extends Controller
     public function modify(ProviderRequest $request, $id){
         // service_id, name, description, phone, status, location, village_id
         // ar_name, ar_description, image, zone_id, location_map
+        $validator = Validator::make($request->all(), [
+            'image' => 'nullable|base64image', 
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
         $providerRequest = $request->validated();
         $provider = $this->provider
         ->where('id', $id)

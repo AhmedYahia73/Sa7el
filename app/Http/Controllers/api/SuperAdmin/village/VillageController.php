@@ -100,6 +100,14 @@ class VillageController extends Controller
     public function create(VillageRequest $request){
         // name, description, status, zone_id, location
         // ar_name, ar_description, image
+        $validator = Validator::make($request->all(), [
+            'image' => 'required|base64image', 
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
         $villageRequest = $request->validated();
         if (!empty($request->image)) {
             $image_path = $this->storeBase64Image($request->image, 'images/villages');
@@ -143,6 +151,14 @@ class VillageController extends Controller
     public function modify(VillageRequest $request, $id){
        // name, description, status, zone_id, location
         // ar_name, ar_description, image
+        $validator = Validator::make($request->all(), [
+            'image' => 'nullable|base64image', 
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
         $villageRequest = $request->validated();
         $village = $this->village
         ->where('id', $id)
