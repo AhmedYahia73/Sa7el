@@ -158,6 +158,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     Route::controller(AdminController::class)->prefix('admins')
     ->group(function() {
         Route::get('/', 'view')->middleware('can:admin_Admin_view');
+        Route::get('/my_data', 'my_data')->middleware('can:admin_Admin_view');
         Route::put('/status/{id}', 'status')->middleware('can:admin_Admin_status');
         Route::post('/add', 'create')->middleware('can:admin_Admin_add');
         Route::post('/update/{id}', 'modify')->middleware('can:admin_Admin_edit');

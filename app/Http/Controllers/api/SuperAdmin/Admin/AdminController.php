@@ -17,6 +17,13 @@ class AdminController extends Controller
     private AdminPosition $position){}
     use TraitImage;
 
+    public function my_data(Request $request){
+        return response()->json([
+            'name' => $request->user()->name,
+            'image' => $request->user()->image_link,
+        ]);
+    }
+
     public function view(){
         $admins = $this->admin
         ->with('position.sup_roles')
