@@ -99,7 +99,7 @@ class BeachController extends Controller
         // name, image, status,
         // ar_name
         $validator = Validator::make($request->all(), [
-            'image_id' => 'exists:pool_gallaries,id',
+            'image_id' => 'exists:beach_gallaries,id',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -145,7 +145,7 @@ class BeachController extends Controller
                 ]);
             } 
             else {
-                $image_path = $this->uploadFile($item, '/village/beach');
+                $image_path = $this->uploadFile($request->image, '/village/beach');
                 $this->gallary
                 ->create([
                     'beach_id' => $id,

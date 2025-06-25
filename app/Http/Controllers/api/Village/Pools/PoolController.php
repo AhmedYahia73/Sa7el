@@ -143,7 +143,7 @@ class PoolController extends Controller
                 ]);
             } 
             else {
-                $image_path = $this->uploadFile($item, '/village/pool');
+                $image_path = $this->uploadFile($request->image, '/village/pool');
                 $this->gallary
                 ->create([
                     'pool_id' => $id,
