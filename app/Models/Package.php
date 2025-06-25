@@ -18,6 +18,7 @@ class Package extends Model
         'security_num',
         'maintenance_module',
         'beach_pool_module',
+        'maintenance_type_id',
         'status',
     ];
     protected $appends = ['ar_name', 'ar_description'];
@@ -38,6 +39,10 @@ class Package extends Model
 
     public function service(){
         return $this->belongsTo(ServiceType::class, 'service_id');
+    }
+
+    public function maintenance_type(){
+        return $this->belongsTo(MaintenanceType::class, 'maintenance_type_id');
     }
 
     public function translations()

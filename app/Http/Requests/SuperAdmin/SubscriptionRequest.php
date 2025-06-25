@@ -25,6 +25,7 @@ class SubscriptionRequest extends FormRequest
     {
         return [
             'service_id' => ['exists:service_types,id'],
+            'maintenance_type_id' => ['exists:maintenance_types,id'],
             'name' => ['required'],
             'description' => ['nullable'],
             'price' => ['required', 'numeric'],
