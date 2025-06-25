@@ -25,11 +25,11 @@ class MallRequest extends FormRequest
     {
         return [
             'name' => ['required'],
-            'description' => ['sometimes'], 
-            'open_from' => ['regex:/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/'], 
-            'open_to' => ['regex:/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/'],  
-            'zone_id' => ['required', 'exists:zones,id'], 
-            'status' => ['required', 'boolean'], 
+            'description' => ['sometimes'],
+            'open_from' => ['regex:/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/'],
+            'open_to' => ['regex:/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/'],
+            'zone_id' => ['required', 'exists:zones,id'],
+            'status' => ['required', 'boolean'],
         ];
     }
 
