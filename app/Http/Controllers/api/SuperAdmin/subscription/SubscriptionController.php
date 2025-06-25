@@ -15,7 +15,7 @@ class SubscriptionController extends Controller
 
     public function view(){
         $package = $this->package
-        ->with('translations', 'service')
+        ->with('translations', 'service', 'maintenance_type')
         ->get();
 
         return response()->json([
