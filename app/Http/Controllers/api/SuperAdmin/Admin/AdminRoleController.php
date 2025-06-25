@@ -38,6 +38,7 @@ class AdminRoleController extends Controller
             'Provider Admin' => ['all', 'view', 'status', 'add', 'edit', 'delete'],
             'Provider Admin Role' => ['all', 'view', 'status', 'add', 'edit', 'delete'],
             'Provider Profile' => ['all', 'edit', 'delete'],
+            'Provider Cover' => ['all', 'view', 'add', 'delete'],
             'Payment Method' => ['all', 'view', 'status', 'add', 'edit', 'delete'],
             'Subscription' => ['all', 'view', 'status', 'add', 'edit', 'delete'],
             'subcriber' => ['all', 'view', 'add', 'edit', 'delete'],
