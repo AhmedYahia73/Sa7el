@@ -7,19 +7,31 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\SuperAdmin\SubscriptionRequest;
 
+use App\Models\MaintenanceType;
 use App\Models\Package;
 
 class SubscriptionController extends Controller
 {
-    public function __construct(private Package $package){}
+    public function __construct(private Package $package,
+    private MaintenanceType $maintenance_types){}
 
     public function view(){
         $package = $this->package
         ->with('translations', 'service', 'maintenance_type')
         ->get();
+        $maintenance_provider = $package->where('type', 'maintenance_provider')->values();
+        $provider = $package->where('type', 'provider')->values();
+        $village = $package->where('type', 'village')->values();
+        $maintenance_types = $this->maintenance_types
+        ->where('status', 1)
+        ->get();
 
         return response()->json([
             'packages' => $package,
+            'maintenance_provider' => $maintenance_provider,
+            'provider' => $provider,
+            'village' => $village,
+            'maintenance_types' => $maintenance_types,
         ]);
     }
 
