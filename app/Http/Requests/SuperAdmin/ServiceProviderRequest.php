@@ -32,6 +32,7 @@ class ServiceProviderRequest extends FormRequest
             'description' => ['sometimes'],
             'phone' => ['required', ],
             'location' => ['required'],
+            'location_map' => ['required'],
             'status' => ['required'],
         ];
     }

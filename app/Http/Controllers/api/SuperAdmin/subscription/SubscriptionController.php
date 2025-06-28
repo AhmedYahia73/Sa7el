@@ -9,11 +9,12 @@ use App\Http\Requests\SuperAdmin\SubscriptionRequest;
 
 use App\Models\MaintenanceType;
 use App\Models\Package;
+use App\Models\ServiceType;
 
 class SubscriptionController extends Controller
 {
     public function __construct(private Package $package,
-    private MaintenanceType $maintenance_types){}
+    private MaintenanceType $maintenance_types, private ServiceType $services){}
 
     public function view(){
         $package = $this->package
@@ -25,6 +26,9 @@ class SubscriptionController extends Controller
         $maintenance_types = $this->maintenance_types
         ->where('status', 1)
         ->get();
+        $services_types = $this->services
+        ->where('status', 1)
+        ->get();
 
         return response()->json([
             'packages' => $package,
@@ -32,6 +36,7 @@ class SubscriptionController extends Controller
             'provider' => $provider,
             'village' => $village,
             'maintenance_types' => $maintenance_types,
+            'services_types' => $services_types,
         ]);
     }
 

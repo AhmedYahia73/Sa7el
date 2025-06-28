@@ -59,7 +59,7 @@ class ServiceProviderController extends Controller
 
     public function create(ServiceProviderRequest $request){
         // service_id, name, description, phone, status, location, village_id
-        // ar_name, ar_description, image, open_from, open_to
+        // ar_name, ar_description, image, open_from, open_to, location_map
         $validator = Validator::make($request->all(), [
             'image' => 'required|base64image', 
         ]);
@@ -115,7 +115,7 @@ class ServiceProviderController extends Controller
 
     public function modify(ServiceProviderRequest $request, $id){
         // service_id, name, description, phone, status, location, village_id
-        // ar_name, ar_description, image
+        // ar_name, ar_description, image, location_map
         $validator = Validator::make($request->all(), [
             'image' => 'nullable|base64image', 
         ]);
