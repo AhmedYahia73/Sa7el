@@ -12,4 +12,9 @@ class ProviderOffer extends Model
         'status',
         'provider_id',
     ];
+    protected $appends = ['image_link'];
+
+    public function getImageLinkAttribute(){
+        return url('storage/' . $this->image);
+    }
 }

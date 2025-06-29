@@ -155,6 +155,7 @@ class LoginController extends Controller
         }
         $user = $this->user
         ->where('email', $request->email)
+		->where('role', '!=', 'user')
         ->first();
         
         if (empty($user)) {
