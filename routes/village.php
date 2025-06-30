@@ -31,12 +31,19 @@ use App\Http\Controllers\api\Village\PaymentPackage\PaymentPackageController;
 use App\Http\Controllers\api\Village\Appartments\AppartmentProfileController;
 use App\Http\Controllers\api\Village\Notification\NotificationController;
 use App\Http\Controllers\api\Village\Entrance\EntranceController;
+use App\Http\Controllers\api\Village\LandingPage\LandingPageControlle;
 
 Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(HomeController::class)->prefix('home')->middleware('can:Home')
     ->group(function() {
         Route::get('/', 'view');
         Route::get('/filter', 'filter');
+    });
+
+    Route::controller(LandingPageControlle::class)->prefix('landing_page')
+    ->group(function() {
+        Route::get('/lists', 'lists');  
+        Route::get('/village/{id}', 'view');  
     });
 
     Route::controller(NotificationController::class)->prefix('notifications')

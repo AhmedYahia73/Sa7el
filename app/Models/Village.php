@@ -76,4 +76,9 @@ class Village extends Model
     {
         return $this->morphMany(Translation::class, 'translatable');
     }
+
+    public function gallery()
+    {
+        return $this->belongsTo(VillageGallary::class, 'village_id');
+    }
 }
