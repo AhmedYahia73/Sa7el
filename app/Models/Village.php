@@ -79,6 +79,6 @@ class Village extends Model
 
     public function gallery()
     {
-        return $this->belongsTo(VillageGallary::class, 'village_id');
+        return $this->hasMany(VillageGallary::class, 'village_id');
     }
 }
