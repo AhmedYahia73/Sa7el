@@ -9,12 +9,16 @@ class Mall extends Model
     protected $fillable =[
         'name',
         'description',
+        'location',
+        'location_map',
         'open_from', 
         'open_to', 
         'image',
         'cover_image',
         'zone_id',
         'status',
+        'location',
+        'location_map',
     ];
     protected $appends = ['image_link', 'ar_name', 'ar_description', 'cover_image_link'];
 

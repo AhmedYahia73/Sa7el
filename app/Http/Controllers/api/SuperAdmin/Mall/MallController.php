@@ -98,7 +98,7 @@ class MallController extends Controller
 
     public function create(MallRequest $request){
         // name, description, status, zone_id, open_from, open_to
-        // ar_name, ar_description, image
+        // ar_name, ar_description, image, location, location_map
         $validator = Validator::make($request->all(), [
             'image' => 'base64image', 
         ]);
@@ -149,7 +149,7 @@ class MallController extends Controller
 
     public function modify(MallRequest $request, $id){
         // name, description, status, zone_id, open_from, open_to
-        // ar_name, ar_description, image
+        // ar_name, ar_description, image, location, location_map
         $validator = Validator::make($request->all(), [
             'image' => 'nullable|base64image', 
         ]);
