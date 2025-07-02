@@ -99,7 +99,7 @@ class VillageController extends Controller
 
     public function create(VillageRequest $request){
         // name, description, status, zone_id, location
-        // ar_name, ar_description, image
+        // ar_name, ar_description, image, location_map
         $validator = Validator::make($request->all(), [
             'image' => 'required|base64image', 
         ]);
@@ -150,7 +150,7 @@ class VillageController extends Controller
 
     public function modify(VillageRequest $request, $id){
        // name, description, status, zone_id, location
-        // ar_name, ar_description, image
+        // ar_name, ar_description, image, location_map
         $validator = Validator::make($request->all(), [
             'image' => 'nullable|base64image', 
         ]);

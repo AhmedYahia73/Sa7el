@@ -17,6 +17,7 @@ class Village extends Model
         'zone_id',
         'status',
         'cover_image',
+        'location_map',
     ];
     protected $appends = ['image_link', 'ar_name', 'ar_description', 'cover_image_link'];
 

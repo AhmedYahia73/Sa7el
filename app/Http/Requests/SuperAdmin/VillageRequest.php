@@ -26,6 +26,7 @@ class VillageRequest extends FormRequest
             'name' => ['required'],
             'description' => ['sometimes'],
             'location' => ['required'],
+            'location_map' => ['required'],
             'zone_id' => ['required', 'exists:zones,id'],
             'status' => ['required', 'boolean'],
         ];
