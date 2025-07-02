@@ -147,6 +147,7 @@ class SubscriperController extends Controller
         $subscripeRequest['start_date'] = date('Y-m-d');
         $subscripeRequest['expire_date'] = Carbon::now()->addYear()->format('Y-m-d');
         $subscripeRequest['amount'] = $amount;
+        $subscripeRequest['type'] = $request->type;
         $subscripeRequest['status'] = 'approved';
         $payments = $this->payments
         ->create($subscripeRequest);
