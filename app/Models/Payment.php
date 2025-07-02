@@ -47,4 +47,8 @@ class Payment extends Model
     public function provider(){
         return $this->belongsTo(Provider::class);
     }
+
+    public function maintenance_provider(){
+        return $this->belongsTo(ServiceProvider::class, 'maintenance_provider_id');
+    }
 }
