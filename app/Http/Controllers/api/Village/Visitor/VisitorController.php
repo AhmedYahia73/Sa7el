@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\VisitVillage;
+use App\Models\EntranceGate;
 
 class VisitorController extends Controller
 {
-    public function __construct(private VisitVillage $visit_village){}
+    public function __construct(private VisitVillage $visit_village,
+    private EntranceGate $gate){}
 
     public function view(Request $request){
         $visit_villages = $this->visit_village
@@ -25,6 +27,7 @@ class VisitorController extends Controller
                 'visitor_type' => $item->visitor_type,
                 'date' => $item->created_at?->format('Y-m-d'),
                 'time' => $item->created_at?->format('H:i:s'),
+                'gate' => $item?->gate?->name,
             ];
         });
 
