@@ -11,12 +11,14 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Appartment;
 use App\Models\UserBeach;
 use App\Models\EntranceBeach;
+use App\Models\AppartmentCode;
 use App\Models\User;
 
 class BeachController extends Controller
 {
     public function __construct(private Appartment $appartment,
-    private UserBeach $user_beach, private User $user){}
+    private UserBeach $user_beach, private User $user,
+    private AppartmentCode $appartment_code){}
     use TraitImage;
 
     public function read_qr(Request $request){
@@ -74,6 +76,16 @@ class BeachController extends Controller
          ->whereDate('created_at', date('Y-m-d'))
          ->first();
         $old_time = null;
+        $user_type = $this->appartment_code
+         ->where('appartment_id', $appartment_id)
+         ->where('user_id', $userid)
+         ->orderByDesc('id')
+         ->first()?->type;
+         if (empty($user_type)) {
+            return response()->json([
+                'errors' => 'Appartment is wrong'
+            ], 400);
+         }
          if (!empty($user_beach_now)) {
             $old_time = $user_beach_now->updated_at->format('h:i A');
             $user_beach_now->updated_at = now();
@@ -83,6 +95,7 @@ class BeachController extends Controller
             ->create([
                 'user_id' => $userid,
                 'beach_id' => $beach_id,
+                'user_type' => $user_type,
                 'village_id' => $request->user()->village_id,
             ]);
             EntranceBeach::create([

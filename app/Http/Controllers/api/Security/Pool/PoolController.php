@@ -9,6 +9,7 @@ use App\trait\TraitImage;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\EntrancePool;
+use App\Models\AppartmentCode;
 use App\Models\Appartment;
 use App\Models\UserPool;
 use App\Models\User;
@@ -16,7 +17,8 @@ use App\Models\User;
 class PoolController extends Controller
 {
     public function __construct(private Appartment $appartment,
-    private UserPool $user_pool, private User $user){}
+    private UserPool $user_pool, private User $user,
+    private AppartmentCode $appartment_code){}
     use TraitImage;
 
     public function read_qr(Request $request){
@@ -75,6 +77,16 @@ class PoolController extends Controller
         ->where('id', $userid)
         ->first();
         $old_time = null;
+        $user_type = $this->appartment_code
+         ->where('appartment_id', $appartment_id)
+         ->where('user_id', $userid)
+         ->orderByDesc('id')
+         ->first()?->type;
+         if (empty($user_type)) {
+            return response()->json([
+                'errors' => 'Appartment is wrong'
+            ], 400);
+         }
          if (!empty($user_pool_now)) {
             $old_time = $user_pool_now->updated_at->format('h:i A');
             $user_pool_now->updated_at = now();
@@ -86,6 +98,7 @@ class PoolController extends Controller
                 'user_id' => $userid,
                 'pool_id' => $pool_id,
                 'village_id' => $request->user()->village_id,
+                'user_type' => $user_type
             ]);
             EntrancePool::create([
                 'pool_id' => $pool_id,

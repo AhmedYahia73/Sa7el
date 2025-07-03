@@ -98,6 +98,7 @@ class GateController extends Controller
         $user_type = $this->appartment
          ->where('appartment_id', $appartment_id)
          ->where('user_id', $userid)
+         ->orderByDesc('id')
          ->first()?->type;
          if (empty($user_type)) {
             return response()->json([

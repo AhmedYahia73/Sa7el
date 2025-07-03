@@ -10,6 +10,7 @@ class UserPool extends Model
         'user_id',
         'pool_id',
         'village_id',
+        'user_type',
     ];
 
     public function user(){
