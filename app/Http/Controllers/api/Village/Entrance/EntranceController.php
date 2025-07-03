@@ -5,14 +5,14 @@ namespace App\Http\Controllers\api\Village\Entrance;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Models\EntranceGate;
-use App\Models\EntranceBeach;
+use App\Models\VisitVillage;
+use App\Models\UserBeach;
 use App\Models\EntrancePool;
 
 class EntranceController extends Controller
 {
-    public function __construct(private EntranceGate $gate,
-    private EntranceBeach $beach, private EntrancePool $pool){}
+    public function __construct(private VisitVillage $gate,
+    private UserBeach $beach, private EntrancePool $pool){}
 
     public function entrance_gate(Request $request){
         $gate = $this->gate
@@ -20,13 +20,15 @@ class EntranceController extends Controller
         ->get()
         ->map(function($item){
             return [
-                'time' => $item->time,
+                'time' => $item?->created_at?->format('H:i:s'),
                 'gate' => $item?->gate?->name,
                 'gate_location' => $item?->gate?->location,
                 'user_name' => $item?->user?->name,
                 'user_phone' => $item?->user?->phone,
                 'user_email' => $item?->user?->email,
                 'date' => $item?->created_at?->format('Y-m-d') ?? null,
+                'visitor_type' => $item->visitor_type,
+                'user_type' => $item->user_type,
             ];
         });
 
@@ -41,12 +43,13 @@ class EntranceController extends Controller
         ->get()
         ->map(function($item){
             return [
-                'time' => $item->time,
+                'time' => $item?->created_at?->format('H:i:s'),
                 'beach' => $item?->beach?->name, 
                 'user_name' => $item?->user?->name,
                 'user_phone' => $item?->user?->phone,
                 'user_email' => $item?->user?->email,
                 'date' => $item?->created_at?->format('Y-m-d') ?? null,
+                'user_type' => $item->user_type,
             ];
         });
 
@@ -61,12 +64,13 @@ class EntranceController extends Controller
         ->get()
         ->map(function($item){
             return [
-                'time' => $item->time,
+                'time' => $item?->created_at?->format('H:i:s'),
                 'pool' => $item?->pool?->name, 
                 'user_name' => $item?->user?->name,
                 'user_phone' => $item?->user?->phone,
                 'user_email' => $item?->user?->email,
                 'date' => $item?->created_at?->format('Y-m-d') ?? null,
+                'user_type' => $item->user_type,
             ];
         });
 
