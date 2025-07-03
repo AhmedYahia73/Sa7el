@@ -95,6 +95,10 @@ class GateController extends Controller
                 'errors' => 'Qr code is wrong'
             ], 400);
          }
+        $user_type = $this->appartment
+         ->where('appartment_id', $appartment_id)
+         ->where('user_id', $userid)
+         ->first()?->type;
          if ($visitor) { 
             $visit_village = $this->visit_village
             ->create([
@@ -105,6 +109,7 @@ class GateController extends Controller
                 'visitor_type' => $visitor_type,
                 'code' => $code,
                 'appartment_id' => $appartment_id,
+                'user_type' => $user_type,
             ]);
          }
          else{ 
@@ -113,8 +118,9 @@ class GateController extends Controller
                 'user_id' => $userid,
                 'village_id' => $request->user()->village_id,
                 'gate_id' => $request->gate_id,
-                'type' => 'owner',
+                'type' => $user_type,
                 'appartment_id' => $appartment_id,
+                'user_type' => $user_type,
             ]);
          }
          EntranceGate::create([

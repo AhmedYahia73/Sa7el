@@ -28,6 +28,7 @@ class VisitorController extends Controller
                 'date' => $item->created_at?->format('Y-m-d'),
                 'time' => $item->created_at?->format('H:i:s'),
                 'gate' => $item?->gate?->name,
+                'user_type' => $item->user_type
             ];
         });
 

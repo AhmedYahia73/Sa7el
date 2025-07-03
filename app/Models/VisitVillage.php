@@ -15,6 +15,7 @@ class VisitVillage extends Model
         'type',
         'visitor_type',
         'code',
+        'user_type',
     ];
 
     public function user(){
