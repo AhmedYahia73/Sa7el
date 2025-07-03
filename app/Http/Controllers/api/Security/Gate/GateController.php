@@ -99,6 +99,11 @@ class GateController extends Controller
          ->where('appartment_id', $appartment_id)
          ->where('user_id', $userid)
          ->first()?->type;
+         if (empty($user_type)) {
+            return response()->json([
+                'errors' => 'Appartment is wrong'
+            ], 400);
+         }
          if ($visitor) { 
             $visit_village = $this->visit_village
             ->create([
