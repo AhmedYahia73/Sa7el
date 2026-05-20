@@ -11,6 +11,7 @@ use App\Models\Appartment;
 use App\Models\AppartmentCode;
 use App\Models\AppartmentType;
 use App\Models\User;
+use App\Models\Package;
 use App\Models\Zone;
 
 class AppartmentController extends Controller
@@ -114,6 +115,19 @@ class AppartmentController extends Controller
                 'errors' => $validator->errors(),
             ],400);
         }
+        $package_id = $request->user()->village->package_id;
+        $package = Package::
+        where("id", $package_id)
+        ->first();
+        $appartments = $this->appartment
+        ->where('village_id', $request->user()->village_id)
+        ->count();
+        if(!$package || $package->units_num < $appartments + 1){
+            return response()->json([
+                "errors" => "You must upgrade your plan"
+            ], 400);
+        }
+        //units_num
             // 'image' => ['required'],
             // 'village_id' => ['required'],
         $appartmentRequest = $validator->validated();

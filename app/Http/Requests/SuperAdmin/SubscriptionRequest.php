@@ -33,6 +33,7 @@ class SubscriptionRequest extends FormRequest
             'feez' => ['required', 'numeric'],
             'discount' => ['required', 'numeric'],
             'admin_num' => ['numeric'],
+            'units_num' => ['numeric'],
             'security_num' => ['numeric'],
             'maintenance_module' => ['boolean'],
             'beach_pool_module' => ['boolean'],

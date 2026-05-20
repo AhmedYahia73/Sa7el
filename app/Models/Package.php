@@ -19,6 +19,7 @@ class Package extends Model
         'maintenance_module',
         'beach_pool_module',
         'maintenance_type_id',
+        'units_num',
         'status',
     ];
     protected $appends = ['ar_name', 'ar_description'];
