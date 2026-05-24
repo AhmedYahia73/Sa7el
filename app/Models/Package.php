@@ -22,6 +22,7 @@ class Package extends Model
         'units_num',
         'status',
     ];
+    
     protected $appends = ['ar_name', 'ar_description'];
     
     public function getArNameAttribute(){

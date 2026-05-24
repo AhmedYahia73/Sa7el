@@ -31,12 +31,7 @@ class SubscriptionController extends Controller
         ->get();
 
         return response()->json([
-            'packages' => $package,
-            'maintenance_provider' => $maintenance_provider,
-            'provider' => $provider,
-            'village' => $village,
-            'maintenance_types' => $maintenance_types,
-            'services_types' => $services_types,
+            'packages' => $package, 
         ]);
     }
 
