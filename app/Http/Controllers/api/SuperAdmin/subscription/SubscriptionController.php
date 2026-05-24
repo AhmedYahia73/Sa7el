@@ -30,8 +30,7 @@ class SubscriptionController extends Controller
         ->where('status', 1)
         ->get();
 
-        return response()->json([
-            'packages' => $package, 
+        return response()->json([ 
         ]);
     }
 
