@@ -30,7 +30,13 @@ class SubscriptionController extends Controller
         ->where('status', 1)
         ->get();
 
-        return response()->json([ 
+        return response()->json([
+            'packages' => $package,
+            'maintenance_provider' => $maintenance_provider,
+            'provider' => $provider,
+            'village' => $village,
+            'maintenance_types' => $maintenance_types,
+            'services_types' => $services_types,
         ]);
     }
 
