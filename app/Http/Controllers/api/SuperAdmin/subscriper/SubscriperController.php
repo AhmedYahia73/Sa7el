@@ -153,7 +153,10 @@ class SubscriperController extends Controller
         ->create($subscripeRequest);
         $user->from = $payments->start_date;
         $user->to = $payments->expire_date;
-        $user->package_id = $payments->package_id;
+        $user->package_id = $payments->package_id; 
+        if($request->type == 'village'){
+            $user->units_num += $package->units_num;
+        }
         $user->save();
 
         return response()->json([

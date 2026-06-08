@@ -18,6 +18,7 @@ class Village extends Model
         'status',
         'cover_image',
         'location_map',
+        "units_num",
     ];
     protected $appends = ['image_link', 'ar_name', 'ar_description', 'cover_image_link'];
 

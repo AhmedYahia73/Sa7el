@@ -373,6 +373,11 @@ class LoginController extends Controller
             ], 400);
         }
         if (password_verify($request->input('password'), $user->password) && $user->role == 'user') {
+            if ($user->tokens()->exists()) {
+                return response()->json([
+                    'errors' => 'already logged in from another device'
+                ], 403);
+            }
             $user->token = $user->createToken('user')->plainTextToken;
             return response()->json([
                 'user' => $user,

@@ -50,6 +50,26 @@ class AppartmentController extends Controller
         ]);
     }
 
+    public function view_codes(Request $request, $id){
+        $appartment_codes = AppartmentCode::
+        where('appartment_id', $id) 
+        ->get()
+        ->map(function($item){
+            return [
+                'id' => $item->id,
+                'code' => $item->code,
+                'type' => $item->type,
+                'from' => $item->from,
+                'to' => $item->to,
+                'people' => $item->people, 
+            ];
+        });
+
+        return response()->json([
+            'appartment_codes' => $appartment_codes,
+        ]);
+    }
+
     public function create_code(Request $request){
         if ($request->type == 'owner') {
             $validator = Validator::make($request->all(), [
@@ -104,25 +124,55 @@ class AppartmentController extends Controller
         ]);
     }
 
+    public function update_code(Request $request, $id){
+        $validator = Validator::make($request->all(), [ 
+            'people' => ['required', 'numeric'],
+        ]); 
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+
+        $appartment_code = $this->appartment_code
+        ->findOrFail($id);  
+  
+        $appartment_code->update([
+            "people" => $request->people
+        ]);
+
+        return response()->json([
+            'success' => 'you update data success',
+            'date' => $appartment_code,
+        ]);
+    }
+
     public function create(Request $request){
         $validator = Validator::make($request->all(), [
             'unit' => ['required'], 
             'appartment_type_id' => ['required', 'exists:appartment_types,id'],
-            'location' => ['sometimes'],
+            'location' => ['sometimes'], 
+            'entrance_status' => ['required', 'boolean'],
+            'pool_status' => ['required', 'boolean'],
+            'beach_status' => ['required', 'boolean'],
+            'rent_code_status' => ['required', 'boolean'],
+            'selling_status' => ['required', 'boolean'],
+            'rent_status' => ['required', 'boolean'],
+            'visits_status' => ['required', 'boolean'],
+            'options_status' => ['required', 'boolean'],
+            'all_status' => ['required', 'boolean'],
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
                 'errors' => $validator->errors(),
             ],400);
         }
-        $package_id = $request->user()->village->package_id;
-        $package = Package::
-        where("id", $package_id)
-        ->first();
+        $units_num = $request->user()->village->units_num;
+         
         $appartments = $this->appartment
         ->where('village_id', $request->user()->village_id)
         ->count();
-        if(!$package || $package->units_num < $appartments + 1){
+        if(!$units_num || $units_num < $appartments + 1){
             return response()->json([
                 "errors" => "You must upgrade your plan"
             ], 400);
@@ -149,6 +199,15 @@ class AppartmentController extends Controller
             'unit' => ['required'], 
             'appartment_type_id' => ['required', 'exists:appartment_types,id'],
             'location' => ['sometimes'],
+            'entrance_status' => ['required', 'boolean'],
+            'pool_status' => ['required', 'boolean'],
+            'beach_status' => ['required', 'boolean'],
+            'rent_code_status' => ['required', 'boolean'],
+            'selling_status' => ['required', 'boolean'],
+            'rent_status' => ['required', 'boolean'],
+            'visits_status' => ['required', 'boolean'],
+            'options_status' => ['required', 'boolean'],
+            'all_status' => ['required', 'boolean'],
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([

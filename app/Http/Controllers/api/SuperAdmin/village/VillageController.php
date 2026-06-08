@@ -152,7 +152,8 @@ class VillageController extends Controller
        // name, description, status, zone_id, location
         // ar_name, ar_description, image, location_map
         $validator = Validator::make($request->all(), [
-            'image' => 'nullable|base64image', 
+            'image' => 'nullable|base64image',
+            "units_num" => ['required', 'numeric'],
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([

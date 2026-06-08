@@ -34,6 +34,14 @@ class VisitController extends Controller
             ],400);
         }
 
+        $appartment = Appartment::
+        where('id', $request->appartment_id)
+        ->first();
+        if(empty($appartment) || !$appartment->visits_status || !$appartment->all_status){
+            return response()->json([
+                'errors' => 'You are blocked to enter this appartment'
+            ],400);
+        }  
         $appartment_code = $this->appartment_code 
         ->where('appartment_id', $request->appartment_id)
         ->where('user_id', $request->user()->id)
@@ -144,6 +152,14 @@ class VisitController extends Controller
             ],400);
         }
 
+        $appartment = Appartment::
+        where('id', $request->appartment_id)
+        ->first();
+        if(empty($appartment) || !$appartment->visits_status || !$appartment->all_status){
+            return response()->json([
+                'errors' => 'You are blocked to enter this appartment'
+            ],400);
+        }  
         $visitor_code = $this->visitor_code
         ->select('qr_code', 'visitor_type')
         ->where('village_id', $request->village_id)

@@ -88,6 +88,8 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(InfoController::class)->prefix('info_village')->middleware('can:Village Page')
     ->group(function() {
         Route::get('/', 'view');
+        Route::get('/online_users', 'online_users');
+        Route::get('/logout_user/{id}', 'logout_user');
     });
 
     Route::controller(MaintenanceTypeController::class)->prefix('maintenance_type')->middleware('can:Maintenance Type')
@@ -164,7 +166,9 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(AppartmentController::class)->prefix('appartment')->middleware('can:Appartment')
     ->group(function() {
         Route::get('/', 'view');
+        Route::get('/view_codes/{id}', 'view_codes');
         Route::post('/create_code', 'create_code');
+        Route::put('/update_code/{id}', 'update_code');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');

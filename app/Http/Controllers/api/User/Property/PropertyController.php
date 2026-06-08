@@ -58,7 +58,16 @@ class PropertyController extends Controller
                     $item?->village?->to <= date('Y-m-d') && 
                     !empty($item->code) ? true : false,
                     'pool_beach_flag' => $item?->village?->package?->beach_pool_module ? 1 : 0,
-                    'maintenance_flag' => $item?->village?->package?->maintenance_module ? 1 : 0,
+                    'maintenance_flag' => $item?->village?->package?->maintenance_module ? 1 : 0, 
+                    'entrance_status' => false,
+                    'pool_status' => false,
+                    'beach_status' => false,
+                    'rent_code_status' => false,
+                    'selling_status' => false,
+                    'rent_status' => false,
+                    'visits_status' => false,
+                    'options_status' => false,
+                    'all_status' => false,
                 ];
             } else {
                 return [
@@ -79,6 +88,15 @@ class PropertyController extends Controller
                     !empty($item->code) ? true : false,
                     'pool_beach_flag' => $item?->village?->package?->beach_pool_module ? 1 : 0,
                     'maintenance_flag' => $item?->village?->package?->maintenance_module ? 1 : 0,
+                    'entrance_status' => $appartment->entrance_status,
+                    'pool_status' => $appartment->pool_status,
+                    'beach_status' => $appartment->beach_status,
+                    'rent_code_status' => $appartment->rent_code_status,
+                    'selling_status' => $appartment->selling_status,
+                    'rent_status' => $appartment->rent_status,
+                    'visits_status' => $appartment->visits_status,
+                    'options_status' => $appartment->options_status,
+                    'all_status' => $appartment->all_status,    
                 ];
             }
         });

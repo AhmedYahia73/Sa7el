@@ -26,6 +26,11 @@ class EntranceController extends Controller
         $appartment = $this->appartment
         ->where('id', $request->appartment_id)
         ->first();
+        if(empty($appartment) || !$appartment->entrance_status || !$appartment->all_status){
+            return response()->json([
+                'errors' => 'You are blocked to enter this appartment'
+            ],400);
+        } 
         $user = $request->user();
         $data = $user->id . '>appartment>' . $request->appartment_id;
         $qrCode = base64_encode(

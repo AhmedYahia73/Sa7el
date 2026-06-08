@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\api\User\rent;
 
 use App\Http\Controllers\Controller;
+use App\Models\Appartment;
+use App\Models\AppartmentCode;
+use App\trait\TraitImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\trait\TraitImage;
-
-use App\Models\AppartmentCode;
 
 class RentController extends Controller
 {
@@ -26,6 +26,14 @@ class RentController extends Controller
             ],400);
         }
 
+        $appartment = Appartment::
+        where('id', $request->appartment_id)
+        ->first();
+        if(empty($appartment) || !$appartment->rent_code_status || !$appartment->all_status){
+            return response()->json([
+                'errors' => 'You are blocked to enter this appartment'
+            ],400);
+        }
         $rents = $this->appartment_code
         ->where('village_id', $request->village_id)
         ->where('appartment_id', $request->appartment_id)
@@ -55,6 +63,14 @@ class RentController extends Controller
                 'errors' => $firstError,
             ],400);
         }
+        $appartment = Appartment::
+        where('id', $request->appartment_id)
+        ->first();
+        if(empty($appartment) || !$appartment->rent_code_status || !$appartment->all_status){
+            return response()->json([
+                'errors' => 'You are blocked to enter this appartment'
+            ],400);
+        } 
         $appartment_code = $this->appartment_code
         ->where('from', '<=', $request->from)
         ->where('to', '>=', $request->from)
@@ -84,7 +100,7 @@ class RentController extends Controller
 
         $this->appartment_code
         ->create($rentRequest);
-        
+       // /rent/add
         return response()->json([
             'success' => $code
         ]);

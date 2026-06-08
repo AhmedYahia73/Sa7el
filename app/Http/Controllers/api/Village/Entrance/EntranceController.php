@@ -15,20 +15,32 @@ class EntranceController extends Controller
     private UserBeach $beach, private EntrancePool $pool){}
 
     public function entrance_gate(Request $request){
+        $userId = auth()->id();
+
         $gate = $this->gate
         ->where('village_id', $request->user()->village_id)
+        ->with([
+            'gate', 
+            'user', 
+            'appartment.appartment_code' => function($query) use ($userId) {
+                $query->where('user_id', $userId)->orderByDesc('id');
+            }
+        ])
         ->get()
-        ->map(function($item){
+        ->map(function($item) {
+            $apartmentUserType = $item->appartment?->appartment_code?->first()?->user_type;
+            $finalVisitorType = ($item->visit_villages === 'visitor') ? 'visitor' : $apartmentUserType;
+
             return [
-                'time' => $item?->created_at?->format('H:i:s'),
-                'gate' => $item?->gate?->name,
-                'gate_location' => $item?->gate?->location,
-                'user_name' => $item?->user?->name,
-                'user_phone' => $item?->user?->phone,
-                'user_email' => $item?->user?->email,
-                'date' => $item?->created_at?->format('Y-m-d') ?? null,
-                'visitor_type' => $item->visitor_type,
-                'user_type' => $item->user_type,
+                'time'           => $item->created_at ? $item->created_at->format('H:i:s') : null,
+                'date'           => $item->created_at ? $item->created_at->format('Y-m-d') : null,
+                'gate'           => $item->gate?->name,
+                'gate_location'  => $item->gate?->location,
+                'user_name'      => $item->user?->name,
+                'user_phone'     => $item->user?->phone,
+                'user_email'     => $item->user?->email,
+                'user_type'      => $item->user_type,
+                'visitor_type'   => $finalVisitorType, // تم حل التكرار وحل مشكلة الـ Query الجانبية
             ];
         });
 

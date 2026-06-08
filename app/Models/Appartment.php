@@ -11,7 +11,16 @@ class Appartment extends Model
         'location',
         'appartment_type_id',
         'user_id',
-        'village_id', 
+        'village_id',
+        'entrance_status',
+        'pool_status',
+        'beach_status',
+        'rent_code_status',
+        'selling_status',
+        'rent_status',
+        'visits_status',
+        'options_status', // => كل النقط فى الابليكشن
+        'all_status',
     ];
     protected $appends = ['image_link'];
 

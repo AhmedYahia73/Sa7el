@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('packages', function (Blueprint $table) {
-            $table->integer("units_num")->default(1);
+        Schema::table('villages', function (Blueprint $table) {
+            $table->integer("units_num")->default(0);
         });
     }
 
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('packages', function (Blueprint $table) {
+        Schema::table('villages', function (Blueprint $table) {
             //
         });
     }

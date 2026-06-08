@@ -9,6 +9,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 use App\Models\Pools;
 use App\Models\Beach;
+use App\Models\Appartment;
 
 class PoolBeachesController extends Controller
 {
@@ -25,6 +26,14 @@ class PoolBeachesController extends Controller
             $firstError = $validator->errors()->first();
             return response()->json([
                 'errors' => $firstError,
+            ],400);
+        } 
+        $appartment = Appartment::
+        where('id', $request->appartment_id)
+        ->first();
+        if(empty($appartment) || !$appartment->beach_status || !$appartment->all_status){
+            return response()->json([
+                'errors' => 'You are blocked to enter this appartment'
             ],400);
         } 
         $beaches = $this->beaches
@@ -63,6 +72,14 @@ class PoolBeachesController extends Controller
                 'errors' => $firstError,
             ],400);
         }
+        $appartment = Appartment::
+        where('id', $request->appartment_id)
+        ->first();
+        if(empty($appartment) || !$appartment->pool_status || !$appartment->all_status){
+            return response()->json([
+                'errors' => 'You are blocked to enter this appartment'
+            ],400);
+        }   
         $pools = $this->pools
         ->where('village_id', $request->village_id)
         ->where('status', 1)
