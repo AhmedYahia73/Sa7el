@@ -10,6 +10,7 @@ use App\trait\TraitImage;
 use App\Models\Appartment;
 use App\Models\AppartmentCode;
 use App\Models\AppartmentType;
+use App\Models\CodeRequest;
 use App\Models\User;
 use App\Models\Package;
 use App\Models\Zone;
@@ -108,16 +109,22 @@ class AppartmentController extends Controller
         do {
             $code = mt_rand(1000000, 9999999); // Always 7 digits
         } while ($this->appartment_code::where('code', $code)->exists());
-        $codeRequest['code'] = $code;
         $codeRequest['village_id'] = $request->user()->village_id;
         if ($request->has('image')) {
             $image_path = $this->upload($request, 'image', '/village/appartment_code/id');
             $codeRequest['image'] = $image_path;
         }
+        $appartment_codes = [];
         for ($i = 0; $i < $request->people; $i++) {
-            $this->appartment_code
-            ->create($codeRequest);
-        }
+            $appartment_codes[] = $this->appartment_code
+            ->create($codeRequest)->id;
+        } 
+        CodeRequest::create([
+            'user_id' => $request->user()->id,
+            'appartment_id' => $request->appartment_id,
+            "appartment_codes" => $appartment_codes,
+            'code' => $code,
+        ]);
 
         return response()->json([
             'success' => $code

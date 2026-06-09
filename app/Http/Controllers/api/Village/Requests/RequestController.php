@@ -1,0 +1,99 @@
+<?php
+
+namespace App\Http\Controllers\api\Village\Requests;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
+use App\Models\CodeRequest;
+use App\Models\LoginRequest;
+use App\Models\AppartmentCode;
+
+class RequestController extends Controller
+{
+    public function code_request(Request $request){
+        $requests = CodeRequest::where('village_id', $request->user()->village_id)
+        ->where("status", "pending")
+        ->latest() // اختياري: لترتيب الطلبات من الأحدث للأقدم
+        ->paginate(15) // حدد عدد العناصر في الصفحة الواحدة (مثلاً 15)
+        ->through(function($item) {
+            return [
+                'id' => $item->id,
+                'user_name' => $item->user?->name,
+                'user_phone' => $item->user?->phone,
+                'user_email' => $item->user?->email,
+                'appartment_unit' => $item->appartment?->unit,
+                'appartment_location' => $item->appartment?->location,
+                'code' => $item->code,
+                'people_count' => collect($item->appartment_codes)->count(),
+            ];
+        });
+
+        return response()->json([
+            'code_requests' => $requests
+        ]);
+    }
+
+    public function login_request(Request $request){
+        $requests = LoginRequest::with(['user']) // جلب بيانات المستخدم مسبقاً لتسريع الأداء
+            ->where('village_id', $request->user()->village_id)
+            ->where("status", "pending")
+            ->latest() // ترتيب من الأحدث إلى الأقدم
+            ->paginate($request->get('per_page', 15)) // جلب عدد عناصر معين (الافتراضي 15)
+            ->through(function($item){
+                return [
+                    'id' => $item->id,
+                    'user_name' => $item->user?->name,
+                    'user_phone' => $item->user?->phone,
+                    'user_email' => $item->user?->email,
+                    'ip_address' => $item->ip_address,
+                ];
+            });
+
+        return response()->json([
+            'login_requests' => $requests
+        ]);
+    }
+
+    public function code_request_status(Request $request, $id){
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|in:approve,reject',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+
+        $codes = CodeRequest::where('id', $id)->first();
+        if($request->status == 'approve'){
+            AppartmentCode::
+            whereIn('id', $codes->appartment_codes)
+            ->update(['code' => $codes->code]);
+        }
+        $codes->update(['status' => $request->status]);
+
+        return response()->json([
+            'message' => 'Code request status updated successfully'
+        ]);
+    }
+
+    public function login_request_status(Request $request, $id){
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|in:approve,reject',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+
+        $login_request = LoginRequest::where('id', $id)->first();
+        $login_request->update(['status' => $request->status]);
+
+        return response()->json([
+            'message' => 'Login request status updated successfully'
+        ]);
+    }
+}

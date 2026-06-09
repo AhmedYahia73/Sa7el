@@ -40,6 +40,10 @@ class EntranceController extends Controller
                 'user_phone'     => $item->user?->phone,
                 'user_email'     => $item->user?->email,
                 'user_type'      => $item->user_type,
+                'unit'           => [
+                    "unit" =>$item?->appartment?->unit,
+                    "location" =>$item?->appartment?->location,
+                ],
                 'visitor_type'   => $finalVisitorType, // تم حل التكرار وحل مشكلة الـ Query الجانبية
             ];
         });

@@ -12,6 +12,7 @@ use Illuminate\Validation\Rule;
 
 use App\Models\User;
 use App\Models\PersonalAccessToken;
+use App\Models\LoginRequest;
 use App\Models\Village;
 use App\Models\AppartmentType;
 use App\Models\SecurityMan;
@@ -378,6 +379,15 @@ class LoginController extends Controller
                     'errors' => 'already logged in from another device'
                 ], 403);
             }
+            if($user->ip_address != $request->ip()){
+                LoginRequest::create([
+                    "user_id" => $user->id,
+                    "ip_address" => $request->ip(),
+                    "status" => "pending"
+                ]);
+            }
+            $user->ip_address = $request->ip();
+            $user->save();
             $user->token = $user->createToken('user')->plainTextToken;
             return response()->json([
                 'user' => $user,
@@ -387,6 +397,18 @@ class LoginController extends Controller
         else { 
             return response()->json(['errors'=>'creational not Valid'],403);
         }
+    }
+
+    public function check_user_login_request(Request $request){
+        $login_request = LoginRequest::
+        where("ip_address", $request->ip())
+        ->where("user_id", auth()->user()->id)
+        ->orderByDesc("id")
+        ->first()?->status ==  "approve" ? true : false;
+
+        return response()->json([
+            "login" => $login_request
+        ]);
     }
 
     public function sign_up(SignupRequest $request){

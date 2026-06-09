@@ -1,28 +1,33 @@
 <?php
 
+use App\Http\Controllers\api\User\Entrance\EntranceController;
+use App\Http\Controllers\api\User\Maintenance\MaintenanceController;
+use App\Http\Controllers\api\User\MaintenanceFeez\MaintenanceFeezController;
+use App\Http\Controllers\api\User\MaintenanceProvider\MaintenanceProviderController;
+use App\Http\Controllers\api\User\Offers\OfferController;
+use App\Http\Controllers\api\User\PoolBeaches\PoolBeachesController;
+use App\Http\Controllers\api\User\Posts\PostsController;
+use App\Http\Controllers\api\User\ProblemReport\ProblemReportController;
+use App\Http\Controllers\api\User\Profile\ProfileController;
+use App\Http\Controllers\api\User\Property\PropertyController;
+use App\Http\Controllers\api\User\rent\RentController;
+use App\Http\Controllers\api\User\Services\ServiceController;
+use App\Http\Controllers\api\User\Visit\VisitController;
+use App\Http\Controllers\api\User\Visitors\MyVisitorsController;
+use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\api\User\Property\PropertyController;
-use App\Http\Controllers\api\User\Visit\VisitController;
-use App\Http\Controllers\api\User\Maintenance\MaintenanceController;
-use App\Http\Controllers\api\User\ProblemReport\ProblemReportController;
-use App\Http\Controllers\api\User\PoolBeaches\PoolBeachesController;
-use App\Http\Controllers\api\User\Services\ServiceController;
-use App\Http\Controllers\api\User\rent\RentController;
-use App\Http\Controllers\api\User\Offers\OfferController;
-use App\Http\Controllers\api\User\Posts\PostsController;
-use App\Http\Controllers\api\User\MaintenanceFeez\MaintenanceFeezController;
-use App\Http\Controllers\api\User\Visitors\MyVisitorsController;
-use App\Http\Controllers\api\User\Entrance\EntranceController;
-use App\Http\Controllers\api\User\Profile\ProfileController;
-use App\Http\Controllers\api\User\MaintenanceProvider\MaintenanceProviderController;
 
 Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     Route::controller(PropertyController::class)->prefix('property')
     ->group(function() {
         Route::get('/', 'my_property'); 
         Route::post('/add', 'add_property'); 
+    });
+
+    Route::controller(LoginController::class)->prefix('check_user_login_request')
+    ->group(function() {
+        Route::get('/', 'check_user_login_request');
     });
 
     Route::controller(MaintenanceProviderController::class)->prefix('maintenance_provider')

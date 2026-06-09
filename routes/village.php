@@ -32,6 +32,7 @@ use App\Http\Controllers\api\Village\Appartments\AppartmentProfileController;
 use App\Http\Controllers\api\Village\Notification\NotificationController;
 use App\Http\Controllers\api\Village\Entrance\EntranceController;
 use App\Http\Controllers\api\Village\LandingPage\LandingPageControlle;
+use App\Http\Controllers\api\Village\Requests\RequestController;
 
 Route::controller(LandingPageControlle::class)->prefix('landing_page')
 ->group(function() {
@@ -44,6 +45,18 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     ->group(function() {
         Route::get('/', 'view');
         Route::get('/filter', 'filter');
+    });
+
+    Route::controller(RequestController::class)->prefix('code_request')
+    ->group(function() {
+        Route::get('/', 'code_request');  
+        Route::put('/status/{id}', 'code_request_status');  
+    });
+
+    Route::controller(RequestController::class)->prefix('login_request')
+    ->group(function() {
+        Route::get('/', 'login_request');  
+        Route::put('/status/{id}', 'login_request_status');  
     });
 
     Route::controller(NotificationController::class)->prefix('notifications')
