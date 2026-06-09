@@ -32,7 +32,9 @@ class InfoController extends Controller
             ->pluck('tokenable_id');
 
         $users = User::whereIn('id', $user_ids)
-            ->where('village_id', $village_id)
+            ->whereHas('appartment_code', function($q) use ($village_id) {
+                $q->where('village_id', $village_id);
+            })
             ->where('role', 'user')
             ->when($request->search, fn($q) => $q->where(function($q) use ($request) {
                 $q->where('name', 'like', "%{$request->search}%")
