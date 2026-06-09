@@ -50,7 +50,9 @@ class InfoController extends Controller
         $village_id = $request->user()->village_id;
 
         $user = User::where('id', $id)
-            ->where('village_id', $village_id)
+            ->whereHas('appartment_code', function($q) use ($village_id) {
+                $q->where('village_id', $village_id);
+            })
             ->where('role', 'user')
             ->first();
 
