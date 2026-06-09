@@ -379,15 +379,6 @@ class LoginController extends Controller
                     'errors' => 'already logged in from another device'
                 ], 403);
             }
-            if($user->ip_address != $request->ip()){
-                LoginRequest::create([
-                    "user_id" => $user->id,
-                    "ip_address" => $request->ip(),
-                    "status" => "pending",
-                ]);
-            }
-            $user->ip_address = $request->ip();
-            $user->save();
             $user->token = $user->createToken('user')->plainTextToken;
             return response()->json([
                 'user' => $user,
@@ -400,9 +391,27 @@ class LoginController extends Controller
     }
 
     public function check_user_login_request(Request $request){
+        $validator = Validator::make($request->all(), [
+            'village_id' => 'required|exists:villages,id', 
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }
+        if($request->user()->ip_address != $request->ip()){
+            LoginRequest::create([
+                "user_id" => $request->user()->id,
+                "ip_address" => $request->ip(),
+                "status" => "pending",
+                "village_id" => $request->village_id,
+            ]);
+        } 
         $login_request = LoginRequest::
         where("ip_address", $request->ip())
         ->where("user_id", auth()->user()->id)
+        ->where("village_id", $request->village_id)
         ->orderByDesc("id")
         ->first()?->status ==  "approve" ? true : false;
 
