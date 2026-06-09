@@ -12,7 +12,6 @@ class RequestController extends Controller
 
     public function login_request(Request $request){
         $requests = LoginRequest::with(['user']) // جلب بيانات المستخدم مسبقاً لتسريع الأداء
-            ->where('village_id', $request->user()->village_id)
             ->where("status", "pending")
             ->latest() // ترتيب من الأحدث إلى الأقدم
             ->paginate($request->get('per_page', 15)) // جلب عدد عناصر معين (الافتراضي 15)
