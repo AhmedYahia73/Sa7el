@@ -53,12 +53,6 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
         Route::put('/status/{id}', 'code_request_status');  
     });
 
-    Route::controller(RequestController::class)->prefix('login_request')
-    ->group(function() {
-        Route::get('/', 'login_request');  
-        Route::put('/status/{id}', 'login_request_status');  
-    });
-
     Route::controller(NotificationController::class)->prefix('notifications')
     ->group(function() {
         Route::get('/', 'notification');  

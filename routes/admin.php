@@ -1,45 +1,51 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\api\SuperAdmin\zones\ZoneController;
-use App\Http\Controllers\api\SuperAdmin\village\VillageController;
-use App\Http\Controllers\api\SuperAdmin\village\VillageGallaryController;
-use App\Http\Controllers\api\SuperAdmin\village\VillageAdminController;
-use App\Http\Controllers\api\SuperAdmin\village\VillageRolesController;
-use App\Http\Controllers\api\SuperAdmin\appartment_type\AppartmentTypeController;
-use App\Http\Controllers\api\SuperAdmin\service_type\ServiceTypeController;
-use App\Http\Controllers\api\SuperAdmin\users\UserController;
-use App\Http\Controllers\api\SuperAdmin\Provider\ProviderController;
-use App\Http\Controllers\api\SuperAdmin\Provider\ProviderAdminController;
-use App\Http\Controllers\api\SuperAdmin\Provider\ProviderGalleryController;
-use App\Http\Controllers\api\SuperAdmin\Provider\ProviderRolesController;
-use App\Http\Controllers\api\SuperAdmin\payment_method\PaymentMethodController;
-use App\Http\Controllers\api\SuperAdmin\subscription\SubscriptionController;
-use App\Http\Controllers\api\SuperAdmin\subscriper\SubscriperController;
-use App\Http\Controllers\api\SuperAdmin\payment\PaymentController;
 use App\Http\Controllers\api\SuperAdmin\Admin\AdminController;
 use App\Http\Controllers\api\SuperAdmin\Admin\AdminRoleController;
+use App\Http\Controllers\api\SuperAdmin\appartment_type\AppartmentTypeController;
+use App\Http\Controllers\api\SuperAdmin\Home\HomeController;
 use App\Http\Controllers\api\SuperAdmin\invoice\InvoiceController;
-use App\Http\Controllers\api\SuperAdmin\Provider\ProviderCoverController;
-use App\Http\Controllers\api\SuperAdmin\village\VillageCoverController;
 use App\Http\Controllers\api\SuperAdmin\MaintenanceType\MaintenanceTypeController;
 use App\Http\Controllers\api\SuperAdmin\Mall\MallController;
-use App\Http\Controllers\api\SuperAdmin\Mall\MallGallaryController;
 use App\Http\Controllers\api\SuperAdmin\Mall\MallCoverController;
-use App\Http\Controllers\api\SuperAdmin\Home\HomeController;
-use App\Http\Controllers\api\SuperAdmin\ServiceProvider\ServiceProviderController;
+use App\Http\Controllers\api\SuperAdmin\Mall\MallGallaryController;
+use App\Http\Controllers\api\SuperAdmin\payment_method\PaymentMethodController;
+use App\Http\Controllers\api\SuperAdmin\payment\PaymentController;
+use App\Http\Controllers\api\SuperAdmin\Provider\ProviderAdminController;
+use App\Http\Controllers\api\SuperAdmin\Provider\ProviderController;
+use App\Http\Controllers\api\SuperAdmin\Provider\ProviderCoverController;
+use App\Http\Controllers\api\SuperAdmin\Provider\ProviderGalleryController;
+use App\Http\Controllers\api\SuperAdmin\Provider\ProviderRolesController;
+use App\Http\Controllers\api\SuperAdmin\Requests\RequestController;
+use App\Http\Controllers\api\SuperAdmin\service_type\ServiceTypeController;
 use App\Http\Controllers\api\SuperAdmin\ServiceProvider\MaintenanceProviderAdminController;
 use App\Http\Controllers\api\SuperAdmin\ServiceProvider\MaintenanceProviderCoverController;
 use App\Http\Controllers\api\SuperAdmin\ServiceProvider\MaintenanceProviderGalleryController;
 use App\Http\Controllers\api\SuperAdmin\ServiceProvider\MaintenanceProviderRolesController;
+use App\Http\Controllers\api\SuperAdmin\ServiceProvider\ServiceProviderController;
+use App\Http\Controllers\api\SuperAdmin\subscriper\SubscriperController;
+use App\Http\Controllers\api\SuperAdmin\subscription\SubscriptionController;
+use App\Http\Controllers\api\SuperAdmin\users\UserController;
+use App\Http\Controllers\api\SuperAdmin\village\VillageAdminController;
+use App\Http\Controllers\api\SuperAdmin\village\VillageController;
+use App\Http\Controllers\api\SuperAdmin\village\VillageCoverController;
+use App\Http\Controllers\api\SuperAdmin\village\VillageGallaryController;
+use App\Http\Controllers\api\SuperAdmin\village\VillageRolesController;
+use App\Http\Controllers\api\SuperAdmin\zones\ZoneController;
 use App\Http\Controllers\api\User\Profile\ProfileController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     Route::controller(HomeController::class)->prefix('home')
     ->group(function() {
         Route::get('/', 'view')->middleware('can:admin_Home_view'); 
+    });
+
+    Route::controller(RequestController::class)->prefix('login_request')
+    ->group(function() {
+        Route::get('/', 'login_request');  
+        Route::put('/status/{id}', 'login_request_status');  
     });
 
     Route::controller(ZoneController::class)->prefix('zone')

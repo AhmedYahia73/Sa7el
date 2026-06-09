@@ -383,7 +383,7 @@ class LoginController extends Controller
                 LoginRequest::create([
                     "user_id" => $user->id,
                     "ip_address" => $request->ip(),
-                    "status" => "pending"
+                    "status" => "pending",
                 ]);
             }
             $user->ip_address = $request->ip();
