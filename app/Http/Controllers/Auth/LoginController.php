@@ -408,6 +408,7 @@ class LoginController extends Controller
                 "village_id" => $request->village_id,
             ]);
         } 
+        auth()->user()->update(['ip_address' => $request->ip()]);
         $login_request = LoginRequest::
         where("ip_address", $request->ip())
         ->where("user_id", auth()->user()->id)
