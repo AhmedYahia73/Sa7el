@@ -11,11 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('login_requests', function (Blueprint $table) {
+        Schema::create('code_requests', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('village_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('user_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
-            $table->string("ip_address");
+            $table->foreignId('appartment_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->string('code');
             $table->enum("status", ["pending", "approve", "reject"])->default("pending");
+            $table->json('appartment_codes');
             $table->timestamps();
         });
     }
@@ -25,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('login_requests');
+        Schema::dropIfExists('code_requests');
     }
 };

@@ -11,6 +11,7 @@ class CodeRequest extends Model
         'appartment_id',
         'code',
         'appartment_codes',
+        'village_id',
         'status', // "pending", "approve", "reject"
     ];
 

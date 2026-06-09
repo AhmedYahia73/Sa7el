@@ -9,6 +9,7 @@ class LoginRequest extends Model
     protected $fillable =[
         'user_id',
         "ip_address",
+        'village_id',
         'status', // "pending", "approve", "reject"
     ];
 
