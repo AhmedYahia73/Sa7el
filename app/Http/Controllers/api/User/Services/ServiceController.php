@@ -34,7 +34,7 @@ class ServiceController extends Controller
         $appartment = Appartment::
         where('id', $request->appartment_id)
         ->first();
-        if(empty($appartment) || !$appartment->entrance_status || !$appartment->all_status){
+        if(empty($appartment) || !$appartment->options_status || !$appartment->all_status){
             return response()->json([
                 'errors' => 'You are blocked to enter this appartment'
             ],400);
