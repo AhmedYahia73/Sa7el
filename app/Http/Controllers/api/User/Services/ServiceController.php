@@ -10,6 +10,7 @@ use App\Models\ServiceType;
 use App\Models\Provider;
 use App\Models\ProviderGallary;
 use App\Models\ProviderVideos;
+use App\Models\Appartment;
 
 class ServiceController extends Controller
 {
@@ -20,6 +21,7 @@ class ServiceController extends Controller
     public function view(Request $request){
         $validator = Validator::make($request->all(), [
             'village_id' => 'required|exists:villages,id',
+            'appartment_id' => 'required|exists:appartments,id', 
             'local' => 'required',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
@@ -28,6 +30,15 @@ class ServiceController extends Controller
                 'errors' => $firstError,
             ],400);
         }
+
+        $appartment = Appartment::
+        where('id', $request->appartment_id)
+        ->first();
+        if(empty($appartment) || !$appartment->entrance_status || !$appartment->all_status){
+            return response()->json([
+                'errors' => 'You are blocked to enter this appartment'
+            ],400);
+        } 
         $services = $this->services
         ->where('status', 1)
         ->whereHas('providers', function($query) use($request){
