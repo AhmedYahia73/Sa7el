@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\api\Village\Appartments;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use App\trait\TraitImage;
-
 use App\Models\Appartment;
 use App\Models\AppartmentCode;
 use App\Models\AppartmentType;
-use App\Models\User;
 use App\Models\Package;
+use App\Models\User;
 use App\Models\Zone;
+use App\trait\TraitImage;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class AppartmentController extends Controller
 {
@@ -47,6 +47,18 @@ class AppartmentController extends Controller
             'zones' => $zones, 
             'appartment_type' => $appartment_type, 
             'users' => $users, 
+        ]);
+    }
+
+    public function view_codes(Request $request, $id){
+        $appartment_codes = AppartmentCode::where('appartment_id', $id)
+            ->select(['id', 'code', 'type', 'from', 'to', 'people']) // تحديد الأعمدة المطلوبة من الداتابيز مباشرة
+            ->get()
+            ->unique('code') // فلترة الأكواد المكررة في الـ Collection
+            ->values(); // إعادة ترتيب الـ Keys عشان يرجع كـ Array سليم في الـ JSON
+
+        return response()->json([
+            'appartment_codes' => $appartment_codes,
         ]);
     }
 
@@ -103,6 +115,63 @@ class AppartmentController extends Controller
             'success' => $code
         ]);
     }
+    
+    public function update_code(Request $request, $id)
+    { 
+        // 1. تحسين الـ Validation
+        $validator = Validator::make($request->all(), [ 
+            'people' => ['required', 'integer', 'min:1'], // الأفضل يكون رقم صحيح وأكبر من الصفر
+        ]); 
+
+        if ($validator->fails()) { 
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        // 2. استخدام Transaction لحماية البيانات
+        DB::beginTransaction();
+        try {
+            $appartment_code = $this->appartment_code->findOrFail($id);
+
+            // تجهيز البيانات اللي هتتعملها إدخال (تجنب كتابة كل عمود يدوياً)
+            $data = $appartment_code->only([
+                'appartment_id', 'user_id', 'village_id', 'from', 
+                'to', 'type', 'code', 'image', 'owner_id', 'user_type'
+            ]);
+            
+            // إصلاح المشكلة: تحديث عدد الأشخاص بالرقم الجديد من الـ Request
+            $data['people'] = $request->people;
+            $data['created_at'] = now();
+            $data['updated_at'] = now();
+
+            // 3. مسح البيانات القديمة
+            $this->appartment_code->where("code", $appartment_code->code)->delete();  
+
+            // 4. تجهيز مصفوفة لعمل إدخال مرة واحدة (Bulk Insert)
+            $records = [];
+            for ($i = 0; $i < $request->people; $i++) {
+                $records[] = $data;
+            }
+
+            // تنفيذ الإدخال كاستعلام واحد في الداتابيز
+            $this->appartment_code->insert($records);
+
+            // حفظ التغييرات في الداتابيز
+            DB::commit();
+
+            return response()->json([
+                'success' => "Data updated successfully"
+            ]);
+
+        } catch (\Exception $e) {
+            // التراجع عن أي تغييرات لو حصل خطأ
+            DB::rollBack();
+            return response()->json([
+                'error' => "Something went wrong, please try again."
+            ], 500);
+        }
+    } 
 
     public function create(Request $request){
         $validator = Validator::make($request->all(), [
