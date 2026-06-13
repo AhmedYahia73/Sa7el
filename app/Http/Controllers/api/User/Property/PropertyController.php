@@ -203,6 +203,7 @@ class PropertyController extends Controller
                 'appartment_codes',
                 'village_id' => $request->village_id,
                 'status' => "pending",
+                "appartment_codes" => []
             ]);
         }
 
