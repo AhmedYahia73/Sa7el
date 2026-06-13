@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Models\Appartment;
 use App\Models\AppartmentCode;
+use App\Models\CodeRequest;
 use App\Models\Zone;
 
 class PropertyController extends Controller
@@ -195,16 +196,14 @@ class PropertyController extends Controller
                     'message' => 'appartment is not found'
                 ]);
             }
-
-            $appartment_code->user_id = $request->user()->id;
-            $appartment_code->save();
-            if ($appartment_code->type == 'owner') {
-                $this->appartment
-                ->where('id', $appartment_code->appartment_id)
-                ->update([
-                    'user_id' => $request->user()->id
-                ]);
-            }
+            CodeRequest::create([
+                'user_id' => auth()->user()->id,
+                'appartment_id' => $appartment_code->appartment_id,
+                'code' => $request->code,
+                'appartment_codes',
+                'village_id' => $request->village_id,
+                'status' => "pending",
+            ]);
         }
 
         return response()->json([

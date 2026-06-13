@@ -10,7 +10,6 @@ use App\trait\TraitImage;
 use App\Models\Appartment;
 use App\Models\AppartmentCode;
 use App\Models\AppartmentType;
-use App\Models\CodeRequest;
 use App\Models\User;
 use App\Models\Package;
 use App\Models\Zone;
@@ -48,26 +47,6 @@ class AppartmentController extends Controller
             'zones' => $zones, 
             'appartment_type' => $appartment_type, 
             'users' => $users, 
-        ]);
-    }
-
-    public function view_codes(Request $request, $id){
-        $appartment_codes = AppartmentCode::
-        where('appartment_id', $id) 
-        ->get()
-        ->map(function($item){
-            return [
-                'id' => $item->id,
-                'code' => $item->code,
-                'type' => $item->type,
-                'from' => $item->from,
-                'to' => $item->to,
-                'people' => $item->people, 
-            ];
-        });
-
-        return response()->json([
-            'appartment_codes' => $appartment_codes,
         ]);
     }
 
@@ -109,48 +88,19 @@ class AppartmentController extends Controller
         do {
             $code = mt_rand(1000000, 9999999); // Always 7 digits
         } while ($this->appartment_code::where('code', $code)->exists());
+        $codeRequest['code'] = $code;
         $codeRequest['village_id'] = $request->user()->village_id;
         if ($request->has('image')) {
             $image_path = $this->upload($request, 'image', '/village/appartment_code/id');
             $codeRequest['image'] = $image_path;
         }
-        $appartment_codes = [];
         for ($i = 0; $i < $request->people; $i++) {
-            $appartment_codes[] = $this->appartment_code
-            ->create($codeRequest)->id;
-        } 
-        CodeRequest::create([
-            'user_id' => $request->user()->id,
-            'appartment_id' => $request->appartment_id,
-            "appartment_codes" => $appartment_codes,
-            'code' => $code,
-        ]);
+            $this->appartment_code
+            ->create($codeRequest);
+        }
 
         return response()->json([
             'success' => $code
-        ]);
-    }
-
-    public function update_code(Request $request, $id){
-        $validator = Validator::make($request->all(), [ 
-            'people' => ['required', 'numeric'],
-        ]); 
-        if ($validator->fails()) { // if Validate Make Error Return Message Error
-            return response()->json([
-                'errors' => $validator->errors(),
-            ],400);
-        }
-
-        $appartment_code = $this->appartment_code
-        ->findOrFail($id);  
-  
-        $appartment_code->update([
-            "people" => $request->people
-        ]);
-
-        return response()->json([
-            'success' => 'you update data success',
-            'date' => $appartment_code,
         ]);
     }
 
@@ -158,28 +108,21 @@ class AppartmentController extends Controller
         $validator = Validator::make($request->all(), [
             'unit' => ['required'], 
             'appartment_type_id' => ['required', 'exists:appartment_types,id'],
-            'location' => ['sometimes'], 
-            'entrance_status' => ['required', 'boolean'],
-            'pool_status' => ['required', 'boolean'],
-            'beach_status' => ['required', 'boolean'],
-            'rent_code_status' => ['required', 'boolean'],
-            'selling_status' => ['required', 'boolean'],
-            'rent_status' => ['required', 'boolean'],
-            'visits_status' => ['required', 'boolean'],
-            'options_status' => ['required', 'boolean'],
-            'all_status' => ['required', 'boolean'],
+            'location' => ['sometimes'],
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
                 'errors' => $validator->errors(),
             ],400);
         }
-        $units_num = $request->user()->village->units_num;
-         
+        $package_id = $request->user()->village->package_id;
+        $package = Package::
+        where("id", $package_id)
+        ->first();
         $appartments = $this->appartment
         ->where('village_id', $request->user()->village_id)
         ->count();
-        if(!$units_num || $units_num < $appartments + 1){
+        if(!$package || $package->units_num < $appartments + 1){
             return response()->json([
                 "errors" => "You must upgrade your plan"
             ], 400);
@@ -206,15 +149,6 @@ class AppartmentController extends Controller
             'unit' => ['required'], 
             'appartment_type_id' => ['required', 'exists:appartment_types,id'],
             'location' => ['sometimes'],
-            'entrance_status' => ['required', 'boolean'],
-            'pool_status' => ['required', 'boolean'],
-            'beach_status' => ['required', 'boolean'],
-            'rent_code_status' => ['required', 'boolean'],
-            'selling_status' => ['required', 'boolean'],
-            'rent_status' => ['required', 'boolean'],
-            'visits_status' => ['required', 'boolean'],
-            'options_status' => ['required', 'boolean'],
-            'all_status' => ['required', 'boolean'],
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([

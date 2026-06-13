@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\CodeRequest;
 use App\Models\LoginRequest;
 use App\Models\AppartmentCode;
+use App\Models\Appartment;
 
 class RequestController extends Controller
 {
@@ -47,10 +48,20 @@ class RequestController extends Controller
 
         $codes = CodeRequest::where('id', $id)
         ->where('village_id', $request->user()->village_id)->first();
+        $appartment_code = AppartmentCode::
+        where("code", $codes->code)
+        ->where("appartment_id", $codes->appartment_id)
+        ->first();
         if($request->status == 'approve'){
-            AppartmentCode::
-            whereIn('id', $codes->appartment_codes)
-            ->update(['code' => $codes->code]);
+            $appartment_code->user_id = $codes->user_id;
+            $appartment_code->save();
+            if ($appartment_code->type == 'owner') {
+                Appartment::
+                where('id', $appartment_code->appartment_id)
+                ->update([
+                    'user_id' => $request->user()->id
+                ]);
+            }
         }
         $codes->update(['status' => $request->status]);
 
