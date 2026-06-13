@@ -14,7 +14,9 @@ use App\Models\Appartment;
 class RequestController extends Controller
 {
     public function code_request(Request $request){
-        $requests = CodeRequest::where('village_id', $request->user()->village_id)
+        $requests = CodeRequest::
+        with("user", "appartment")
+        ->where('village_id', $request->user()->village_id)
         ->where("status", "pending")
         ->latest() // اختياري: لترتيب الطلبات من الأحدث للأقدم
         ->paginate(15) // حدد عدد العناصر في الصفحة الواحدة (مثلاً 15)

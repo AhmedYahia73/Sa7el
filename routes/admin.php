@@ -48,6 +48,12 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::put('/status/{id}', 'login_request_status');  
     });
 
+    Route::controller(RequestController::class)->prefix('code_request')
+    ->group(function() {
+        Route::get('/', 'code_request');  
+        Route::put('/status/{id}', 'code_request_status');  
+    });
+
     Route::controller(ZoneController::class)->prefix('zone')
     ->group(function() {
         Route::get('/', 'view')->middleware('can:admin_zone_view');
