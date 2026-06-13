@@ -161,6 +161,7 @@ class VillageController extends Controller
             ],400);
         }
         $villageRequest = $request->validated();
+        $villageRequest['units_num'] = $request->units_num;
         $village = $this->village
         ->where('id', $id)
         ->first();
