@@ -22,10 +22,43 @@ class AppartmentController extends Controller
     use TraitImage;
 
     public function view(Request $request){
-        $appartments = $this->appartment
+       $appartments = $this->appartment
         ->where('village_id', $request->user()->village_id)
-        ->with('type:id,name,image', 'zone:id,name,image,description')
-        ->get();
+        ->with([
+            'type:id,name,image', 
+            'zone:id,name,image,description',
+            // 1. تحميل الأكواد والمستخدمين مباشرة من الداتابيز في استعلام واحد سرييييع
+            'appartment_code' => function($query) {
+                // ملاحظة مهمة جداً: لازم تختار الـ appartment_id عشان لارافيل يعرف يربط العلاقة صح
+                $query->select(['id', 'code', 'type', 'from', 'to', 'people', 'user_id', 'appartment_id'])
+                    ->with('user:id,name'); // جلب بيانات المستخدمين المشتركين في الكود
+            }
+        ])
+        ->paginate($request->get('per_page', 10)); // 2. تحويل الاستعلام إلى Pagination
+
+        // 3. تعديل شكل البيانات داخل الـ Pagination باستخدام through (بديل الـ map في الصفحات)
+        $appartments->through(function($apartment) {
+            
+            // تجميع الأكواد بناءً على نص الكود نفسه عشان "ميتكررش"
+            $apartment->formatted_codes = $apartment->appartment_code->groupBy('code')->map(function($group, $codeString) {
+                return [
+                    'code'   => $codeString,
+                    'type'   => $group->first()->type,
+                    'from'   => $group->first()->from,
+                    'to'     => $group->first()->to,
+                    'people' => $group->first()->people,
+                    // تجميع كل الناس (user_id / user) اللي جوة نفس الكود ده في مصفوفة واحدة
+                    'users'  => $group->map(function($codeItem) {
+                        return $codeItem->user;
+                    })->filter()->values() 
+                ];
+            })->values();
+
+            // حذف علاقة الـ codes القديمة عشان الـ Response يبقى نضيف ومنظم
+            unset($apartment->codes);
+
+            return $apartment;
+        });
         $units = $this->appartment
         ->where('village_id', $request->user()->village_id)
         ->whereDoesntHave('appartment_code')
