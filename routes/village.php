@@ -181,6 +181,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
         Route::get('/', 'view');
         Route::get('/view_codes/{id}', 'view_codes');
         Route::post('/create_code', 'create_code');
+        Route::post('/delete_user_appartment', 'delete_user_appartment');
         Route::put('/update_code/{id}', 'update_code');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');

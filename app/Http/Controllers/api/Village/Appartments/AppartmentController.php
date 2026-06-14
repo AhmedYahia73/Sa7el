@@ -62,6 +62,26 @@ class AppartmentController extends Controller
         ]);
     }
 
+    public function delete_user_appartment(Request $request){
+        $validator = Validator::make($request->all(), [
+            'appartment_id' => ['required', 'exists:appartments,id'],
+            'user_id' => ['required', 'exists:users,id'],
+        ]);
+        return response()->json([
+            'errors' => $validator->errors(),
+        ],400);
+
+        AppartmentCode::
+        where("user_id", $request->user_id)
+        ->where("appartment_id", $request->appartment_id)
+        ->where("type", "owner")
+        ->delete();
+
+        return response()->json([
+            "success" => "You delete data success"
+        ]);
+    }
+
     public function create_code(Request $request){
         if ($request->type == 'owner') {
             $validator = Validator::make($request->all(), [
@@ -218,6 +238,15 @@ class AppartmentController extends Controller
             'unit' => ['required'], 
             'appartment_type_id' => ['required', 'exists:appartment_types,id'],
             'location' => ['sometimes'],
+            'entrance_status' => ['required', "boolean"],
+            'pool_status' => ['required', "boolean"],
+            'beach_status' => ['required', "boolean"],
+            'rent_code_status' => ['required', "boolean"],
+            'selling_status' => ['required', "boolean"],
+            'rent_status' => ['required', "boolean"],
+            'visits_status' => ['required', "boolean"],
+            'options_status' => ['required', "boolean"],
+            'all_status' => ['required', "boolean"],
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
