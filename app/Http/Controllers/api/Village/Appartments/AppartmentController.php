@@ -22,24 +22,28 @@ class AppartmentController extends Controller
     use TraitImage;
 
     public function view(Request $request){
-       $appartments = $this->appartment
+        $appartments = $this->appartment
         ->where('village_id', $request->user()->village_id)
+        
+        // 1. إضافة شرط البحث الذكي هنا (لو مبعوث search أو key في الـ Request)
+        ->when($request->filled('search'), function ($query) use ($request) {
+            $searchTerm = $request->get('search');
+            $query->where('unit', 'LIKE', "%{$searchTerm}%");
+        })
+        
         ->with([
             'type:id,name,image', 
             'zone:id,name,image,description',
-            // 1. تحميل الأكواد والمستخدمين مباشرة من الداتابيز في استعلام واحد سرييييع
             'appartment_code' => function($query) {
-                // ملاحظة مهمة جداً: لازم تختار الـ appartment_id عشان لارافيل يعرف يربط العلاقة صح
                 $query->select(['id', 'code', 'type', 'from', 'to', 'people', 'user_id', 'appartment_id'])
-                    ->with('user:id,name'); // جلب بيانات المستخدمين المشتركين في الكود
+                    ->with('user:id,name');
             }
         ])
-        ->paginate($request->get('per_page', 10)); // 2. تحويل الاستعلام إلى Pagination
+        ->paginate($request->get('per_page', 10));
 
-        // 3. تعديل شكل البيانات داخل الـ Pagination باستخدام through (بديل الـ map في الصفحات)
+        // 2. تعديل شكل البيانات كالعادة
         $appartments->through(function($apartment) {
             
-            // تجميع الأكواد بناءً على نص الكود نفسه عشان "ميتكررش"
             $apartment->formatted_codes = $apartment->appartment_code->groupBy('code')->map(function($group, $codeString) {
                 return [
                     'code'   => $codeString,
@@ -47,15 +51,14 @@ class AppartmentController extends Controller
                     'from'   => $group->first()->from,
                     'to'     => $group->first()->to,
                     'people' => $group->first()->people,
-                    // تجميع كل الناس (user_id / user) اللي جوة نفس الكود ده في مصفوفة واحدة
                     'users'  => $group->map(function($codeItem) {
                         return $codeItem->user;
                     })->filter()->values() 
                 ];
             })->values();
 
-            // حذف علاقة الـ codes القديمة عشان الـ Response يبقى نضيف ومنظم
-            unset($apartment->codes);
+            // 💡 ملحوظة: غيرت دي لـ appartment_code عشان تطابق اسم العلاقة فوق وتتحذف صح
+            unset($apartment->appartment_code);
 
             return $apartment;
         });
