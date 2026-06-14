@@ -100,9 +100,11 @@ class AppartmentController extends Controller
             'appartment_id' => ['required', 'exists:appartments,id'],
             'user_id' => ['required', 'exists:users,id'],
         ]);
-        return response()->json([
-            'errors' => $validator->errors(),
-        ],400);
+        if ($validator->fails()) { 
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
 
         AppartmentCode::
         where("user_id", $request->user_id)
