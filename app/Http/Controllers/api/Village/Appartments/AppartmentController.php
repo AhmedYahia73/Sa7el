@@ -25,7 +25,7 @@ class AppartmentController extends Controller
         $appartments = $this->appartment
         ->where('village_id', $request->user()->village_id)
         
-        // 1. إضافة شرط البحث الذكي هنا (لو مبعوث search أو key في الـ Request)
+        // 1. إضافة شرط البحث الذكي هنا
         ->when($request->filled('search'), function ($query) use ($request) {
             $searchTerm = $request->get('search');
             $query->where('unit', 'LIKE', "%{$searchTerm}%");
@@ -41,23 +41,48 @@ class AppartmentController extends Controller
         ])
         ->paginate($request->get('per_page', 10));
 
-        // 2. تعديل شكل البيانات كالعادة
+        // 2. تعديل شكل البيانات
         $appartments->through(function($apartment) {
             
-            $apartment->formatted_codes = $apartment->appartment_code->groupBy('code')->map(function($group, $codeString) {
-                return [
-                    'code'   => $codeString,
-                    'type'   => $group->first()->type,
-                    'from'   => $group->first()->from,
-                    'to'     => $group->first()->to,
-                    'people' => $group->first()->people,
-                    'users'  => $group->map(function($codeItem) {
-                        return $codeItem->user;
-                    })->filter()->values() 
-                ];
-            })->values();
+            $formatted_codes = $apartment->appartment_code
+                ->where("type", "owner")
+                ->groupBy('code')
+                ->map(function($group, $codeString) {
+                    return [
+                        'code'   => $codeString,
+                        'type'   => $group->first()->type,
+                        'from'   => $group->first()->from,
+                        'to'     => $group->first()->to,
+                        'people' => $group->first()->people,
+                        'users'  => $group->map(function($codeItem) {
+                            return $codeItem->user;
+                        })->filter()->values() 
+                    ];
+                })->values();
+                
+            $rent_codes = $apartment->appartment_code
+                ->where("type", "renter")
+                ->where("from", "<=", date("Y-m-d"))
+                ->where("to", ">=", date("Y-m-d"))
+                ->groupBy('code')
+                ->map(function($group, $codeString) {
+                    return [
+                        'code'   => $codeString,
+                        'type'   => $group->first()->type,
+                        'from'   => $group->first()->from,
+                        'to'     => $group->first()->to,
+                        'people' => $group->first()->people,
+                        'users'  => $group->map(function($codeItem) {
+                            return $codeItem->user;
+                        })->filter()->values() 
+                    ];
+                })->values();
 
-            // 💡 ملحوظة: غيرت دي لـ appartment_code عشان تطابق اسم العلاقة فوق وتتحذف صح
+            // ✨ التعديل هنا: إسناد الكولكشن كاملة مباشرة بدون تحديد Index خاطئ
+            $apartment->formatted_codes = $formatted_codes;
+            $apartment->rent_codes = $rent_codes;
+
+            // حذف العلاقة الأصلية نظيفة بعد التعديل
             unset($apartment->appartment_code);
 
             return $apartment;
