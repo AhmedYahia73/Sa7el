@@ -79,8 +79,8 @@ class AppartmentController extends Controller
                 })->values();
 
             // ✨ التعديل هنا: إسناد الكولكشن كاملة مباشرة بدون تحديد Index خاطئ
-            $apartment->formatted_codes = $formatted_codes;
-            $apartment->rent_codes = $rent_codes;
+            $apartment->formatted_codes = $formatted_codes->last();
+            $apartment->rent_codes = $rent_codes->last();
 
             // حذف العلاقة الأصلية نظيفة بعد التعديل
             unset($apartment->appartment_code);
