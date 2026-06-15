@@ -119,6 +119,13 @@ class AdminGates
             }
             return false;
         });
+        Gate::define('logout_village', function ($user) {
+            if ($user->position && !empty($user->position->sup_roles->where('module', 'Village Admin')->whereIn('action', ['all', 'logout_village'])->first())) {
+                return true;
+            }
+            return false;
+        });
+        
         Gate::define('admin_village_admin_status', function ($user) {
             if ($user->position && !empty($user->position->sup_roles->where('module', 'Village Admin')->whereIn('action', ['all', 'status'])->first())) {
                 return true;

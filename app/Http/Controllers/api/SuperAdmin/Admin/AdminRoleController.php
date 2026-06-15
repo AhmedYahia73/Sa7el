@@ -27,7 +27,7 @@ class AdminRoleController extends Controller
             'Zone' => ['all', 'view', 'status', 'add', 'edit', 'delete'],
             'Village' => ['all', 'view', 'status', 'add', 'edit', 'delete', 'update_profile', 'view_units', 'delete_unit'],
             'Village Gallery' => ['all', 'view', 'status', 'add', 'delete'],
-            'Village Admin' => ['all', 'view', 'status', 'add', 'edit', 'delete'],
+            'Village Admin' => ['all', 'view', 'status', 'add', 'edit', 'delete', 'logout_village'],
             'Village Admin Role' => ['all', 'view', 'status', 'add', 'edit', 'delete'],
             'Village Cover' => ['all', 'view', 'status', 'add', 'delete'],
             'Appartment Type' => ['all', 'view', 'status', 'add', 'edit', 'delete'],

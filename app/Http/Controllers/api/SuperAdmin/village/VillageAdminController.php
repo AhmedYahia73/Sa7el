@@ -49,8 +49,7 @@ class VillageAdminController extends Controller
             'admin' => $admin,
         ]);
     }
-
-
+ 
     public function status(Request $request, $id){
         $validator = Validator::make($request->all(), [
             'status' => 'required|boolean',
@@ -176,5 +175,37 @@ class VillageAdminController extends Controller
         return response()->json([
             'success' => 'You delete data success',
         ]);
+    }
+
+    public function village_active(){
+        $admins = User::whereNotNull("village_id")
+        ->whereHas('tokens')
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+                "email" => $item->email,
+                "phone" => $item->phone,
+            ];
+        });
+
+        return response()->json([
+            "admins" => $admins
+        ]);
+    }
+
+    public function logout_village($id){
+        $user = User::
+        where("id", $id)
+        ->first();
+        if ($user) {
+            // حذف جميع التوكنز الخاصة بهذا المستخدم
+            $user->tokens()->delete();
+            
+            return response()->json(['message' => 'تم تسجيل الخروج بنجاح من جميع الأجهزة']);
+        }
+
+        return response()->json(['message' => 'المستخدم غير موجود'], 404);
     }
 }

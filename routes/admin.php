@@ -201,6 +201,8 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     
     Route::controller(VillageAdminController::class)->prefix('village_admin')
     ->group(function() {
+        Route::get('/village_active', 'village_active')->middleware('can:logout_village');
+        Route::get('/logout_village/{id}', 'logout_village')->middleware('can:logout_village');
         Route::get('/{id}', 'view')->middleware('can:admin_village_admin_view');
         Route::get('/item/{id}', 'admin')->middleware('can:admin_village_admin_view');
         Route::put('/status/{id}', 'status')->middleware('can:admin_village_admin_status');
