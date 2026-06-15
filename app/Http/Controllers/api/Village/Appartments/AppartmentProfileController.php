@@ -24,7 +24,7 @@ class AppartmentProfileController extends Controller
         ->where('type', 'owner')->values()
         ->map(function($item){
             return [
-                'id' => $item->id,
+                'id' => $item?->user?->id,
                 'name' => $item?->user?->name,
                 'email' => $item?->user?->email,
                 'phone' => $item?->user?->phone,
