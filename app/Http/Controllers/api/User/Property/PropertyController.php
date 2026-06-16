@@ -113,6 +113,7 @@ class PropertyController extends Controller
             'village_id' => 'required|exists:villages,id',
             'code' => 'sometimes',
             'local' => 'required|in:en,ar',
+            'appartment_type_id' => 'required|exists:appartment_types,id',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -124,7 +125,6 @@ class PropertyController extends Controller
         if (!$request->code) {
             $validator_errors = Validator::make($request->all(), [
                 'unit' => 'required',
-                'appartment_type_id' => 'required|exists:appartment_types,id',
             ]);
             if ($validator_errors->fails()) { // if Validate Make Error Return Message Error
                 $firstError = $validator_errors->errors()->first();
