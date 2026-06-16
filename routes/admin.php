@@ -234,7 +234,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     Route::controller(UserController::class)->prefix('user')
     ->group(function() {
         Route::get('/user_active', 'user_active')->middleware('can:admin_user_logout_user');
-        Route::get('/logout_user', 'logout_user')->middleware('can:admin_user_logout_user');
+        Route::get('/logout_user/{id}', 'logout_user')->middleware('can:admin_user_logout_user');
         Route::get('/', 'view')->middleware('can:admin_user_view');
         Route::get('/item/{id}', 'user')->middleware('can:admin_user_single_page');
         Route::put('/status/{id}', 'status')->middleware('can:admin_user_status');
