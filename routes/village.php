@@ -34,6 +34,9 @@ use App\Http\Controllers\api\Village\Entrance\EntranceController;
 use App\Http\Controllers\api\Village\LandingPage\LandingPageControlle;
 use App\Http\Controllers\api\Village\Requests\RequestController;
 
+use Illuminate\Support\Facades\Broadcast;
+
+Broadcast::routes(['middleware' => ['auth:sanctum']]);
 Route::controller(LandingPageControlle::class)->prefix('landing_page')
 ->group(function() {
     Route::get('/lists', 'lists');  

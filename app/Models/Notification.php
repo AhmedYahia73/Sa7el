@@ -12,5 +12,6 @@ class Notification extends Model
         'login_request_id',
         "type", // user, admin
         'notification',
+        'is_read',
     ];
 }

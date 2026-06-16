@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('login_request_id')->nullable()->constrained("login_requests")->onUpdate('cascade')->onDelete('cascade');
             $table->enum("type", ["user", "admin"]);
             $table->string("notification");
+            $table->boolean("is_read")->default(0);
             $table->timestamps();
         });
     }

@@ -9,6 +9,7 @@ use App\Http\Requests\Auth\SignupRequest;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use App\Events\NotificationEvent;
 
 use App\Models\User;
 use App\Models\PersonalAccessToken;
@@ -17,6 +18,7 @@ use App\Models\Village;
 use App\Models\AppartmentType;
 use App\Models\SecurityMan;
 use App\Models\Package;
+use App\Models\Notification;
 use App\Models\Zone;
 
 class LoginController extends Controller
@@ -402,7 +404,7 @@ class LoginController extends Controller
             ],400);
         }
         if($request->user()->ip_address != $request->ip()){
-            LoginRequest::create([
+            $login_request = LoginRequest::create([
                 "user_id" => $request->user()->id,
                 "ip_address" => $request->ip(),
                 "status" => "pending",
@@ -410,6 +412,16 @@ class LoginController extends Controller
                 "appartment_id" => $request->appartment_id,
             ]);
             auth()->user()->update(['ip_address' => $request->ip()]);
+            $notification = "قام " . auth()->user()->name . " بمحاولة الدخول من الابليكشن";
+            $data = [
+                'village_id' => $request->village_id,
+                'code_request_id' => null,
+                'login_request_id' => $login_request->id,
+                "type" => "admin", // user, admin
+                'notification' => $notification,
+            ];
+            Notification::create($data);
+            NotificationEvent::dispatch($data);
         } 
         $login_request = LoginRequest::
         where("ip_address", $request->ip())
