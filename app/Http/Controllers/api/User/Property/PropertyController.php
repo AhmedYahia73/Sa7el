@@ -112,6 +112,7 @@ class PropertyController extends Controller
         $validator = Validator::make($request->all(), [
             'village_id' => 'required|exists:villages,id',
             'code' => 'sometimes',
+            'local' => 'required|in:en,ar',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -190,11 +191,24 @@ class PropertyController extends Controller
             ->where('village_id', $request->village_id)
             ->where('code', $request->code)
             ->whereNull('user_id')
-            ->first();
-            if (empty($appartment_code)) {
-                return response()->json([
-                    'message' => 'appartment is not found'
-                ]);
+            ->first(); 
+            $code_requests = CodeRequest::
+            where("appartment_id", $appartment_code->appartment_id)
+            ->where("code", $request->code)
+            ->where("village_id", $request->village_id)
+            ->where("status", "!=", "reject")
+            ->count();
+            if (empty($appartment_code) || $code_requests + 1 >= $appartment_code->people) {
+                if($request->local == "ar"){
+                    return response()->json([
+                        'errors' => 'لقد تم الوصول إلى الحد الأقصى لعدد المستخدمين المسموح بهم لهذه الوحدة.'
+                    ], 404);
+                }
+                else{
+                    return response()->json([
+                        'errors' => 'The maximum number of users allowed for this unit has been reached.'
+                    ], 404);
+                }
             }
             CodeRequest::create([
                 'user_id' => auth()->user()->id,
