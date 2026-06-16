@@ -23,6 +23,7 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     ->group(function() {
         Route::get('/', 'my_property'); 
         Route::post('/add', 'add_property'); 
+        Route::post('/pending_code_request', 'pending_code_request'); 
     });
 
     Route::controller(LoginController::class)->prefix('check_user_login_request')

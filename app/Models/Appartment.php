@@ -28,6 +28,10 @@ class Appartment extends Model
         return url('storage/' . $this->image);
     }
 
+    public function code_request(){
+        return $this->hasMany(CodeRequest::class, 'appartment_id');
+    }
+
     public function maintenance(){
         return $this->hasMany(AppartmentMaintenanceFeez::class, 'appartment_id');
     }

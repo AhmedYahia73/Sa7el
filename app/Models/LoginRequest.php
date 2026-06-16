@@ -10,6 +10,7 @@ class LoginRequest extends Model
         'user_id',
         "ip_address",
         'village_id',
+        'appartment_id',
         'status', // "pending", "approve", "reject"
     ];
 

@@ -211,4 +211,59 @@ class PropertyController extends Controller
             'message' => 'You add data success'
         ]);
     }
+
+    public function pending_code_request(Request $request){
+        $validator = Validator::make($request->all(), [
+            'local' => 'required|in:en,ar',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }
+        
+        $appartments = Appartment::
+        whereHas("code_request", function($query) use($request){
+            $query->where("user_id", $request->user()->id)
+            ->where("status", "pending");
+        })
+        ->with([
+            "village.zone", "village.package", "type", 
+        ])
+        ->get()
+        ->map(function($appartment) use($request) {
+            return [
+                'id' => $appartment->id,
+                'unit' => $appartment->unit,
+                'image' => $appartment->village->image_link,
+                'cover_image' => $appartment->village->cover_image_link,
+                'village_id' => $appartment->village_id,
+                'village' => $appartment->village->name, 
+                'type' => $request->local == 'en' ? $appartment?->type?->name : 
+                $appartment?->type?->ar_name ?? $appartment?->type?->name, 
+                'zone' => $request->local == 'en' ? $appartment?->village?->zone?->name
+                : $appartment?->village?->zone?->ar_name ?? $appartment?->village?->zone?->name,
+                'zone_id' => $appartment?->village?->zone_id,
+                'rent_flag' => $appartment->type == 'renter' ? 1 : 0,
+                'flag' => $appartment?->village?->from <= date('Y-m-d') && 
+                $appartment?->village?->to >= date('Y-m-d') ? true : false,
+                'pool_beach_flag' => $appartment?->village?->package?->beach_pool_module ? 1 : 0,
+                'maintenance_flag' => $appartment?->village?->package?->maintenance_module ? 1 : 0,
+                'entrance_status' => $appartment->entrance_status,
+                'pool_status' => $appartment->pool_status,
+                'beach_status' => $appartment->beach_status,
+                'rent_code_status' => $appartment->rent_code_status,
+                'selling_status' => $appartment->selling_status,
+                'rent_status' => $appartment->rent_status,
+                'visits_status' => $appartment->visits_status,
+                'options_status' => $appartment->options_status,
+                'all_status' => $appartment->all_status,    
+            ];
+        });
+
+        return response()->json([
+            "appartments" => $appartments
+        ]);
+    }
 }

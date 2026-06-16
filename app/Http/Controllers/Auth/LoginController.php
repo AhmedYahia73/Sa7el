@@ -393,6 +393,7 @@ class LoginController extends Controller
     public function check_user_login_request(Request $request){
         $validator = Validator::make($request->all(), [
             'village_id' => 'required|exists:villages,id', 
+            'appartment_id' => 'required|exists:appartments,id', 
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -406,6 +407,7 @@ class LoginController extends Controller
                 "ip_address" => $request->ip(),
                 "status" => "pending",
                 "village_id" => $request->village_id,
+                "appartment_id" => $request->appartment_id,
             ]);
             auth()->user()->update(['ip_address' => $request->ip()]);
         } 
