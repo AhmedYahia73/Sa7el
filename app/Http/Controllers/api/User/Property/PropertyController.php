@@ -193,7 +193,7 @@ class PropertyController extends Controller
             ->whereNull('user_id')
             ->first(); 
             $code_requests = CodeRequest::
-            where("appartment_id", $appartment_code->appartment_id)
+            where("appartment_id", $appartment_code->appartment_id ?? null)
             ->where("code", $request->code)
             ->where("village_id", $request->village_id)
             ->where("status", "!=", "reject")
