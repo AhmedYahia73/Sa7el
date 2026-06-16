@@ -269,6 +269,12 @@ class AdminGates
             }
             return false;
         });
+        Gate::define('admin_user_logout_user', function ($user) {
+            if ($user->position && !empty($user->position->sup_roles->where('module', 'User')->whereIn('action', ['all', 'logout'])->first())) {
+                return true;
+            }
+            return false;
+        });
         Gate::define('admin_user_status', function ($user) {
             if ($user->position && !empty($user->position->sup_roles->where('module', 'User')->whereIn('action', ['all', 'status'])->first())) {
                 return true;
