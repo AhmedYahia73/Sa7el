@@ -177,9 +177,18 @@ class VillageAdminController extends Controller
         ]);
     }
 
-    public function village_active(){
+    public function village_active(Request $request){
+        $validator = Validator::make($request->all(), [
+            'village_id' => ['required', 'exists:villages,id'], 
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
         $admins = User::whereNotNull("village_id")
         ->whereHas('tokens')
+        ->where("village_id", $request->village_id)
         ->get()
         ->map(function($item){
             return [

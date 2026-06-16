@@ -257,4 +257,47 @@ class UserController extends Controller
             'success' => 'You delete data success'
         ]);
     }
+
+    public function user_active(Request $request){
+        $validator = Validator::make($request->all(), [
+            'village_id' => ['required', 'exists:villages,id'], 
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+        $admins = User::
+        whereHas("appartments", function($query) use($request){
+            $query->where("village_id", $request->village_id);
+        })
+        ->whereHas('tokens') 
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+                "email" => $item->email,
+                "phone" => $item->phone,
+            ];
+        });
+
+        return response()->json([
+            "admins" => $admins
+        ]);
+    }
+
+    public function logout_user($id){
+        $user = User::
+        where("id", $id)
+        ->first();
+        if ($user) {
+            // حذف جميع التوكنز الخاصة بهذا المستخدم
+            $user->tokens()->delete();
+            
+            return response()->json(['message' => 'تم تسجيل الخروج بنجاح من جميع الأجهزة']);
+        }
+
+        return response()->json(['message' => 'المستخدم غير موجود'], 404);
+    }
 }
