@@ -232,7 +232,7 @@ class PropertyController extends Controller
             "village.zone", "village.package", "type", 
         ])
         ->get()
-        ->uniqid("id")
+        ->unique("id")
         ->map(function($appartment) use($request) {
             return [
                 'id' => $appartment->id,
