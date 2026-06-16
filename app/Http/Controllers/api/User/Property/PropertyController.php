@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\api\User\Property;
 
+use App\Events\NotificationEvent;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-
 use App\Models\Appartment;
 use App\Models\AppartmentCode;
 use App\Models\CodeRequest;
+use App\Models\Notification;
 use App\Models\Zone;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class PropertyController extends Controller
 {
@@ -209,6 +210,16 @@ class PropertyController extends Controller
                     ], 404);
                 }
             }
+            $notification = "قام " . auth()->user()->name . " بادخال كود  برقم " . $request->code . "من الابليكشن";
+            $data = [
+                'village_id' => $request->village_id,
+                'code_request_id' => null,
+                'login_request_id' => null,
+                "type" => "admin", // user, admin
+                'notification' => $notification,
+            ];
+            Notification::create($data);
+            NotificationEvent::dispatch($data);
             CodeRequest::create([
                 'user_id' => auth()->user()->id,
                 'appartment_id' => $appartment_code->appartment_id,
