@@ -73,7 +73,7 @@ class RequestController extends Controller
     }
     
     public function login_request(Request $request){
-        $requests = LoginRequest::with(['user', 'unit']) // جلب بيانات المستخدم مسبقاً لتسريع الأداء
+        $requests = LoginRequest::with(['user', 'appartment']) // جلب بيانات المستخدم مسبقاً لتسريع الأداء
             ->where("status", "pending")
             ->where('village_id', $request->user()->village_id)
             ->latest() // ترتيب من الأحدث إلى الأقدم
