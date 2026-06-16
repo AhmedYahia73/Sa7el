@@ -21,5 +21,9 @@ class LoginRequest extends Model
     public function village(){
         return $this->belongsTo(Village::class, 'village_id');
     }
+
+    public function appartment(){
+        return $this->belongsTo(Appartment::class, 'appartment_id');
+    }
     
 }
