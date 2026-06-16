@@ -72,7 +72,7 @@ class RequestController extends Controller
     }
     
     public function login_request(Request $request){
-        $requests = LoginRequest::with(['user', 'village']) // جلب بيانات المستخدم مسبقاً لتسريع الأداء
+        $requests = LoginRequest::with(['user', 'village', 'appartment']) // جلب بيانات المستخدم مسبقاً لتسريع الأداء
             ->where("status", "pending") 
             ->latest() // ترتيب من الأحدث إلى الأقدم
             ->paginate($request->get('per_page', 15)) // جلب عدد عناصر معين (الافتراضي 15)
@@ -84,6 +84,9 @@ class RequestController extends Controller
                     'user_email' => $item->user?->email,
                     "village" => $item?->village?->name,
                     'ip_address' => $item->ip_address,
+                    'appartment_unit' => $item->appartment?->unit,
+                    'appartment_location' => $item->appartment?->location,
+                    'people_count' => collect($item->appartment_codes)->count(),
                 ];
             });
 
