@@ -112,8 +112,7 @@ class PropertyController extends Controller
         $validator = Validator::make($request->all(), [
             'village_id' => 'required|exists:villages,id',
             'code' => 'sometimes',
-            'local' => 'required|in:en,ar',
-            'appartment_type_id' => 'required|exists:appartment_types,id',
+            'local' => 'required|in:en,ar', 
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
