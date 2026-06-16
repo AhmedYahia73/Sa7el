@@ -230,6 +230,7 @@ try {
     $data['people']     = $request->people;
     $data['created_at'] = now();
     $data['updated_at'] = now();
+    $data['user_id'] = null;
 
     // 3. مسح البيانات القديمة
     $this->appartment_code->where("code", $appartment_code->code)->delete();  
