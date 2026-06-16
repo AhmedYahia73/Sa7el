@@ -202,67 +202,77 @@ class AppartmentController extends Controller
     public function update_code(Request $request, $id)
     { 
         // 1. تحسين الـ Validation
-        $validator = Validator::make($request->all(), [ 
-            'people' => ['required', 'integer', 'min:1'], // الأفضل يكون رقم صحيح وأكبر من الصفر
-        ]); 
+$validator = Validator::make($request->all(), [ 
+    'people' => ['required', 'integer', 'min:1'], // الأفضل يكون رقم صحيح وأكبر من الصفر
+]); 
 
-        if ($validator->fails()) { 
-            return response()->json([
-                'errors' => $validator->errors(),
-            ], 400);
-        }
+if ($validator->fails()) { 
+    return response()->json([
+        'errors' => $validator->errors(),
+    ], 400);
+}
 
-        // 2. استخدام Transaction لحماية البيانات
-        DB::beginTransaction();
-        try {
-            $appartment_code = $this->appartment_code->findOrFail($id);
-            $codes = $this->appartment_code
-            ->where("code", $appartment_code->code)
-            ->get();
+// 2. استخدام Transaction لحماية البيانات
+DB::beginTransaction();
+try {
+    $appartment_code = $this->appartment_code->findOrFail($id);
+    $codes = $this->appartment_code
+        ->where("code", $appartment_code->code)
+        ->get();
 
-            // تجهيز البيانات اللي هتتعملها إدخال (تجنب كتابة كل عمود يدوياً)
-            $data = $appartment_code->only([
-                'appartment_id', 'village_id', 'from', 
+    // تجهيز البيانات الأساسية (تم إضافة user_id هنا لتجنب نقص الحقول)
+    $data = $appartment_code->only([
+        'appartment_id', 'user_id', 'village_id', 'from', 
+        'to', 'type', 'code', 'image', 'owner_id', 'user_type'
+    ]);
+    
+    // إصلاح المشكلة: تحديث عدد الأشخاص بالرقم الجديد من الـ Request
+    $data['people']     = $request->people;
+    $data['created_at'] = now();
+    $data['updated_at'] = now();
+
+    // 3. مسح البيانات القديمة
+    $this->appartment_code->where("code", $appartment_code->code)->delete();  
+
+    // 4. تجهيز مصفوفة لعمل إدخال مرة واحدة (Bulk Insert) بتطابق كامل للحقول
+    $records = [];
+    for ($i = 0; $i < $request->people; $i++) {
+        if (isset($codes[$i])) {
+            // نأخذ البيانات القديمة مع الحفاظ على نفس ترتيب الحقول والـ Timestamps
+            $record = $codes[$i]->only([
+                'appartment_id', 'user_id', 'village_id', 'from', 
                 'to', 'type', 'code', 'image', 'owner_id', 'user_type'
             ]);
-            
-            // إصلاح المشكلة: تحديث عدد الأشخاص بالرقم الجديد من الـ Request
-            $data['people'] = $request->people;
-            $data['created_at'] = now();
-            $data['updated_at'] = now();
-
-            // 3. مسح البيانات القديمة
-            $this->appartment_code->where("code", $appartment_code->code)->delete();  
-
-            // 4. تجهيز مصفوفة لعمل إدخال مرة واحدة (Bulk Insert)
-            $records = [];
-            for ($i = 0; $i < $request->people; $i++) {
-                $record = isset($codes[$i]) ? $codes[$i]->only([
-                    'appartment_id', 'user_id', 'village_id', 'from', 
-                    'to', 'type', 'code', 'image', 'owner_id', 'user_type'
-                ]) : 
-                $data;
-                $record['people'] = $request->people;
-                $records[] = $record;
-            }
-
-            // تنفيذ الإدخال كاستعلام واحد في الداتابيز
-            $this->appartment_code->insert($records);
-
-            // حفظ التغييرات في الداتابيز
-            DB::commit();
-
-            return response()->json([
-                'success' => "Data updated successfully"
-            ]);
-
-        } catch (\Exception $e) {
-            // التراجع عن أي تغييرات لو حصل خطأ
-            DB::rollBack();
-            return response()->json([
-                'error' => "Something went wrong, please try again."
-            ], 500);
+            $record['people']     = $request->people;
+            $record['created_at'] = $codes[$i]->created_at ?? now(); // الحفاظ على وقت الإنشاء القديم أو الحالي
+            $record['updated_at'] = now();
+        } else {
+            // لو السجلات الجديدة أكبر من القديمة، نستخدم مصفوفة $data المتطابقة تماماً في الحقول
+            $record = $data;
         }
+        $records[] = $record;
+    }
+
+    // تنفيذ الإدخال كاستعلام واحد سريع في الداتابيز
+    $this->appartment_code->insert($records);
+
+    // حفظ التغييرات في الداتابيز
+    DB::commit();
+
+    return response()->json([
+        'success' => "Data updated successfully"
+    ]);
+
+} catch (\Exception $e) {
+    // التراجع عن أي تغييرات لو حصل خطأ
+    DB::rollBack();
+    
+    // نصيحة: أثناء التطوير يمكنك استرجاع $e->getMessage() لمعرفة تفاصيل أي خطأ آخر قد يظهر
+    return response()->json([
+        'error' => "Something went wrong, please try again.",
+        'debug' => $e->getMessage() // احذف هذا السطر في مرحلة الـ Production
+    ], 500);
+}
     } 
 
     public function create(Request $request){
