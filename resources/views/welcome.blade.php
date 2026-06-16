@@ -19,9 +19,6 @@
     </div>
 
     <script>
-        // 1. إعداد واجهة Laravel Echo
-        // ملحوظة: لو الصفحة Blade داخل مشروع لارافل، سيب الـ {{ }} زي ما هي. 
-        // لو ملف خارجي static اكتب المفتاح مباشرة مكان الـ Blade tag.
         window.Echo = new window.Echo({
             broadcaster: 'pusher',
             key: "{{ env('REVERB_APP_KEY', 'hfauysjmov3blta8zfql') }}", 
