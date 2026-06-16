@@ -222,7 +222,7 @@ class AppartmentController extends Controller
 
             // تجهيز البيانات اللي هتتعملها إدخال (تجنب كتابة كل عمود يدوياً)
             $data = $appartment_code->only([
-                'appartment_id', 'user_id', 'village_id', 'from', 
+                'appartment_id', 'village_id', 'from', 
                 'to', 'type', 'code', 'image', 'owner_id', 'user_type'
             ]);
             
