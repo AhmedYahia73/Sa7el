@@ -237,11 +237,13 @@ class AppartmentController extends Controller
             // 4. تجهيز مصفوفة لعمل إدخال مرة واحدة (Bulk Insert)
             $records = [];
             for ($i = 0; $i < $request->people; $i++) {
-                $records[] = isset($codes[$i]) ? $codes[$i]->only([
-                'appartment_id', 'user_id', 'village_id', 'from', 
-                'to', 'type', 'code', 'image', 'owner_id', 'user_type'
-            ]) : 
+                $record = isset($codes[$i]) ? $codes[$i]->only([
+                    'appartment_id', 'user_id', 'village_id', 'from', 
+                    'to', 'type', 'code', 'image', 'owner_id', 'user_type'
+                ]) : 
                 $data;
+                $record['people'] = $request->people;
+                $records[] = $record;
             }
 
             // تنفيذ الإدخال كاستعلام واحد في الداتابيز
