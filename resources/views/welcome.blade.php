@@ -17,12 +17,12 @@
             جاري الاتصال بسيرفر Reverb...
         </div>
     </div>
-
     <script>
+        // 1. إعداد واجهة Laravel Echo بالقيم الصريحة لسيرفرك الحالي
         window.Echo = new window.Echo({
             broadcaster: 'pusher',
-            key: "{{ env('REVERB_APP_KEY', 'hfauysjmov3blta8zfql') }}", 
-            wsHost: "anlatech.mazoom.online", // تأكد أن السيرفر الخارجي ده هو اللي شغال عليه الـ Reverb حالياً
+            key: 'hfauysjmov3blta8zfql', // الـ Key الصريح لتجنب مشاكل الـ Blade والـ Cache
+            wsHost: "bcknd.sea-go.org",  // الدومين الفعلي الحالي للسيرفر بتاعك
             wsPort: 443,
             wssPort: 443,
             forceTLS: true,
@@ -48,23 +48,13 @@
             console.error('❌ Reverb Connection Error:', err);
         });
 
-        // 2. الاستماع للقناة العامّة الإدارية (تطابقاً مع الـ PHP Event)
+        // 2. الاستماع للقناة العامّة الإدارية
         window.Echo.channel('newNotificationAdmin') 
             .listen('.NewOrderEvent', (data) => { 
                 console.log('🎯 وصّلت نوتيفيكيشن جديدة لايف يا معلم!!');
                 console.log('📦 Object Data:', data);
-                
-                // تنبيه محتويات النوتيفيكيشن بناءً على الـ array الراجع من broadcastWith
                 alert('تنبيه جديد: ' + (data.notification || 'تم استقبال بيانات بنجاح!'));
             });
-
-        /* // لو حابب تسمع لقناة القرية المعينة (الديناميكية)، شغل الكود ده واستبدل الـ village_id:
-        let villageId = 1; // كمثال
-        window.Echo.channel('newNotification_' + villageId)
-            .listen('.NewOrderEvent', (data) => {
-                console.log('📦 نوتيفيكيشن القرية الخصوصية:', data);
-            });
-        */
     </script>
 </body>
 </html>
