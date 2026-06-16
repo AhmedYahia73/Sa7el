@@ -21,7 +21,7 @@ class NotificationEvent implements ShouldBroadcastNow
     public function __construct($notification)
     {
         $this->notification = $notification;
-        Log::info('🎯 New Notification', ['Notification_id' => $notification['id']]);
+        Log::info('🎯 New Notification', ['village_id' => $notification['village_id']]);
     } 
  
     public function broadcastOn(): array
