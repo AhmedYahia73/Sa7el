@@ -34,8 +34,8 @@ class NotificationEvent implements ShouldBroadcastNow
 
     public function broadcastAs(): string
     {
-        Log::info('📢 Broadcast As: NewOrderEvent');
-        return 'NewOrderEvent';
+        Log::info('📢 Broadcast As: NewNotificationEvent');
+        return 'NewNotificationEvent';
     }
 
     public function broadcastWith(): array

@@ -50,7 +50,7 @@
 
         // 2. الاستماع للقناة العامّة الإدارية
         window.Echo.channel('newNotificationAdmin') 
-            .listen('.NewOrderEvent', (data) => { 
+            .listen('.NewNotificationEvent', (data) => { 
                 console.log('🎯 وصّلت نوتيفيكيشن جديدة لايف يا معلم!!');
                 console.log('📦 Object Data:', data);
                 alert('تنبيه جديد: ' + (data.notification || 'تم استقبال بيانات بنجاح!'));
