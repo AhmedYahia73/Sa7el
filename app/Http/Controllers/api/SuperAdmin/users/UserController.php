@@ -268,8 +268,12 @@ class UserController extends Controller
             ],400);
         }
         $admins = User::
-        whereHas("appartments", function($query) use($request){
-            $query->where("village_id", $request->village_id);
+        whereHas("appartment_code", function($query) use($request){
+            $query->where("village_id", $request->village_id)
+            ->where("from", "<=", now())
+            ->where("to", ">=", now())
+            ->orWhere("type", "owner")
+            ->where("village_id", $request->village_id);
         })
         ->whereHas('tokens') 
         ->get()
