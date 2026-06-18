@@ -49,8 +49,8 @@
         });
 
         // 2. الاستماع للقناة العامّة الإدارية
-        window.Echo.channel('newNotificationAdmin') 
-            .listen('.NewNotificationEvent', (data) => { 
+        window.Echo.channel('userNotification_') 
+            .listen('.UserNotificationEvent', (data) => { 
                 console.log('🎯 وصّلت نوتيفيكيشن جديدة لايف يا معلم!!');
                 console.log('📦 Object Data:', data);
                 alert('تنبيه جديد: ' + (data.notification || 'تم استقبال بيانات بنجاح!'));

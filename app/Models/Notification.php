@@ -13,5 +13,6 @@ class Notification extends Model
         "type", // user, admin
         'notification',
         'is_read',
+        "user_id",
     ];
 }

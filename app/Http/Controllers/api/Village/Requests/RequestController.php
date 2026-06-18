@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\api\Village\Requests;
 
+use App\Events\UserNotification;
 use App\Http\Controllers\Controller;
+use App\Models\Appartment;
+use App\Models\AppartmentCode;
+use App\Models\CodeRequest;
+use App\Models\Notification;
+use App\Models\LoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
-use App\Models\CodeRequest;
-use App\Models\LoginRequest;
-use App\Models\AppartmentCode;
-use App\Models\Appartment;
 
 class RequestController extends Controller
 {
@@ -61,9 +62,22 @@ class RequestController extends Controller
                 Appartment::
                 where('id', $appartment_code->appartment_id)
                 ->update([
-                    'user_id' => $request->user()->id
+                    'user_id' => $codes->user_id
                 ]);
             }
+            $notification = "قام الأدمن بالموافقة على كود " . $appartment_code->code . 
+            " للوحدة " . $appartment_code?->appartment?->unit;
+            $data = [ 
+                'village_id' => $request->user()->village_id,
+                'code_request_id' => $id,
+                'login_request_id' => null,
+                "type" => "user", // user, admin
+                'notification' => $notification,
+                'is_read' => 0,
+                "user_id" => $codes->user_id,
+            ];
+            UserNotification::dispatch($data);
+            Notification::create($data);
         }
         $codes->update(['status' => $request->status]);
 
@@ -107,9 +121,24 @@ class RequestController extends Controller
 
         $login_request = LoginRequest::where('id', $id)
             ->where('village_id', $request->user()->village_id)
+            ->with("village")
             ->first();
         $login_request->update(['status' => $request->status]);
 
+        if ($request->status == "approve") { 
+            $notification = "قام الادمن بالموافقة على طلب دخولك قرية " . $login_request?->village?->name;
+            $data = [ 
+                'village_id' => $request->user()->village_id,
+                'code_request_id' => null,
+                'login_request_id' => $id,
+                "type" => "user", // user, admin
+                'notification' => $notification,
+                'is_read' => 0,
+                "user_id" => $login_request->user_id,
+            ];
+            UserNotification::dispatch($data);
+            Notification::create($data);
+        }
         return response()->json([
             'message' => 'Login request status updated successfully'
         ]);
