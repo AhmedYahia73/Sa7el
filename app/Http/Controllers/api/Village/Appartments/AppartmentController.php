@@ -111,6 +111,22 @@ class AppartmentController extends Controller
         ]);
     }
 
+    public function appartement_list(Request $request){
+        $appartments = $this->appartment
+        ->where('village_id', $request->user()->village_id) 
+        ->get()
+        ->map(function($apartment) {
+            return [
+                "id" => $apartment->id,
+                "unit" => $apartment->unit, 
+            ];
+        });
+
+        return response()->json([ 
+            'appartments' => $appartments,
+        ]);
+    }
+
     public function view_codes(Request $request, $id){
         $appartment_codes = AppartmentCode::where('appartment_id', $id)
             ->select(['id', 'code', 'type', 'from', 'to', 'people']) // تحديد الأعمدة المطلوبة من الداتابيز مباشرة

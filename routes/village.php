@@ -182,6 +182,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(AppartmentController::class)->prefix('appartment')->middleware('can:Appartment')
     ->group(function() {
         Route::get('/', 'view');
+        Route::get('/appartement_list', 'appartement_list');
         Route::get('/view_codes/{id}', 'view_codes');
         Route::post('/create_code', 'create_code');
         Route::post('/delete_user_appartment', 'delete_user_appartment');
