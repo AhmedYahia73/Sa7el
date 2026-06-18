@@ -51,6 +51,9 @@ class NotificationController extends Controller
                 "id" => $item->id,
                 "notification" => $item->notification,
                 "is_read" => $item->is_read,
+                "code_request_id" => $item->code_request_id,
+                "login_request_id" => $item->login_request_id,
+                "type" => $item->login_request_id ? "login" : "code",
             ];
         });
 
