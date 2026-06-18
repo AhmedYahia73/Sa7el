@@ -67,6 +67,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
         Route::get('/', 'notification');  
         Route::get('/items', 'notification_items');  
         Route::post('/is_read', 'is_read');  
+        Route::get('/read_all', 'read_all');  
     });
 
     Route::controller(ServiceTypeController::class)->prefix('service_type')

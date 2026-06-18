@@ -84,4 +84,16 @@ class NotificationController extends Controller
             "success" => "You update data success"
         ]);
     }
+
+    public function read_all(Request $request){  
+        Notification:: 
+        where("village_id", $request->user()->village_id)
+        ->update([
+            "is_read" => true
+        ]);
+
+        return response()->json([
+            "success" => "You update data success"
+        ]);
+    }
 }
