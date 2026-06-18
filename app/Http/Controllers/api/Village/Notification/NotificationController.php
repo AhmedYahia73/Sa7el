@@ -44,6 +44,7 @@ class NotificationController extends Controller
         $notifications = Notification::
         where("type", "admin")
         ->where("village_id", $request->user()->village_id)
+        ->orderByDesc("id")
         ->paginate(10)
         ->through(function($item){
             return [
