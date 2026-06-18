@@ -395,7 +395,8 @@ class LoginController extends Controller
     public function check_user_login_request(Request $request){
         $validator = Validator::make($request->all(), [
             'village_id' => 'required|exists:villages,id', 
-            'appartment_id' => 'required|exists:appartments,id', 
+            'appartment_id' => 'required|exists:appartments,id',
+            'ip_address' => "sometimes"
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -403,15 +404,16 @@ class LoginController extends Controller
                 'errors' => $firstError,
             ],400);
         }
-        if($request->user()->ip_address != $request->ip()){
+        $ip_address = $request->ip_address ?? $request->ip();
+        if($request->user()->ip_address != $ip_address){
             $login_request = LoginRequest::create([
                 "user_id" => $request->user()->id,
-                "ip_address" => $request->ip(),
+                "ip_address" => $ip_address,
                 "status" => "pending",
                 "village_id" => $request->village_id,
                 "appartment_id" => $request->appartment_id,
             ]);
-            auth()->user()->update(['ip_address' => $request->ip()]);
+            auth()->user()->update(['ip_address' => $ip_address]);
             $notification = "قام " . auth()->user()->name . " بمحاولة الدخول من الابليكشن";
             $data = [
                 'village_id' => $request->village_id,
@@ -424,7 +426,7 @@ class LoginController extends Controller
             NotificationEvent::dispatch($data);
         } 
         $login_request = LoginRequest::
-        where("ip_address", $request->ip())
+        where("ip_address", $ip_address)
         ->where("user_id", auth()->user()->id)
         ->where("village_id", $request->village_id)
         ->orderByDesc("id")
