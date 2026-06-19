@@ -196,7 +196,7 @@ class PropertyController extends Controller
             where("appartment_id", $appartment_code->appartment_id ?? null)
             ->where("code", $request->code)
             ->where("village_id", $request->village_id)
-            ->where("status", "!=", "reject")
+            ->where("status", "pending")
             ->count();
             if (empty($appartment_code) || $code_requests + 1 >= $appartment_code->people) {
                 if($request->local == "ar"){
