@@ -75,11 +75,14 @@ class RentController extends Controller
         ->where('from', '<=', $request->from)
         ->where('to', '>=', $request->from)
         ->where('to', '<=', $request->to)
+        ->where("appartment_id", $request->appartment_id)
         ->orWhere('from', '>=', $request->from)
         ->where('to', '<=', $request->to)
+        ->where("appartment_id", $request->appartment_id)
         ->orWhere('from', '>=', $request->from)
         ->where('from', '<=', $request->to)
         ->where('to', '>=', $request->to)
+        ->where("appartment_id", $request->appartment_id)
         ->first();
         if (!empty($appartment_code)) {
             return response()->json([
