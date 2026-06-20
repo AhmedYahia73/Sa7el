@@ -189,7 +189,6 @@ class PropertyController extends Controller
             ->where('code', $request->code)
             ->whereNotNull('user_id')
             ->orWhere('type', 'renter')
-            ->where('from', '<=', date('Y-m-d'))
             ->where('to', '>=', date('Y-m-d'))
             ->where('village_id', $request->village_id)
             ->where('code', $request->code)
