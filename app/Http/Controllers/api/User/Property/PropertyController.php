@@ -182,7 +182,7 @@ class PropertyController extends Controller
 
             $appartment_code = $this->appartment_code 
             ->where('code', $request->code) 
-            ->first(); 
+            ->firstOrFail(); 
             $appartment_count = $this->appartment_code
             ->where('type', 'owner')
             ->where('village_id', $request->village_id)
