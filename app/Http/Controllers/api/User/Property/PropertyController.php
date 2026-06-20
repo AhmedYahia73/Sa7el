@@ -180,17 +180,8 @@ class PropertyController extends Controller
                 ]);
             }
 
-            $appartment_code = $this->appartment_code
-            ->where('type', 'owner')
-            ->where('village_id', $request->village_id)
-            ->where('code', $request->code)
-            ->whereNull('user_id')
-            ->orWhere('type', 'renter')
-            ->where('from', '<=', date('Y-m-d'))
-            ->where('to', '>=', date('Y-m-d'))
-            ->where('village_id', $request->village_id)
-            ->where('code', $request->code)
-            ->whereNull('user_id')
+            $appartment_code = $this->appartment_code 
+            ->where('code', $request->code) 
             ->first(); 
             $appartment_count = $this->appartment_code
             ->where('type', 'owner')
