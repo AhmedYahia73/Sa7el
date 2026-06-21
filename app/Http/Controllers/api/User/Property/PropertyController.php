@@ -193,14 +193,14 @@ class PropertyController extends Controller
             ->where('village_id', $request->village_id)
             ->where('code', $request->code)
             ->whereNotNull('user_id')
-            ->first(); 
+            ->count(); 
             $code_requests = CodeRequest::
             where("appartment_id", $appartment_code->appartment_id ?? null)
             ->where("code", $request->code)
             ->where("village_id", $request->village_id)
             ->where("status", "pending")
             ->count();
-            if (($code_requests ?? 0 )+ $appartment_count >= ($appartment_code?->people ?? 0)) {
+            if (($code_requests ?? 0 ) + $appartment_count >= ($appartment_code?->people ?? 0)) {
                 if($request->local == "ar"){
                     return response()->json([
                         'errors' => 'لقد تم الوصول إلى الحد الأقصى لعدد المستخدمين المسموح بهم لهذه الوحدة.'
