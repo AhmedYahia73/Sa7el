@@ -55,7 +55,7 @@ class RentController extends Controller
             'from' => 'required|date',
             'to' => 'required|date',
             'people' => 'required|integer',
-            'image' => 'required'
+            'image' => 'required|image'
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
