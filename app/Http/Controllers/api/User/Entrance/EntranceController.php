@@ -44,6 +44,7 @@ class EntranceController extends Controller
             'image_link' => $user->image_link,
             'qr_code_link' => $qrCodeImage,
             'appartment' => $appartment->unit,
+            "date" => now("d-m-Y h:i A"),
         ]);
     }
 }
