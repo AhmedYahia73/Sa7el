@@ -29,6 +29,7 @@ class RequestController extends Controller
                 "village" => $item?->village?->name,
                 'code' => $item->code,
                 'people_count' => collect($item->appartment_codes)->count(),
+                "created_at" => $item->created_at,
             ];
         });
 
@@ -87,6 +88,7 @@ class RequestController extends Controller
                     'appartment_unit' => $item->appartment?->unit,
                     'appartment_location' => $item->appartment?->location,
                     'people_count' => collect($item->appartment_codes)->count(),
+                    "created_at" => $item->created_at,
                 ];
             });
 
