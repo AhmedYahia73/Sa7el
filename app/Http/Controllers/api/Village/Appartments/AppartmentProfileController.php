@@ -33,6 +33,7 @@ class AppartmentProfileController extends Controller
             ];
         });
         $renters = $appartment->appartment_code
+        ->whereNotNull("user_id")
         ->where('type', 'renter')->values()
         ->map(function($item){
             return [
