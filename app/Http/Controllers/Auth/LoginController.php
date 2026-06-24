@@ -10,6 +10,8 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use App\Events\NotificationEvent;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ForgetPasswordMail;
 
 use App\Models\User;
 use App\Models\PersonalAccessToken;
