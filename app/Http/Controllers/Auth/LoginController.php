@@ -554,7 +554,7 @@ class LoginController extends Controller
         where("email", $request->email)
         ->where("code", $request->code)
         ->update([
-            "password" => $request->password,
+            "password" => bcrypt($request->password),
             "code" => null,
         ]);
 
