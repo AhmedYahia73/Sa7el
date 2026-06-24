@@ -32,8 +32,16 @@ class AppServiceProvider extends ServiceProvider
         Gates::defineGates();
         AdminGates::defineGates();
 
-        RateLimiter::for('forget_password', function (Request $request) {
-            return Limit::perMinutes(5, 3)->by($request->ip())->response(function () {
+        RateLimiter::for('forget_password_check', function (Request $request) {
+            return Limit::perMinutes(5, 3)->by('check_forget_password:' . $request->ip())->response(function () {
+                return response()->json([
+                    'errors' => 'Too many attempts. Please try again after 5 minutes.'
+                ], 429);
+            });
+        });
+
+        RateLimiter::for('forget_password_update', function (Request $request) {
+            return Limit::perMinutes(5, 3)->by('update_password:' . $request->ip())->response(function () {
                 return response()->json([
                     'errors' => 'Too many attempts. Please try again after 5 minutes.'
                 ], 429);

@@ -18,9 +18,9 @@ Route::controller(LoginController::class)
 
     Route::post('user/forget_password', 'forget_password');
     Route::post('user/check_forget_password', 'check_forget_password')
-        ->middleware('throttle:forget_password');
+        ->middleware('throttle:forget_password_check');
     Route::post('user/update_password', 'update_password')
-        ->middleware('throttle:forget_password');
+        ->middleware('throttle:forget_password_update');
 });
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
