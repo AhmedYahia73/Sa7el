@@ -101,8 +101,10 @@ class RentController extends Controller
         $rentRequest['code'] = $code;
         
 
-        $this->appartment_code
-        ->create($rentRequest);
+        for($i = 0; $i < $request->people; $i++ ){
+            $this->appartment_code
+            ->create($rentRequest);
+        }
        // /rent/add
         return response()->json([
             'success' => $code

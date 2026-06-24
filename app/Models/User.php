@@ -39,6 +39,7 @@ class User extends Authenticatable
         'rent_to',
         'qr_code',
         "ip_address",
+        "code",
     ];
     protected $appends = ['image_link', 'qr_code_link'];
 

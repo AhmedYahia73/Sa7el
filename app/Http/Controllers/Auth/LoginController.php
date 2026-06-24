@@ -438,6 +438,18 @@ class LoginController extends Controller
     }
 
     public function sign_up(SignupRequest $request){
+        $users = User::
+        where(function($query) use($request){
+            $query->where("email", $request->email)
+            ->orWhere("phone", $request->phone);
+        })
+        ->where("role", "user")
+        ->first();
+        if($users){
+            return response()->json([
+                "errors" => "email or phone is enrolled"
+            ], 400);
+        }
         $userRequest = $request->validated();
         $userRequest['user_type'] = 'visitor';
         $userRequest['role'] = 'user';  
@@ -477,6 +489,75 @@ class LoginController extends Controller
         
         return response()->json([
             'success' => 'You delete data success'
+        ]);
+    }
+
+    public function forget_password(Request $request){
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|exists:users,email',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }
+        $code = rand(1000000, 9999999);
+        Mail::to($request->email)->send(new ForgetPasswordMail($code));
+        User::
+        where("email", $request->email)
+        ->update([
+            "code" => $code
+        ]);
+
+        return response()->json([
+            "success" => "You update code success"
+        ]);
+    }
+
+    public function check_forget_password(Request $request){
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|exists:users,email',
+            "code"  => "required", 
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }  
+        $user = User::
+        where("email", $request->email)
+        ->where("code", $request->code)
+        ->first();
+
+        return response()->json([
+            "check_code" => $user ? true : false
+        ]);
+    }
+
+    public function update_password(Request $request){
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|exists:users,email',
+            "code"  => "required", 
+            "password"  => "required", 
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }  
+        $user = User::
+        where("email", $request->email)
+        ->where("code", $request->code)
+        ->update([
+            "password" => $request->password,
+            "code" => null,
+        ]);
+
+        return response()->json([
+            "success" => "You update data success"
         ]);
     }
 }

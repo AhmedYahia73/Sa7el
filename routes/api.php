@@ -15,6 +15,12 @@ Route::controller(LoginController::class)
     Route::post('user/login', 'user_login');
     Route::post('user/sign_up', 'sign_up');
     Route::get('user/sign_up_list', 'sign_up_list');
+
+    Route::post('user/forget_password', 'forget_password');
+    Route::post('user/check_forget_password', 'check_forget_password')
+        ->middleware('throttle:forget_password');
+    Route::post('user/update_password', 'update_password')
+        ->middleware('throttle:forget_password');
 });
 // Route::get('/user', function (Request $request) {
 //     return $request->user();

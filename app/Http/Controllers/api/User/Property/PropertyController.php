@@ -212,6 +212,20 @@ class PropertyController extends Controller
                     ], 404);
                 }
             }
+            if($appartment_code->type == "renter"){
+                  
+                $appartment_code_item = AppartmentCode::
+                where("code", $codes->code)
+                ->where("appartment_id", $codes->appartment_id)
+                ->whereNull("user_id")
+                ->first();
+                $appartment_code_item->user_id = $codes->user_id;
+                $appartment_code_item->save(); 
+
+                return response()->json([
+                    'message' => 'You add data success'
+                ]);
+            }
             $notification = "قام " . auth()->user()->name . " بادخال كود  برقم " . $request->code . "من الابليكشن";
             $data = [
                 'village_id' => $request->village_id,

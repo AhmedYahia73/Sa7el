@@ -4,7 +4,10 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
- 
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
+
 use App\Providers\gates\Gates;
 use App\Providers\gates\AdminGates;
 
@@ -28,6 +31,14 @@ class AppServiceProvider extends ServiceProvider
     {
         Gates::defineGates();
         AdminGates::defineGates();
+
+        RateLimiter::for('forget_password', function (Request $request) {
+            return Limit::perMinutes(5, 3)->by($request->ip())->response(function () {
+                return response()->json([
+                    'errors' => 'Too many attempts. Please try again after 5 minutes.'
+                ], 429);
+            });
+        });
 
         Validator::extend('base64image', function ($attribute, $value, $parameters, $validator) {
             $rule = new Base64Image();
