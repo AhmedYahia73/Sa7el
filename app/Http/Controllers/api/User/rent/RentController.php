@@ -41,7 +41,9 @@ class RentController extends Controller
         ->where('type', 'renter')
         ->where('to', '>', date('Y-m-d'))
         ->with('appartment')
-        ->get();
+        ->get()
+        ->unique("code")
+        ->values();
 
         return response()->json([
             'rents' => $rents
@@ -108,6 +110,29 @@ class RentController extends Controller
        // /rent/add
         return response()->json([
             'success' => $code
+        ]);
+    }
+
+    public function destroy(Request $request){
+        $validator = Validator::make($request->all(), [
+            'appartment_id' => 'required|exists:appartments,id', 
+            'code' => 'required'
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }
+        
+        $appartment_code = $this->appartment_code 
+        ->where("appartment_id", $request->appartment_id)
+        ->where('code', '>=', $request->code) 
+        ->where('owner_id', $request->user()->id)
+        ->delete(); 
+
+        return response()->json([
+            'success' => "You delete code success"
         ]);
     }
 }
