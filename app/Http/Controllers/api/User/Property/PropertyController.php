@@ -70,6 +70,10 @@ class PropertyController extends Controller
                     'visits_status' => false,
                     'options_status' => false,
                     'all_status' => false,
+                    "status_open" => $item->type != "renter" ? true :
+                    $item->from <= date("Y-m-d") && $item->to >= date("Y-m-d"),
+                    "from" => $item->from,
+                    "to" => $item->to,
                 ];
             } else {
                 return [
@@ -98,7 +102,11 @@ class PropertyController extends Controller
                     'rent_status' => $appartment->rent_status,
                     'visits_status' => $appartment->visits_status,
                     'options_status' => $appartment->options_status,
-                    'all_status' => $appartment->all_status,    
+                    'all_status' => $appartment->all_status,
+                    "status_open" => $item->type != "renter" ? true :
+                    $item->from <= date("Y-m-d") && $item->to >= date("Y-m-d"),
+                    "from" => $item->from,
+                    "to" => $item->to,
                 ];
             }
         });
