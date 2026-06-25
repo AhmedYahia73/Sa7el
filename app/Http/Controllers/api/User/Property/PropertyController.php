@@ -215,11 +215,11 @@ class PropertyController extends Controller
             if($appartment_code->type == "renter"){
                   
                 $appartment_code_item = AppartmentCode::
-                where("code", $codes->code)
-                ->where("appartment_id", $codes->appartment_id)
+                where("code", $appartment_code->code)
+                ->where("appartment_id", $appartment_code->appartment_id)
                 ->whereNull("user_id")
                 ->first();
-                $appartment_code_item->user_id = $codes->user_id;
+                $appartment_code_item->user_id = auth()->user()->id;
                 $appartment_code_item->save(); 
 
                 return response()->json([
