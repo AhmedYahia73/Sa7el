@@ -18,7 +18,7 @@ return [
      * Multiple includes or wildcards → server defaults to / and paths stay full (/api/users).
      * Override with `servers`, or use Scramble::registerApi() for separate bases.
      */
-    'api_path' => ['api', "admin"],
+    'api_path' => 'api',
 
     /*
      * Your API domain. By default, app domain is used. This is also a part of the default API routes
@@ -146,41 +146,4 @@ return [
     ],
 
     'extensions' => [],
-
-    /*
-     * Automatically document API security (OpenAPI `security` / `securitySchemes`) based on route
-     * middleware.
-     *
-     * Disabled by default. Uncomment the line below to enable `MiddlewareAuthSecurityStrategy`.
-     * When at least one documented route uses middleware matching the configured patterns (by default
-     * `auth` and `auth:*`), bearer auth is applied globally. Routes without matching middleware are
-     * marked as public (`security: []`).
-     *
-     * Set to `null` explicitly to disable. If you already configure security manually via
-     * `afterOpenApiGenerated` / `extendOpenApi`, keep this disabled to avoid duplicate schemes.
-     *
-     * Customize with a class-string or [class, options]:
-     *
-     * 'security_strategy' => [
-     *     \Dedoc\Scramble\SecurityDocumentation\MiddlewareAuthSecurityStrategy::class,
-     *     [
-     *         'middleware' => ['auth', 'auth:*'],
-     *         'scheme' => \Dedoc\Scramble\Support\Generator\SecurityScheme::http('bearer'),
-     *     ],
-     * ],
-     */
-    // 'security_strategy' => \Dedoc\Scramble\SecurityDocumentation\MiddlewareAuthSecurityStrategy::class,
-    'security_strategy' => null,
-
-    'apis' => [
-    'main-api' => [
-        'api_path' => 'api',
-    ],
-    'user-api' => [
-        'api_path' => 'user',
-    ],
-    'admin-api' => [
-        'api_path' => 'admin',
-    ],
-],
 ];

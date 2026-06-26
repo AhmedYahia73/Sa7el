@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Dedoc\Scramble\Scramble;
+use Dedoc\Scramble\Support\Generator\OpenApi;
+use Dedoc\Scramble\Support\Generator\SecurityScheme;
 
 use App\Providers\gates\Gates;
 use App\Providers\gates\AdminGates;
@@ -32,6 +35,7 @@ class AppServiceProvider extends ServiceProvider
         Gates::defineGates();
         AdminGates::defineGates();
 
+        // Rate Limiters
         RateLimiter::for('forget_password_check', function (Request $request) {
             return Limit::perMinutes(5, 3)->by('check_forget_password:' . $request->ip())->response(function () {
                 return response()->json([
@@ -47,6 +51,42 @@ class AppServiceProvider extends ServiceProvider
                 ], 429);
             });
         });
+
+        // Scramble API Docs
+        Scramble::registerApi('public', [
+            'api_path' => 'api',
+            'info' => ['title' => 'Public API', 'version' => '1.0.0'],
+        ]);
+
+        Scramble::registerApi('admin', [
+            'api_path' => 'admin',
+            'info' => ['title' => 'Admin API', 'version' => '1.0.0'],
+        ]);
+
+        Scramble::registerApi('village', [
+            'api_path' => 'village',
+            'info' => ['title' => 'Village API', 'version' => '1.0.0'],
+        ]);
+
+        Scramble::registerApi('provider', [
+            'api_path' => 'provider',
+            'info' => ['title' => 'Provider API', 'version' => '1.0.0'],
+        ]);
+
+        Scramble::registerApi('maintenance_provider', [
+            'api_path' => 'maintenance_provider',
+            'info' => ['title' => 'Maintenance Provider API', 'version' => '1.0.0'],
+        ]);
+
+        Scramble::registerApi('user', [
+            'api_path' => 'user',
+            'info' => ['title' => 'User API', 'version' => '1.0.0'],
+        ]);
+
+        Scramble::registerApi('security', [
+            'api_path' => 'security',
+            'info' => ['title' => 'Security API', 'version' => '1.0.0'],
+        ]);
 
         Validator::extend('base64image', function ($attribute, $value, $parameters, $validator) {
             $rule = new Base64Image();
