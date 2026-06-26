@@ -13,6 +13,8 @@ use App\Providers\gates\AdminGates;
 
 use Illuminate\Support\Facades\Validator;
 use App\Rules\Base64Image;
+use Dedoc\Scramble\Scramble;
+use Dedoc\Scramble\Support\Generator\OpenApi;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,12 +31,26 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Scramble::registerApi('main-api', [
+            'api_path' => 'api', 
+        ])->afterOpenApiGenerated(function (OpenApi $openApi) {
+            $openApi->info->title('Main API Documentation');
+        });
+
+        Scramble::registerApi('user-api', [
+            'api_path' => 'user',
+        ])->afterOpenApiGenerated(function (OpenApi $openApi) {
+            $openApi->info->title('User API Documentation');
+        });
+
+        Scramble::registerApi('admin-api', [
+            'api_path' => 'admin',
+        ])->afterOpenApiGenerated(function (OpenApi $openApi) {
+            $openApi->info->title('Admin API Documentation');
+        });
         Gates::defineGates();
         AdminGates::defineGates();
-    // السماح بالوصول للتوثيق على السيرفر
-        Gate::define('viewApiDocs', function ($user = null) {
-            return true; // تعني السماح للجميع (يمكنك تخصيصها لاحقاً لحمايتها)
-        });
+
         RateLimiter::for('forget_password_check', function (Request $request) {
             return Limit::perMinutes(5, 3)->by('check_forget_password:' . $request->ip())->response(function () {
                 return response()->json([
