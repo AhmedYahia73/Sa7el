@@ -10,7 +10,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "dedoc/scramble": "*",
+        "dedoc/scramble": "^0.13.30",
         "inertiajs/inertia-laravel": "^2.0",
         "intervention/image": "^3.11",
         "khanamiryan/qrcode-detector-decoder": "^2.0",
