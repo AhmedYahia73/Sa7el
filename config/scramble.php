@@ -171,16 +171,16 @@ return [
      */
     // 'security_strategy' => \Dedoc\Scramble\SecurityDocumentation\MiddlewareAuthSecurityStrategy::class,
     'security_strategy' => null,
-    
+
     'apis' => [
     'main-api' => [
         'api_path' => 'api',
     ],
     'user-api' => [
-        'api_path' => 'api/user',
+        'api_path' => 'user',
     ],
     'admin-api' => [
-        'api_path' => 'api/admin',
+        'api_path' => 'admin',
     ],
 ],
 ];
