@@ -13,8 +13,6 @@ use App\Providers\gates\AdminGates;
 
 use Illuminate\Support\Facades\Validator;
 use App\Rules\Base64Image;
-use Dedoc\Scramble\Scramble;
-use Dedoc\Scramble\Support\Generator\OpenApi;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,36 +26,9 @@ class AppServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap any application services.
-     */public function boot(): void
-{
-    // السماح بالوصول على السيرفر
-    \Illuminate\Support\Facades\Gate::define('viewApiDocs', function ($user = null) {
-        return true;
-    });
-
-    // تسجيل الـ Main API
-    Scramble::registerApi('main-api')->routes(function ($route) {
-        // تأخذ كل المسارات التي تبدأ بـ api ولكن لا تحتوي على user أو admin
-        return str_starts_with($route->uri, 'api/') 
-            && !str_contains($route->uri, 'user') 
-            && !str_contains($route->uri, 'admin');
-    })->afterOpenApiGenerated(function (OpenApi $openApi) {
-        $openApi->info->title('Main API Documentation');
-    });
-
-    // تسجيل الـ User API
-    Scramble::registerApi('user-api')->routes(function ($route) {
-        return str_starts_with($route->uri, 'user') || str_starts_with($route->uri, 'user');
-    })->afterOpenApiGenerated(function (OpenApi $openApi) {
-        $openApi->info->title('User API Documentation');
-    });
-
-    // تسجيل الـ Admin API
-    Scramble::registerApi('admin-api')->routes(function ($route) {
-        return str_starts_with($route->uri, 'admin') || str_starts_with($route->uri, 'admin');
-    })->afterOpenApiGenerated(function (OpenApi $openApi) {
-        $openApi->info->title('Admin API Documentation');
-    });
+     */
+    public function boot(): void
+    {
         Gates::defineGates();
         AdminGates::defineGates();
 
