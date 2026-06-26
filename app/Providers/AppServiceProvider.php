@@ -28,29 +28,34 @@ class AppServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap any application services.
-     */
-    public function boot(): void
-    {// 1. السماح بالوصول للتوثيق على السيرفر (تأكد من وجود هذا السطر)
+     */public function boot(): void
+{
+    // السماح بالوصول على السيرفر
     \Illuminate\Support\Facades\Gate::define('viewApiDocs', function ($user = null) {
         return true;
     });
 
-    // 2. توثيق الـ API الرئيسي
-    Scramble::registerApi('main-api')->afterOpenApiGenerated(function (OpenApi $openApi) {
+    // تسجيل الـ Main API
+    Scramble::registerApi('main-api')->routes(function ($route) {
+        // تأخذ كل المسارات التي تبدأ بـ api ولكن لا تحتوي على user أو admin
+        return str_starts_with($route->uri, 'api/') 
+            && !str_contains($route->uri, 'user') 
+            && !str_contains($route->uri, 'admin');
+    })->afterOpenApiGenerated(function (OpenApi $openApi) {
         $openApi->info->title('Main API Documentation');
     });
 
-    // 3. توثيق الـ User API
-    Scramble::registerApi('user-api', [
-        'api_path' => 'api/user',
-    ])->afterOpenApiGenerated(function (OpenApi $openApi) {
+    // تسجيل الـ User API
+    Scramble::registerApi('user-api')->routes(function ($route) {
+        return str_starts_with($route->uri, 'user') || str_starts_with($route->uri, 'user');
+    })->afterOpenApiGenerated(function (OpenApi $openApi) {
         $openApi->info->title('User API Documentation');
     });
 
-    // 4. توثيق الـ Admin API
-    Scramble::registerApi('admin-api', [
-        'api_path' => 'api/admin',
-    ])->afterOpenApiGenerated(function (OpenApi $openApi) {
+    // تسجيل الـ Admin API
+    Scramble::registerApi('admin-api')->routes(function ($route) {
+        return str_starts_with($route->uri, 'admin') || str_starts_with($route->uri, 'admin');
+    })->afterOpenApiGenerated(function (OpenApi $openApi) {
         $openApi->info->title('Admin API Documentation');
     });
         Gates::defineGates();
