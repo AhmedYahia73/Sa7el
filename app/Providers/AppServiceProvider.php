@@ -38,13 +38,13 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Scramble::registerApi('user-api', [
-            'api_path' => 'user',
+            'api_path' => 'api/user',
         ])->afterOpenApiGenerated(function (OpenApi $openApi) {
             $openApi->info->title('User API Documentation');
         });
 
         Scramble::registerApi('admin-api', [
-            'api_path' => 'admin',
+            'api_path' => 'api/admin',
         ])->afterOpenApiGenerated(function (OpenApi $openApi) {
             $openApi->info->title('Admin API Documentation');
         });
