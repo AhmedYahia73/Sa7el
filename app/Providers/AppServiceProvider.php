@@ -31,7 +31,10 @@ class AppServiceProvider extends ServiceProvider
     {
         Gates::defineGates();
         AdminGates::defineGates();
-
+    // السماح بالوصول للتوثيق على السيرفر
+        Gate::define('viewApiDocs', function ($user = null) {
+            return true; // تعني السماح للجميع (يمكنك تخصيصها لاحقاً لحمايتها)
+        });
         RateLimiter::for('forget_password_check', function (Request $request) {
             return Limit::perMinutes(5, 3)->by('check_forget_password:' . $request->ip())->response(function () {
                 return response()->json([
