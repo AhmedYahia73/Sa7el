@@ -3,6 +3,8 @@
 use App\Http\Controllers\api\SuperAdmin\Admin\AdminController;
 use App\Http\Controllers\api\SuperAdmin\Admin\AdminRoleController;
 use App\Http\Controllers\api\SuperAdmin\appartment_type\AppartmentTypeController;
+use App\Http\Controllers\api\SuperAdmin\Help\HelpGroupController;
+use App\Http\Controllers\api\SuperAdmin\Help\HelpVideoController;
 use App\Http\Controllers\api\SuperAdmin\Home\HomeController;
 use App\Http\Controllers\api\SuperAdmin\invoice\InvoiceController;
 use App\Http\Controllers\api\SuperAdmin\MaintenanceType\MaintenanceTypeController;
@@ -343,5 +345,24 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     ->group(function() {
         Route::get('/', 'profile');
         Route::post('/update_profile', 'update_profile');
+    });
+
+    Route::controller(HelpGroupController::class)->prefix('help_group')
+    ->group(function() {
+        Route::get('/', 'view');
+        Route::get('/item/{id}', 'show');
+        Route::put('/status/{id}', 'status');
+        Route::post('/add', 'create');
+        Route::post('/update/{id}', 'modify');
+        Route::delete('/delete/{id}', 'delete');
+    });
+
+    Route::controller(HelpVideoController::class)->prefix('help_video')
+    ->group(function() {
+        Route::get('/', 'view');
+        Route::get('/item/{id}', 'show');
+        Route::post('/add', 'create');
+        Route::post('/update/{id}', 'modify');
+        Route::delete('/delete/{id}', 'delete');
     });
 });

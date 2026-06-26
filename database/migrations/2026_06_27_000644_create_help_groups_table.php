@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('help_groups', function (Blueprint $table) {
             $table->id();
             $table->json("name");
+            $table->boolean("status")->default(1);
             $table->timestamps();
         });
     }

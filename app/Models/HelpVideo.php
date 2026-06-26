@@ -11,6 +11,7 @@ class HelpVideo extends Model
         'description',
         'ar_video',
         'en_video', 
+        'status', 
     ];
 
     protected function casts(): array

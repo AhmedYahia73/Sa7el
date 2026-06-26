@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->json("name");
             $table->json("description");
-            $table
+            $table->string("ar_video");
+            $table->string("en_video");
             $table->timestamps();
         });
     }

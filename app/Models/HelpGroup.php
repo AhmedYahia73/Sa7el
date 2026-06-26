@@ -8,6 +8,7 @@ class HelpGroup extends Model
 {
     protected $fillable =[
         'name', 
+        'status', 
     ];
 
     protected function casts(): array
