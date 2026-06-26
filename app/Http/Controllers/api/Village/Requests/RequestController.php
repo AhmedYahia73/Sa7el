@@ -55,6 +55,7 @@ class RequestController extends Controller
         $appartment_code = AppartmentCode::
         where("code", $codes->code)
         ->where("appartment_id", $codes->appartment_id)
+        ->whereNull("user_id")
         ->first();
         if($request->status == 'approve'){
             $appartment_code->user_id = $codes->user_id;
