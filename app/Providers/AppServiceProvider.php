@@ -30,24 +30,29 @@ class AppServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      */
     public function boot(): void
-    {
-        Scramble::registerApi('main-api', [
-            'api_path' => 'api', 
-        ])->afterOpenApiGenerated(function (OpenApi $openApi) {
-            $openApi->info->title('Main API Documentation');
-        });
+    {// 1. السماح بالوصول للتوثيق على السيرفر (تأكد من وجود هذا السطر)
+    \Illuminate\Support\Facades\Gate::define('viewApiDocs', function ($user = null) {
+        return true;
+    });
 
-        Scramble::registerApi('user-api', [
-            'api_path' => 'api/user',
-        ])->afterOpenApiGenerated(function (OpenApi $openApi) {
-            $openApi->info->title('User API Documentation');
-        });
+    // 2. توثيق الـ API الرئيسي
+    Scramble::registerApi('main-api')->afterOpenApiGenerated(function (OpenApi $openApi) {
+        $openApi->info->title('Main API Documentation');
+    });
 
-        Scramble::registerApi('admin-api', [
-            'api_path' => 'api/admin',
-        ])->afterOpenApiGenerated(function (OpenApi $openApi) {
-            $openApi->info->title('Admin API Documentation');
-        });
+    // 3. توثيق الـ User API
+    Scramble::registerApi('user-api', [
+        'api_path' => 'api/user',
+    ])->afterOpenApiGenerated(function (OpenApi $openApi) {
+        $openApi->info->title('User API Documentation');
+    });
+
+    // 4. توثيق الـ Admin API
+    Scramble::registerApi('admin-api', [
+        'api_path' => 'api/admin',
+    ])->afterOpenApiGenerated(function (OpenApi $openApi) {
+        $openApi->info->title('Admin API Documentation');
+    });
         Gates::defineGates();
         AdminGates::defineGates();
 
