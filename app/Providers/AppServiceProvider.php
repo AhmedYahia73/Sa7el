@@ -53,40 +53,36 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // Scramble API Docs
-        Scramble::registerApi('public', [
-            'api_path' => 'api',
-            'info' => ['title' => 'Public API', 'version' => '1.0.0'],
-        ]);
+        $apis = ['public', 'admin', 'village', 'provider', 'maintenance_provider', 'user', 'security'];
+        $paths = [
+            'public' => 'api',
+            'admin' => 'admin',
+            'village' => 'village',
+            'provider' => 'provider',
+            'maintenance_provider' => 'maintenance_provider',
+            'user' => 'user',
+            'security' => 'security',
+        ];
+        $titles = [
+            'public' => 'Public API',
+            'admin' => 'Admin API',
+            'village' => 'Village API',
+            'provider' => 'Provider API',
+            'maintenance_provider' => 'Maintenance Provider API',
+            'user' => 'User API',
+            'security' => 'Security API',
+        ];
 
-        Scramble::registerApi('admin', [
-            'api_path' => 'admin',
-            'info' => ['title' => 'Admin API', 'version' => '1.0.0'],
-        ]);
-
-        Scramble::registerApi('village', [
-            'api_path' => 'village',
-            'info' => ['title' => 'Village API', 'version' => '1.0.0'],
-        ]);
-
-        Scramble::registerApi('provider', [
-            'api_path' => 'provider',
-            'info' => ['title' => 'Provider API', 'version' => '1.0.0'],
-        ]);
-
-        Scramble::registerApi('maintenance_provider', [
-            'api_path' => 'maintenance_provider',
-            'info' => ['title' => 'Maintenance Provider API', 'version' => '1.0.0'],
-        ]);
-
-        Scramble::registerApi('user', [
-            'api_path' => 'user',
-            'info' => ['title' => 'User API', 'version' => '1.0.0'],
-        ]);
-
-        Scramble::registerApi('security', [
-            'api_path' => 'security',
-            'info' => ['title' => 'Security API', 'version' => '1.0.0'],
-        ]);
+        foreach ($apis as $name) {
+            Scramble::registerApi($name, [
+                'api_path' => $paths[$name],
+                'info' => ['title' => $titles[$name], 'version' => '1.0.0'],
+            ])->afterOpenApiGenerated(function (OpenApi $openApi) {
+                $openApi->secure(
+                    SecurityScheme::http('bearer')
+                );
+            });
+        }
 
         Validator::extend('base64image', function ($attribute, $value, $parameters, $validator) {
             $rule = new Base64Image();
