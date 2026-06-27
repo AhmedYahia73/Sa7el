@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use App\trait\TraitImage;
 
 use App\Models\HelpVideo;
+use App\Models\HelpGroup;
 
 class HelpVideoController extends Controller
 {
@@ -17,10 +18,21 @@ class HelpVideoController extends Controller
 
     public function view()
     {
-        $help_videos = $this->help_video->get();
+        $help_videos = $this->help_video
+        ->with("group:id,name")->get();
 
         return response()->json([
             'help_videos' => $help_videos,
+        ]);
+    }
+    
+    public function lists()
+    {
+        $help_groups = HelpGroup::
+        select("id", "name")->get();
+
+        return response()->json([
+            'help_groups' => $help_groups,
         ]);
     }
 
@@ -64,6 +76,7 @@ class HelpVideoController extends Controller
             'description.ar'=> 'required|string',
             'ar_video'      => 'required|file',
             'en_video'      => 'required|file',
+            "help_group_id" => "required|exists:help_groupsc,id",
         ]);
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
@@ -77,6 +90,7 @@ class HelpVideoController extends Controller
             'description' => $request->description,
             'ar_video'    => $ar_video,
             'en_video'    => $en_video,
+            "help_group_id" => $request->help_group_id,
         ]);
 
         return response()->json(['success' => 'You add data success']);
@@ -93,6 +107,7 @@ class HelpVideoController extends Controller
             'description.ar'=> 'required|string',
             'ar_video'      => 'nullable|file',
             'en_video'      => 'nullable|file',
+            "help_group_id" => "required|exists:help_groupsc,id",
         ]);
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
@@ -107,6 +122,7 @@ class HelpVideoController extends Controller
         $data = [
             'name'        => $request->name,
             'description' => $request->description,
+            "help_group_id" => $request->help_group_id,
         ];
 
         if ($request->hasFile('ar_video')) {
