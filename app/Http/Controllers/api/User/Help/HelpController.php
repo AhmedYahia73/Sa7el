@@ -58,7 +58,7 @@ class HelpController extends Controller
                 "id" => $item->id,
                 "name" => $item->name[$local],
                 "description" => $item->description[$local],
-                "video" => $local == "en" ? $item->en_video : $item->ar_video,
+                "video" => $local == "en" ? $item->en_video_link : $item->ar_video_link,
             ];
         });
 
