@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\api\User\Entrance\EntranceController;
+use App\Http\Controllers\api\User\Help\HelpController;
 use App\Http\Controllers\api\User\Maintenance\MaintenanceController;
 use App\Http\Controllers\api\User\MaintenanceFeez\MaintenanceFeezController;
 use App\Http\Controllers\api\User\MaintenanceProvider\MaintenanceProviderController;
+use App\Http\Controllers\api\User\Notification\NotificationController;
 use App\Http\Controllers\api\User\Offers\OfferController;
 use App\Http\Controllers\api\User\PoolBeaches\PoolBeachesController;
 use App\Http\Controllers\api\User\Posts\PostsController;
@@ -14,12 +16,10 @@ use App\Http\Controllers\api\User\rent\RentController;
 use App\Http\Controllers\api\User\Services\ServiceController;
 use App\Http\Controllers\api\User\Visit\VisitController;
 use App\Http\Controllers\api\User\Visitors\MyVisitorsController;
-use App\Http\Controllers\api\User\Notification\NotificationController;
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-
 use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Route;
 
 Broadcast::routes(['middleware' => ['auth:sanctum']]);
 
@@ -93,6 +93,12 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     ->group(function() {
         Route::get('/pools', 'pools'); 
         Route::get('/beaches', 'beaches'); 
+    });
+
+    Route::controller(HelpController::class)->prefix('help')
+    ->group(function() {
+        Route::get('/groups', 'groups');  
+        Route::post('/videos', 'videos');  
     });
 
     Route::controller(ServiceController::class)
