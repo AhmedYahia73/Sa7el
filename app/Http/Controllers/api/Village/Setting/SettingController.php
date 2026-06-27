@@ -41,7 +41,7 @@ class SettingController extends Controller
         else{
             VillageSetting::
             create([
-                "renter_limit" => $renter_limit,
+                "renter_limit" => $request->renter_limit,
                 "village_id" => $request->user()->village_id
             ]);
         }
