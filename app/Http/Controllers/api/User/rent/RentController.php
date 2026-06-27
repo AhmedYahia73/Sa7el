@@ -127,9 +127,32 @@ class RentController extends Controller
         
         $appartment_code = $this->appartment_code 
         ->where("appartment_id", $request->appartment_id)
-        ->where('code', '>=', $request->code) 
-        ->where('owner_id', $request->user()->id)
+        ->where('code', '>=', $request->code)  
         ->delete(); 
+
+        return response()->json([
+            'success' => "You delete code success"
+        ]);
+    }
+
+    public function delete_user(Request $request){
+        $validator = Validator::make($request->all(), [
+            'appartment_id' => 'required|exists:appartments,id', 
+            'code' => 'required',
+            'user_id' => 'reuired|exists:users,id',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }
+        
+        $code = AppartmentCode::
+        where("code", $request->code)
+        ->where("user_id", $request->user_id)
+        ->where("appartment_id", $request->appartment_id)
+        ->delete();
 
         return response()->json([
             'success' => "You delete code success"

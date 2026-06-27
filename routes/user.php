@@ -116,6 +116,7 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
         Route::get('/rent', 'view');
         Route::post('/rent/add', 'create');
         Route::post('/rent/destroy', 'destroy');
+        Route::post('/rent/delete_user', 'delete_user');
     });
 
     Route::controller(OfferController::class)->prefix('offer')

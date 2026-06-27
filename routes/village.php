@@ -136,6 +136,8 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(RentController::class)->prefix('rents')->middleware('can:Rent')
     ->group(function() {
         Route::get('/', 'view'); 
+        Route::post('/delete_user', 'delete_user'); 
+        Route::post('/delete_code', 'delete_code'); 
     });
 
     Route::controller(ForRentSaleController::class)->prefix('for_rent_sale')->middleware('can:For Rent & Sale')
