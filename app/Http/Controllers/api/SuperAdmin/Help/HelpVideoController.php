@@ -62,8 +62,8 @@ class HelpVideoController extends Controller
             'description'   => 'required|array',
             'description.en'=> 'required|string',
             'description.ar'=> 'required|string',
-            'ar_video'      => 'required',
-            'en_video'      => 'required',
+            'ar_video'      => 'required|file',
+            'en_video'      => 'required|file',
         ]);
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
@@ -91,8 +91,8 @@ class HelpVideoController extends Controller
             'description'   => 'required|array',
             'description.en'=> 'required|string',
             'description.ar'=> 'required|string',
-            'ar_video'      => 'nullable',
-            'en_video'      => 'nullable',
+            'ar_video'      => 'nullable|file',
+            'en_video'      => 'nullable|file',
         ]);
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
