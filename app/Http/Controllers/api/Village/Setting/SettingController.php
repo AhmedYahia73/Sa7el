@@ -22,7 +22,7 @@ class SettingController extends Controller
 
     public function update(Request $request){
         $validator = Validator::make($request->all(), [
-            'renter_limit' => 'reuired|numeric',
+            'renter_limit' => 'required|numeric',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
