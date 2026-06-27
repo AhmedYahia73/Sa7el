@@ -40,7 +40,9 @@ class RentController extends Controller
         $code = AppartmentCode::
         where("code", $request->code)
         ->where("user_id", $request->user_id)
-        ->delete();
+        ->update([
+            "user_id" => null
+        ]);
 
         return response()->json([
             "success" => "You delete data success"

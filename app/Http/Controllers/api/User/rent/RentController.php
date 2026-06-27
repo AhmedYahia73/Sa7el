@@ -152,7 +152,9 @@ class RentController extends Controller
         where("code", $request->code)
         ->where("user_id", $request->user_id)
         ->where("appartment_id", $request->appartment_id)
-        ->delete();
+        ->update([
+            "user_id" => null
+        ]);
 
         return response()->json([
             'success' => "You delete code success"
