@@ -16,10 +16,26 @@ class HelpVideoController extends Controller
 
     public function __construct(private HelpVideo $help_video) {}
 
-    public function view()
+    public function view(Request $request)
     {
-        $help_videos = $this->help_video
-        ->with("group:id,name")->get();
+        $validator = Validator::make($request->all(), [ 
+            "help_group_id" => "sometimes|exists:help_groupsc,id",
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+        $help_videos = $this->help_video->with("group:id,name")
+        ->when($request->filled('help_group_id'), function ($query) use ($request) {
+            $query->where('help_group_id', $request->help_group_id);
+        })
+        ->when($request->filled('search'), function ($query) use ($request) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                ->orWhere('description', 'like', '%' . $request->search . '%');
+            });
+        })
+        ->latest()
+        ->paginate($request->get('per_page', 10)); // الافتراضي 10 عناصر في الصفحة
 
         return response()->json([
             'help_videos' => $help_videos,
