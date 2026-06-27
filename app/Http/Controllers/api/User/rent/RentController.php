@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\User\rent;
 use App\Http\Controllers\Controller;
 use App\Models\Appartment;
 use App\Models\AppartmentCode;
+use App\Models\VillageSetting;
 use App\trait\TraitImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -63,6 +64,15 @@ class RentController extends Controller
             $firstError = $validator->errors()->first();
             return response()->json([
                 'errors' => $firstError,
+            ],400);
+        }
+        $renter_limit = VillageSetting::
+        where("village_id", $request->user()->village_id)
+        ->first()?->renter_limit ?? 10;
+ 
+        if($renter_limit < $request->people){
+            return response()->json([
+                'errors' => 'renter must be less than ' . $renter_limit 
             ],400);
         }
         $appartment = Appartment::

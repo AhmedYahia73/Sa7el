@@ -33,6 +33,7 @@ use App\Http\Controllers\api\Village\Notification\NotificationController;
 use App\Http\Controllers\api\Village\Entrance\EntranceController;
 use App\Http\Controllers\api\Village\LandingPage\LandingPageControlle;
 use App\Http\Controllers\api\Village\Requests\RequestController;
+use App\Http\Controllers\api\Village\Setting\SettingController;
 
 use Illuminate\Support\Facades\Broadcast;
 
@@ -48,6 +49,12 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     ->group(function() {
         Route::get('/', 'view');
         Route::get('/filter', 'filter');
+    });
+
+    Route::controller(SettingController::class)->prefix('setting')
+    ->group(function() {
+        Route::get('/', 'view');  
+        Route::post('/update', 'update');  
     });
 
     Route::controller(RequestController::class)->prefix('code_request')
