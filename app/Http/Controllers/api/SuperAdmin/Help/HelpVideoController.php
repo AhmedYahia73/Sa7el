@@ -92,7 +92,7 @@ class HelpVideoController extends Controller
             'description.ar'=> 'required|string',
             'ar_video'      => 'required|file',
             'en_video'      => 'required|file',
-            "help_group_id" => "required|exists:help_groupsc,id",
+            "help_group_id" => "required|exists:help_groups,id",
         ]);
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
@@ -123,7 +123,7 @@ class HelpVideoController extends Controller
             'description.ar'=> 'required|string',
             'ar_video'      => 'nullable|file',
             'en_video'      => 'nullable|file',
-            "help_group_id" => "required|exists:help_groupsc,id",
+            "help_group_id" => "required|exists:help_groups,id",
         ]);
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
