@@ -149,7 +149,7 @@ class RentController extends Controller
         $validator = Validator::make($request->all(), [
             'appartment_id' => 'required|exists:appartments,id', 
             'code' => 'required',
-            'user_id' => 'reuired|exists:users,id',
+            'user_id' => 'required|exists:users,id',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();

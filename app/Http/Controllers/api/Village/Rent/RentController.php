@@ -28,8 +28,8 @@ class RentController extends Controller
 
     public function delete_user(Request $request){
         $validator = Validator::make($request->all(), [
-            'code' => 'reuired',
-            'user_id' => 'reuired|exists:users,id',
+            'code' => 'required',
+            'user_id' => 'required|exists:users,id',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -51,7 +51,7 @@ class RentController extends Controller
 
     public function delete_code(Request $request){
         $validator = Validator::make($request->all(), [
-            'code' => 'reuired', 
+            'code' => 'required', 
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
