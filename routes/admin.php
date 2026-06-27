@@ -35,6 +35,7 @@ use App\Http\Controllers\api\SuperAdmin\village\VillageGallaryController;
 use App\Http\Controllers\api\SuperAdmin\village\VillageRolesController;
 use App\Http\Controllers\api\SuperAdmin\zones\ZoneController;
 use App\Http\Controllers\api\User\Profile\ProfileController;
+use App\Http\Controllers\api\User\Help\HelpController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -46,6 +47,12 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     Route::controller(HomeController::class)->prefix('home')
     ->group(function() {
         Route::get('/', 'view')->middleware('can:admin_Home_view'); 
+    });
+
+    Route::controller(HelpController::class)->prefix('help')
+    ->group(function() {
+        Route::get('/groups', 'groups');  
+        Route::post('/videos', 'videos');  
     });
 
     Route::controller(RequestController::class)->prefix('login_request')
