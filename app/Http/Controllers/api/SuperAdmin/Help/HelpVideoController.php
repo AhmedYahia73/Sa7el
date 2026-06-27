@@ -19,7 +19,7 @@ class HelpVideoController extends Controller
     public function view(Request $request)
     {
         $validator = Validator::make($request->all(), [ 
-            "help_group_id" => "sometimes|exists:help_groupsc,id",
+            "help_group_id" => "sometimes|exists:help_groups,id",
         ]);
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
