@@ -32,9 +32,19 @@ class SettingController extends Controller
 
         $settings = VillageSetting::
         where("village_id", $request->user()->village_id)
-        ->update([
-            "renter_limit" => $request->renter_limit
-        ]);
+        ->first();
+        if($settings){
+            $settings->update([
+                "renter_limit" => $request->renter_limit
+            ]);
+        }
+        else{
+            VillageSetting::
+            create([
+                "renter_limit" => $renter_limit,
+                "village_id" => $request->user()->village_id
+            ]);
+        }
 
         return response()->json([
             "success" => "You update data success"
