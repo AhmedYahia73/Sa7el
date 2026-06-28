@@ -31,7 +31,12 @@ class ApplicationController extends Controller
         $data = [];
         $data['app_description'] = $request->app_description;
         $data['google_api'] = $request->google_api;
-        $app->update($data);
+        if($app){ 
+            $app->update($data);
+        }
+        else{
+            Application::create($data);
+        }
 
         return response()->json([
             "success" => "You update data success"
