@@ -15,8 +15,7 @@ class RentController extends Controller
     public function view(Request $request){
         $rents = $this->rents
         ->with('owner', 'appartment', 'user')
-        ->where('type', 'renter')
-        ->whereNotNull('user_id')
+        ->where('type', 'renter') 
         ->where('village_id', $request->user()->village_id)
         ->orderByDesc('id')
         ->get();
