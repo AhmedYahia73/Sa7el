@@ -17,6 +17,7 @@ class RentController extends Controller
         ->with('owner', 'appartment', 'user')
         ->where('type', 'renter') 
         ->where('village_id', $request->user()->village_id)
+        ->where("to", ">=", date("Y-m-d"))
         ->orderByDesc('id')
         ->get();
 
