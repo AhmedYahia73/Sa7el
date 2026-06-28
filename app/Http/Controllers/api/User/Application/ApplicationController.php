@@ -108,10 +108,6 @@ class ApplicationController extends Controller
                 $rawJsonText = $data['candidates'][0]['content']['parts'][0]['text'];
                 $decodedAiPayload = json_decode(trim($rawJsonText), true);
 
-                // خصم الرصيد من المستخدم بعد نجاح العملية
-                $request->user()->requests--;
-                $request->user()->save();
-                
                 return response()->json([
                     'status' => 'success',
                     'answer' => $decodedAiPayload['answer'] ?? 'No precise answer could be formulated.',
