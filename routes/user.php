@@ -16,6 +16,7 @@ use App\Http\Controllers\api\User\rent\RentController;
 use App\Http\Controllers\api\User\Services\ServiceController;
 use App\Http\Controllers\api\User\Visit\VisitController;
 use App\Http\Controllers\api\User\Visitors\MyVisitorsController;
+use App\Http\Controllers\api\User\Application\ApplicationController;
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
@@ -29,6 +30,12 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
         Route::get('/', 'my_property'); 
         Route::post('/add', 'add_property'); 
         Route::get('/pending_code_request', 'pending_code_request'); 
+    });
+
+    Route::controller(ApplicationController::class)
+    ->prefix('help_chat')
+    ->group(function() {
+        Route::get('/', 'chat');
     });
 
     Route::controller(NotificationController::class)->prefix('notification')
