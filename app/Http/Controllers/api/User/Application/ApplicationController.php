@@ -41,7 +41,7 @@ class ApplicationController extends Controller
         // 2. تعديل: استخدام أسماء الأعمدة الصحيحة المستخرجة في الخطوة السابقة
         $formattedRecords = $records->map(function ($item) use ($locale) {
         $video = $locale == "en" ? $item->en_video : $item->ar_video;
-        return "ID: {$item->id} | Description: {$item->description} | Video Content Source: {$video}";
+        return "ID: {$item->id} | Description: {$item->description["en"]} | Video Content Source: {$video}";
         })->implode("\n");
 
         // 3. تحديد طبيعة عمل التطبيق
