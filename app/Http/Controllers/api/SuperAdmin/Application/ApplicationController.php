@@ -30,7 +30,9 @@ class ApplicationController extends Controller
         $app = Application::first();
         $data = [];
         $data['app_description'] = $request->app_description;
-        $data['google_api'] = $request->google_api;
+        if($request->google_api){
+            $data['google_api'] = $request->google_api;
+        }
         if($app){ 
             $app->update($data);
         }
