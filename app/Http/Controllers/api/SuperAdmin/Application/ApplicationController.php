@@ -14,7 +14,7 @@ class ApplicationController extends Controller
         $data = Application::first();
 
         return response()->json([
-            "app_description" => $data->app_description
+            "app_description" => $data?->app_description
         ]);
     }
 
