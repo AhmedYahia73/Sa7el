@@ -21,6 +21,7 @@ class ApplicationController extends Controller
     public function update(Request $request){
         $validation = Validator::make($request->all(), [  
             'app_description' => ['required'],
+            'google_api' => ['sometimes'],
         ]);
 
         if ($validation->fails()) {
