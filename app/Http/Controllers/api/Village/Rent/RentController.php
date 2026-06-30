@@ -28,8 +28,7 @@ class RentController extends Controller
 
     public function delete_user(Request $request){
         $validator = Validator::make($request->all(), [
-            'code' => 'required',
-            'user_id' => 'required|exists:users,id',
+            'id' => 'required|exists:appartment_codes,id',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -38,8 +37,7 @@ class RentController extends Controller
         }
 
         $code = AppartmentCode::
-        where("code", $request->code)
-        ->where("user_id", $request->user_id)
+        where("id", $request->id)
         ->update([
             "user_id" => null
         ]);
