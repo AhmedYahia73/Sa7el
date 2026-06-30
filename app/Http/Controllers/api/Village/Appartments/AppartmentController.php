@@ -219,7 +219,9 @@ class AppartmentController extends Controller
     { 
         // 1. تحسين الـ Validation
         $validator = Validator::make($request->all(), [ 
-            'people' => ['required', 'integer', 'min:1'], // الأفضل يكون رقم صحيح وأكبر من الصفر
+            'people' => ['required', 'integer', 'min:1'],
+            'from' =>["sometimes", "date"],
+            'to' =>["sometimes", "date"],
         ]); 
 
         if ($validator->fails()) { 
@@ -247,6 +249,12 @@ class AppartmentController extends Controller
             $data['created_at'] = now();
             $data['updated_at'] = now();
             $data['user_id'] = null;
+            if($request->from){
+                $data['from'] = $request->from;
+            }
+            if($request->to){
+                $data['to'] = $request->to;
+            }
 
             // 3. مسح البيانات القديمة
             $this->appartment_code->where("code", $appartment_code->code)->delete();  
@@ -260,6 +268,12 @@ class AppartmentController extends Controller
                         'appartment_id', 'user_id', 'village_id', 'from', 
                         'to', 'type', 'code', 'image', 'owner_id', 'user_type'
                     ]);
+                    if($request->from){
+                        $record['from'] = $request->from;
+                    }
+                    if($request->to){
+                        $record['to'] = $request->to;
+                    }
                     $record['people']     = $request->people;
                     $record['created_at'] = $codes[$i]->created_at ?? now(); // الحفاظ على وقت الإنشاء القديم أو الحالي
                     $record['updated_at'] = now();
