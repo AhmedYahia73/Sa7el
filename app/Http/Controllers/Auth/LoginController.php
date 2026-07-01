@@ -412,25 +412,36 @@ class LoginController extends Controller
         ->orderByDesc("id")
         ->first()?->status;
         $ip_address = $request->ip_address ?? $request->ip();
-        if($request->user()->ip_address != $ip_address && !empty($login_request_status)){
-            $login_request = LoginRequest::create([
-                "user_id" => $request->user()->id,
-                "ip_address" => $ip_address,
-                "status" => "pending",
-                "village_id" => $request->village_id,
-                "appartment_id" => $request->appartment_id,
-            ]);
-            auth()->user()->update(['ip_address' => $ip_address]);
-            $notification = "قام " . auth()->user()->name . " بمحاولة الدخول من الابليكشن";
-            $data = [
-                'village_id' => $request->village_id,
-                'code_request_id' => null,
-                'login_request_id' => $login_request->id,
-                "type" => "admin", // user, admin
-                'notification' => $notification,
-            ];
-            Notification::create($data);
-            NotificationEvent::dispatch($data);
+        if($request->user()->ip_address != $ip_address){
+            if(!empty($login_request_status)){
+                $login_request = LoginRequest::create([
+                    "user_id" => $request->user()->id,
+                    "ip_address" => $ip_address,
+                    "status" => "approve",
+                    "village_id" => $request->village_id,
+                    "appartment_id" => $request->appartment_id,
+                ]);
+            }
+            else{ 
+                $login_request = LoginRequest::create([
+                    "user_id" => $request->user()->id,
+                    "ip_address" => $ip_address,
+                    "status" => "pending",
+                    "village_id" => $request->village_id,
+                    "appartment_id" => $request->appartment_id,
+                ]);
+                auth()->user()->update(['ip_address' => $ip_address]);
+                $notification = "قام " . auth()->user()->name . " بمحاولة الدخول من الابليكشن";
+                $data = [
+                    'village_id' => $request->village_id,
+                    'code_request_id' => null,
+                    'login_request_id' => $login_request->id,
+                    "type" => "admin", // user, admin
+                    'notification' => $notification,
+                ];
+                Notification::create($data);
+                NotificationEvent::dispatch($data);
+            }
         } 
         $login_request = LoginRequest::
         where("ip_address", $ip_address)
