@@ -11,14 +11,22 @@ use App\Models\AppartmentType;
 
 class SettingController extends Controller
 {
-    
+
     public function view(Request $request){
         $settings = VillageSetting::
         where("village_id", $request->user()->village_id)
         ->with(["type" => function($query){
             $query->select("id", "name");
         }])
-        ->get();
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "renter_limit" => $item->renter_limit,
+                "appartment_type_id" => $item->appartment_type_id,
+                "appartment_type_name" => $item->type?->name,
+            ];
+        });
 
         return response()->json([
             "settings" => $settings
@@ -51,7 +59,9 @@ class SettingController extends Controller
         ->firstOrFail();
 
         return response()->json([
-            "settings" => $settings
+            "renter_limit" => $settings->renter_limit,
+            "appartment_type_id" => $settings->appartment_type_id,
+            "appartment_type_name" => $settings->type?->name,
         ]);
     }
 
