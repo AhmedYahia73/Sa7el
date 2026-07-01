@@ -406,9 +406,8 @@ class LoginController extends Controller
                 'errors' => $firstError,
             ],400);
         }
-        $login_request_status = LoginRequest::
-        where("ip_address", $ip_address)
-        ->where("user_id", auth()->user()->id)
+        $login_request_status = LoginRequest:: 
+        where("user_id", auth()->user()->id)
         ->where("village_id", $request->village_id)
         ->orderByDesc("id")
         ->first()?->status;
