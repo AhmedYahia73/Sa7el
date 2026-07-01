@@ -53,8 +53,12 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
 
     Route::controller(SettingController::class)->prefix('setting')
     ->group(function() {
-        Route::get('/', 'view');  
-        Route::post('/update', 'update');  
+        Route::get('/', 'view');
+        Route::get('/lists', 'lists');
+        Route::get('/{id}', 'show');
+        Route::post('/add', 'store');
+        Route::put('/{id}', 'update');
+        Route::delete('/{id}', 'delete');
     });
 
     Route::controller(RequestController::class)->prefix('code_request')

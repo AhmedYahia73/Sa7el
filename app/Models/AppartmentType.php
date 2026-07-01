@@ -14,7 +14,9 @@ class AppartmentType extends Model
     protected $appends = ['ar_name', 'image_link'];
  
     public function getImageLinkAttribute(){
-        return url('storage/' . $this->image);
+        if($this->image){
+            return url('storage/' . $this->image);
+        }
     }
 
     public function getArNameAttribute(){

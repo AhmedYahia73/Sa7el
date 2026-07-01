@@ -66,8 +66,13 @@ class RentController extends Controller
                 'errors' => $firstError,
             ],400);
         }
+
+        $appartment = Appartment::
+        where('id', $request->appartment_id)
+        ->first();
         $renter_limit = VillageSetting::
         where("village_id", $request->user()->village_id)
+        ->where("appartment_type_id", $appartment?->type_id)
         ->first()?->renter_limit ?? 10;
  
         if($renter_limit < $request->people){
@@ -75,9 +80,6 @@ class RentController extends Controller
                 'errors' => 'renter must be less than ' . $renter_limit 
             ],400);
         }
-        $appartment = Appartment::
-        where('id', $request->appartment_id)
-        ->first();
         if(empty($appartment) || !$appartment->rent_code_status || !$appartment->all_status){
             return response()->json([
                 'errors' => 'You are blocked to enter this appartment'
