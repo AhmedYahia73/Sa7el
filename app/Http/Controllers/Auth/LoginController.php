@@ -406,8 +406,14 @@ class LoginController extends Controller
                 'errors' => $firstError,
             ],400);
         }
+        $login_request_status = LoginRequest::
+        where("ip_address", $ip_address)
+        ->where("user_id", auth()->user()->id)
+        ->where("village_id", $request->village_id)
+        ->orderByDesc("id")
+        ->first()?->status;
         $ip_address = $request->ip_address ?? $request->ip();
-        if($request->user()->ip_address != $ip_address){
+        if($request->user()->ip_address != $ip_address && !empty($login_request_status)){
             $login_request = LoginRequest::create([
                 "user_id" => $request->user()->id,
                 "ip_address" => $ip_address,
@@ -432,7 +438,8 @@ class LoginController extends Controller
         ->where("user_id", auth()->user()->id)
         ->where("village_id", $request->village_id)
         ->orderByDesc("id")
-        ->first()?->status ==  "approve" ? true : false;
+        ->first()?->status ==  "approve" || empty($login_request_status) 
+        ? true : false;
 
         return response()->json([
             "login" => $login_request
