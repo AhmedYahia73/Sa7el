@@ -163,7 +163,7 @@ class RentController extends Controller
         
         $appartment_code = $this->appartment_code 
         ->where("appartment_id", $request->appartment_id)
-        ->where('code', '>=', $request->code)  
+        ->where('code', $request->code)  
         ->delete(); 
 
         return response()->json([
