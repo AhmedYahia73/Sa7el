@@ -125,6 +125,30 @@ class RentController extends Controller
         ]);
     }
 
+    public function max_people(Request $request){
+        $validator = Validator::make($request->all(), [
+            'appartment_id' => 'required|exists:appartments,id',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }
+
+        $appartment = Appartment::
+        where('id', $request->appartment_id)
+        ->first();
+        $renter_limit = VillageSetting::
+        where("village_id", $request->user()->village_id)
+        ->where("appartment_type_id", $appartment?->type_id)
+        ->first()?->renter_limit ?? 10;
+ 
+        return response()->json([
+            'max_people' => $renter_limit 
+        ],400);
+    }
+
     public function destroy(Request $request){
         $validator = Validator::make($request->all(), [
             'appartment_id' => 'required|exists:appartments,id', 

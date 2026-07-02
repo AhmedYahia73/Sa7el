@@ -121,6 +121,7 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     Route::controller(RentController::class)
     ->group(function() {
         Route::get('/rent', 'view');
+        Route::post('/rent/max_people', 'max_people');
         Route::post('/rent/add', 'create');
         Route::post('/rent/destroy', 'destroy');
         Route::post('/rent/delete_user', 'delete_user');
