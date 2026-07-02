@@ -5,7 +5,7 @@ namespace App\Http\Controllers\api\Village\Rent;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+ 
 use App\Models\AppartmentCode;
 
 class RentController extends Controller
@@ -20,6 +20,57 @@ class RentController extends Controller
         ->where("to", ">=", date("Y-m-d"))
         ->orderByDesc('id')
         ->get();
+
+        return response()->json([
+            'rents' => $rents,
+        ]);
+    }
+
+    public function renters(Request $request){
+        $validator = Validator::make($request->all(), [
+            'status' => 'in:current,past,upcoming',
+            'per_page' => 'integer|min:1|max:100', // اختياري: لتحديد عدد العناصر في الصفحة
+        ]);
+
+        if ($validator->fails()) { 
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        $rents = $this->rents
+            ->with('owner:id,name,phone', 'appartment:id,unit', 'user:id,name,phone')
+            ->where('type', 'renter') 
+            ->where('village_id', $request->user()->village_id)
+            ->orderByDesc('id');
+
+        $today = date("Y-m-d");
+
+        if ($request->has('status')) {
+            if ($request->status == 'current') {
+                $rents = $rents->where('from', '<=', $today)->where('to', '>=', $today);
+            } else if ($request->status == 'past') {
+                $rents = $rents->where('to', '<', $today);
+            } else if ($request->status == 'upcoming') {
+                $rents = $rents->where('from', '>', $today);
+            }
+        }
+
+        // تحديد عدد العناصر لكل صفحة (مثلاً 15 عنصر كوضع افتراضي)
+        $perPage = $request->get('per_page', 15);
+
+        // استخدام paginate بدلاً من get
+        $rents = $rents->paginate($perPage)->through(function($item) use ($today) {
+            // تحديد الحالة بناءً على التواريخ
+            if ($item->from <= $today && $item->to >= $today) {
+                $item->status = "current";
+            } else if ($item->to < $today) {
+                $item->status = "past";
+            } else {
+                $item->status = "upcoming";
+            }
+            return $item;
+        });
 
         return response()->json([
             'rents' => $rents,
