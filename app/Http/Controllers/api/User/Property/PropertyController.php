@@ -276,6 +276,10 @@ class PropertyController extends Controller
             $query->where("user_id", $request->user()->id)
             ->where("status", "pending");
         })
+        ->whereDoesntHave("code_request", function($query) use($request){
+            $query->where("user_id", $request->user()->id)
+            ->where("status", "approve");
+        })
         ->with([
             "village.zone", "village.package", "type", 
         ])
