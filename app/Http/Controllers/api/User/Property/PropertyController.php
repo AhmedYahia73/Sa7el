@@ -194,7 +194,7 @@ class PropertyController extends Controller
             if($appartment_code->village_id != $request->village_id){
                 return response()->json([
                     'errors' => 'This code does not belong to this village'
-                ],400);
+                ],403);
 
             }
             $appartment_count = $this->appartment_code
