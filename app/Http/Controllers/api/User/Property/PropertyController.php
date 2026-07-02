@@ -191,6 +191,12 @@ class PropertyController extends Controller
             $appartment_code = $this->appartment_code 
             ->where('code', $request->code) 
             ->firstOrFail(); 
+            if($appartment_code->village_id != $request->village_id){
+                return response()->json([
+                    'errors' => 'This code does not belong to this village'
+                ],400);
+
+            }
             $appartment_count = $this->appartment_code
             ->where('type', 'owner')
             ->where('village_id', $request->village_id)
