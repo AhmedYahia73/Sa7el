@@ -409,6 +409,7 @@ class LoginController extends Controller
         $login_request_status = LoginRequest:: 
         where("user_id", auth()->user()->id)
         ->where("village_id", $request->village_id)
+        ->where("appartment_id", $request->appartment_id)
         ->orderByDesc("id")
         ->first()?->status;
         $ip_address = $request->ip_address ?? $request->ip();
