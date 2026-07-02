@@ -413,7 +413,7 @@ class LoginController extends Controller
         ->first()?->status;
         $ip_address = $request->ip_address ?? $request->ip();
         if($request->user()->ip_address != $ip_address){
-            if(!empty($login_request_status)){
+            if(empty($login_request_status)){
                 $login_request = LoginRequest::create([
                     "user_id" => $request->user()->id,
                     "ip_address" => $ip_address,
