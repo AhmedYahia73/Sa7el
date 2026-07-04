@@ -13,6 +13,8 @@ Route::controller(LoginController::class)
     Route::post('admin/login', 'admin_login');
     Route::post('village/login', 'village_login');
     Route::post('user/login', 'user_login');
+    Route::post('user/google_login', 'google_login');
+    Route::post('user/apple_login', 'apple_login');
     Route::post('user/sign_up', 'sign_up');
     Route::get('user/sign_up_list', 'sign_up_list');
 
