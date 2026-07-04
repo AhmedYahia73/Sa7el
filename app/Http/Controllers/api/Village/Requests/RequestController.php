@@ -58,6 +58,11 @@ class RequestController extends Controller
         ->whereNull("user_id")
         ->first();
         if($request->status == 'approve'){
+            if(!$appartment_code){
+                return response()->json([
+                    'message' => 'You reached maximum nuber'
+                ], 400); 
+            }
             $appartment_code->user_id = $codes->user_id;
             $appartment_code->save();
             if ($appartment_code->type == 'owner') {
