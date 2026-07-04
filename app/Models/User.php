@@ -40,6 +40,8 @@ class User extends Authenticatable
         'qr_code',
         "ip_address",
         "code",
+        "google_id",
+        "apple_id",
     ];
     protected $appends = ['image_link', 'qr_code_link'];
 

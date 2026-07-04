@@ -12,6 +12,8 @@ use Illuminate\Validation\Rule;
 use App\Events\NotificationEvent;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ForgetPasswordMail;
+use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Str;
 
 use App\Models\User;
 use App\Models\PersonalAccessToken;
@@ -579,5 +581,154 @@ class LoginController extends Controller
         return response()->json([
             "success" => "You update data success"
         ]);
+    }
+
+    public function google_login(Request $request) {
+        // 1. التحقق من وصول التوكن من الفرونت إند
+        $validator = Validator::make($request->all(), [
+            'access_token' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()->first(),
+            ], 400);
+        }
+
+        try {
+            // 2. التحقق من التوكن وجلب بيانات المستخدم من جوجل
+            $googleUser = Socialite::driver('google')->userFromToken($request->access_token);
+        } catch (\Exception $e) {
+            return response()->json([
+                'errors' => 'Invalid Google token or expired',
+            ], 401);
+        }
+
+        // 3. البحث عن المستخدم بالإيميل
+        $user = $this->user->where('email', $googleUser->getEmail())->first();
+
+        if (empty($user)) {
+            // إذا كان مستخدم جديد تماماً، نقوم بإنشائه
+            $user = $this->user->create([
+                'name' => $googleUser->getName(),
+                'email' => $googleUser->getEmail(),
+                'google_id' => $googleUser->getId(),
+                'role' => 'user', // تحديد الرول الافتراضي كما في كودك
+                'status' => 1,    // مستخدم نشط
+                'password' => bcrypt(Str::random(16)), // باسورد عشوائي معمي لحماية الحساب
+            ]);
+        } else {
+            // إذا كان الحساب موجود مسبقاً بالإيميل ولكن لم يربط بجوجل بعد
+            if (empty($user->google_id)) {
+                $user->update(['google_id' => $googleUser->getId()]);
+            }
+        }
+
+        // 4. تطبيق شروطك الخاصة (نفس شروط الدالة العادية)
+        
+        // أ. التأكد من أن الحساب مش Banned
+        if ($user->status == 0) {
+            return response()->json([
+                'errors' => 'user is banned'
+            ], 400);
+        }
+
+        // ب. التأكد من الرول (Role)
+        if ($user->role != 'user') {
+            return response()->json([
+                'errors' => 'credentials not Valid'
+            ], 403);
+        }
+
+        // ج. التأكد من عدم تسجيل الدخول من جهاز آخر (Single Device Check)
+        if ($user->tokens()->exists()) {
+            return response()->json([
+                'errors' => 'already logged in from another device'
+            ], 403);
+        }
+
+        // 5. إنشاء توكن جديد وإرجاع البيانات
+        $user->token = $user->createToken('user')->plainTextToken;
+
+        return response()->json([
+            'user' => $user,
+            'token' => $user->token,
+        ], 200);
+    }
+
+    public function apple_login(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'access_token' => 'required', // التوكن المرسل من الفرونت إند
+            'name' => 'nullable|string',   // الاسم المرسل من الفرونت (مهم لأول مرة تسجيل)
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()->first(),
+            ], 400);
+        }
+
+        try {
+            // 2. التحقق من التوكن وجلب البيانات من سيرفرات آبل
+            $appleUser = Socialite::driver('apple')->userFromToken($request->access_token);
+        } catch (\Exception $e) {
+            return response()->json([
+                'errors' => 'Invalid Apple token or expired',
+            ], 401);
+        }
+
+        // 3. البحث عن المستخدم (نبحث بالـ apple_id أولاً ثم الإيميل كخيار بديل)
+        $user = $this->user->where('apple_id', $appleUser->getId())
+            ->orWhere('email', $appleUser->getEmail())
+            ->first();
+
+        if (empty($user)) {
+            // إذا كان مستخدم جديد، ننشئ الحساب
+            // لو آبل مش بعتت الإيميل (بسبب خيارخفاء الإيميل)، آبل بتعمل إيميل وهمي ينتهي بـ @privaterelay.apple.com وهو شغال عادي.
+            $user = $this->user->create([
+                'name' => $request->name ?? $appleUser->getName() ?? 'Apple User',
+                'email' => $appleUser->getEmail(),
+                'apple_id' => $appleUser->getId(),
+                'role' => 'user',
+                'status' => 1,
+                'password' => bcrypt(Str::random(16)),
+            ]);
+        } else {
+            // لو الحساب موجود مسبقاً بس مش مربوط بآبل
+            if (empty($user->apple_id)) {
+                $user->update(['apple_id' => $appleUser->getId()]);
+            }
+        }
+
+        // 4. تطبيق نفس قيود الحماية بتاعتك
+        
+        // التأكد من الحظر
+        if ($user->status == 0) {
+            return response()->json([
+                'errors' => 'user is banned'
+            ], 400);
+        }
+
+        // التأكد من الرول
+        if ($user->role != 'user') {
+            return response()->json([
+                'errors' => 'credentials not Valid'
+            ], 403);
+        }
+
+        // التأكد من عدم تسجيل الدخول من جهاز آخر
+        if ($user->tokens()->exists()) {
+            return response()->json([
+                'errors' => 'already logged in from another device'
+            ], 403);
+        }
+
+        // 5. إصدار التوكن وإرجاع الاستجابة
+        $user->token = $user->createToken('user')->plainTextToken;
+
+        return response()->json([
+            'user' => $user,
+            'token' => $user->token,
+        ], 200);
     }
 }
