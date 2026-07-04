@@ -28,6 +28,7 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     Route::controller(PropertyController::class)->prefix('property')
     ->group(function() {
         Route::get('/', 'my_property'); 
+        Route::get('/new', 'my_new_property'); 
         Route::post('/add', 'add_property'); 
         Route::get('/pending_code_request', 'pending_code_request'); 
     });
