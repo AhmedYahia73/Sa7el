@@ -608,11 +608,20 @@ class LoginController extends Controller
         $user = $this->user->where('email', $googleUser->getEmail())->first();
 
         if (empty($user)) {
+            $validator = Validator::make($request->all(), [
+                'phone' => 'required|unique:users,phone', // التوكن المرسل من الفرونت إند
+            ]); 
+            if ($validator->fails()) {
+                return response()->json([
+                    'errors' => $validator->errors()->first(),
+                ], 400);
+            }
             // إذا كان مستخدم جديد تماماً، نقوم بإنشائه
             $user = $this->user->create([
                 'name' => $googleUser->getName(),
                 'email' => $googleUser->getEmail(),
                 'google_id' => $googleUser->getId(),
+                "phone" => $request->phone,
                 'role' => 'user', // تحديد الرول الافتراضي كما في كودك
                 'status' => 1,    // مستخدم نشط
                 'password' => bcrypt(Str::random(16)), // باسورد عشوائي معمي لحماية الحساب
@@ -683,6 +692,14 @@ class LoginController extends Controller
             ->first();
 
         if (empty($user)) {
+            $validator = Validator::make($request->all(), [
+                'phone' => 'required|unique:users,phone', // التوكن المرسل من الفرونت إند
+            ]); 
+            if ($validator->fails()) {
+                return response()->json([
+                    'errors' => $validator->errors()->first(),
+                ], 400);
+            }
             // إذا كان مستخدم جديد، ننشئ الحساب
             // لو آبل مش بعتت الإيميل (بسبب خيارخفاء الإيميل)، آبل بتعمل إيميل وهمي ينتهي بـ @privaterelay.apple.com وهو شغال عادي.
             $user = $this->user->create([
@@ -691,6 +708,7 @@ class LoginController extends Controller
                 'apple_id' => $appleUser->getId(),
                 'role' => 'user',
                 'status' => 1,
+                "phone" => $request->phone,
                 'password' => bcrypt(Str::random(16)),
             ]);
         } else {
