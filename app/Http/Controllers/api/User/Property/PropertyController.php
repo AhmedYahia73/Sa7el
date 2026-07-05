@@ -138,7 +138,7 @@ class PropertyController extends Controller
         ->where('user_id', $request->user()->id)
         ->orWhere('type', 'renter')
         ->where('user_id', $request->user()->id)
-        ->where('to', '>=', date('Y-m-d'))
+        ->where('to', '>=', now())
         ->get()
         ->map(function($item) use($request){
             $appartment = $item->appartment;
