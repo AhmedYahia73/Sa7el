@@ -596,8 +596,8 @@ class LoginController extends Controller
         }
 
         try {
-            // 2. التحقق من التوكن وجلب بيانات المستخدم من جوجل
-            $googleUser = Socialite::driver('google')->userFromToken($request->access_token);
+            // 2. التحقق من ال
+            $googleUser = Socialite::driver('google')->stateless()->userFromToken($request->access_token);
         } catch (\Exception $e) {
             return response()->json([
                 'errors' => 'Invalid Google token or expired',
