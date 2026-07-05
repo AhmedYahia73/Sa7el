@@ -71,7 +71,7 @@ class PropertyController extends Controller
                     'options_status' => false,
                     'all_status' => false,
                     "status_open" => $item->type != "renter" ? true :
-                    $item->from <= date("Y-m-d") && $item->to >= date("Y-m-d"),
+                    $item->from <= now() && $item->to >= now(),
                     "from" => $item->from,
                     "to" => $item->to,
                 ];
@@ -104,7 +104,7 @@ class PropertyController extends Controller
                     'options_status' => $appartment->options_status,
                     'all_status' => $appartment->all_status,
                     "status_open" => $item->type != "renter" ? true :
-                    $item->from <= date("Y-m-d") && $item->to >= date("Y-m-d"),
+                    $item->from <= now() && $item->to >= now(),
                     "from" => $item->from,
                     "to" => $item->to,
                 ];
@@ -155,8 +155,8 @@ class PropertyController extends Controller
                     : $item?->village?->zone?->ar_name ?? $item?->village?->zone?->name,
                     'zone_id' => $item?->village?->zone_id,
                     'rent_flag' => $item->type == 'renter' ? 1 : 0,
-                    'flag' => $item?->village?->from >= date('Y-m-d') && 
-                    $item?->village?->to <= date('Y-m-d') && 
+                    'flag' => $item?->village?->from >= now() && 
+                    $item?->village?->to <= now() && 
                     !empty($item->code) ? true : false,
                     'pool_beach_flag' => $item?->village?->package?->beach_pool_module ? 1 : 0,
                     'maintenance_flag' => $item?->village?->package?->maintenance_module ? 1 : 0, 
@@ -170,10 +170,10 @@ class PropertyController extends Controller
                     'options_status' => false,
                     'all_status' => false,
                     "status_open" => $item->type != "renter" ? true :
-                    $item->from <= date("Y-m-d") && $item->to >= date("Y-m-d"),
+                    $item->from <= now() && $item->to >= now(),
                     "from" => $item->from,
                     "to" => $item->to,
-                    "open_status" => ($item->from <= date("Y-m-d") && $item->to >= date("Y-m-d")) || 
+                    "open_status" => ($item->from <= now() && $item->to >= now()) || 
                     $item->type == "owner" ? true : false,
                 ];
             } else {
@@ -190,8 +190,8 @@ class PropertyController extends Controller
                     : $item?->village?->zone?->ar_name ?? $item?->village?->zone?->name,
                     'zone_id' => $item?->village?->zone_id,
                     'rent_flag' => $item->type == 'renter' ? 1 : 0,
-                    'flag' => $appartment?->village?->from <= date('Y-m-d') && 
-                    $appartment?->village?->to >= date('Y-m-d') && 
+                    'flag' => $appartment?->village?->from <= now() && 
+                    $appartment?->village?->to >= now() && 
                     !empty($item->code) ? true : false,
                     'pool_beach_flag' => $item?->village?->package?->beach_pool_module ? 1 : 0,
                     'maintenance_flag' => $item?->village?->package?->maintenance_module ? 1 : 0,
@@ -205,10 +205,10 @@ class PropertyController extends Controller
                     'options_status' => $appartment->options_status,
                     'all_status' => $appartment->all_status,
                     "status_open" => $item->type != "renter" ? true :
-                    $item->from <= date("Y-m-d") && $item->to >= date("Y-m-d"),
+                    $item->from <= now() && $item->to >= now(),
                     "from" => $item->from,
                     "to" => $item->to,
-                    "open_status" => ($item->from <= date("Y-m-d") && $item->to >= date("Y-m-d")) || 
+                    "open_status" => ($item->from <= now() && $item->to >= now()) || 
                     $item->type == "owner" ? true : false,
                 ];
             }
@@ -279,8 +279,8 @@ class PropertyController extends Controller
             ->where('user_id', $request->user()->id)
             ->orWhere('type', 'renter')
             ->whereNotNull('code')
-            ->where('from', '<=', date('Y-m-d'))
-            ->where('to', '>=', date('Y-m-d'))
+            ->where('from', '<=', now())
+            ->where('to', '>=', now())
             ->where('village_id', $request->village_id)
             ->where('code', $request->code)
             ->where('user_id', $request->user()->id)
@@ -305,7 +305,7 @@ class PropertyController extends Controller
             ->where('code', $request->code)
             ->whereNotNull('user_id')
             ->orWhere('type', 'renter')
-            ->where('to', '>=', date('Y-m-d'))
+            ->where('to', '>=', now())
             ->where('village_id', $request->village_id)
             ->where('code', $request->code)
             ->whereNotNull('user_id')
@@ -407,8 +407,8 @@ class PropertyController extends Controller
                 : $appartment?->village?->zone?->ar_name ?? $appartment?->village?->zone?->name,
                 'zone_id' => $appartment?->village?->zone_id,
                 'rent_flag' => $appartment->type == 'renter' ? 1 : 0,
-                'flag' => $appartment?->village?->from <= date('Y-m-d') && 
-                $appartment?->village?->to >= date('Y-m-d') ? true : false,
+                'flag' => $appartment?->village?->from <= now() && 
+                $appartment?->village?->to >= now() ? true : false,
                 'pool_beach_flag' => $appartment?->village?->package?->beach_pool_module ? 1 : 0,
                 'maintenance_flag' => $appartment?->village?->package?->maintenance_module ? 1 : 0,
                 'entrance_status' => $appartment->entrance_status,

@@ -173,8 +173,8 @@ class AppartmentController extends Controller
             $validator = Validator::make($request->all(), [
                 'appartment_id' => ['required', 'exists:appartments,id'],
                 'type' => ['required', 'in:owner,renter'],
-                'from' => ['required', 'date'],
-                'to' => ['required', 'date'],
+                'from' => ['required', 'date_format:Y-m-d H:i:s'],
+                'to' => ['required', 'date_format:Y-m-d H:i:s'],
                 'people' => ['required', 'numeric'],
                 'image' => ['required'], 
             ]);
@@ -220,8 +220,8 @@ class AppartmentController extends Controller
         // 1. تحسين الـ Validation
         $validator = Validator::make($request->all(), [ 
             'people' => ['required', 'integer', 'min:1'],
-            'from' =>["sometimes", "date"],
-            'to' =>["sometimes", "date"],
+            'from' =>["sometimes", "date_format:Y-m-d H:i:s"],
+            'to' =>["sometimes", "date_format:Y-m-d H:i:s"],
         ]); 
 
         if ($validator->fails()) { 
