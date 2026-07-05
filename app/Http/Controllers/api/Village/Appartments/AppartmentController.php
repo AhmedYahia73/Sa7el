@@ -110,7 +110,7 @@ class AppartmentController extends Controller
             'users' => $users, 
         ]);
     }
-
+// 1176>appartment>789
     public function appartement_list(Request $request){
         $appartments = $this->appartment
         ->where('village_id', $request->user()->village_id) 
