@@ -72,15 +72,27 @@ class UserController extends Controller
     }
 
 
-    public function users(){
-        $perPage = 15; // حدد عدد العناصر في كل صفحة هنا
+    public function users(Request $request){
+        $perPage = 15;
+        $search = $request->search; // أو request('search') حسب مكان الكود
 
         $users = $this->user
             ->select('id', 'name', 'email', 'phone', 'birthDate', 'user_type', 'village_id', 'image', 'parent_user_id', 'status', 'gender')
-            ->with(['villages_user', 'parent', 'appartment_code']) // ملاحظة: أضفت appartment_code هنا لمنع مشكلة الـ N+1 performance query
+            ->with(['villages_user', 'parent', 'appartment_code'])
             ->where('role', 'user')
-            ->paginate($perPage) // استبدال get بـ paginate
-            ->through(function($item) { // استبدال map بـ through للحفاظ على الـ pagination
+            
+            // --- بداية كود البحث ---
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%");
+                });
+            })
+            // --- نهاية كود البحث ---
+            
+            ->paginate($perPage)
+            ->through(function($item) {
                 $user_type_owner = $item->appartment_code->where('type', 'owner')->values();
                 $user_type_renter = $item->appartment_code->where('type', 'renter')
                     ->where('from', '<=', date('Y-m-d'))
