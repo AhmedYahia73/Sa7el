@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('appartment_codes', function (Blueprint $table) {
-            $table->dateTime('from')->change();
-            $table->dateTime('to')->change();
+            $table->dateTime('from')nullabl()->change();
+            $table->dateTime('to')nullabl()->change();
         });
     }
 
