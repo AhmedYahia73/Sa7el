@@ -251,7 +251,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::get('/', 'view')->middleware('can:admin_user_view');
         Route::get('/users', 'users')->middleware('can:admin_user_view');
         Route::get('/item/{id}', 'user')->middleware('can:admin_user_single_page');
-        Route::get('/units', 'units')->middleware('can:admin_user_single_page');
+        Route::get('/units/{id}', 'units')->middleware('can:admin_user_single_page');
         Route::put('/status/{id}', 'status')->middleware('can:admin_user_status');
         Route::post('/add', 'create')->middleware('can:admin_user_add');
         Route::post('/update/{id}', 'modify')->middleware('can:admin_user_edit');
