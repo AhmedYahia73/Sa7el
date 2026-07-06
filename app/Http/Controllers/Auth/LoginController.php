@@ -424,6 +424,7 @@ class LoginController extends Controller
                     "village_id" => $request->village_id,
                     "appartment_id" => $request->appartment_id,
                 ]);
+                auth()->user()->update(['ip_address' => $ip_address]);
             }
             else{ 
                 $login_request = LoginRequest::create([
