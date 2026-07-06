@@ -394,7 +394,7 @@ class UserController extends Controller
             if(Carbon::parse($item->from) <= now() && Carbon::parse($item->to) >= now()){
                 $status = "Current";
             }
-            elseif(Carbon::parse($item->to) < now()){
+            elseif(Carbon::parse($item->to) > now()){
                 $status = "Upcoming";
             }
             return [
