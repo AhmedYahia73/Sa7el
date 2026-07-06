@@ -105,6 +105,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(OwnerController::class)->prefix('owner')->middleware('can:owner')
     ->group(function() {
         Route::get('/', 'view'); 
+        Route::get('/owners', 'owners'); 
         Route::get('/item/{id}', 'owner'); 
     });
 

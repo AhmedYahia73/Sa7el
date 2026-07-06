@@ -57,7 +57,7 @@ class RentController extends Controller
         }
 
         // تحديد عدد العناصر لكل صفحة (مثلاً 15 عنصر كوضع افتراضي)
-        $perPage = $request->get('per_page', 15);
+        $perPage = $request->get('per_page', 50);
 
         // استخدام paginate بدلاً من get
         $rents = $rents->paginate($perPage)->through(function($item) use ($today) {
