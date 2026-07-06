@@ -370,7 +370,7 @@ class UserController extends Controller
 
     public function units(Request $request, $id){
         $property = AppartmentCode::
-        ->where("user_id", $id)
+        where("user_id", $id)
         ->where("type", "owner")
         ->with("appartment", "village")
         ->get()
@@ -384,7 +384,7 @@ class UserController extends Controller
             ];
         });
         $rents = AppartmentCode::
-        ->where("user_id", $id)
+        where("user_id", $id)
         ->where("type", "renter")
         ->with("appartment", "village")
         ->get()
