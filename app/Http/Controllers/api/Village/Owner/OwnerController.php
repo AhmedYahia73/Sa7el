@@ -48,7 +48,7 @@ class OwnerController extends Controller
 
     public function owners(Request $request){
         $search = $request->input('search');
-
+   
         $owners = $this->owners
             ->with('appartments', 'parent')
             ->whereHas('appartment_code', function($query) use($request){
