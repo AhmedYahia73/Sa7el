@@ -10,6 +10,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Storage;
 use App\trait\TraitImage;
 use Illuminate\Validation\Rule;
+use Carbon\Carbon;
 
 use App\Models\User;
 use App\Models\Village;
