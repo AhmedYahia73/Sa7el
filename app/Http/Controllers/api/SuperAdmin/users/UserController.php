@@ -390,10 +390,10 @@ class UserController extends Controller
         ->get()
         ->map(function($item){
             $status = "Past";
-            if($item->from <= now() && $item->to >= now()){
+            if(Carbon::parse($item->from) <= now() && Carbon::parse($item->to) >= now()){
                 $status = "Current";
             }
-            elseif($item->to < now()){
+            elseif(Carbon::parse($item->to) < now()){
                 $status = "Upcoming";
             }
             return [
