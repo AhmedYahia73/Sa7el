@@ -42,12 +42,14 @@ class RentController extends Controller
             ->with('owner:id,name,phone', 'user:id,name,phone')
             ->where('type', 'renter') 
             ->where('village_id', $request->user()->village_id)
+            ->where("appartment_id", $request->appartment_id)
             ->where("to", ">=", date("Y-m-d"))
             ->orderByDesc('id')
             ->get(); 
 
         return response()->json([
             'rents' => $rents,
+            'rents_count' => $rents->count(),
         ]);
     }
 
