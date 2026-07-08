@@ -115,7 +115,7 @@ class HomeController extends Controller
         ]);
     }
 
-    public function visitors(){
+    public function visitors(Request $request){
         if(!auth()->user()->gate_visitors){
             return response()->json([
                 'errors' => 'You are not allowed to view visitors'
