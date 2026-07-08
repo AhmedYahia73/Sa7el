@@ -185,7 +185,7 @@ class HomeController extends Controller
             ->where("from", "<=", date("Y-m-d"))
             ->where("to", "<=", date("Y-m-d"));
         }])
-        ->first();
+        ->firstOrFail();
         if(!empty($user)){
             $user = [
                 "id" => $user->id,
@@ -265,36 +265,32 @@ class HomeController extends Controller
         }
         $validator = Validator::make($request->all(), [
             'gate_id' => 'required|exists:gates,id',
-            "visitor_id" => "required|exists:visitor_codes,id",
+            "user_id" => "required|exists:users,id",
+            "appartment_id" => "required|exists:appartments,id",
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
                 'errors' => $validator->errors(),
             ],400);
         }
-        
-        $user = User::
-        where("id", $request->visitor_id)
-        $visitor_code = VisitorCode::
-        where('id', $request->visitor_id)
-        ->first();
+         
         $user_type = AppartmentCode::
-         where('appartment_id', $visitor_code->appartment_id)
-         ->where('user_id', $visitor_code->user_id)
+         where('appartment_id', $request->appartment_id)
+         ->where('user_id', $request->user_id)
          ->orderByDesc('id')
          ->first()?->type;
         $visit_village = VisitVillage::
         create([
-            'user_id' => $visitor_code->user_id,
+            'user_id' => $request->user_id,
             'village_id' => $request->user()->village_id,
             'gate_id' => $request->gate_id,
             'type' => $user_type,
-            'appartment_id' => $visitor_code->appartment_id,
+            'appartment_id' => $request->appartment_id,
             'user_type' => $user_type,
         ]);
         EntranceGate::create([
             'gate_id' => $request->gate_id,
-            'user_id' => $visitor_code->user_id,
+            'user_id' => $request->user_id,
             'time' => date('H:i:s'),
             'village_id' => $request->user()->village_id,
         ]);
