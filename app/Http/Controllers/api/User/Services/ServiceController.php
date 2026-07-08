@@ -64,6 +64,8 @@ class ServiceController extends Controller
                     'village' => $item?->village?->name,
                     'cover_image' => $item->cover_image_link,
                     'location_map' => $item->location_map,
+                    'subscription' => !empty($item->from) && !empty($item->to) 
+                    && $item->from <= date('Y-m-d') && $item->to >= date('Y-m-d') ? true : false,
 
                     'menue' => optional($item?->menue?->where('status', 1))->pluck('image_link') ?? collect([]),
                     'videos' => $item?->videos?->where('status', 1)?->values()->map(function($element){
@@ -217,6 +219,8 @@ class ServiceController extends Controller
                 'loves_count' => count($item->love_user),
                 'my_love' => count($item->love_user->where('id', $request->user()->id)) > 0
                 ? true : false,
+                'subscription' => !empty($item->from) && !empty($item->to) 
+                && $item->from <= date('Y-m-d') && $item->to >= date('Y-m-d') ? true : false,
             ];
         });
         
