@@ -179,7 +179,27 @@ class HomeController extends Controller
         ->whereHas('appartment_code', function($query) use($request){
             $query->where('village_id', $request->user()->village_id);
         })
+        ->with(["appartment_code.appartment", function($query){
+            $query->where("type", "owner")
+            ->orWhere("type", "renter")
+            ->where("from", "<=", date("Y-m-d"))
+            ->where("to", "<=", date("Y-m-d"));
+        }])
         ->first();
+        if(!empty($user)){
+            $user = [
+                "id" => $user->id,
+                "name" => $user->name,
+                "email" => $user->email,
+                "units" => $user->appartment_code
+                ->map(function($item){
+                    return [
+                        "id" => $item->id,
+                        "appartment" => $item?->appartment?->unit,
+                    ];
+                }), 
+            ];
+        }
 
         return response()->json([
             'user' => $user,
@@ -253,6 +273,8 @@ class HomeController extends Controller
             ],400);
         }
         
+        $user = User::
+        where("id", $request->visitor_id)
         $visitor_code = VisitorCode::
         where('id', $request->visitor_id)
         ->first();
