@@ -58,7 +58,8 @@ class RentController extends Controller
             'from' => 'required|date',
             'to' => 'required|date',
             'people' => 'required|integer',
-            'image' => 'required'
+            'image' => 'required|array',
+            'image.*' => 'required',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -107,13 +108,16 @@ class RentController extends Controller
         $rentRequest = $validator->validated();
         $rentRequest['owner_id'] = $request->user()->id;
         $rentRequest['type'] = 'renter';
-        $image_path =$this->storeBase64Image($request->image, '/images/rent/id');
-        $rentRequest['image'] = $image_path;
         do {
             $code = mt_rand(1000000, 9999999); // Always 7 digits
         } while ($this->appartment_code::where('code', $code)->exists()); 
         $rentRequest['code'] = $code;
-        
+        $rentRequest['image'] = [];
+
+        foreach ($request->image as $item) {
+            $image_path =$this->storeBase64Image($item, '/images/rent/id');
+            $rentRequest['image'][] = $image_path;
+        }
 
         for($i = 0; $i < $request->people; $i++ ){
             $this->appartment_code

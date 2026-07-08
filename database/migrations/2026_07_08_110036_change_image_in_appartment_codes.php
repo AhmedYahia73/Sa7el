@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('zone.', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::table('appartment_codes', function (Blueprint $table) {
+            $table->json("image")->nullable()->change();
         });
     }
 
@@ -22,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('zone.');
+        Schema::table('appartment_codes', function (Blueprint $table) {
+            //
+        });
     }
 };

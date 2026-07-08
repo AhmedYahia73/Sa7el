@@ -21,8 +21,28 @@ class AppartmentCode extends Model
     ];
     protected $appends = ['image_id_link'];
 
-    public function getImageIdLinkAttribute(){
-        return url('storage/' . $this->image);
+    protected function casts(): array
+    {
+        return [
+            'image' => 'array',
+        ];
+    }
+    
+    public function getImageIdLinkAttribute()
+    {
+        $images = $this->image;
+        
+        // لو مش مصفوفة أو فاضية رجع مصفوفة فاضية فوراً
+        if (!is_array($images) || empty($images)) {
+            return [];
+        }
+
+        $images_link = [];
+        foreach ($images as $item) {
+            $images_link[] = url('storage/' . $item);
+        }
+        
+        return $images_link;
     }
 
     public function appartment(){
@@ -39,5 +59,9 @@ class AppartmentCode extends Model
 
     public function user(){
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function images(){
+        return $this->hasMany(AppartmentCodeImage::class, 'appartment_code_id');
     }
 }
