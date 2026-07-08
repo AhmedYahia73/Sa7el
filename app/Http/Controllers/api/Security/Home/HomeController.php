@@ -180,14 +180,15 @@ class HomeController extends Controller
             ->whereHas('appartment_code', function($query) use ($request) {
                 $query->where('village_id', $request->user()->village_id);
             })
-            ->with(['appartment_code.appartment' => function($query) {
+            ->with(['appartment_code' => function($query) {
                 $today = date("Y-m-d");
                 $query->where("type", "owner")
                     ->orWhere(function($q) use ($today) {
                         $q->where("type", "renter")
                             ->where("from", "<=", $today)
                             ->where("to", ">=", $today); // تم تصحيح الاتجاه هنا ليغطي العقود السارية
-                    });
+                    })
+                    ->with("appartment");
             }])
             ->first();
 
