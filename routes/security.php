@@ -33,6 +33,7 @@ Route::middleware(['auth:sanctum', 'IsSecurity'])->group(function(){
     Route::controller(PoolController::class)->prefix('pool_qr')
     ->group(function() {
         Route::post('/', 'read_qr');
+        Route::post('/entrance_pool_qr', 'entrance_pool_qr');
     });
 
     Route::controller(BeachController::class)->prefix('beach_qr')
