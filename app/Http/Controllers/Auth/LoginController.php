@@ -401,69 +401,93 @@ class LoginController extends Controller
             return response()->json(['errors'=>'creational not Valid'],403);
         }
     }
-
-    public function check_user_login_request(Request $request){
+    
+    public function check_user_login_request(Request $request) {
         $validator = Validator::make($request->all(), [
             'village_id' => 'required|exists:villages,id', 
             'appartment_id' => 'required|exists:appartments,id',
             'ip_address' => "sometimes"
         ]);
-        if ($validator->fails()) { // if Validate Make Error Return Message Error
-            $firstError = $validator->errors()->first();
+
+        if ($validator->fails()) {
             return response()->json([
-                'errors' => $firstError,
-            ],400);
+                'errors' => $validator->errors()->first(),
+            ], 400);
         }
+
+        $userId = auth()->user()->id;
         $ip_address = $request->ip_address ?? $request->ip();
-        $login_request_status = LoginRequest:: 
-        where("user_id", auth()->user()->id)
-        ->where("village_id", $request->village_id)
-        ->where("appartment_id", $request->appartment_id) 
-        ->orderByDesc("id")
-        ->first();
-        $status_open = false;
-        if(empty($login_request_status)){
-            $login_request = LoginRequest::create([
-                "user_id" => $request->user()->id,
+
+        // 1. تشيك أولاً: هل المستخدم ده عمل أي طلب دخول قبل كده في القرية والشقة دي؟
+        $hasAnyPreviousRequest = LoginRequest::where("user_id", $userId)
+            ->where("village_id", $request->village_id)
+            ->where("appartment_id", $request->appartment_id)
+            ->exists();
+
+        // لو دي أول مرة يدخل خالص (مفيش أي سابقة)، هيدخل أوتوماتيك ويبقى Approved
+        if (!$hasAnyPreviousRequest) {
+            LoginRequest::create([
+                "user_id" => $userId,
                 "ip_address" => $ip_address,
                 "status" => "approve",
                 "village_id" => $request->village_id,
                 "appartment_id" => $request->appartment_id,
             ]);
+            
             auth()->user()->update(['ip_address' => $ip_address]);
-            $status_open = true;
-        }
-        else{ 
-            if($login_request_status->ip_address == $ip_address && $login_request_status->status == "approve"){
-                $status_open = true;
-            }
-            else{
-                $status_open = false;
-                $login_request = LoginRequest::create([
-                    "user_id" => $request->user()->id,
-                    "ip_address" => $ip_address,
-                    "status" => "pending",
-                    "village_id" => $request->village_id,
-                    "appartment_id" => $request->appartment_id,
-                ]);
-                auth()->user()->update(['ip_address' => $ip_address]);
-                $notification = "قام " . auth()->user()->name . " بمحاولة الدخول من الابليكشن";
-                $data = [
-                    'village_id' => $request->village_id,
-                    'code_request_id' => null,
-                    'login_request_id' => $login_request->id,
-                    "type" => "admin", // user, admin
-                    'notification' => $notification,
-                ];
-                Notification::create($data);
-                NotificationEvent::dispatch($data);
-            }
-        }
-         
 
-        return response()->json([
-            "login" => $status_open
-        ]);
+            return response()->json(["login" => true]);
+        }
+
+        // 2. لو ليه سوابق دخول، هنشوف هل الـ IP الحالي ده مقبول (Approve) قبل كده؟
+        $isIpApproved = LoginRequest::where("user_id", $userId)
+            ->where("village_id", $request->village_id)
+            ->where("appartment_id", $request->appartment_id)
+            ->where("ip_address", $ip_address)
+            ->where("status", "approve")
+            ->exists();
+
+        if ($isIpApproved) {
+            // الـ IP ده موثوق ومقبول من قبل كده (سواء أول جهاز أو جهاز وافق عليه الأدمن)
+            return response()->json(["login" => true]);
+        }
+
+        // 3. لو الـ IP مش مقبول، تشيك هل فيه طلب "pending" شغال حالياً لنفس الـ IP ده؟
+        // علشان لو عمل ريفريش ميكررش بعت طلبات للأدمن ويغرق النوتفكيشن
+        $hasPendingRequest = LoginRequest::where("user_id", $userId)
+            ->where("village_id", $request->village_id)
+            ->where("appartment_id", $request->appartment_id)
+            ->where("ip_address", $ip_address)
+            ->where("status", "pending")
+            ->exists();
+
+        if (!$hasPendingRequest) {
+            // جهاز جديد تماماً ومش مبعوتله طلب، نكريت طلب pending ونبعت للأدمن
+            $login_request = LoginRequest::create([
+                "user_id" => $userId,
+                "ip_address" => $ip_address,
+                "status" => "pending",
+                "village_id" => $request->village_id,
+                "appartment_id" => $request->appartment_id,
+            ]);
+
+            auth()->user()->update(['ip_address' => $ip_address]);
+
+            $notification = "قام " . auth()->user()->name . " بمحاولة الدخول من الابليكشن بجهاز جديد";
+            $data = [
+                'village_id' => $request->village_id,
+                'code_request_id' => null,
+                'login_request_id' => $login_request->id,
+                "type" => "admin",
+                'notification' => $notification,
+            ];
+
+            Notification::create($data);
+            NotificationEvent::dispatch($data);
+        }
+
+        // طالما ملوش سابقة قبول للـ IP ده، هيرجع false لحد ما الأدمن يوافق
+        return response()->json(["login" => false]);
     }
 
     public function sign_up(SignupRequest $request){
