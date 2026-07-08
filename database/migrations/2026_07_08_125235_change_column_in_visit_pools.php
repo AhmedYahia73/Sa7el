@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('visit_pools', function (Blueprint $table) {
-            $table->enum('type', ['visitor', 'owner', 'renter'])->nullable();
+            $table->enum('type', ['visitor', 'owner', 'renter'])->nullable()->change();
         });
     }
 
