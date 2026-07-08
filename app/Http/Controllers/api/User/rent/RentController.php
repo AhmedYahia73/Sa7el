@@ -120,7 +120,7 @@ class RentController extends Controller
         //     $rentRequest['image'][] = $image_path;
         // }
         $image_path =$this->upload($request, "image", '/images/rent/id');
-
+        $rentRequest['image'][] = $image_path;
         for($i = 0; $i < $request->people; $i++ ){
             $this->appartment_code
             ->create($rentRequest);
