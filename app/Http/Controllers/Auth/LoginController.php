@@ -414,25 +414,31 @@ class LoginController extends Controller
                 'errors' => $firstError,
             ],400);
         }
+        $ip_address = $request->ip_address ?? $request->ip();
         $login_request_status = LoginRequest:: 
         where("user_id", auth()->user()->id)
         ->where("village_id", $request->village_id)
-        ->where("appartment_id", $request->appartment_id)
+        ->where("appartment_id", $request->appartment_id) 
         ->orderByDesc("id")
-        ->first()?->status;
-        $ip_address = $request->ip_address ?? $request->ip();
-        if($request->user()->ip_address != $ip_address){
-            if(empty($login_request_status)){
-                $login_request = LoginRequest::create([
-                    "user_id" => $request->user()->id,
-                    "ip_address" => $ip_address,
-                    "status" => "approve",
-                    "village_id" => $request->village_id,
-                    "appartment_id" => $request->appartment_id,
-                ]);
-                auth()->user()->update(['ip_address' => $ip_address]);
+        ->first();
+        $status_open = false;
+        if(empty($login_request_status)){
+            $login_request = LoginRequest::create([
+                "user_id" => $request->user()->id,
+                "ip_address" => $ip_address,
+                "status" => "approve",
+                "village_id" => $request->village_id,
+                "appartment_id" => $request->appartment_id,
+            ]);
+            auth()->user()->update(['ip_address' => $ip_address]);
+            $status_open = true;
+        }
+        else{ 
+            if($login_request_status->ip_address == $ip_address && $login_request_status->status == "approve"){
+                $status_open = true;
             }
-            else{ 
+            else{
+                $status_open = false;
                 $login_request = LoginRequest::create([
                     "user_id" => $request->user()->id,
                     "ip_address" => $ip_address,
@@ -452,17 +458,11 @@ class LoginController extends Controller
                 Notification::create($data);
                 NotificationEvent::dispatch($data);
             }
-        } 
-        $login_request = LoginRequest::
-        where("ip_address", $ip_address)
-        ->where("user_id", auth()->user()->id)
-        ->where("village_id", $request->village_id)
-        ->orderByDesc("id")
-        ->first()?->status ==  "approve" || empty($login_request_status) 
-        ? true : false;
+        }
+         
 
         return response()->json([
-            "login" => $login_request
+            "login" => $status_open
         ]);
     }
 
