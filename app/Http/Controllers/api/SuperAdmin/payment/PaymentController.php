@@ -59,7 +59,9 @@ class PaymentController extends Controller
         }
 
         $payment->update([
-            'status' => 'approved'
+            'status' => 'approved',
+            'start_date' => date('Y-m-d'),
+            'expire_date' => $nextYear,
         ]);
 
         return response()->json([

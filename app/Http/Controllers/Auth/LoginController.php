@@ -465,83 +465,84 @@ class LoginController extends Controller
     //         "login" => $login_request
     //     ]);
     // }
-public function check_user_login_request(Request $request){
-    $validator = Validator::make($request->all(), [
-        'village_id' => 'required|exists:villages,id', 
-        'appartment_id' => 'required|exists:appartments,id',
-        'ip_address' => "required" // خليتها required لأنك بتعتمد عليها كـ Unique ID
-    ]);
-
-    if ($validator->fails()) { 
-        return response()->json([
-            'errors' => $validator->errors()->first(),
-        ], 400);
-    }
-
-    $userId = auth()->user()->id;
-    $ip_address = $request->ip_address;
-
-    // هنجيب آخر طلب متسجل للمستخدم في القرية والشقة دي بالظبط (طلب واحد بس)
-    $last_request = LoginRequest::where("user_id", $userId)
-        ->where("village_id", $request->village_id)
-        ->where("appartment_id", $request->appartment_id)
-        ->orderByDesc("id")
-        ->first();
-
-    // 1. لو مفيش أي طلبات خالص (أول مرة يدخل الشقة دي)
-    if (!$last_request) {
-        LoginRequest::create([
-            "user_id" => $userId,
-            "ip_address" => $ip_address,
-            "status" => "approve",
-            "village_id" => $request->village_id,
-            "appartment_id" => $request->appartment_id,
+    public function check_user_login_request(Request $request){
+        $validator = Validator::make($request->all(), [
+            'village_id' => 'required|exists:villages,id', 
+            'appartment_id' => 'required|exists:appartments,id',
+            'ip_address' => "required" // خليتها required لأنك بتعتمد عليها كـ Unique ID
         ]);
-        
-        $request->user()->update(['ip_address' => $ip_address]);
 
-        return response()->json(["login" => true]);
-    }
+        if ($validator->fails()) { 
+            return response()->json([
+                'errors' => $validator->errors()->first(),
+            ], 400);
+        }
 
-    // 2. لو فيه طلب سابق، هنشوف هل الجهاز الحالي هو نفسه "آخر جهاز" ولا اتغير؟
-    if ($last_request->ip_address == $ip_address) {
-        // طالما هو نفس الجهاز الأخير، هنشوف حالته
-        if ($last_request->status == "approve") {
-            return response()->json(["login" => true]); // يدخل علطول
-        } else {
-            // لو كان لسه Pending، هيرجع False ومش هيبعت إشعار تاني (عشان ميغرقش الأدمن إشعارات لو فضل يدوس)
+        $userId = auth()->user()->id;
+        $ip_address = $request->ip_address;
+
+        // هنجيب آخر طلب متسجل للمستخدم في القرية والشقة دي بالظبط (طلب واحد بس)
+        $last_request = LoginRequest::where("user_id", $userId)
+            ->where("village_id", $request->village_id)
+            ->where("appartment_id", $request->appartment_id)
+            ->orderByDesc("id")
+            ->first();
+
+        // 1. لو مفيش أي طلبات خالص (أول مرة يدخل الشقة دي)
+        if (!$last_request) {
+            LoginRequest::create([
+                "user_id" => $userId,
+                "ip_address" => $ip_address,
+                "status" => "approve",
+                "village_id" => $request->village_id,
+                "appartment_id" => $request->appartment_id,
+            ]);
+            
+            $request->user()->update(['ip_address' => $ip_address]);
+
+            return response()->json(["login" => true]);
+        }
+
+        // 2. لو فيه طلب سابق، هنشوف هل الجهاز الحالي هو نفسه "آخر جهاز" ولا اتغير؟
+        if ($last_request->ip_address == $ip_address) {
+            // طالما هو نفس الجهاز الأخير، هنشوف حالته
+            if ($last_request->status == "approve") {
+                return response()->json(["login" => true]); // يدخل علطول
+            } else {
+                // لو كان لسه Pending، هيرجع False ومش هيبعت إشعار تاني (عشان ميغرقش الأدمن إشعارات لو فضل يدوس)
+                return response()->json(["login" => false]);
+            }
+        } 
+        // 3. لو الجهاز اتغير (جهاز جديد، أو جهاز قديم ورجعله تاني)
+        else {
+            // نكريت طلب جديد خالص وحالته Pending
+            $login_request = LoginRequest::create([
+                "user_id" => $userId,
+                "ip_address" => $ip_address,
+                "status" => "pending",
+                "village_id" => $request->village_id,
+                "appartment_id" => $request->appartment_id,
+            ]);
+
+            $request->user()->update(['ip_address' => $ip_address]);
+
+            $notification = "قام " . auth()->user()->name . " بمحاولة الدخول من جهاز مختلف";
+            $data = [
+                'village_id' => $request->village_id,
+                'code_request_id' => null,
+                'login_request_id' => $login_request->id,
+                "type" => "admin", 
+                'notification' => $notification,
+            ];
+            
+            Notification::create($data);
+            NotificationEvent::dispatch($data);
+
+            // نقفل عليه لحد ما الأدمن يوافق
             return response()->json(["login" => false]);
         }
-    } 
-    // 3. لو الجهاز اتغير (جهاز جديد، أو جهاز قديم ورجعله تاني)
-    else {
-        // نكريت طلب جديد خالص وحالته Pending
-        $login_request = LoginRequest::create([
-            "user_id" => $userId,
-            "ip_address" => $ip_address,
-            "status" => "pending",
-            "village_id" => $request->village_id,
-            "appartment_id" => $request->appartment_id,
-        ]);
-
-        $request->user()->update(['ip_address' => $ip_address]);
-
-        $notification = "قام " . auth()->user()->name . " بمحاولة الدخول من جهاز مختلف";
-        $data = [
-            'village_id' => $request->village_id,
-            'code_request_id' => null,
-            'login_request_id' => $login_request->id,
-            "type" => "admin", 
-            'notification' => $notification,
-        ];
-        
-        Notification::create($data);
-        NotificationEvent::dispatch($data);
-
-        // نقفل عليه لحد ما الأدمن يوافق
-        return response()->json(["login" => false]);
     }
-}
+    
     public function sign_up(SignupRequest $request){
         $users = User::
         where(function($query) use($request){

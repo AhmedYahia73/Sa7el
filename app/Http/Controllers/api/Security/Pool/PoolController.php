@@ -117,7 +117,6 @@ class PoolController extends Controller
          ]);
     }
     
-
     public function entrance_pool_qr(Request $request){
         $validator = Validator::make($request->all(), [
             'qr_code' => 'required|string',
