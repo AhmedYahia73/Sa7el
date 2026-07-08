@@ -121,14 +121,29 @@ class HomeController extends Controller
                 'errors' => 'You are not allowed to view visitors'
             ], 401);
         }
+        $validator = Validator::make($request->all(), [
+            'search' => 'sometimes',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
 
-        $visitors = VisitorCode::
-        where('village_id', $request->user()->village_id)
-        ->whereDate("created_at", date('Y-m-d'))
+        $search = $request->input('search'); // الكلمة المراد البحث عنها
+
+        $visitors = VisitorCode::with('unit')
+        ->where('village_id', $request->user()->village_id)
+        ->whereDate('created_at', now()->toDateString()) // استخدام now() أفضل في Laravel
         ->whereDoesntHave('is_visit')
-        ->with("unit")
-        ->get()
-        ->map(function($visitor){
+        // إضافة البحث بناءً على اسم أو رقم الوحدة (unit)
+        ->when($search, function ($query, $search) {
+            $query->whereHas('unit', function ($unitQuery) use ($search) {
+                $unitQuery->where('name', 'like', '%' . $search . '%');
+            });
+        })
+        ->paginate(15) // تحديد عدد العناصر في كل صفحة (مثلاً 15)
+        ->through(function ($visitor) {
             return [
                 'id' => $visitor->id,
                 'code' => $visitor->code,
@@ -138,6 +153,10 @@ class HomeController extends Controller
                 'created_at' => $visitor->created_at->format('Y-m-d h:i A'),
             ];
         });
+
+        return response()->json([
+            'visitors' => $visitors,
+        ]);
     }
 
     public function search_village_users(Request $request){
