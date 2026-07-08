@@ -93,8 +93,9 @@ class VisitController extends Controller
                 ], 403);
             }
         }
+        $code = rand(1, 100000);
         $data = 'visitor_id>' . $request->user()->id . '>village_id>' . $request->village_id . 
-        '>visitor_type>' . $request->visitor_type . '>time>' . now() . '>rand>' . rand(1, 100000)
+        '>visitor_type>' . $request->visitor_type . '>time>' . now() . '>rand>' . $code
         . '>appartment_id>' . $request->appartment_id;
         $qrCode = QrCode::format('png')->size(300)->generate($data);
         $fileName = 'user/visit/qr/' . $data . '.png';
@@ -105,7 +106,8 @@ class VisitController extends Controller
             'qr_code' => $fileName,
             'village_id' => $request->village_id,
             'appartment_id' => $request->appartment_id,
-            'visitor_type' => $request->visitor_type
+            'visitor_type' => $request->visitor_type,
+            "code" => $code
         ]);
         // $request->visitor_type
 
