@@ -45,6 +45,30 @@ class OwnerController extends Controller
             'parents' => $parent,
         ]);
     }
+
+    public function owners(Request $request){
+        $search = $request->input('search');
+   
+        $owners = $this->owners
+            ->with('appartments', 'parent')
+            ->whereHas('appartment_code', function($query) use($request){
+                $query->where('type', 'owner')
+                    ->where('village_id', $request->user()->village_id);
+            }) 
+            // بداية جزء البحث
+            ->when($search, function($query) use($search) {
+                $query->where(function($q) use($search) {
+                    $q->where('name', 'LIKE', "%{$search}%")
+                    ->orWhere('email', 'LIKE', "%{$search}%")
+                    ->orWhere('phone', 'LIKE', "%{$search}%");
+                });
+            })
+            ->paginate(15); 
+
+        return response()->json([
+            'owners' => $owners, 
+        ]);
+    }
  
     public function owner(Request $request, $id){
         $owner = $this->owners

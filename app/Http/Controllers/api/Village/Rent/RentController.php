@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
  
 use App\Models\AppartmentCode;
+use App\Models\Appartment;
 
 class RentController extends Controller
 {
@@ -23,6 +24,32 @@ class RentController extends Controller
 
         return response()->json([
             'rents' => $rents,
+        ]);
+    }
+
+    public function unit_renters(Request $request){
+        $validator = Validator::make($request->all(), [
+            'appartment_id' => 'required|exists:appartments,id',
+        ]);
+
+        if ($validator->fails()) { 
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        $rents = $this->rents
+            ->with('owner:id,name,phone', 'user:id,name,phone')
+            ->where('type', 'renter') 
+            ->where('village_id', $request->user()->village_id)
+            ->where("appartment_id", $request->appartment_id)
+            ->where("to", ">=", date("Y-m-d"))
+            ->orderByDesc('id')
+            ->get(); 
+
+        return response()->json([
+            'rents' => $rents,
+            'rents_count' => $rents->count(),
         ]);
     }
 
@@ -57,7 +84,7 @@ class RentController extends Controller
         }
 
         // تحديد عدد العناصر لكل صفحة (مثلاً 15 عنصر كوضع افتراضي)
-        $perPage = $request->get('per_page', 15);
+        $perPage = $request->get('per_page', 50);
 
         // استخدام paginate بدلاً من get
         $rents = $rents->paginate($perPage)->through(function($item) use ($today) {

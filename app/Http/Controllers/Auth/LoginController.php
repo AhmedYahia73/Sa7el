@@ -367,6 +367,11 @@ class LoginController extends Controller
                 'errors' => $firstError,
             ],400);
         }
+        if(empty($request->password)){
+            return response()->json([
+                "errors" => "Password is required"
+            ], 400);
+        }
         $user = $this->user
         ->where('email', $request->email)
         ->first();
@@ -391,7 +396,7 @@ class LoginController extends Controller
                 'token' => $user->token,
             ], 200);
         }
-        else { 
+        else {
             return response()->json(['errors'=>'creational not Valid'],403);
         }
     }
@@ -424,6 +429,7 @@ class LoginController extends Controller
                     "village_id" => $request->village_id,
                     "appartment_id" => $request->appartment_id,
                 ]);
+                auth()->user()->update(['ip_address' => $ip_address]);
             }
             else{ 
                 $login_request = LoginRequest::create([

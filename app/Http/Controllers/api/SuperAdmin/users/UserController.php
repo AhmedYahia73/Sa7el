@@ -10,6 +10,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Storage;
 use App\trait\TraitImage;
 use Illuminate\Validation\Rule;
+use Carbon\Carbon;
 
 use App\Models\User;
 use App\Models\Village;
@@ -70,7 +71,6 @@ class UserController extends Controller
             'village' => $village,
         ]);
     }
-
 
     public function users(Request $request){
         $perPage = 15;
@@ -367,5 +367,51 @@ class UserController extends Controller
         }
 
         return response()->json(['message' => 'المستخدم غير موجود'], 404);
+    }
+
+    public function units(Request $request, $id){
+        $property = AppartmentCode::
+        where("user_id", $id)
+        ->where("type", "owner")
+        ->with("appartment", "village")
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "people" => $item->people,
+                "image_id_link" => $item->image_id_link,
+                "village" => $item?->village?->name,
+                "unit" => $item?->appartment?->unit,
+            ];
+        });
+        $rents = AppartmentCode::
+        where("user_id", $id)
+        ->where("type", "renter")
+        ->with("appartment", "village")
+        ->get()
+        ->map(function($item){
+            $status = "Past";
+            if(Carbon::parse($item->from) <= now() && Carbon::parse($item->to) >= now()){
+                $status = "Current";
+            }
+            elseif(Carbon::parse($item->to) > now()){
+                $status = "Upcoming";
+            }
+            return [
+                "id" => $item->id,
+                "people" => $item->people,
+                "image_id_link" => $item->image_id_link,
+                "from" => $item->from,
+                "to" => $item->to,
+                "village" => $item?->village?->name,
+                "unit" => $item?->appartment?->unit,
+                "status" => $status,
+            ];
+        }); 
+
+        return response()->json([
+            "property" => $property,
+            "rents" => $rents,
+        ]);
     }
 }
