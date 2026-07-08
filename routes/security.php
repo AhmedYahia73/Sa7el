@@ -38,5 +38,6 @@ Route::middleware(['auth:sanctum', 'IsSecurity'])->group(function(){
     Route::controller(BeachController::class)->prefix('beach_qr')
     ->group(function() {
         Route::post('/', 'read_qr');
+        Route::post('/entrance_beach_qr', 'entrance_beach_qr');
     });
 });

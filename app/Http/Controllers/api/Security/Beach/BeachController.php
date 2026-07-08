@@ -214,13 +214,17 @@ class BeachController extends Controller
             'code' => $code,
             'user_type' => $user_type,
         ]);
+        $user = User::
+        where('id', $userid)
+        ->first();
 
          return response()->json([
             'success' => 'Qr code is true',
             'appartment' => $appartment,
-            'user' => $user,
-            'visit_village_id' => $visit_village,
+            'user' => $user, 
             'visitor_type' => $visitor_type,
+            'user_type' => $user_type,
+            "is_visitor" => $type == 'visitor' ? true : false,
             'date' => date('Y-m-d'),
             'time' => date('h:i A'),
          ]);
