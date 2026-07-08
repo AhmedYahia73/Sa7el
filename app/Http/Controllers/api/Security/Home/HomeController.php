@@ -160,49 +160,57 @@ class HomeController extends Controller
     }
 
     public function search_village_users(Request $request){
-        if(!auth()->user()->gate_entrance){
+        if (!auth()->user()->gate_entrance) {
             return response()->json([
                 'errors' => 'You are not allowed to view visitors'
             ], 401);
         }
+
         $validator = Validator::make($request->all(), [
             'phone' => 'required',
         ]);
-        if ($validator->fails()) { // if Validate Make Error Return Message Error
+
+        if ($validator->fails()) {
             return response()->json([
                 'errors' => $validator->errors(),
-            ],400);
+            ], 400);
         }
 
-        $user = User::
-        where('phone', $request->phone)
-        ->whereHas('appartment_code', function($query) use($request){
-            $query->where('village_id', $request->user()->village_id);
-        })
-        ->with(["appartment_code.appartment", function($query){
-            $query->where("type", "owner")
-            ->orWhere("type", "renter")
-            ->where("from", "<=", date("Y-m-d"))
-            ->where("to", "<=", date("Y-m-d"));
-        }])
-        ->firstOrFail();
-        if(!empty($user)){
-            $user = [
-                "id" => $user->id,
-                "name" => $user->name,
-                "email" => $user->email,
-                "units" => $user->appartment_code
-                ->map(function($item){
-                    return [
-                        "id" => $item->id,
-                        "appartment" => $item?->appartment?->unit,
-                    ];
-                }), 
-            ];
+        $userModel = User::where('phone', $request->phone)
+            ->whereHas('appartment_code', function($query) use ($request) {
+                $query->where('village_id', $request->user()->village_id);
+            })
+            ->with(['appartment_code.appartment' => function($query) {
+                $today = date("Y-m-d");
+                $query->where("type", "owner")
+                    ->orWhere(function($q) use ($today) {
+                        $q->where("type", "renter")
+                            ->where("from", "<=", $today)
+                            ->where("to", ">=", $today); // تم تصحيح الاتجاه هنا ليغطي العقود السارية
+                    });
+            }])
+            ->first();
+
+        if (!$userModel) {
+            return response()->json([
+                'errors' => 'User not found or does not belong to this village'
+            ], 404);
         }
+
+        $responseData = [
+            "id"    => $userModel->id,
+            "name"  => $userModel->name,
+            "email" => $userModel->email,
+            "units" => $userModel->appartment_code->map(function($item) {
+                return [
+                    "id"         => $item->id,
+                    "appartment" => $item->appartment?->unit, // سيصبح null إذا لم يطابق شروط الـ Owner أو Renter الساري
+                ];
+            }), 
+        ];
 
         return response()->json([
-            'user' => $user,
+            'user' => $responseData,
         ]);
     }
 
