@@ -212,7 +212,7 @@ class HomeController extends Controller
          ->first()?->type;
         $visit_village = VisitVillage::
         create([
-            'user_id' => $$visitor_code->user_id,
+            'user_id' => $visitor_code->user_id,
             'village_id' => $request->user()->village_id,
             'gate_id' => $request->gate_id,
             'type' => 'visitor',
@@ -263,7 +263,7 @@ class HomeController extends Controller
          ->first()?->type;
         $visit_village = VisitVillage::
         create([
-            'user_id' => $$visitor_code->user_id,
+            'user_id' => $visitor_code->user_id,
             'village_id' => $request->user()->village_id,
             'gate_id' => $request->gate_id,
             'type' => $user_type,
