@@ -205,8 +205,8 @@ class HomeController extends Controller
             "email" => $userModel->email,
             "units" => $userModel->appartment_code->map(function($item) {
                 return [
-                    "id"         => $item->id,
-                    "appartment" => $item->appartment?->unit, // سيصبح null إذا لم يطابق شروط الـ Owner أو Renter الساري
+                    "id"         => $item?->appartment?->id,
+                    "appartment" => $item?->appartment?->unit, // سيصبح null إذا لم يطابق شروط الـ Owner أو Renter الساري
                 ];
             }), 
         ];
