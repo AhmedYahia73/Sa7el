@@ -18,6 +18,8 @@ class SecurityMan extends Model
         'phone',
         'type',
         'status',
+        'gate_visitors',
+        'gate_entrance',
     ];
     protected $appends = ['image_link'];
 

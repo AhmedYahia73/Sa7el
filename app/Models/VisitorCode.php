@@ -19,4 +19,12 @@ class VisitorCode extends Model
     public function getQrCodeLinkAttribute(){
         return url('storage/' . $this->image);
     }
+
+    public function is_visit(){
+        return $this->hasOne(VisitVillage::class, 'code', 'code');
+    }
+
+    public function unit(){
+        return $this->belongsTo(Appartment::class, 'appartment_id');
+    }
 }

@@ -81,6 +81,8 @@ class SecurityController extends Controller
             'pool_ids.*' => 'required|exists:pools,id',
             'beach_ids.*' => 'required|exists:beaches,id',
             'gate_ids.*' => 'required|exists:gates,id',
+            "gate_visitors" => "required|boolean",
+            "gate_entrance" => "required|boolean",
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -124,6 +126,8 @@ class SecurityController extends Controller
             'pool_ids.*' => 'required|exists:pools,id',
             'beach_ids.*' => 'required|exists:beaches,id',
             'gate_ids.*' => 'required|exists:gates,id',
+            "gate_visitors" => "required|boolean",
+            "gate_entrance" => "required|boolean",
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([

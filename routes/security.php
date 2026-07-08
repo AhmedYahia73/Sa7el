@@ -16,6 +16,9 @@ Route::middleware(['auth:sanctum', 'IsSecurity'])->group(function(){
         Route::get('/entrance_gate', 'entrance_gate');
         Route::get('/entrance_pool', 'entrance_pool');
         Route::get('/entrance_beach', 'entrance_beach');
+        Route::get('/search_village_users', 'search_village_users');
+        Route::post('/entrance_visitor', 'entrance_visitor');
+        Route::post('/entrance_user', 'entrance_user');
     });
 
     Route::controller(ProfileController::class)->prefix('profile')
