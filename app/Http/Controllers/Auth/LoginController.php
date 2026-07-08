@@ -394,6 +394,7 @@ class LoginController extends Controller
             return response()->json([
                 'user' => $user,
                 'token' => $user->token,
+                "image_status" => $user->image ? true : false
             ], 200);
         }
         else {

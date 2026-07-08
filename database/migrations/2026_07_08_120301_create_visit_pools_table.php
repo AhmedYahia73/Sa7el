@@ -1,0 +1,36 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('visit_pools', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('village_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('pool_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->string('image')->nullable();
+            $table->enum('type', ['visitor', 'owner', 'renter']);
+            $table->foreignId('appartment_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->enum('user_type', ['owner', 'renter'])->nullable();
+            $table->enum('visitor_type', ['guest', 'worker', 'delivery', 'owner'])->nullable();
+            $table->string('code')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('visit_pools');
+    }
+};
