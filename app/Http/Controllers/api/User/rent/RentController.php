@@ -58,8 +58,9 @@ class RentController extends Controller
             'from' => 'required|date',
             'to' => 'required|date',
             'people' => 'required|integer',
-            'image' => 'required|array',
-            'image.*' => 'required',
+            'image' => 'required',
+            // 'image' => 'required|array',
+            // 'image.*' => 'required',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -114,10 +115,11 @@ class RentController extends Controller
         $rentRequest['code'] = $code;
         $rentRequest['image'] = [];
 
-        foreach ($request->image as $item) {
-            $image_path =$this->storeBase64Image($item, '/images/rent/id');
-            $rentRequest['image'][] = $image_path;
-        }
+        // foreach ($request->image as $item) {
+        //     $image_path =$this->storeBase64Image($item, '/images/rent/id');
+        //     $rentRequest['image'][] = $image_path;
+        // }
+        $image_path =$this->upload($request, "image", '/images/rent/id');
 
         for($i = 0; $i < $request->people; $i++ ){
             $this->appartment_code
