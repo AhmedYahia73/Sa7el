@@ -17,8 +17,6 @@ class Provider extends Model
         'package_id',
         'location', 
         'description', 
-        'open_from', 
-        'open_to', 
         'status', 
         'cover_image',
         'zone_id',
@@ -125,5 +123,57 @@ class Provider extends Model
 
     public function gallery(){
         return $this->hasMany(ProviderGallary::class, 'provider_id');
+    }
+
+    public function work_hours()
+    {
+        return $this->hasMany(ProviderWorkHours::class, 'provider_id');
+    }
+
+    /**
+     * Check if provider is open right now.
+     * Handles overnight hours (e.g. open 21:00 wednesday to 02:00 thursday)
+     */
+    public function isOpenNow(): bool
+    {
+        $now = \Carbon\Carbon::now();
+        $currentTime = $now->format('H:i:s');
+
+        // Check today's schedule first
+        $todayName     = strtolower($now->englishDayOfWeek);
+        $todayHours    = $this->work_hours->firstWhere('day', $todayName);
+
+        if ($todayHours && !$todayHours->is_closed) {
+            if ($todayHours->is_24_hours) return true;
+
+            if ($todayHours->from && $todayHours->to) {
+                $from = $todayHours->from;
+                $to   = $todayHours->to;
+
+                if ($from <= $to) {
+                    // Normal hours: 09:00 → 22:00
+                    if ($currentTime >= $from && $currentTime <= $to) return true;
+                } else {
+                    // Overnight starting today: 21:00 → 02:00
+                    if ($currentTime >= $from) return true;
+                }
+            }
+        }
+
+        // Check yesterday's schedule — maybe it's an overnight shift still running
+        $yesterdayName  = strtolower($now->copy()->subDay()->englishDayOfWeek);
+        $yesterdayHours = $this->work_hours->firstWhere('day', $yesterdayName);
+
+        if ($yesterdayHours && !$yesterdayHours->is_closed && !$yesterdayHours->is_24_hours) {
+            if ($yesterdayHours->from && $yesterdayHours->to) {
+                $from = $yesterdayHours->from;
+                $to   = $yesterdayHours->to;
+
+                // Overnight from yesterday: if from > to and current time is still before closing
+                if ($from > $to && $currentTime <= $to) return true;
+            }
+        }
+
+        return false;
     }
 }

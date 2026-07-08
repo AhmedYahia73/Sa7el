@@ -24,18 +24,16 @@ class ProviderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'open_from' => ['regex:/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/'], 
-            'open_to' => ['regex:/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/'], 
-            'service_id' => ['required', 'exists:service_types,id'],
-            'village_id' => ['exists:villages,id'],
-            'mall_id' => ['exists:malls,id'],
-            'name' => ['required'],
+            'service_id'  => ['required', 'exists:service_types,id'],
+            'village_id'  => ['exists:villages,id'],
+            'mall_id'     => ['exists:malls,id'],
+            'name'        => ['required'],
             'description' => ['sometimes'],
-            'phone' => ['required', ],
-            'location' => ['required'],
-            'status' => ['required'],
-            'location_map' => ['required'],
-            'zone_id' => ['exists:zones,id']
+            'phone'       => ['required'],
+            'location'    => ['required'],
+            'status'      => ['required'],
+            'location_map'=> ['required'],
+            'zone_id'     => ['exists:zones,id'],
         ];
     }
 

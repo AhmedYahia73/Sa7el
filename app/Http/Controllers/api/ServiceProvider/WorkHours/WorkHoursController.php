@@ -7,42 +7,55 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\Provider;
+use App\Models\ProviderWorkHours;
 
 class WorkHoursController extends Controller
 {
-    public function __construct(private Provider $provider){}
+    const DAYS = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
 
-    public function view(Request $request){
+    public function __construct(private Provider $provider) {}
+
+    public function view(Request $request)
+    {
         $provider = $this->provider
-        ->where('id', $request->user()->provider_id)
-        ->first();
+            ->with('work_hours')
+            ->where('id', $request->user()->provider_id)
+            ->first();
 
         return response()->json([
-            'open_from' => $provider?->open_from,
-            'open_to' => $provider?->open_to,
+            'work_hours' => $provider?->work_hours,
+            'is_open_now' => $provider?->isOpenNow(),
         ]);
     }
 
-    public function update(Request $request){
+    public function update(Request $request)
+    {
         $validator = Validator::make($request->all(), [
-            'open_from' => ['regex:/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/', 'required'], 
-            'open_to' => ['regex:/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/', 'required'],
+            'work_hours'              => 'required|array',
+            'work_hours.*.day'        => 'required|in:' . implode(',', self::DAYS),
+            'work_hours.*.from'       => 'nullable|date_format:H:i:s',
+            'work_hours.*.to'         => 'nullable|date_format:H:i:s',
+            'work_hours.*.is_24_hours'=> 'boolean',
+            'work_hours.*.is_closed'  => 'boolean',
         ]);
-        if ($validator->fails()) { // if Validate Make Error Return Message Error
-            return response()->json([
-                'errors' => $validator->errors(),
-            ],400);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
         }
 
-        $provider = $this->provider
-        ->where('id', $request->user()->provider_id)
-        ->update([
-            'open_from' => $request->open_from,
-            'open_to' => $request->open_to,
-        ]);
+        $provider_id = $request->user()->provider_id;
 
-        return response()->json([
-            'success' => 'You update data success'
-        ]);
+        foreach ($request->work_hours as $item) {
+            ProviderWorkHours::updateOrCreate(
+                ['provider_id' => $provider_id, 'day' => $item['day']],
+                [
+                    'from'        => $item['is_24_hours'] ?? false ? null : ($item['from'] ?? null),
+                    'to'          => $item['is_24_hours'] ?? false ? null : ($item['to'] ?? null),
+                    'is_24_hours' => $item['is_24_hours'] ?? false,
+                    'is_closed'   => $item['is_closed'] ?? false,
+                ]
+            );
+        }
+
+        return response()->json(['success' => 'You update data success']);
     }
 }

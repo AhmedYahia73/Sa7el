@@ -44,7 +44,7 @@ class ServiceController extends Controller
         ->whereHas('providers', function($query) use($request){
             $query->where('village_id', $request->village_id);
         })
-        ->with('providers') // load all providers
+        ->with(['providers.work_hours']) // load providers with work_hours
         ->get();
         // Optionally filter in PHP
         $services->each(function ($service) use ($request) {
@@ -57,8 +57,8 @@ class ServiceController extends Controller
                     $item->name : $item->ar_name?? $item->name,
                     'image' => $item->image_link,
                     'location' => $item->location,
-                    'from' => $item->open_from,
-                    'to' => $item->open_to,
+                    'work_hours' => $item->work_hours,
+                    'is_open_now' => $item->isOpenNow(),
                     'status' => $item->status,
                     'service' => $item?->service?->name,
                     'village' => $item?->village?->name,
@@ -209,8 +209,8 @@ class ServiceController extends Controller
                 'image' => $item->image_link,
                 'location' => $item->location,
                 'phone' => $item->phone,
-                'from' => $item->open_from,
-                'to' => $item->open_to,
+                'work_hours' => $item->work_hours,
+                'is_open_now' => $item->isOpenNow(),
                 'status' => $item->status,
                 'description' => $request->local == 'en' ?
                 $item->description : $item->ar_description?? $item->description,
