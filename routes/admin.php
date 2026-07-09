@@ -256,6 +256,8 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::post('/add', 'create')->middleware('can:admin_user_add');
         Route::post('/update/{id}', 'modify')->middleware('can:admin_user_edit');
         Route::delete('/delete/{id}', 'delete')->middleware('can:admin_user_delete');
+        Route::post('/delete_user', 'delete_user')->middleware('can:admin_user_delete');
+        Route::post('/delete_code', 'delete_code')->middleware('can:admin_user_delete');
     });
     
     Route::controller(ServiceTypeController::class)->prefix('service_type')
