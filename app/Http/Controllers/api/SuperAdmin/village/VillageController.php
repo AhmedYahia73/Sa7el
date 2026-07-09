@@ -100,8 +100,10 @@ class VillageController extends Controller
     public function create(VillageRequest $request){
         // name, description, status, zone_id, location
         // ar_name, ar_description, image, location_map
+        // logo
         $validator = Validator::make($request->all(), [
             'image' => 'required|base64image', 
+            'logo' => 'required|base64image', 
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -112,6 +114,10 @@ class VillageController extends Controller
         if (!empty($request->image)) {
             $image_path = $this->storeBase64Image($request->image, 'images/villages');
             $villageRequest['image'] = $image_path;
+        }
+        if (!empty($request->logo)) {
+            $logo_path = $this->storeBase64Image($request->logo, 'images/villages');
+            $villageRequest['logo'] = $logo_path;
         }
         $village = $this->village
         ->create($villageRequest);
@@ -154,6 +160,7 @@ class VillageController extends Controller
         $validator = Validator::make($request->all(), [
             'image' => 'nullable|base64image',
             "units_num" => ['required', 'numeric'],
+            'logo' => 'sometimes|base64image', 
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -174,6 +181,11 @@ class VillageController extends Controller
             $image_path = $this->storeBase64Image($request->image, 'images/villages');
             $this->deleteImage($village->image); 
             $villageRequest['image'] = $image_path;
+        }
+        if (!empty($request->logo)) {
+            $logo_path = $this->storeBase64Image($request->logo, 'images/villages');
+            $this->deleteImage($village->logo); 
+            $villageRequest['logo'] = $logo_path;
         }
         $village
         ->update($villageRequest);

@@ -19,11 +19,19 @@ class Village extends Model
         'cover_image',
         'location_map',
         "units_num",
+        "logo",
     ];
-    protected $appends = ['image_link', 'ar_name', 'ar_description', 'cover_image_link'];
+    protected $appends = ['image_link', 'logo_link', 
+    'ar_name', 'ar_description', 'cover_image_link'];
 
     public function getCoverImageLinkAttribute(){
         return url('storage/' . $this->cover_image);
+    }
+    
+    public function getLogoLinkAttribute(){
+        if(isset($this->logo)){
+            return url('storage/' . $this->logo);
+        }
     }
 
     public function getArNameAttribute(){

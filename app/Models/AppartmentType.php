@@ -10,6 +10,7 @@ class AppartmentType extends Model
         'name',
         'image',
         'status',
+        // 'umbrellas_num',
     ];
     protected $appends = ['ar_name', 'image_link'];
  
