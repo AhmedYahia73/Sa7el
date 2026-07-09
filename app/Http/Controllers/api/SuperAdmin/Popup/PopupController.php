@@ -19,14 +19,27 @@ class PopupController extends Controller
     {
         $popups = $this->popup
             ->with('village')
-            ->get();
+            ->get(); 
+
+        return response()->json([
+            'popups'   => $popups, 
+        ]);
+    }
+
+    public function lists()
+    { 
 
         $villages = $this->village
             ->where('status', 1)
-            ->get();
+            ->get()
+            ->map(function($item){
+                return [
+                    "id" => $item->id,
+                    "id" => $item->name,
+                ];
+            });
 
-        return response()->json([
-            'popups'   => $popups,
+        return response()->json([ 
             'villages' => $villages,
         ]);
     }

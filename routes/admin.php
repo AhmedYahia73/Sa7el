@@ -383,6 +383,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     Route::controller(PopupController::class)->prefix('popup')
     ->group(function() {
         Route::get('/', 'view');
+        Route::get('/lists', 'lists');
         Route::get('/item/{id}', 'show');
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
