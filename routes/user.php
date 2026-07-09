@@ -64,7 +64,7 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
 
     Route::controller(VerificationImageController::class)->prefix('verifyFaces')
     ->group(function() {
-        Route::get('/', 'verifyFaces');
+        Route::post('/', 'verifyFaces');
     });
 
     Route::controller(MaintenanceProviderController::class)->prefix('maintenance_provider')
