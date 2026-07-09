@@ -32,6 +32,7 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
         Route::get('/new', 'my_new_property'); 
         Route::post('/add', 'add_property'); 
         Route::get('/pending_code_request', 'pending_code_request'); 
+        Route::post('/rent_images', 'rent_images'); 
     });
 
     Route::controller(HomeController::class)
@@ -133,6 +134,7 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
         Route::post('/rent/add', 'create');
         Route::post('/rent/destroy', 'destroy');
         Route::post('/rent/delete_user', 'delete_user');
+        Route::post('/rent/push_rent_images', 'push_rent_images');
     });
 
     Route::controller(OfferController::class)->prefix('offer')

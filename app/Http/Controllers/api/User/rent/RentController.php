@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Appartment;
 use App\Models\AppartmentCode;
 use App\Models\VillageSetting;
+use App\Models\RentImage;
 use App\trait\TraitImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -127,7 +128,7 @@ class RentController extends Controller
         }
        // /rent/add
         return response()->json([
-            'success' => $code
+            'success' => $code, 
         ]);
     }
 
@@ -200,6 +201,39 @@ class RentController extends Controller
 
         return response()->json([
             'success' => "You delete code success"
+        ]);
+    }
+
+    public function push_rent_images(Request $request){
+        $validator = Validator::make($request->all(), [
+            'data' => 'required|array',
+            'data.*.image' => 'required|base64image',
+            'data.*.description' => 'required|base64image',
+            'code' => "required",
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }
+        
+        $appartment_code_ids = AppartmentCode::
+        where("code", $request->code)
+        ->pluck("id")
+        ->toArray();
+        $data = $request->data;
+        foreach ($data as $item) {
+            $image_path = $this->storeBase64Image($item['image'], 'images/rents');
+            $rent = RentImage::create([
+                "image" => $image_path,
+                "description" => isset($item['description']) ? $item['description'] : null,
+            ]);
+            $rent->code()->attach($appartment_code_ids);
+        }
+
+        return response()->json([
+            "success" => "You add data success"
         ]);
     }
 }

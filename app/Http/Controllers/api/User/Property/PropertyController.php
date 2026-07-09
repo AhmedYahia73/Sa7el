@@ -427,4 +427,25 @@ class PropertyController extends Controller
             "appartments" => $appartments
         ]);
     }
+
+    public function rent_images(Request $request){
+        $validator = Validator::make($request->all(), [
+            'code' => 'required',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }
+
+        $rent_images = AppartmentCode::
+        where("code", $request->code)
+        ->with("rent_images")
+        ->first()?->rent_images;
+
+        return response()->json([
+            "rent_images" => $rent_images
+        ]);
+    }
 }

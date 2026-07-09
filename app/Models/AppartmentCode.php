@@ -28,6 +28,10 @@ class AppartmentCode extends Model
         ];
     }
     
+    public function rent_images(){
+        return $this->belongsToMany(RentImage::class, "appartment_code_rent_image", "appartment_code_id", "rent_image_id");
+    }
+
     public function getImageIdLinkAttribute()
     {
         $images = $this->image;
