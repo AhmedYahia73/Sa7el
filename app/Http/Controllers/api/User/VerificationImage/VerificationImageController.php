@@ -82,14 +82,14 @@ class VerificationImageController extends Controller
                 'status' => false,
                 'message' => 'حدث خطأ.',
                 'error' => $e->getAwsErrorMessage() ?? $e->getMessage()
-            ], 500);
+            ], 400);
         } catch (\Exception $e) {
             // لقط أي إيرور عام داخل الـ لارافل
             return response()->json([
                 'status' => false,
                 'message' => 'حدث خطأ غير متوقع أثناء المعالجة.',
                 'error' => $e->getMessage()
-            ], 500);
+            ], 400);
         }
     }
 
