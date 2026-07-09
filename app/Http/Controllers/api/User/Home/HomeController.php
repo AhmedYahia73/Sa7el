@@ -39,11 +39,11 @@ class HomeController extends Controller
         if($popup){
             $popup = [
                 "title" => $locale == "en" ? 
-                $popup->title : $popup->ar_title,
+                $popup->title : $popup->ar_title ?? $popup->title,
                 "description" => $locale == "en" ? 
-                $popup->description : $popup->ar_description,
+                $popup->description : $popup->ar_description ?? $popup->description,
                 "image" => $locale == "en" ? 
-                $popup->image_link : $popup->ar_image_link,
+                $popup->image_link : $popup->ar_image_link ?? $popup->image_link,
             ];
         }
 
@@ -70,11 +70,11 @@ class HomeController extends Controller
         if($popup){
             $popup = [
                 "title" => $locale == "en" ? 
-                $popup->title : $popup->ar_title,
+                $popup->title : $popup->ar_title ?? $popup->title,
                 "description" => $locale == "en" ? 
                 $popup->description : $popup->ar_description,
                 "image" => $locale == "en" ? 
-                $popup->image_link : $popup->ar_image_link,
+                $popup->image_link : $popup->ar_image_link ?? $popup->image_link,
             ];
         }
 
