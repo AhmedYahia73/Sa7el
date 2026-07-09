@@ -5,71 +5,45 @@ namespace App\Http\Controllers\api\Village\notification;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Notification;
-use App\Events\UserNotification;
+use App\Jobs\SendPushNotificationJob;
 use Illuminate\Support\Facades\Validator;
-use App\Notifications\NotificationChanged;
 
 class PushNotificationController extends Controller
 {
-    public function push_notification(Request $request){
+    public function push_notification(Request $request)
+    {
         $validator = Validator::make($request->all(), [
-            'message' => 'required|string', 
+            'message' => 'required|string',
         ]);
 
-        if ($validator->fails()) { 
+        if ($validator->fails()) {
             return response()->json([
                 'errors' => $validator->errors(),
             ], 400);
         }
 
-        $usersQuery = User::where("role", "user");
- 
-        $usersQuery->whereHas("appartment_code", function($query) use ($request) {
-            $query->where(function($q) use ($request) {
-                $q->where('type', 'owner')
-                ->where('village_id', $request->user()->village_id);
-            })->orWhere(function($q) use ($request) {
-                $q->where('type', 'renter')
-                ->where('village_id', $request->user()->village_id)
-                ->where('from', '<=', now()->format('Y-m-d'))
-                ->where('to', '>=', now()->format('Y-m-d'));
-            });
-        }); 
+        $village_id = $request->user()->village_id;
 
-        $users = $usersQuery->get();
-        $notificationText = $request->message;
+        $users = User::where('role', 'user')
+            ->whereHas('appartment_code', function ($query) use ($village_id) {
+                $query->where(function ($q) use ($village_id) {
+                    $q->where('type', 'owner')
+                        ->where('village_id', $village_id);
+                })->orWhere(function ($q) use ($village_id) {
+                    $q->where('type', 'renter')
+                        ->where('village_id', $village_id)
+                        ->where('from', '<=', now()->format('Y-m-d'))
+                        ->where('to', '>=', now()->format('Y-m-d'));
+                });
+            })
+            ->get();
 
         foreach ($users as $user) {
-            $data = [ 
-                'village_id' => $request->user()->village_id ?? null,
-                'code_request_id' => null,
-                'login_request_id' => null,
-                "type" => "user", 
-                'notification' => $notificationText,
-                'is_read' => 0,
-                "user_id" => $user->id,
-            ];
-
-            // بث الحدث عبر Reverb
-            UserNotification::dispatch($data);
-            
-            // حفظ الإشعار في قاعدة البيانات
-            $new_notification = Notification::create($data);
-
-            // تجهيز البيانات لـ Firebase والـ Broadcast معاً
-            $notificationData = [
-                "id" => $new_notification->id,
-                "title" => "تنبيه هام",
-                "body" => $notificationText
-            ];
-
-            // إرسال الإشعار للمستخدم الحالي (تم حل مشكلة الفايند والـ $codes المعطوب)
-            $user->notify(new NotificationChanged($notificationData));
+            SendPushNotificationJob::dispatch($user, $request->message, $village_id);
         }
 
         return response()->json([
-            'message' => 'Notifications sent successfully to ' . $users->count() . ' users.'
+            'message' => 'Notifications queued successfully to ' . $users->count() . ' users.',
         ]);
     }
 }
