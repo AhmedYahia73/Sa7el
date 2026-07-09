@@ -16,7 +16,7 @@ class HomeController extends Controller
 
         return response()->json([
             "logo" => $village->logo_link,
-            "logo" => $village->name,
+            "name" => $village->name,
         ]);
     }
 }
