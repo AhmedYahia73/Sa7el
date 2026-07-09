@@ -18,6 +18,7 @@ use App\Http\Controllers\api\User\Visit\VisitController;
 use App\Http\Controllers\api\User\Visitors\MyVisitorsController;
 use App\Http\Controllers\api\User\Application\ApplicationController;
 use App\Http\Controllers\api\User\Home\HomeController;
+use App\Http\Controllers\api\User\VerificationImage\VerificationImageController;
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
@@ -59,6 +60,11 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     Route::controller(LoginController::class)->prefix('check_user_login_request')
     ->group(function() {
         Route::get('/', 'check_user_login_request');
+    });
+
+    Route::controller(VerificationImageController::class)->prefix('verifyFaces')
+    ->group(function() {
+        Route::get('/', 'verifyFaces');
     });
 
     Route::controller(MaintenanceProviderController::class)->prefix('maintenance_provider')

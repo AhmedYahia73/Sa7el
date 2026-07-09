@@ -10,7 +10,8 @@ use Illuminate\Support\Str;
 use App\Models\Application;
 
 class VerificationImageController extends Controller
-{public function verifyFaces(Request $request)
+{
+    public function verifyFaces(Request $request)
     {
         // 1. التحقق من وجود النصوص في الـ Request
         $request->validate([
@@ -105,10 +106,7 @@ class VerificationImageController extends Controller
             ], 500);
         }
     }
-
-    /**
-     * دالة مساعدة لتنظيف نص الـ Base64 من أي زيادات في البداية
-     */
+ 
     private function cleanBase64($base64String)
     {
         if (Str::contains($base64String, ';base64,')) {
@@ -116,10 +114,7 @@ class VerificationImageController extends Controller
         }
         return $base64String;
     }
-
-    /**
-     * دالة مساعدة لمعرفة نوع الصورة لتمريرها بشكل صحيح للـ API
-     */
+ 
     private function getMimeType($base64String)
     {
         if (Str::contains($base64String, 'data:image/')) {
