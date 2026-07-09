@@ -208,7 +208,7 @@ class RentController extends Controller
         $validator = Validator::make($request->all(), [
             'data' => 'required|array',
             'data.*.image' => 'required|base64image',
-            'data.*.description' => 'required|base64image',
+            'data.*.description' => 'required',
             'code' => "required",
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
