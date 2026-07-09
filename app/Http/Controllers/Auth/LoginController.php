@@ -391,9 +391,10 @@ class LoginController extends Controller
                     'errors' => 'already logged in from another device'
                 ], 403);
             }
-            $user->token = $user->createToken('user')->plainTextToken;
             $user->fcm_token = $request->fcm_token ?? null;
             $user->save();
+            $user->token = $user->createToken('user')->plainTextToken;
+         
             return response()->json([
                 'user' => $user,
                 'token' => $user->token,
