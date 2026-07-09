@@ -4,6 +4,11 @@ namespace App\Http\Controllers\api\Village\notification;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\Notification;
+use App\Events\UserNotification;
+use Illuminate\Support\Facades\Validator;
+use App\Notifications\NotificationChanged;
 
 class PushNotificationController extends Controller
 {

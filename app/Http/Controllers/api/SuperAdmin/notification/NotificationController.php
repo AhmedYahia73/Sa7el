@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Notification;
 use App\Events\UserNotification;
 use Illuminate\Support\Facades\Validator;
+use App\Notifications\NotificationChanged;
 
 class NotificationController extends Controller
 {
