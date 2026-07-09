@@ -42,15 +42,14 @@ class VerificationImageController extends Controller
                     'secret' => config('services.aws.secret'),
                 ],
             ]);
-
-            // 5. إرسال الطلب للمقارنة لـ AWS Rekognition
+// 5. إرسال الطلب للمقارنة لـ AWS Rekognition
             $result = $rekognition->compareFaces([
-                'SimilarityThreshold' => 80.0, // نسبة التطابق المطلوبة ليكون نفس الشخص
+                'SimilarityThreshold' => 80.0, 
                 'SourceImage' => [
-                    'Bytes' => $imageSourceBytes,
+                    'Bytes' => \GuzzleHttp\Psr7\Utils::streamFor($imageSourceBytes), // تغليف الباينري في Stream
                 ],
                 'TargetImage' => [
-                    'Bytes' => $imageTargetBytes,
+                    'Bytes' => \GuzzleHttp\Psr7\Utils::streamFor($imageTargetBytes), // تغليف الباينري في Stream
                 ],
             ]);
 
@@ -81,7 +80,7 @@ class VerificationImageController extends Controller
             // لقط أي إيرور صادر من خدمات AWS مباشرة
             return response()->json([
                 'status' => false,
-                'message' => 'حدث خطأ في خدمة AWS.',
+                'message' => 'حدث خطأ.',
                 'error' => $e->getAwsErrorMessage() ?? $e->getMessage()
             ], 500);
         } catch (\Exception $e) {
