@@ -156,6 +156,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
         Route::get('/', 'view'); 
         Route::get('/all', 'renters'); 
         Route::post('/unit_renters', 'unit_renters'); 
+        Route::get('/renters_numbers', 'renters_numbers'); 
         Route::post('/delete_user', 'delete_user'); 
         Route::post('/delete_code', 'delete_code'); 
     });

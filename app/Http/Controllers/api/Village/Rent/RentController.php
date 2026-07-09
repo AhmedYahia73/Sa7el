@@ -104,6 +104,37 @@ class RentController extends Controller
         ]);
     }
 
+    public function renters_numbers(Request $request){
+        $all_rents = $this->rents
+        ->where('type', 'renter') 
+        ->where('village_id', $request->user()->village_id)
+        ->count();
+        $today = date("Y-m-d"); 
+        $current_rents = $this->rents
+        ->where('type', 'renter') 
+        ->where('village_id', $request->user()->village_id)
+        ->where('from', '<=', $today)
+        ->where('to', '>=', $today)
+        ->count();
+        $past_rents = $this->rents
+        ->where('type', 'renter') 
+        ->where('village_id', $request->user()->village_id)
+        ->where('to', '<', $today)
+        ->count();
+        $upcoming_rents = $this->rents
+        ->where('type', 'renter') 
+        ->where('village_id', $request->user()->village_id)
+        ->where('from', '>', $today)
+        ->count(); 
+
+        return response()->json([
+            'all_rents' => $all_rents,
+            'past_rents' => $past_rents,
+            'current_rents' => $current_rents,
+            'upcoming_rents' => $upcoming_rents,
+        ]);
+    }
+
     public function delete_user(Request $request){
         $validator = Validator::make($request->all(), [
             'id' => 'required|exists:appartment_codes,id',
