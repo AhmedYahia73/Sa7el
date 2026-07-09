@@ -147,7 +147,7 @@ class PropertyController extends Controller
                     'id' => null,
                     'unit' => null,
                     'image' => $item->village->image_link,
-                    'type' => $item->type,
+                    'unit_type' => $item->type,
                     'cover_image' => $item->village->cover_image_link,
                     'village_id' => $item->village_id,
                     'village' => $item->village->name, 
@@ -181,7 +181,7 @@ class PropertyController extends Controller
                 return [
                     'id' => $appartment->id,
                     'unit' => $appartment->unit,
-                    'type' => $item->type,
+                    'unit_type' => $item->type,
                     'image' => $appartment->village->image_link,
                     'cover_image' => $appartment->village->cover_image_link,
                     'village_id' => $appartment->village_id,
