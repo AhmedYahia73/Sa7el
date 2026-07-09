@@ -30,6 +30,8 @@ class SecuirtyRequest extends FormRequest
             'email' => ['required', 'email'],
             'phone' => ['required'], 
             'status' => ['required', 'boolean'],
+            "gate_visitors" => "required|boolean",
+            "gate_entrance" => "required|boolean",
         ];
     }
 
