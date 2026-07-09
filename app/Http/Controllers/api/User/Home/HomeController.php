@@ -32,7 +32,7 @@ class HomeController extends Controller
             ],400);
         }
 
-        $locale == $request->locale;
+        $locale = $request->locale;
         $popup = Popup::
         where("all", 1)
         ->first();
@@ -63,7 +63,7 @@ class HomeController extends Controller
             ],400);
         }
 
-        $locale == $request->locale;
+        $locale = $request->locale;
         $popup = Popup::
         where("village_id", $request->village_id)
         ->first();
