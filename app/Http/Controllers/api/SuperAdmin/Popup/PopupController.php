@@ -35,7 +35,7 @@ class PopupController extends Controller
             ->map(function($item){
                 return [
                     "id" => $item->id,
-                    "id" => $item->name,
+                    "name" => $item->name,
                 ];
             });
 
