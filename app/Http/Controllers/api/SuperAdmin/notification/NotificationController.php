@@ -5,11 +5,28 @@ namespace App\Http\Controllers\api\SuperAdmin\notification;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Village;
 use App\Jobs\SendPushNotificationJob;
 use Illuminate\Support\Facades\Validator;
 
 class NotificationController extends Controller
 {
+    public function lists(){
+        $villages = Village::
+        where("status", true)
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+            ];
+        });
+
+        return response()->json([
+            "villages" => $villages
+        ]);
+    }
+
     public function push_notification(Request $request)
     {
         $validator = Validator::make($request->all(), [

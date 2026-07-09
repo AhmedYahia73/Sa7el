@@ -53,6 +53,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
 
     Route::controller(NotificationController::class)
     ->prefix('push_notification')->group(function() {
+        Route::post('/lists', 'lists');
         Route::post('/', 'push_notification');
     });
 
