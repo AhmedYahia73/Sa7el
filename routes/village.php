@@ -34,7 +34,7 @@ use App\Http\Controllers\api\Village\Entrance\EntranceController;
 use App\Http\Controllers\api\Village\LandingPage\LandingPageControlle;
 use App\Http\Controllers\api\Village\Requests\RequestController;
 use App\Http\Controllers\api\Village\Setting\SettingController;
-use App\Http\Controllers\api\Village\notification\PushNotificationController;
+use App\Http\Controllers\api\Village\Notification\PushNotificationController;
 
 use Illuminate\Support\Facades\Broadcast;
 
