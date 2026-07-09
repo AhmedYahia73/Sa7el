@@ -39,6 +39,8 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     ->prefix('home')
     ->group(function() {
         Route::get('/village/{id}', 'village');
+        Route::get('/popup_all', 'popup_all');
+        Route::get('/village_popup', 'village_popup');
     });
 
     Route::controller(ApplicationController::class)
