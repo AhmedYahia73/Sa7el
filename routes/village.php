@@ -34,6 +34,7 @@ use App\Http\Controllers\api\Village\Entrance\EntranceController;
 use App\Http\Controllers\api\Village\LandingPage\LandingPageControlle;
 use App\Http\Controllers\api\Village\Requests\RequestController;
 use App\Http\Controllers\api\Village\Setting\SettingController;
+use App\Http\Controllers\api\Village\notification\PushNotificationController;
 
 use Illuminate\Support\Facades\Broadcast;
 
@@ -49,6 +50,11 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     ->group(function() {
         Route::get('/', 'view');
         Route::get('/filter', 'filter');
+    });
+
+    Route::controller(PushNotificationController::class)
+    ->prefix('push_notification')->group(function() {
+        Route::post('/', 'push_notification');
     });
 
     Route::controller(SettingController::class)->prefix('setting')

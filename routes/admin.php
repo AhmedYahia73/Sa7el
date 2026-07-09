@@ -36,6 +36,7 @@ use App\Http\Controllers\api\SuperAdmin\village\VillageRolesController;
 use App\Http\Controllers\api\SuperAdmin\zones\ZoneController;
 use App\Http\Controllers\api\SuperAdmin\Application\ApplicationController;
 use App\Http\Controllers\api\SuperAdmin\Popup\PopupController;
+use App\Http\Controllers\api\SuperAdmin\notification\NotificationController;
 use App\Http\Controllers\api\User\Profile\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -48,6 +49,11 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     Route::controller(HomeController::class)->prefix('home')
     ->group(function() {
         Route::get('/', 'view')->middleware('can:admin_Home_view'); 
+    });
+
+    Route::controller(NotificationController::class)
+    ->prefix('push_notification')->group(function() {
+        Route::post('/', 'push_notification');
     });
 
     Route::controller(ApplicationController::class)->prefix('application')
