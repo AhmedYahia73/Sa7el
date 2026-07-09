@@ -4,7 +4,6 @@ namespace App\Http\Controllers\api\user\VerificationImage;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Aws\Rekognition\RekognitionClient;
 
 class VerificationImageController extends Controller
@@ -17,20 +16,24 @@ class VerificationImageController extends Controller
             'face_two_base64' => 'required|string',
         ]);
 
-        // 2. تنظيف الـ Base64 (شيل الديباجة عشان نحولها لـ Binary صلب)
+        // 2. تنظيف الـ Base64 والتخلص من الديباجة وأي مسافات زائدة
         $faceOneCleaned = $this->cleanBase64($request->face_one_base64);
         $faceTwoCleaned = $this->cleanBase64($request->face_two_base64);
 
-        // 3. تحويل الـ Base64 إلى داتا باينري (Decoded Bytes) لأن AWS بتحتاجها كدة
-        $imageSourceBytes = base64_decode($faceOneCleaned);
-        $imageTargetBytes = base64_decode($faceTwoCleaned);
+        // 3. تحويل الـ Base64 إلى داتا باينري صلبة (Decoded Bytes)
+        // تم تفعيل الـ strict mode (true) للتأكد من سلامة الحروف المرسلة
+        $imageSourceBytes = base64_decode($faceOneCleaned, true);
+        $imageTargetBytes = base64_decode($faceTwoCleaned, true);
 
         if (!$imageSourceBytes || !$imageTargetBytes) {
-            return response()->json(['status' => false, 'message' => 'نص الـ Base64 المرسل غير صالح.'], 400);
+            return response()->json([
+                'status' => false, 
+                'message' => 'نص الـ Base64 المرسل غير صالح أو تالف.'
+            ], 400);
         }
 
         try {
-            // 4. تهيئة عميل AWS باستخدام البيانات اللي حطيناها في الـ config
+            // 4. تهيئة عميل AWS باستخدام البيانات من الـ config
             $rekognition = new RekognitionClient([
                 'version'     => 'latest',
                 'region'      => config('services.aws.region'),
@@ -40,11 +43,11 @@ class VerificationImageController extends Controller
                 ],
             ]);
 
-            // 5. إرسال الطلب للمقارنة
+            // 5. إرسال الطلب للمقارنة لـ AWS Rekognition
             $result = $rekognition->compareFaces([
-                'SimilarityThreshold' => 80.0, // نسبة الحزم (80% فما فوق يعتبر نفس الشخص)
+                'SimilarityThreshold' => 80.0, // نسبة التطابق المطلوبة ليكون نفس الشخص
                 'SourceImage' => [
-                    'Bytes' => $imageSourceBytes, // تمرير الباينري مباشرة
+                    'Bytes' => $imageSourceBytes,
                 ],
                 'TargetImage' => [
                     'Bytes' => $imageTargetBytes,
@@ -55,7 +58,7 @@ class VerificationImageController extends Controller
             $faceMatches = $result['FaceMatches'] ?? [];
 
             if (count($faceMatches) > 0) {
-                // لقى تطابق! وبياخد أول وش وأعلى نسبة تشابه
+                // وجد تطابق، نأخذ النسبة المئوية لأول وجه متطابق
                 $similarity = $faceMatches[0]['Similarity'];
 
                 return response()->json([
@@ -66,7 +69,7 @@ class VerificationImageController extends Controller
                 ]);
             }
 
-            // لو ملقاش تطابق في مصفوفة الـ Matches
+            // في حال لم تجد الخوارزمية أي تطابق
             return response()->json([
                 'success' => true,
                 'is_identical' => false,
@@ -75,13 +78,14 @@ class VerificationImageController extends Controller
             ]);
 
         } catch (\Aws\Exception\AwsException $e) {
-            // لقط أي إيرور خاص بـ AWS (مثل: مشكلة في الـ Credentials أو الـ Region)
+            // لقط أي إيرور صادر من خدمات AWS مباشرة
             return response()->json([
                 'status' => false,
-                'message' => 'حدث خطأ في خدمة AWS الخدمية.',
+                'message' => 'حدث خطأ في خدمة AWS.',
                 'error' => $e->getAwsErrorMessage() ?? $e->getMessage()
             ], 500);
         } catch (\Exception $e) {
+            // لقط أي إيرور عام داخل الـ لارافل
             return response()->json([
                 'status' => false,
                 'message' => 'حدث خطأ غير متوقع أثناء المعالجة.',
@@ -90,12 +94,18 @@ class VerificationImageController extends Controller
         }
     }
 
+    /**
+     * دالة تنظيف الـ Base64 باستخدام Regex صارم لضمان استخلاص النص النقي فقط
+     */
     private function cleanBase64($base64String)
     {
-        if (Str::contains($base64String, ';base64,')) {
-            return explode(';base64,', $base64String)[1];
+        // 1. إزالة ديباجة الـ Data URI Prefix مهما كان نوع الامتداد (png, jpeg, jpg, webp)
+        if (preg_match('/^data:image\/(\w+);base64,/', $base64String)) {
+            $base64String = substr($base64String, strpos($base64String, ',') + 1);
         }
-        return $base64String;
+        
+        // 2. التخلص من أي مسافات، فراغات، أو نزول سطر (Line breaks) قد يسببها الـ Formatter للفرونت
+        return str_replace([' ', "\r", "\n", "\t"], '', $base64String);
     }
 }
 // namespace App\Http\Controllers\api\user\VerificationImage;
