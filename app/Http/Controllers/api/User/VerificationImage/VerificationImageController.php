@@ -32,16 +32,23 @@ class VerificationImageController extends Controller
         $prompt = "Compare these two images. Is the person in the first image the exact same person in the second image? " . 
                   "Answer strictly in JSON format with two keys: 'verified' (boolean: true or false) and 'confidence_percentage' (integer from 0 to 100). " . 
                   "Do not include any markdown formatting like ```json or any extra text outside the JSON object.";
-
         $GEMINI_API_KEY = Application::first()?->google_api;
-        return response()->json([
-            "GEMINI_API_KEY" => $GEMINI_API_KEY
-        ]);
+
+        // شرط أمان للتأكد إن المفتاح موجود في الداتابيز فعلاً وميجيبش null
+        if (!$GEMINI_API_KEY) {
+            return response()->json([
+                'status' => false,
+                'message' => 'لم يتم العثور على مفتاح Google API في إعدادات التطبيق.'
+            ], 500);
+        }
+        
         try {
-            // 4. إرسال الطلب لـ Gemini API (موديل gemini-2.5-flash الأحدث والأسرع)
-            $response = Http::withHeaders([
+            // 4. الرابط الصافي بدون أي أقواس أو ديباجة الـ Markdown
+            $apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" . $GEMINI_API_KEY;
+
+            $response = Http::timeout(30)->withHeaders([
                 'Content-Type' => 'application/json'
-            ])->post("[https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=](https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=)" . $GEMINI_API_KEY, [
+            ])->post($apiUrl, [
                 'contents' => [
                     [
                         'parts' => [
