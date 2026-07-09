@@ -35,6 +35,7 @@ use App\Http\Controllers\api\SuperAdmin\village\VillageGallaryController;
 use App\Http\Controllers\api\SuperAdmin\village\VillageRolesController;
 use App\Http\Controllers\api\SuperAdmin\zones\ZoneController;
 use App\Http\Controllers\api\SuperAdmin\Application\ApplicationController;
+use App\Http\Controllers\api\SuperAdmin\Popup\PopupController;
 use App\Http\Controllers\api\User\Profile\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -372,6 +373,16 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     ->group(function() {
         Route::get('/', 'view');
         Route::get('/lists', 'lists');
+        Route::get('/item/{id}', 'show');
+        Route::put('/status/{id}', 'status');
+        Route::post('/add', 'create');
+        Route::post('/update/{id}', 'modify');
+        Route::delete('/delete/{id}', 'delete');
+    });
+
+    Route::controller(PopupController::class)->prefix('popup')
+    ->group(function() {
+        Route::get('/', 'view');
         Route::get('/item/{id}', 'show');
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');

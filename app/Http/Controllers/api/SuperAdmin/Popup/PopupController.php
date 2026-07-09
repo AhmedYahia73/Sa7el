@@ -59,7 +59,7 @@ class PopupController extends Controller
             'ar_image'       => 'nullable|image',
             'ar_description' => 'nullable|string',
             'village_id'     => 'nullable|exists:villages,id',
-            'status'         => 'nullable|boolean',
+            'status'         => 'required|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -67,8 +67,7 @@ class PopupController extends Controller
                 'errors' => $validator->errors(),
             ], 400);
         }
-
-        // إذا تم تحديد قرية، تحقق إنه مفيش popup تانية لنفس القرية
+ 
         if ($request->village_id) {
             $exists = $this->popup
                 ->where('village_id', $request->village_id)
@@ -80,16 +79,25 @@ class PopupController extends Controller
                 ], 400);
             }
         }
+        else {
+            $exists = $this->popup
+                ->where('all', true)
+                ->exists();
+
+            if ($exists) {
+                return response()->json([
+                    'errors' => 'This village already has a popup',
+                ], 400);
+            }
+        }
 
         $image_path    = $this->upload($request, 'image', 'images/popups');
-        $ar_image_path = $this->upload($request, 'ar_image', 'images/popups');
-
-        // لو مفيش village_id → all = true، لو في village_id → all = false
+        if($request->ar_image){
+            $ar_image_path = $this->upload($request, 'ar_image', 'images/popups');
+        }
+ 
         $all = empty($request->village_id) ? true : false;
-
-        // لو all = true، مفيش قرية لها popup → نزيل village_id أو نحطها null
-        // لكن المايجريشن بيطلب village_id (foreign key) — هنحتاج نعدله أو نستخدم قرية dummy
-        // بنفترض إن المايجريشن سيتم تعديله ليكون nullable
+ 
         $this->popup->create([
             'village_id'     => $request->village_id,
             'title'          => $request->title,
@@ -97,7 +105,7 @@ class PopupController extends Controller
             'image'          => $image_path,
             'ar_title'       => $request->ar_title,
             'ar_description' => $request->ar_description,
-            'ar_image'       => $ar_image_path,
+            'ar_image'       => $ar_image_path ?? null,
             'all'            => $all,
             'status'         => $request->status ?? true,
         ]);
@@ -117,7 +125,7 @@ class PopupController extends Controller
             'ar_image'       => 'nullable|image',
             'ar_description' => 'nullable|string',
             'village_id'     => 'nullable|exists:villages,id',
-            'status'         => 'nullable|boolean',
+            'status'         => 'required|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -133,8 +141,7 @@ class PopupController extends Controller
                 'errors' => 'popup not found',
             ], 400);
         }
-
-        // إذا تم تحديد قرية، تحقق إنه مفيش popup تانية لنفس القرية (غير الحالية)
+ 
         if ($request->village_id) {
             $exists = $this->popup
                 ->where('village_id', $request->village_id)
@@ -148,8 +155,12 @@ class PopupController extends Controller
             }
         }
 
-        $image_path    = $this->update_image($request, $popup->image, 'image', 'images/popups');
-        $ar_image_path = $this->update_image($request, $popup->ar_image, 'ar_image', 'images/popups');
+        if($request->image){
+            $image_path    = $this->update_image($request, $popup->image, 'image', 'images/popups');
+        }
+        if($request->ar_image){
+            $ar_image_path = $this->update_image($request, $popup->ar_image, 'ar_image', 'images/popups');
+        }
 
         $all = empty($request->village_id) ? true : false;
 
