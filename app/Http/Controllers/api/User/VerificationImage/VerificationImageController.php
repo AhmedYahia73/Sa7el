@@ -34,6 +34,9 @@ class VerificationImageController extends Controller
                   "Do not include any markdown formatting like ```json or any extra text outside the JSON object.";
 
         $GEMINI_API_KEY = Application::first()?->google_api;
+        return response()->json([
+            "GEMINI_API_KEY" => $GEMINI_API_KEY
+        ]);
         try {
             // 4. إرسال الطلب لـ Gemini API (موديل gemini-2.5-flash الأحدث والأسرع)
             $response = Http::withHeaders([
