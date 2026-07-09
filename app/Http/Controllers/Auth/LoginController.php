@@ -360,6 +360,7 @@ class LoginController extends Controller
         $validator = Validator::make($request->all(), [
             'email' => 'required',
             'password' => 'required',
+            "fcm_token" => "sometimes",
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -391,6 +392,8 @@ class LoginController extends Controller
                 ], 403);
             }
             $user->token = $user->createToken('user')->plainTextToken;
+            $user->fcm_token = $request->fcm_token ?? null;
+            $user->save();
             return response()->json([
                 'user' => $user,
                 'token' => $user->token,

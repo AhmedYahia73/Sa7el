@@ -7,13 +7,16 @@ use App\Http\Controllers\Controller;
 use App\Models\Appartment;
 use App\Models\AppartmentCode;
 use App\Models\CodeRequest;
+use App\Models\User;
 use App\Models\Notification;
 use App\Models\LoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Notifications\NotificationChanged;
 
 class RequestController extends Controller
 {
+    
     public function code_request(Request $request){
         $requests = CodeRequest::
         with("user", "appartment")
@@ -84,7 +87,15 @@ class RequestController extends Controller
                 "user_id" => $codes->user_id,
             ];
             UserNotification::dispatch($data);
-            Notification::create($data);
+            $new_notification = Notification::create($data);
+            $user = User::find($codes->user_id);
+            $data = [
+                "id" => $new_notification->id,
+                "title" => "كود تسجيل فى القرية",
+                "body" => $notification
+            ];
+            $user->notify(new NotificationChanged($data));
+
         }
         $codes->update(['status' => $request->status]);
 
@@ -145,7 +156,14 @@ class RequestController extends Controller
                 "user_id" => $login_request->user_id,
             ];
             UserNotification::dispatch($data);
-            Notification::create($data);
+            $new_notification = Notification::create($data);
+            $user = User::find($codes->user_id);
+            $data = [
+                "id" => $new_notification->id,
+                "title" => "دخول القرية",
+                "body" => $notification
+            ];
+            $user->notify(new NotificationChanged($data));
         }
         return response()->json([
             'message' => 'Login request status updated successfully'

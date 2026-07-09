@@ -10,7 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 { 
-    use HasApiTokens, HasFactory;
+    use HasApiTokens, HasFactory, Notifiable;
  
     protected $fillable = [
         'name',
@@ -36,8 +36,13 @@ class User extends Authenticatable
         "code",
         "google_id",
         "apple_id",
+        "fcm_token",
     ];
     protected $appends = ['image_link', 'qr_code_link'];
+    
+    public function routeNotificationForFcm(){
+        return $this->fcm_token; 
+    }
 
     public function getQrCodeLinkAttribute(){
         return url('storage/' . $this->qr_code);
