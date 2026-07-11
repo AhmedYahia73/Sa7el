@@ -47,10 +47,11 @@ class VillageZoneController extends Controller
             })
             ->paginate($request->get('per_page', 10))
             ->through(function($item){
-                $item->village = [
+                $item->village_data = [
                     "id" => $item?->village?->id,
                     "name" => $item?->village?->name,
                 ];
+                unset($item?->village);
                 return $item;
             });
 
