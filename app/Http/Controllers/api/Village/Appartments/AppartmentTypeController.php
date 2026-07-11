@@ -56,7 +56,7 @@ class AppartmentTypeController extends Controller
                 $item->village = [
                     "id" => $item?->village?->id,
                     "name" => $item?->village?->name,
-                ],
+                ];
                 return $item;
             ];
         });
