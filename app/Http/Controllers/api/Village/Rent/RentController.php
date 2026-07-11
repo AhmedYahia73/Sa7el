@@ -56,7 +56,8 @@ class RentController extends Controller
     public function renters(Request $request){
         $validator = Validator::make($request->all(), [
             'status' => 'in:current,past,upcoming',
-            'per_page' => 'integer|min:1|max:100', // اختياري: لتحديد عدد العناصر في الصفحة
+            'per_page' => 'integer|min:1|max:100', 
+            'search' => "sometimes|string|nullable", // تحديث القواعد لتناسب النص
         ]);
 
         if ($validator->fails()) { 
@@ -65,11 +66,28 @@ class RentController extends Controller
             ], 400);
         }
 
+        $search = $request->search;
         $rents = $this->rents
-            ->with('owner:id,name,phone', 'appartment:id,unit', 'user:id,name,phone')
+            ->with('owner:id,name,phone', 'appartment:id,unit', 'user:id,name,phone,email')
             ->where('type', 'renter') 
-            ->where('village_id', $request->user()->village_id)
-            ->orderByDesc('id');
+            ->where('village_id', $request->user()->village_id);
+
+        // --- منطق البحث المضاف ---
+        if ($request->filled('search')) {
+            $rents = $rents->where(function ($query) use ($search) {
+                $query->whereHas('appartment', function ($q) use ($search) {
+                    $q->where('unit', 'like', "%{$search}%");
+                })
+                ->orWhereHas('user', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+                });
+            });
+        }
+        // -------------------------
+
+        $rents = $rents->orderByDesc('id');
 
         $today = date("Y-m-d");
 
@@ -83,12 +101,9 @@ class RentController extends Controller
             }
         }
 
-        // تحديد عدد العناصر لكل صفحة (مثلاً 15 عنصر كوضع افتراضي)
         $perPage = $request->get('per_page', 50);
 
-        // استخدام paginate بدلاً من get
         $rents = $rents->paginate($perPage)->through(function($item) use ($today) {
-            // تحديد الحالة بناءً على التواريخ
             if ($item->from <= $today && $item->to >= $today) {
                 $item->status = "current";
             } else if ($item->to < $today) {
