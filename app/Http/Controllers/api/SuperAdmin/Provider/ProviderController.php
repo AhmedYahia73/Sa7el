@@ -21,20 +21,52 @@ class ProviderController extends Controller
     private Zone $zones){}
     use TraitImage;
 
-    public function view(){
+    public function view(Request $request){
+        $validator = Validator::make($request->all(), [
+            'search' => 'sometimes', 
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
         $provider = $this->provider
-        ->with(['translations', 'service', 'package', 'zone',
-        'super_admin:id,name', 'work_hours'])
-        ->get();
+        ->with(['translations', 'service', 'package', 'zone:id,name',
+        'super_admin:id,name', 'work_hours', 'zone_village'])
+        ->when($request->search, function($q) use ($request) {
+            $q->where(function($q) use ($request) {
+                $q->where('name', 'like', "%{$request->search}%")
+                  ->orWhere('phone', 'like', "%{$request->search}%")
+                  ->orWhereHas('zone_village', function($q) use ($request) {
+                      $q->whereRaw("JSON_EXTRACT(name, '$.en') LIKE ?", ["%{$request->search}%"])
+                        ->orWhereRaw("JSON_EXTRACT(name, '$.ar') LIKE ?", ["%{$request->search}%"]);
+                  })
+                  ->orWhereHas('zone', function($q) use ($request) {
+                      $q->where('name', 'like', "%{$request->search}%");
+                  })
+                  ->orWhereHas('service', function($q) use ($request) {
+                      $q->where('name', 'like', "%{$request->search}%");
+                  });
+            });
+        })
+        ->paginate($request->get('per_page', 10)); 
+
+        return response()->json([
+            'providers' => $provider, 
+        ]);
+    }
+
+    public function lists(Request $request){  
+
         $services_types = $this->services_types
-        ->where('status', 1)
-        ->get();
+        ->select("id", "name")
+        ->where('status', 1)->get();
         $villages = $this->villages
-        ->where('status', 1)
-        ->get();
+        ->select("id", "name")
+        ->where('status', 1)->get();
         $zones = $this->zones
-        ->where('status', 1)
-        ->get();
+        ->select("id", "name")
+        ->where('status', 1)->get();
 
         return response()->json([
             'providers' => $provider,

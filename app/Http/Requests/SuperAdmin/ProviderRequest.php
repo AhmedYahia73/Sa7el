@@ -34,6 +34,7 @@ class ProviderRequest extends FormRequest
             'status'      => ['required'],
             'location_map'=> ['required'],
             'zone_id'     => ['exists:zones,id'],
+            "zone_village_id" => ["exists:zone_villages,id"],
         ];
     }
 

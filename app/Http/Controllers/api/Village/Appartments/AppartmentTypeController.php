@@ -50,14 +50,7 @@ class AppartmentTypeController extends Controller
             'type:id,name',
         ])
         ->where('village_id', $village_id)
-        ->get()
-        ->map(function($item){
-            $item->type = [
-                "id" => $item?->type?->id,
-                "name" => $item?->type?->name,
-            ];
-            return $item;
-        });
+        ->get();
 
         return response()->json([
             'umbrellas' => $umbrellas,

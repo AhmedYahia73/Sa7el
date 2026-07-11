@@ -292,6 +292,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     Route::controller(ProviderController::class)->prefix('provider')
     ->group(function() {
         Route::get('/', 'view')->middleware('can:admin_provider_view');
+        Route::get('/lists', 'lists')->middleware('can:admin_provider_view');
         Route::get('/item/{id}', 'provider')->middleware('can:admin_provider_view');
         Route::put('/status/{id}', 'status')->middleware('can:admin_provider_status');
         Route::post('/update_profile_image/{id}', 'update_profile_image')->middleware('can:admin_provider_profile');
