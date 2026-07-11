@@ -34,6 +34,7 @@ use App\Http\Controllers\api\SuperAdmin\village\VillageCoverController;
 use App\Http\Controllers\api\SuperAdmin\village\VillageGallaryController;
 use App\Http\Controllers\api\SuperAdmin\village\VillageRolesController;
 use App\Http\Controllers\api\SuperAdmin\zones\ZoneController;
+use App\Http\Controllers\api\SuperAdmin\zones\VillageZoneController;
 use App\Http\Controllers\api\SuperAdmin\Application\ApplicationController;
 use App\Http\Controllers\api\SuperAdmin\Popup\PopupController;
 use App\Http\Controllers\api\SuperAdmin\notification\NotificationController;
@@ -83,6 +84,16 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::post('/add', 'create')->middleware('can:admin_zone_add');
         Route::post('/update/{id}', 'modify')->middleware('can:admin_zone_edit');
         Route::delete('/delete/{id}', 'delete')->middleware('can:admin_zone_delete');
+    });
+
+    Route::controller(VillageZoneController::class)->prefix('village_zone')
+    ->group(function() {
+        Route::get('/list', 'list');
+        Route::get('/', 'view');
+        Route::get('/item/{id}', 'show');
+        Route::post('/add', 'create');
+        Route::post('/update/{id}', 'modify');
+        Route::delete('/delete/{id}', 'delete');
     });
 
     Route::controller(MallController::class)->prefix('mall')
