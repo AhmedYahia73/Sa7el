@@ -69,7 +69,6 @@ class ProviderController extends Controller
         ->where('status', 1)->get();
 
         return response()->json([
-            'providers' => $provider,
             'services_types' => $services_types,
             'villages' => $villages,
             'zones' => $zones,
