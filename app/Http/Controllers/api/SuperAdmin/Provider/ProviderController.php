@@ -12,6 +12,8 @@ use App\Models\Provider;
 use App\Models\ServiceType;
 use App\Models\Village;
 use App\Models\Zone;
+use App\Models\Mall;
+use App\Models\ZoneVillage;
 use App\Models\ProviderWorkHours;
 
 class ProviderController extends Controller
@@ -85,11 +87,31 @@ class ProviderController extends Controller
                 "name" => $item->name,
             ];
         });
+        $zones_village = ZoneVillage::
+        select("id", "name")
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+            ];
+        });
+        $malls = Mall::
+        select("id", "name")
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+            ];
+        });
 
         return response()->json([
             'services_types' => $services_types,
             'villages' => $villages,
             'zones' => $zones,
+            'zones_village' => $zones_village,
+            'malls' => $malls,
         ]);
     }
 
@@ -159,7 +181,7 @@ class ProviderController extends Controller
 
     public function create(ProviderRequest $request){
         $validator = Validator::make($request->all(), [
-            'image'                    => 'required|base64image',
+            'image'                    => 'required',
             'work_hours'               => 'sometimes|array',
             'work_hours.*.day'         => 'required_with:work_hours|in:monday,tuesday,wednesday,thursday,friday,saturday,sunday',
             'work_hours.*.from'        => 'nullable|date_format:H:i:s',
@@ -210,7 +232,7 @@ class ProviderController extends Controller
 
     public function modify(ProviderRequest $request, $id){
         $validator = Validator::make($request->all(), [
-            'image'                    => 'nullable|base64image',
+            'image'                    => 'nullable',
             'work_hours'               => 'sometimes|array',
             'work_hours.*.day'         => 'required_with:work_hours|in:monday,tuesday,wednesday,thursday,friday,saturday,sunday',
             'work_hours.*.from'        => 'nullable|date_format:H:i:s',
