@@ -14,6 +14,7 @@ use App\Http\Controllers\api\Village\Gate\GateController;
 use App\Http\Controllers\api\Village\Security\SecurityController;
 use App\Http\Controllers\api\Village\MaintenanceFeez\MaintenanceFeezController;
 use App\Http\Controllers\api\Village\Appartments\AppartmentController;
+use App\Http\Controllers\api\Village\Appartments\AppartmentTypeController;
 use App\Http\Controllers\api\Village\ForRentSale\ForRentSaleController;
 use App\Http\Controllers\api\Village\Rent\RentController;
 use App\Http\Controllers\api\Village\Gallary\GallaryController;
@@ -227,6 +228,16 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
 
     Route::controller(PostsController::class)->prefix('post')->middleware('can:News Feed')
     ->group(function() {
+        Route::get('/', 'view');
+        Route::post('/add', 'create');
+        Route::post('/update/{id}', 'modify');
+        Route::delete('/delete/{id}', 'delete');
+    });
+
+    Route::controller(AppartmentTypeController::class)->prefix('appartment_type_umbrella')
+    ->middleware('can:Appartment')
+    ->group(function() {
+        Route::get('/list', 'list');
         Route::get('/', 'view');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
