@@ -45,7 +45,14 @@ class VillageZoneController extends Controller
                       ->orWhereRaw("JSON_EXTRACT(description, '$.ar') LIKE ?", ["%{$request->search}%"]);
                 });
             })
-            ->paginate($request->get('per_page', 10));
+            ->paginate($request->get('per_page', 10))
+            ->through(function($item){
+                $item->village = [
+                    "id" => $item?->village?->id,
+                    "name" => $item?->village?->name,
+                ];
+                return $item;
+            });
 
         return response()->json($zones);
     }

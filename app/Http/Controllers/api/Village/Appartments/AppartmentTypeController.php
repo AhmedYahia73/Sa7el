@@ -52,9 +52,9 @@ class AppartmentTypeController extends Controller
         ->where('village_id', $village_id)
         ->get()
         ->map(function($item){
-            $item->village = [
-                "id" => $item?->village?->id,
-                "name" => $item?->village?->name,
+            $item->type = [
+                "id" => $item?->type?->id,
+                "name" => $item?->type?->name,
             ];
             return $item;
         });
