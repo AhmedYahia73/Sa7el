@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\Security\Pool;
 use App\Http\Controllers\Controller;
 use App\Models\Appartment;
 use App\Models\AppartmentCode;
+use App\Models\AppartmentTypeUmbrella;
 use App\Models\EntrancePool;
 use App\Models\User;
 use App\Models\UserPool;
@@ -25,7 +26,8 @@ class PoolController extends Controller
     public function read_qr(Request $request){
         $validator = Validator::make($request->all(), [
             'qr_code' => 'required|string',
-            'pool_id' => 'required|exists:pools,id', 
+            'pool_id' => 'required|exists:pools,id',
+            "umbrella" => "sometimes|integer", 
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -67,6 +69,21 @@ class PoolController extends Controller
                 'errors' => 'Qr code is wrong'
             ], 400);
          }
+        $umberllas = AppartmentTypeUmbrella::
+        where("appartment_type_id", $appartment->appartment_type_id)
+        ->where("village_id", $request->user()->village_id)
+        ->first()?->umbrellas ?? 1;
+         $user_umbrellas = $this->user_pool
+         ->where('user_id', $userid) 
+         ->where('village_id', $request->user()->village_id)
+         ->whereDate('created_at', date('Y-m-d'))
+         ->sum("umbrella") ?? 0;
+        $my_umbrellas = $umberllas - $user_umbrellas;
+        if($my_umbrellas < $request->umbrella){
+            return response()->json([
+                'errors' => 'عدد الشمسيات المتاحة ' . $my_umbrellas
+            ], 400);
+        }
          $user_pool_now = $this->user_pool
          ->where('user_id', $userid)
          ->where('pool_id', $pool_id)
@@ -99,7 +116,8 @@ class PoolController extends Controller
                 'user_id' => $userid,
                 'pool_id' => $pool_id,
                 'village_id' => $request->user()->village_id,
-                'user_type' => $user_type
+                'user_type' => $user_type,
+                'umbrella' => $request->umbrella ?? 1,
             ]);
             EntrancePool::create([
                 'pool_id' => $pool_id,

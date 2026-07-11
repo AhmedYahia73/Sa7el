@@ -11,6 +11,7 @@ class UserBeach extends Model
         'beach_id',
         'village_id',
         'user_type',
+        'umbrella',
     ];
 
     public function user(){
