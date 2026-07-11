@@ -10,6 +10,7 @@ use App\Models\ServiceType;
 use App\Models\Provider;
 use App\Models\ProviderGallary;
 use App\Models\ProviderVideos;
+use App\Models\ProviderReview;
 use App\Models\Appartment;
 
 class ServiceController extends Controller
@@ -241,7 +242,7 @@ class ServiceController extends Controller
             if($request->zone_village_id){
                 $services_providers->where('zone_village_id', $request->zone_village_id);
             }
-            
+
         $services_providers = $services_providers->paginate($request->get('per_page', 15));
 
         // تشكيل البيانات المرتجعة للـ Pagination
@@ -503,6 +504,95 @@ class ServiceController extends Controller
         
         return response()->json([
             'success' => 'You update react success'
+        ]);
+    }
+
+    public function check_review(Request $request, $id){
+        $check = ProviderReview::where("provider_id", $id)
+            ->where("user_id", $request->user()->id)
+            ->exists(); 
+
+        return response()->json([
+            "check" => $check
+        ]);
+    }
+
+    public function review(Request $request){
+        $validator = Validator::make($request->all(), [
+            'rate'        => 'required|numeric|min:1|max:5',
+            "comment"     => "sometimes|nullable",
+            "provider_id" => "required|exists:providers,id"
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()->first(),
+            ], 400);
+        }
+
+        // التحقق من وجود مراجعة سابقة
+        $exists = ProviderReview::where("provider_id", $request->provider_id)
+            ->where("user_id", $request->user()->id)
+            ->exists();
+
+        if($exists){
+            return response()->json([
+                "errors" => "You add your review before",
+            ], 400);
+        }
+
+        $review = ProviderReview::create([
+            "rate"        => $request->rate,
+            "comment"     => $request->comment,
+            "user_id"     => $request->user()->id,
+            "provider_id" => $request->provider_id,
+        ]);
+
+        // جلب بيانات المستخدم المربوطة بالتقييم
+        $review->load("user");
+
+        $data = [
+            "rate"       => $review->rate,
+            "comment"    => $review->comment,
+            "user_name"  => $review->user?->name,
+            "image_link" => $review->user?->image_link,
+            "phone"      => $review->user?->phone,
+        ];
+
+        return response()->json([
+            "success" => "You add your review success",
+            "data"    => $data
+        ]);
+    }
+
+    public function show_reviews(Request $request){
+        $validator = Validator::make($request->all(), [
+            "provider_id" => "required|exists:providers,id"
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()->first(),
+            ], 400);
+        }
+
+        // تم تعديل throught إلى through الصحيحة
+        $reviews = ProviderReview::where("provider_id", $request->provider_id)
+            ->with("user")
+            ->paginate(10)
+            ->through(function($item){
+                return [
+                    "id"         => $item->id,
+                    "rate"       => $item->rate,
+                    "comment"    => $item->comment,
+                    "user_name"  => $item->user?->name,
+                    "image_link" => $item->user?->image_link,
+                    "phone"      => $item->user?->phone,
+                ];
+            }); 
+
+        return response()->json([
+            "reviews" => $reviews
         ]);
     }
 }

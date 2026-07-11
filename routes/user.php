@@ -137,6 +137,10 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
         Route::put('provider/love/{id}', 'love');
         Route::put('provider_image/love/{id}', 'image_love');
         Route::put('provider_video/love/{id}', 'video_love');
+        
+        Route::get('check_review/{id}', 'check_review');
+        Route::post('review', 'review');
+        Route::post('show_reviews', 'show_reviews');
     });
 
     Route::controller(RentController::class)
