@@ -53,10 +53,11 @@ class AppartmentTypeController extends Controller
         ->get()
         ->map(function($item){
             return [
-                "village" => [
+                $item->village = [
                     "id" => $item?->village?->id,
                     "name" => $item?->village?->name,
                 ],
+                return $item;
             ];
         });
 
