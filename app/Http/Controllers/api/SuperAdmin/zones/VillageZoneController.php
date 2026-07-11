@@ -29,29 +29,34 @@ class VillageZoneController extends Controller
     public function view(Request $request)
     {
         $validator = Validator::make($request->all(), [ 
-            'search'         => 'sometimes', 
-            'village_id'      => 'sometimes|exists:villages,id',
+            'search'     => 'sometimes|string|nullable', 
+            'village_id' => 'sometimes|exists:villages,id',
+            'per_page'   => 'sometimes|integer|min:1|max:100',
         ]);
+
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
+
         $zones = ZoneVillage::with('village:id,name')
-            ->when($request->village_id, fn($q) => $q->where('village_id', $request->village_id))
-            ->when($request->search, function ($q) use ($request) {
-                $q->where(function ($q) use ($request) {
-                    $q->whereRaw("JSON_EXTRACT(name, '$.en') LIKE ?", ["%{$request->search}%"])
-                      ->orWhereRaw("JSON_EXTRACT(name, '$.ar') LIKE ?", ["%{$request->search}%"])
-                      ->orWhereRaw("JSON_EXTRACT(description, '$.en') LIKE ?", ["%{$request->search}%"])
-                      ->orWhereRaw("JSON_EXTRACT(description, '$.ar') LIKE ?", ["%{$request->search}%"]);
+            ->when($request->filled('village_id'), fn($q) => $q->where('village_id', $request->village_id))
+            ->when($request->filled('search'), function ($q) use ($request) {
+                $search = $request->search;
+                // تجميع شروط البحث داخل closure لحماية الـ OR من التداخل مع village_id
+                $q->where(function ($query) use ($search) {
+                    $query->where('name->en', 'like', "%{$search}%")
+                        ->orWhere('name->ar', 'like', "%{$search}%")
+                        ->orWhere('description->en', 'like', "%{$search}%")
+                        ->orWhere('description->ar', 'like', "%{$search}%");
                 });
             })
             ->paginate($request->get('per_page', 10))
-            ->through(function($item){
+            ->through(function($item) {
                 $item->village_data = [
-                    "id" => $item?->village?->id,
-                    "name" => $item?->village?->name,
+                    "id"   => $item->village?->id,
+                    "name" => $item->village?->name,
                 ];
-                unset($item?->village);
+                unset($item->village);
                 return $item;
             });
 
