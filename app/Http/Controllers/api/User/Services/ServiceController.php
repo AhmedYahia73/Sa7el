@@ -517,6 +517,62 @@ class ServiceController extends Controller
         ]);
     }
 
+    public function my_review(Request $request, $id){
+        $my_review = ProviderReview::where("provider_id", $id)
+            ->where("user_id", $request->user()->id)
+            ->first(); 
+
+        return response()->json([
+            "my_review" => $my_review
+        ]);
+    }
+
+    public function update_review(Request $request, $id){
+        $validator = Validator::make($request->all(), [
+            'rate'        => 'required|numeric|min:1|max:5',
+            "comment"     => "sometimes|nullable",
+            "provider_id" => "required|exists:providers,id"
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()->first(),
+            ], 400);
+        }
+
+        // التحقق من وجود مراجعة سابقة
+        $review = ProviderReview::where("provider_id", $request->provider_id)
+            ->where("user_id", $request->user()->id)
+            ->first();
+
+        if(!$review){
+            return response()->json([
+                "errors" => "You must enroll rate",
+            ], 400);
+        }
+
+        $review->update([
+            "rate"        => $request->rate,
+            "comment"     => $request->comment,
+        ]);
+
+        // جلب بيانات المستخدم المربوطة بالتقييم
+        $review->load("user");
+
+        $data = [
+            "rate"       => $review->rate,
+            "comment"    => $review->comment,
+            "user_name"  => $review->user?->name,
+            "image_link" => $review->user?->image_link,
+            "phone"      => $review->user?->phone,
+        ];
+
+        return response()->json([
+            "success" => "You add your review success",
+            "data"    => $data
+        ]);
+    }
+
     public function review(Request $request){
         $validator = Validator::make($request->all(), [
             'rate'        => 'required|numeric|min:1|max:5',
