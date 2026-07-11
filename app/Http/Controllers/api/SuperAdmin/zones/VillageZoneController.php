@@ -13,7 +13,13 @@ class VillageZoneController extends Controller
 {
     public function list()
     {
-        $villages = Village::select('id', 'name')->where('status', 1)->get();
+        $villages = Village::select('id', 'name')->where('status', 1)->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+            ];
+        });
 
         return response()->json([
             'villages' => $villages,

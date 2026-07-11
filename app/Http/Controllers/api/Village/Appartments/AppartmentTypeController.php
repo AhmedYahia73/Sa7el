@@ -17,12 +17,24 @@ class AppartmentTypeController extends Controller
         $village_id = $request->user()->village_id;
 
         $villages = Village::where('status', 1)
-            ->select('id', 'name')
-            ->get();
+        ->select('id', 'name')
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+            ];
+        });;
 
         $appartment_types = AppartmentType::where('status', 1)
-            ->select('id', 'name')
-            ->get();
+        ->select('id', 'name')
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+            ];
+        });;
 
         return response()->json([
             'villages'         => $villages,
