@@ -128,6 +128,10 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     Route::controller(ServiceController::class)
     ->group(function() {
         Route::get('/services', 'view');
+        Route::get('/services_list', 'services');
+        Route::get('/services_provider', 'services_provider');
+        Route::get('/services_provider_gallery', 'services_provider_gallery');
+        Route::get('/services_provider_videos', 'services_provider_videos');
         Route::get('/out_service', 'out_service');
         Route::get('provider/love_history', 'love_history');
         Route::put('provider/love/{id}', 'love');
