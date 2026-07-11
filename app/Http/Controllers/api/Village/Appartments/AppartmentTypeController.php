@@ -52,13 +52,11 @@ class AppartmentTypeController extends Controller
         ->where('village_id', $village_id)
         ->get()
         ->map(function($item){
-            return [
-                $item->village = [
-                    "id" => $item?->village?->id,
-                    "name" => $item?->village?->name,
-                ];
-                return $item;
+            $item->village = [
+                "id" => $item?->village?->id,
+                "name" => $item?->village?->name,
             ];
+            return $item;
         });
 
         return response()->json([
