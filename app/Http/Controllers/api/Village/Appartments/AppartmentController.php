@@ -190,11 +190,6 @@ class AppartmentController extends Controller
         ->where('type', 'owner')
         ->whereNotNull('user_id')
         ->first();
-        if (!empty($appartment_code)) {
-            return response()->json([
-                'errors' => "This appartment has owner you can't buy it"
-            ], 400);
-        }
         $codeRequest = $validator->validated();
         do {
             $code = mt_rand(1000000, 9999999); // Always 7 digits
