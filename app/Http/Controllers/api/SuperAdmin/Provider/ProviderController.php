@@ -60,13 +60,31 @@ class ProviderController extends Controller
 
         $services_types = $this->services_types
         ->select("id", "name")
-        ->where('status', 1)->get();
+        ->where('status', 1)->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+            ];
+        });
         $villages = $this->villages
         ->select("id", "name")
-        ->where('status', 1)->get();
+        ->where('status', 1)->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+            ];
+        });
         $zones = $this->zones
         ->select("id", "name")
-        ->where('status', 1)->get();
+        ->where('status', 1)->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+            ];
+        });
 
         return response()->json([
             'services_types' => $services_types,
