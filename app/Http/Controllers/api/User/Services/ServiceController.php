@@ -560,6 +560,7 @@ class ServiceController extends Controller
         $review->load("user");
 
         $data = [
+            "id"         => $review->id,
             "rate"       => $review->rate,
             "comment"    => $review->comment,
             "user_name"  => $review->user?->name,
@@ -608,6 +609,7 @@ class ServiceController extends Controller
         $review->load("user");
 
         $data = [
+            "id"         => $review->id,
             "rate"       => $review->rate,
             "comment"    => $review->comment,
             "user_name"  => $review->user?->name,

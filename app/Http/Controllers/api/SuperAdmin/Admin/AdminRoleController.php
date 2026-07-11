@@ -33,7 +33,7 @@ class AdminRoleController extends Controller
             'Appartment Type' => ['all', 'view', 'status', 'add', 'edit', 'delete'],
             'User' => ['all', 'view', 'status', 'add', 'edit', 'delete', 'single_page', 'admin_user_logout_user'],
             'Service Type' => ['all', 'view', 'status', 'add', 'delete'],
-            'Provider' => ['all', 'view', 'status', 'add', 'edit', 'delete', 'update_profile'],
+            'Provider' => ['all', 'view', 'status', 'add', 'edit', 'delete', 'update_profile', 'review', 'delete_review'],
             'Provider Gallery' => ['all', 'view', 'status', 'add', 'delete'],
             'Provider Admin' => ['all', 'view', 'status', 'add', 'edit', 'delete'],
             'Provider Admin Role' => ['all', 'view', 'status', 'add', 'edit', 'delete'],

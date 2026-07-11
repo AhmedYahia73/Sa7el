@@ -38,6 +38,7 @@ use App\Http\Controllers\api\SuperAdmin\zones\VillageZoneController;
 use App\Http\Controllers\api\SuperAdmin\Application\ApplicationController;
 use App\Http\Controllers\api\SuperAdmin\Popup\PopupController;
 use App\Http\Controllers\api\SuperAdmin\notification\NotificationController;
+use App\Http\Controllers\api\SuperAdmin\Provider\ProviderReviewController;
 use App\Http\Controllers\api\User\Profile\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -317,6 +318,12 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::post('/add', 'create')->middleware('can:admin_provider_admin_add');
         Route::post('/update/{id}', 'modify')->middleware('can:admin_provider_admin_edit');
         Route::delete('/delete/{id}', 'delete')->middleware('can:admin_provider_admin_delete');
+    });
+    
+    Route::controller(ProviderReviewController::class)->prefix('show_reviews')
+    ->group(function() {
+        Route::get('/', 'show_reviews')->middleware('can:admin_provider_review_view');
+        Route::delete('/delete_review/{id}', 'delete_review')->middleware('can:admin_provider_review_delete');
     });
     
     Route::controller(ProviderRolesController::class)->prefix('provider_roles')
