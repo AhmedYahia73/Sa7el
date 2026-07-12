@@ -68,8 +68,8 @@ class VillageController extends Controller
 
     public function village($id){
         $village = $this->village
-        ->with(['translations', 'zone'])
-        ->withCount('population', 'units', 'village_zones')
+        ->with(['translations', 'zone', 'village_zones'])
+        ->withCount('population', 'units')
         ->where('id', $id)
         ->first();
 
