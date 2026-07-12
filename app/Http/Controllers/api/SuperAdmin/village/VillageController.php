@@ -290,4 +290,25 @@ class VillageController extends Controller
     public function invoice(Request $request, $id){
         
     }
+
+    public function gate_keeper(Request $request, $id){
+        $gate_keeper = SecurityMan::
+        where("village_id", $id)
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+                "image" => $item->image_link,
+                "email" => $item->email,
+                "phone" => $item->phone,
+                "status" => $item->status,
+                "type" => $item->type,
+            ];
+        });
+
+        return response()->json([
+            "gate_keeper" => $gate_keeper
+        ]);
+    } 
 }

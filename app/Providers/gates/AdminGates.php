@@ -75,6 +75,12 @@ class AdminGates
             }
             return false;
         });
+        Gate::define('admin_Village_gate_keeper', function ($user) {
+            if ($user->position && !empty($user->position->sup_roles->where('module', 'Village')->whereIn('action', ['all', 'gate_keeper'])->first())) {
+                return true;
+            }
+            return false;
+        });
         Gate::define('admin_Village_view_units', function ($user) {
             if ($user->position && !empty($user->position->sup_roles->where('module', 'Village')->whereIn('action', ['all', 'view_units'])->first())) {
                 return true;
