@@ -64,6 +64,10 @@ class Village extends Model
         return $this->belongsTo(Zone::class, 'zone_id');
     }
 
+    public function village_zones(){
+        return $this->hasMany(ZoneVillage::class, 'village_id');
+    }
+
     public function population(){
         return $this->hasMany(User::class, 'village_id')
         ->where('role', 'user');

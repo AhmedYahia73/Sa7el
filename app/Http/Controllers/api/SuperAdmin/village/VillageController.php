@@ -69,7 +69,7 @@ class VillageController extends Controller
     public function village($id){
         $village = $this->village
         ->with(['translations', 'zone'])
-        ->withCount('population', 'units')
+        ->withCount('population', 'units', 'village_zones')
         ->where('id', $id)
         ->first();
 
@@ -104,8 +104,8 @@ class VillageController extends Controller
         // ar_name, ar_description, image, location_map
         // logo
         $validator = Validator::make($request->all(), [
-            'image' => 'required', 
-            'logo' => 'required',
+            'image' => 'required|base64image', 
+            'logo' => 'required|base64image',
             'zones' => 'array',
             'zones.*.name' => 'required|array',
             'zones.*.name.en' => 'required',
@@ -180,9 +180,9 @@ class VillageController extends Controller
        // name, description, status, zone_id, location
         // ar_name, ar_description, image, location_map
         $validator = Validator::make($request->all(), [
-            'image' => 'nullable',
+            'image' => 'nullable|base64image',
             "units_num" => ['required', 'numeric'],
-            'logo' => 'sometimes', 
+            'logo' => 'sometimes|base64image', 
             'deleted_zones' => 'array', 
             'deleted_zones.*' => 'exists:zone_villages,id', 
             'zones' => 'array', 
