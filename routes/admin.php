@@ -80,7 +80,6 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
 
     Route::controller(AppartmentController::class)->prefix('appartment')
     ->group(function() {
-        Route::get('/{id}', 'view');
         Route::get('/appartement_list', 'appartement_list');
         Route::get('/user_list', 'user_list');
         Route::get('/view_codes/{id}', 'view_codes');
@@ -90,6 +89,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::post('/add', 'create');
         Route::put('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
+        Route::get('/{id}', 'view');
     });
 
     Route::controller(ZoneController::class)->prefix('zone')
