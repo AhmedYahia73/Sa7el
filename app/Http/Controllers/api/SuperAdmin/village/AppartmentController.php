@@ -10,6 +10,7 @@ use App\Models\AppartmentType;
 use App\Models\Package;
 use App\Models\User;
 use App\Models\Zone;
+use App\Models\Village;
 use App\trait\TraitImage; 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -348,18 +349,6 @@ class AppartmentController extends Controller
             return response()->json([
                 'errors' => $validator->errors(),
             ],400);
-        }
-        $package_id = $request->user()->village->package_id;
-        $package = Package::
-        where("id", $package_id)
-        ->first();
-        $appartments = $this->appartment
-        ->where('village_id', $request->village_id)
-        ->count();
-        if(!$package || $package->units_num < $appartments + 1){
-            return response()->json([
-                "errors" => "You must upgrade your plan"
-            ], 400);
         }
         //units_num
             // 'image' => ['required'],
