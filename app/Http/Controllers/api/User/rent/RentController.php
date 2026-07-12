@@ -39,7 +39,6 @@ class RentController extends Controller
         $rents = $this->appartment_code
         ->where('village_id', $request->village_id)
         ->where('appartment_id', $request->appartment_id)
-        ->where('owner_id', $request->user()->id)
         ->where('type', 'renter')
         ->where('to', '>', date('Y-m-d'))
         ->with('appartment')
