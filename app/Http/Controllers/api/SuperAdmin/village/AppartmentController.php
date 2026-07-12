@@ -112,6 +112,8 @@ class AppartmentController extends Controller
 
         return response()->json([ 
             'appartments' => $appartments,
+            'zones' => $zones,
+            'appartment_type' => $appartment_type,
         ]);
     }
 
