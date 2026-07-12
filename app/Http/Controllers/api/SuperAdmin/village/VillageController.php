@@ -104,8 +104,8 @@ class VillageController extends Controller
         // ar_name, ar_description, image, location_map
         // logo
         $validator = Validator::make($request->all(), [
-            'image' => 'required|base64image', 
-            'logo' => 'required|base64image',
+            'image' => 'required', 
+            'logo' => 'required',
             'zones' => 'array',
             'zones.*.name' => 'required|array',
             'zones.*.name.en' => 'required',
@@ -180,9 +180,9 @@ class VillageController extends Controller
        // name, description, status, zone_id, location
         // ar_name, ar_description, image, location_map
         $validator = Validator::make($request->all(), [
-            'image' => 'nullable|base64image',
+            'image' => 'nullable',
             "units_num" => ['required', 'numeric'],
-            'logo' => 'sometimes|base64image', 
+            'logo' => 'sometimes', 
             'deleted_zones' => 'array', 
             'deleted_zones.*' => 'exists:zone_villages,id', 
             'zones' => 'array', 
