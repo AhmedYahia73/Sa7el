@@ -190,11 +190,6 @@ class AppartmentController extends Controller
         ->where('type', 'owner')
         ->whereNotNull('user_id')
         ->first();
-        if (!empty($appartment_code)) {
-            return response()->json([
-                'errors' => "This appartment has owner you can't buy it"
-            ], 400);
-        }
         $codeRequest = $validator->validated();
         do {
             $code = mt_rand(1000000, 9999999); // Always 7 digits
@@ -243,6 +238,10 @@ class AppartmentController extends Controller
                 'appartment_id', 'village_id', 'from', 
                 'to', 'type', 'code', 'image', 'owner_id', 'user_type'
             ]);
+            // image column is json — ensure it's encoded as string for raw insert
+            if (isset($data['image']) && is_array($data['image'])) {
+                $data['image'] = json_encode($data['image']);
+            }
             
             // إصلاح المشكلة: تحديث عدد الأشخاص بالرقم الجديد من الـ Request
             $data['people']     = $request->people;
@@ -280,6 +279,10 @@ class AppartmentController extends Controller
                 } else {
                     // لو السجلات الجديدة أكبر من القديمة، نستخدم مصفوفة $data المتطابقة تماماً في الحقول
                     $record = $data;
+                }
+                // image column is json — ensure it's encoded as string for raw insert
+                if (isset($record['image']) && is_array($record['image'])) {
+                    $record['image'] = json_encode($record['image']);
                 }
                 $records[] = $record;
             }

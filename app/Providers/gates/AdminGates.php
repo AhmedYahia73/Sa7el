@@ -349,6 +349,18 @@ class AdminGates
             }
             return false;
         });
+        Gate::define('admin_provider_review_view', function ($user) {
+            if ($user->position && !empty($user->position->sup_roles->where('module', 'Provider')->whereIn('action', ['all', 'review'])->first())) {
+                return true;
+            }
+            return false;
+        });        
+        Gate::define('admin_provider_review_delete', function ($user) {
+            if ($user->position && !empty($user->position->sup_roles->where('module', 'Provider')->whereIn('action', ['all', 'delete_review'])->first())) {
+                return true;
+            }
+            return false;
+        });
         Gate::define('admin_provider_status', function ($user) {
             if ($user->position && !empty($user->position->sup_roles->where('module', 'Provider')->whereIn('action', ['all', 'status'])->first())) {
                 return true;

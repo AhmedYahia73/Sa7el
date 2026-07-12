@@ -128,11 +128,21 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
     Route::controller(ServiceController::class)
     ->group(function() {
         Route::get('/services', 'view');
+        Route::get('/services_list', 'services');
+        Route::get('/services_provider', 'services_provider');
+        Route::get('/services_provider_gallery', 'services_provider_gallery');
+        Route::get('/services_provider_videos', 'services_provider_videos');
         Route::get('/out_service', 'out_service');
         Route::get('provider/love_history', 'love_history');
         Route::put('provider/love/{id}', 'love');
         Route::put('provider_image/love/{id}', 'image_love');
         Route::put('provider_video/love/{id}', 'video_love');
+        
+        Route::get('check_review/{id}', 'check_review');
+        Route::get('my_review/{id}', 'my_review');
+        Route::put('update_review/{id}', 'update_review');
+        Route::post('review', 'review');
+        Route::post('show_reviews', 'show_reviews');
     });
 
     Route::controller(RentController::class)

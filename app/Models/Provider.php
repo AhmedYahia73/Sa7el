@@ -23,6 +23,7 @@ class Provider extends Model
         'mall_id',
         'admin_id',
         'location_map',
+        'zone_village_id',
     ];
     protected $appends = ['image_link', 'ar_name', 'ar_description', 'rate',
     'cover_image_link'];
@@ -53,9 +54,19 @@ class Provider extends Model
         return url('storage/' . $this->cover_image);
     }
     
+    public function zone_villages()
+    {
+        return $this->belongsTo(ZoneVillage::class, 'zone_village_id');
+    }
+    
     public function zone()
     {
         return $this->belongsTo(Zone::class, 'zone_id');
+    }
+
+    public function zone_village()
+    {
+        return $this->belongsTo(ZoneVillage::class, 'zone_village_id');
     }
     
     public function menue()

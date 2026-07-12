@@ -12,6 +12,8 @@ use App\Models\Provider;
 use App\Models\ServiceType;
 use App\Models\Village;
 use App\Models\Zone;
+use App\Models\Mall;
+use App\Models\ZoneVillage;
 use App\Models\ProviderWorkHours;
 
 class ProviderController extends Controller
@@ -21,26 +23,95 @@ class ProviderController extends Controller
     private Zone $zones){}
     use TraitImage;
 
-    public function view(){
+    public function view(Request $request){
+        $validator = Validator::make($request->all(), [
+            'search' => 'sometimes', 
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
         $provider = $this->provider
-        ->with(['translations', 'service', 'package', 'zone',
-        'super_admin:id,name', 'work_hours'])
-        ->get();
-        $services_types = $this->services_types
-        ->where('status', 1)
-        ->get();
-        $villages = $this->villages
-        ->where('status', 1)
-        ->get();
-        $zones = $this->zones
-        ->where('status', 1)
-        ->get();
+        ->with(['translations', 'service', 'package', 'zone:id,name',
+        'super_admin:id,name', 'work_hours', 'zone_village'])
+        ->when($request->search, function($q) use ($request) {
+            $q->where(function($q) use ($request) {
+                $q->where('name', 'like', "%{$request->search}%")
+                  ->orWhere('phone', 'like', "%{$request->search}%")
+                  ->orWhereHas('zone_village', function($q) use ($request) {
+                      $q->whereRaw("JSON_EXTRACT(name, '$.en') LIKE ?", ["%{$request->search}%"])
+                        ->orWhereRaw("JSON_EXTRACT(name, '$.ar') LIKE ?", ["%{$request->search}%"]);
+                  })
+                  ->orWhereHas('zone', function($q) use ($request) {
+                      $q->where('name', 'like', "%{$request->search}%");
+                  })
+                  ->orWhereHas('service', function($q) use ($request) {
+                      $q->where('name', 'like', "%{$request->search}%");
+                  });
+            });
+        })
+        ->paginate($request->get('per_page', 10)); 
 
         return response()->json([
-            'providers' => $provider,
+            'providers' => $provider, 
+        ]);
+    }
+
+    public function lists(Request $request){  
+
+        $services_types = $this->services_types
+        ->select("id", "name")
+        ->where('status', 1)->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+            ];
+        });
+        $villages = $this->villages
+        ->select("id", "name")
+        ->where('status', 1)->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+            ];
+        });
+        $zones = $this->zones
+        ->select("id", "name")
+        ->where('status', 1)->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+            ];
+        });
+        $zones_village = ZoneVillage::
+        select("id", "name")
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+            ];
+        });
+        $malls = Mall::
+        select("id", "name")
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+            ];
+        });
+
+        return response()->json([
             'services_types' => $services_types,
             'villages' => $villages,
             'zones' => $zones,
+            'zones_village' => $zones_village,
+            'malls' => $malls,
         ]);
     }
 
@@ -110,7 +181,7 @@ class ProviderController extends Controller
 
     public function create(ProviderRequest $request){
         $validator = Validator::make($request->all(), [
-            'image'                    => 'required|base64image',
+            'image'                    => 'required',
             'work_hours'               => 'sometimes|array',
             'work_hours.*.day'         => 'required_with:work_hours|in:monday,tuesday,wednesday,thursday,friday,saturday,sunday',
             'work_hours.*.from'        => 'nullable|date_format:H:i:s',
@@ -161,7 +232,7 @@ class ProviderController extends Controller
 
     public function modify(ProviderRequest $request, $id){
         $validator = Validator::make($request->all(), [
-            'image'                    => 'nullable|base64image',
+            'image'                    => 'nullable',
             'work_hours'               => 'sometimes|array',
             'work_hours.*.day'         => 'required_with:work_hours|in:monday,tuesday,wednesday,thursday,friday,saturday,sunday',
             'work_hours.*.from'        => 'nullable|date_format:H:i:s',

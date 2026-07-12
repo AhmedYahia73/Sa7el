@@ -10,6 +10,7 @@ use App\Models\ServiceType;
 use App\Models\Provider;
 use App\Models\ProviderGallary;
 use App\Models\ProviderVideos;
+use App\Models\ProviderReview;
 use App\Models\Appartment;
 
 class ServiceController extends Controller
@@ -123,6 +124,229 @@ class ServiceController extends Controller
 
         return response()->json([
             'services' => $services
+        ]);
+    }
+
+    public function services(Request $request){
+        $validator = Validator::make($request->all(), [
+            'village_id'    => 'required|exists:villages,id',
+            'local'         => 'required|in:en,ar',
+            'search'        => 'sometimes|string|nullable',
+            'per_page'      => 'sometimes|integer|min:1|max:100',
+        ]);
+
+        if ($validator->fails()) { 
+            return response()->json([
+                'errors' => $validator->errors()->first(),
+            ], 400);
+        }
+
+        $search = $request->search;
+        $local  = $request->local;
+
+        $services = $this->services
+            ->whereHas('providers', function($query) use($request){
+                $query->where('village_id', $request->village_id);
+            })
+            // تحميل علاقة الترجمات مسبقاً لمنع مشكلة الـ N+1 Performance Problem
+            ->with('translations') 
+            // منطق البحث الذكي المتوافق مع الـ Model الخاص بك
+            ->when($request->filled('search'), function($query) use($search, $local) {
+                $query->where(function($q) use($search, $local) {
+                    // بحث افتراضي في الاسم الإنجليزي المخزن بالجدول الرئيسي
+                    $q->where('name', 'like', "%{$search}%");
+
+                    // البحث في الاسم العربي المخزن في جدول الترجمات المورفولوجي
+                    $q->orWhereHas('translations', function($transQuery) use($search) {
+                        $transQuery->where('key', 'name')
+                                ->where('locale', 'ar')
+                                ->where('value', 'like', "%{$search}%");
+                    });
+                });
+            })
+            ->paginate($request->get('per_page', 15));
+
+        // تشكيل البيانات المرتجعة بناءً على الـ accessors المعرفة في الموديل
+        $services->through(function($item) use($local){
+            return [
+                'id'          => $item->id,
+                // استخدام الـ Accessor المسمى ar_name الذي يعود من الموديل تلقائياً
+                'name'        => $local == 'en' ? $item->name : ($item->ar_name ?? $item->name),
+                // استخدام الـ Accessor المسمى image_link المتوفر بالموديل
+                'image'       => $item->image_link, 
+                'status'      => $item->status,
+                // الموديل الحالي لا يحتوي على حقل وصف (description)، إذا كان موجوداً بقاعدة البيانات قم بإلغاء التعليق عنه أدناه:
+                // 'description' => $item->description, 
+            ];
+        });
+
+        return response()->json([
+            'services' => $services
+        ]);
+    }
+
+    public function services_provider(Request $request){
+        $validator = Validator::make($request->all(), [
+            'village_id'      => 'sometimes|exists:villages,id',
+            'appartment_id'   => 'required|exists:appartments,id', 
+            'service_id'      => 'required|exists:service_types,id', 
+            'zone_village_id' => 'sometimes|exists:zone_villages,id', 
+            'local'           => 'required|in:en,ar',
+            'search'          => 'sometimes|string|nullable',
+            'per_page'        => 'sometimes|integer|min:1|max:100',
+        ]);
+
+        if ($validator->fails()) { 
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ], 400);
+        }
+
+        $appartment = Appartment::find($request->appartment_id);
+
+        if (empty($appartment) || !$appartment->options_status || !$appartment->all_status) {
+            return response()->json([
+                'errors' => 'You are blocked to enter this appartment'
+            ], 400);
+        } 
+
+        $search = $request->search;
+        $local  = $request->local;
+        $today  = date('Y-m-d');
+        $userId = $request->user()->id;
+
+        $services_providers = Provider::where('status', 1)
+            ->where("service_id", $request->service_id)
+            // حساب عدد الإعجابات مباشرة من قاعدة البيانات، وفحص إعجاب المستخدم الحالي
+            ->withCount([
+                'love_user as loves_count',
+                'love_user as my_love_count' => fn($q) => $q->where('users.id', $userId)
+            ])
+            // جلب العلاقات المطلوبة مسبقاً مع الفلترة والترجمات للأداء العالي
+            ->with([
+                'work_hours', 'service', 'village', 'contact', 'zone.translations', 'mall.translations',
+                'menue' => fn($q) => $q->where('status', 1)
+            ])
+            // منطق البحث بالاسم (إنجليزي/عربي) أو الهاتف
+            ->when($request->filled('search'), function($query) use ($search) {
+                $query->where(function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('ar_name', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%");
+                });
+            });
+            if($request->village_id){
+                $services_providers->where('village_id', $request->village_id);
+            }
+            if($request->zone_village_id){
+                $services_providers->where('zone_village_id', $request->zone_village_id);
+            }
+
+        $services_providers = $services_providers->paginate($request->get('per_page', 15));
+
+        // تشكيل البيانات المرتجعة للـ Pagination
+        $services_providers->through(function ($item) use ($request, $local, $today) {
+            return [
+                'id'               => $item->id,
+                'name'             => $local == 'en' ? $item->name : ($item->ar_name ?? $item->name),
+                'image'            => $item->image_link,
+                'location'         => $item->location,
+                'work_hours'       => $item->work_hours,
+                'is_open_now'      => $item->isOpenNow(),
+                'status'           => $item->status,
+                'service'          => $item->service?->name,
+                'cover_image'      => $item->cover_image_link,
+                'location_map'     => $item->location_map,
+                'subscription'     => !empty($item->from) && !empty($item->to) && $item->from <= $today && $item->to >= $today,
+                
+                'menue'            => $item->menue->pluck('image_link'),
+                'watts_status'     => $item->contact?->watts_status ?? 0,
+                'phone_status'     => $item->contact?->phone_status ?? 0,
+                'website_status'   => $item->contact?->website_status ?? 0,
+                'instagram_status' => $item->contact?->instagram_status ?? 0,
+                'watts'            => $item->contact?->watts ?? null,
+                'phone'            => $item->contact?->phone ?? null,
+                'website'          => $item->contact?->website ?? null,
+                'instagram'        => $item->contact?->instagram ?? null,
+
+                'zone'             => $item->zone?->translations->where('locale', $local)->first()?->value ?? $item->zone?->name,
+                'mall'             => $item->mall?->translations->where('locale', $local)->first()?->value ?? $item->mall?->name,
+                'village'          => $item->village?->name,
+                'description'      => $local == 'en' ? $item->description : ($item->ar_description ?? $item->description),
+                
+                'loves_count'      => $item->loves_count,
+                'my_love'          => $item->my_love_count > 0,
+            ];
+        }); 
+
+        return response()->json([
+            'services_providers' => $services_providers
+        ]);
+    }
+    
+    public function services_provider_gallery(Request $request){
+        $validator = Validator::make($request->all(), [
+            'provider_id' => 'required|exists:appartments,id', 
+            'local'       => 'required',
+            'per_page'    => 'sometimes|integer|min:1|max:100', // اختياري للتحكم بحجم الصفحة
+        ]);
+        
+        if ($validator->fails()) { 
+            return response()->json([
+                'errors' => $validator->errors()->first(),
+            ], 400);
+        }
+
+        $gallery = ProviderGallary::where('provider_id', $request->provider_id)
+            // حساب العدد مباشرة من قاعدة البيانات لتسريع الأداء
+            ->withCount(['love', 'my_love']) 
+            ->paginate($request->get('per_page', 15)); // افتراضياً 15 عنصر في الصفحة
+
+        // تحويل البيانات للحفاظ على نفس الـ Structure المطلوب مع الـ Pagination
+        $gallery->through(function ($item) {
+            return [
+                'id'         => $item->id,
+                'image'      => $item->image_link,
+                'love_count' => $item->love_count, // النتيجة تأتي جاهزة من معالج الاستعلام
+                'my_love'    => $item->my_love_count > 0,
+            ];
+        }); 
+
+        return response()->json([
+            'gallery' => $gallery
+        ]);
+    }
+
+    public function services_provider_videos(Request $request){
+        $validator = Validator::make($request->all(), [
+            'provider_id' => 'required|exists:appartments,id', 
+            'local'       => 'required',
+            'per_page'    => 'sometimes|integer|min:1|max:100',
+        ]);
+        
+        if ($validator->fails()) { 
+            return response()->json([
+                'errors' => $validator->errors()->first(),
+            ], 400);
+        }
+
+        $videos = ProviderVideos::where('provider_id', $request->provider_id)
+            ->withCount(['love', 'my_love'])
+            ->paginate($request->get('per_page', 15));
+
+        $videos->through(function ($item) {
+            return [
+                'id'          => $item->id,
+                'description' => $item->description,
+                'video_link'  => $item->video_link,
+                'love_count'  => $item->love_count,
+                'my_love'     => $item->my_love_count > 0,
+            ];
+        }); 
+
+        return response()->json([
+            'gallery' => $videos // حافظت لك على اسم المفتاح 'gallery' كما أردت في الـ Response
         ]);
     }
 
@@ -280,6 +504,153 @@ class ServiceController extends Controller
         
         return response()->json([
             'success' => 'You update react success'
+        ]);
+    }
+
+    public function check_review(Request $request, $id){
+        $check = ProviderReview::where("provider_id", $id)
+            ->where("user_id", $request->user()->id)
+            ->exists(); 
+
+        return response()->json([
+            "check" => $check
+        ]);
+    }
+
+    public function my_review(Request $request, $id){
+        $my_review = ProviderReview::where("provider_id", $id)
+            ->where("user_id", $request->user()->id)
+            ->first(); 
+
+        return response()->json([
+            "my_review" => $my_review
+        ]);
+    }
+
+    public function update_review(Request $request, $id){
+        $validator = Validator::make($request->all(), [
+            'rate'        => 'required|numeric|min:1|max:5',
+            "comment"     => "sometimes|nullable",
+            "provider_id" => "required|exists:providers,id"
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()->first(),
+            ], 400);
+        }
+
+        // التحقق من وجود مراجعة سابقة
+        $review = ProviderReview::where("provider_id", $request->provider_id)
+            ->where("user_id", $request->user()->id)
+            ->first();
+
+        if(!$review){
+            return response()->json([
+                "errors" => "You must enroll rate",
+            ], 400);
+        }
+
+        $review->update([
+            "rate"        => $request->rate,
+            "comment"     => $request->comment,
+        ]);
+
+        // جلب بيانات المستخدم المربوطة بالتقييم
+        $review->load("user");
+
+        $data = [
+            "id"         => $review->id,
+            "rate"       => $review->rate,
+            "comment"    => $review->comment,
+            "user_name"  => $review->user?->name,
+            "image_link" => $review->user?->image_link,
+            "phone"      => $review->user?->phone,
+        ];
+
+        return response()->json([
+            "success" => "You add your review success",
+            "data"    => $data
+        ]);
+    }
+
+    public function review(Request $request){
+        $validator = Validator::make($request->all(), [
+            'rate'        => 'required|numeric|min:1|max:5',
+            "comment"     => "sometimes|nullable",
+            "provider_id" => "required|exists:providers,id"
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()->first(),
+            ], 400);
+        }
+
+        // التحقق من وجود مراجعة سابقة
+        $exists = ProviderReview::where("provider_id", $request->provider_id)
+            ->where("user_id", $request->user()->id)
+            ->exists();
+
+        if($exists){
+            return response()->json([
+                "errors" => "You add your review before",
+            ], 400);
+        }
+
+        $review = ProviderReview::create([
+            "rate"        => $request->rate,
+            "comment"     => $request->comment,
+            "user_id"     => $request->user()->id,
+            "provider_id" => $request->provider_id,
+        ]);
+
+        // جلب بيانات المستخدم المربوطة بالتقييم
+        $review->load("user");
+
+        $data = [
+            "id"         => $review->id,
+            "rate"       => $review->rate,
+            "comment"    => $review->comment,
+            "user_name"  => $review->user?->name,
+            "image_link" => $review->user?->image_link,
+            "phone"      => $review->user?->phone,
+        ];
+
+        return response()->json([
+            "success" => "You add your review success",
+            "data"    => $data
+        ]);
+    }
+
+    public function show_reviews(Request $request){
+        $validator = Validator::make($request->all(), [
+            "provider_id" => "required|exists:providers,id"
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()->first(),
+            ], 400);
+        }
+
+        // تم تعديل throught إلى through الصحيحة
+        $reviews = ProviderReview::where("provider_id", $request->provider_id)
+            ->with("user")
+            ->paginate(10)
+            ->through(function($item){
+                return [
+                    "id"         => $item->id,
+                    "rate"       => $item->rate,
+                    "comment"    => $item->comment,
+                    "user_name"  => $item->user?->name,
+                    "image_link" => $item->user?->image_link,
+                    "phone"      => $item->user?->phone,
+                ];
+            }); 
+
+        return response()->json([
+            "reviews" => $reviews
         ]);
     }
 }

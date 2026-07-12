@@ -9,6 +9,7 @@ use App\Models\EntranceBeach;
 use App\Models\User;
 use App\Models\UserBeach;
 use App\Models\VisitBeach;
+use App\Models\AppartmentTypeUmbrella;
 use App\trait\TraitImage;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -25,7 +26,8 @@ class BeachController extends Controller
     public function read_qr(Request $request){
         $validator = Validator::make($request->all(), [
             'qr_code' => 'required|string',
-            'beach_id' => 'required|exists:beaches,id', 
+            'beach_id' => 'required|exists:beaches,id',
+            "umbrella" => "sometimes|integer",
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -66,6 +68,21 @@ class BeachController extends Controller
                 'errors' => 'Qr code is wrong'
             ], 400);
          }
+        $umberllas = AppartmentTypeUmbrella::
+        where("appartment_type_id", $appartment->appartment_type_id)
+        ->where("village_id", $request->user()->village_id)
+        ->first()?->umbrellas ?? 1;
+         $user_umbrellas = $this->user_beach
+         ->where('user_id', $userid) 
+         ->where('village_id', $request->user()->village_id)
+         ->whereDate('created_at', date('Y-m-d'))
+         ->sum("umbrella") ?? 0;
+        $my_umbrellas = $umberllas - $user_umbrellas;
+        if($my_umbrellas < $request->umbrella){
+            return response()->json([
+                'errors' => 'عدد الشمسيات المتاحة ' . $my_umbrellas
+            ], 400);
+        }
         $appartment->type;
         $user = $this->user
         ->where('id', $userid)
@@ -98,6 +115,7 @@ class BeachController extends Controller
                 'beach_id' => $beach_id,
                 'user_type' => $user_type,
                 'village_id' => $request->user()->village_id,
+                'umbrella' => $request->umbrella ?? 1,
             ]);
             EntranceBeach::create([
                 'beach_id' => $beach_id,

@@ -34,10 +34,12 @@ use App\Http\Controllers\api\SuperAdmin\village\VillageCoverController;
 use App\Http\Controllers\api\SuperAdmin\village\VillageGallaryController;
 use App\Http\Controllers\api\SuperAdmin\village\VillageRolesController;
 use App\Http\Controllers\api\SuperAdmin\zones\ZoneController;
+use App\Http\Controllers\api\SuperAdmin\zones\VillageZoneController;
 use App\Http\Controllers\api\SuperAdmin\Application\ApplicationController;
 use App\Http\Controllers\api\SuperAdmin\Popup\PopupController;
 use App\Http\Controllers\api\SuperAdmin\village\AppartmentController;
 use App\Http\Controllers\api\SuperAdmin\notification\NotificationController;
+use App\Http\Controllers\api\SuperAdmin\Provider\ProviderReviewController;
 use App\Http\Controllers\api\User\Profile\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -98,6 +100,16 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::post('/add', 'create')->middleware('can:admin_zone_add');
         Route::post('/update/{id}', 'modify')->middleware('can:admin_zone_edit');
         Route::delete('/delete/{id}', 'delete')->middleware('can:admin_zone_delete');
+    });
+
+    Route::controller(VillageZoneController::class)->prefix('village_zone')
+    ->group(function() {
+        Route::get('/list', 'list');
+        Route::get('/', 'view');
+        Route::get('/item/{id}', 'show');
+        Route::post('/add', 'create');
+        Route::post('/update/{id}', 'modify');
+        Route::delete('/delete/{id}', 'delete');
     });
 
     Route::controller(MallController::class)->prefix('mall')
@@ -300,6 +312,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     Route::controller(ProviderController::class)->prefix('provider')
     ->group(function() {
         Route::get('/', 'view')->middleware('can:admin_provider_view');
+        Route::get('/lists', 'lists')->middleware('can:admin_provider_view');
         Route::get('/item/{id}', 'provider')->middleware('can:admin_provider_view');
         Route::put('/status/{id}', 'status')->middleware('can:admin_provider_status');
         Route::post('/update_profile_image/{id}', 'update_profile_image')->middleware('can:admin_provider_profile');
@@ -324,6 +337,12 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::post('/add', 'create')->middleware('can:admin_provider_admin_add');
         Route::post('/update/{id}', 'modify')->middleware('can:admin_provider_admin_edit');
         Route::delete('/delete/{id}', 'delete')->middleware('can:admin_provider_admin_delete');
+    });
+    
+    Route::controller(ProviderReviewController::class)->prefix('show_reviews')
+    ->group(function() {
+        Route::get('/', 'show_reviews')->middleware('can:admin_provider_review_view');
+        Route::delete('/delete_review/{id}', 'delete_review')->middleware('can:admin_provider_review_delete');
     });
     
     Route::controller(ProviderRolesController::class)->prefix('provider_roles')
