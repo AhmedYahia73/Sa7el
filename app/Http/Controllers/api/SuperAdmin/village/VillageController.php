@@ -11,6 +11,7 @@ use App\trait\TraitImage;
 use App\Models\Zone;
 use App\Models\Village;
 use App\Models\Appartment;
+use App\Models\SecurityMan;
 
 class VillageController extends Controller
 {
