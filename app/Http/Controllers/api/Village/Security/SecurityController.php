@@ -23,7 +23,7 @@ class SecurityController extends Controller
     public function view(Request $request){
         $security = $this->security
         ->where('village_id', $request->user()->village_id)
-        ->with('pool:id,name', 'beach:id,name', 'gate:id,name')
+        ->with('pool:id,name', 'beach:id,name', 'gate:id,name', 'inside_gates:id,name')
         ->get();
         $gates = $this->gates
         ->where('status', 1)
