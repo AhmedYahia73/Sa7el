@@ -55,18 +55,18 @@ class RequestController extends Controller
 
         $codes = CodeRequest::where('id', $id)
         ->where('village_id', $request->user()->village_id)->first();
-        $codes = AppartmentCode::
+        $my_codes = AppartmentCode::
         where("code", $codes->code)
         ->where("appartment_id", $codes->appartment_id) 
         ->get();
-        if($codes->count() == 0 ){
+        if($my_codes->count() == 0 ){
             return response()->json([
                 'message' => 'Code is wrong'
             ], 400); 
         }
-        if($codes->count() < $codes[0]->people){
-            $code_item = $codes[0];
-            $people = $codes->count() - $codes[0]->people;
+        if($my_codes->count() < $my_codes[0]->people){
+            $code_item = $my_codes[0];
+            $people = $my_codes->count() - $my_codes[0]->people;
             for ($i=0; $i < $people; $i++) { 
                 AppartmentCode::create([
                     'appartment_id' => $code_item->appartment_id, 
