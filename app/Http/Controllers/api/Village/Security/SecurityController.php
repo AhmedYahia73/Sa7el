@@ -12,6 +12,7 @@ use App\Models\SecurityMan;
 use App\Models\Gate;
 use App\Models\Beach;
 use App\Models\Pools;
+use App\Models\InsideGate;
 
 class SecurityController extends Controller
 {
@@ -27,21 +28,51 @@ class SecurityController extends Controller
         $gates = $this->gates
         ->where('status', 1)
         ->where('village_id', $request->user()->village_id)
-        ->get();
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+            ];
+        });
         $beaches = $this->beaches
         ->where('status', 1)
         ->where('village_id', $request->user()->village_id)
-        ->get();
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+            ];
+        });
         $pools = $this->pools
         ->where('status', 1)
         ->where('village_id', $request->user()->village_id)
-        ->get();
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+            ];
+        });
+        $inside_gates = InsideGate::
+        where('status', 1)
+        ->where('village_id', $request->user()->village_id)
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+            ];
+        });
+
 
         return response()->json([
             'security' => $security,
             'gates' => $gates,
             'beaches' => $beaches,
             'pools' => $pools,
+            'inside_gates' => $inside_gates,
         ]);
     }
 
