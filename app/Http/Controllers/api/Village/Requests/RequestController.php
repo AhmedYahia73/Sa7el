@@ -55,6 +55,33 @@ class RequestController extends Controller
 
         $codes = CodeRequest::where('id', $id)
         ->where('village_id', $request->user()->village_id)->first();
+        $codes = AppartmentCode::
+        where("code", $codes->code)
+        ->where("appartment_id", $codes->appartment_id) 
+        ->get();
+        if($codes->count() == 0 ){
+            return response()->json([
+                'message' => 'Code is wrong'
+            ], 400); 
+        }
+        if($codes->count() < $codes[0]->people){
+            $code_item = $codes[0];
+            $people = $codes->count() - $codes[0]->people;
+            for ($i=0; $i < $people; $i++) { 
+                AppartmentCode::create([
+                    'appartment_id' => $code_item->appartment_id, 
+                    'village_id' => $code_item->village_id,
+                    'from' => $code_item->from,
+                    'to' => $code_item->to,
+                    'type' => $code_item->type,
+                    'code' => $code_item->code,
+                    'people' => $code_item->people,
+                    'image' => $code_item->image,
+                    'owner_id' => $code_item->owner_id,
+                    'user_type' => $code_item->user_type,
+                ]);
+            }
+        }
         $appartment_code = AppartmentCode::
         where("code", $codes->code)
         ->where("appartment_id", $codes->appartment_id)
@@ -63,7 +90,7 @@ class RequestController extends Controller
         if($request->status == 'approve'){
             if(!$appartment_code){
                 return response()->json([
-                    'message' => 'You reached maximum nuber'
+                    'message' => 'You reached maximum number'
                 ], 400); 
             }
             $appartment_code->user_id = $codes->user_id;
