@@ -7,9 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Village\PoolRequest;
 use Illuminate\Support\Facades\Validator;
 use App\trait\TraitImage;
-
-use App\Models\PoolGallary;
-use App\Models\Pools;
+ 
+use App\Models\InsideGate;
 
 class InsideGateController extends Controller
 {
