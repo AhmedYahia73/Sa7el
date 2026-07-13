@@ -157,7 +157,7 @@ class RequestController extends Controller
             ];
             UserNotification::dispatch($data);
             $new_notification = Notification::create($data);
-            $user = User::find($codes->user_id);
+            $user = User::find($login_request->user_id);
             $data = [
                 "id" => $new_notification->id,
                 "title" => "دخول القرية",

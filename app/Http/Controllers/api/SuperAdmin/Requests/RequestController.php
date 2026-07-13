@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 class RequestController extends Controller
 {
+    
     public function code_request(Request $request){
         $requests = CodeRequest::
         where("status", "pending")
