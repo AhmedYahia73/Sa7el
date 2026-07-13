@@ -66,7 +66,7 @@ class RequestController extends Controller
         }
         if($my_codes->count() < $my_codes[0]->people){
             $code_item = $my_codes[0];
-            $people = $my_codes->count() - $my_codes[0]->people;
+            $people =  $my_codes[0]->people - $my_codes->count();
             for ($i=0; $i < $people; $i++) { 
                 AppartmentCode::create([
                     'appartment_id' => $code_item->appartment_id, 
