@@ -78,6 +78,8 @@ class SecurityController extends Controller
             'pool_ids' => 'array',
             'beach_ids' => 'array',
             'gate_ids' => 'array',
+            'inside_gate_ids' => 'array',
+            'inside_gate_ids.*' => 'required|exists:inside_gates,id',
             'pool_ids.*' => 'required|exists:pools,id',
             'beach_ids.*' => 'required|exists:beaches,id',
             'gate_ids.*' => 'required|exists:gates,id',
@@ -108,6 +110,7 @@ class SecurityController extends Controller
         $security->pool()->sync($request->pool_ids);
         $security->beach()->sync($request->beach_ids);
         $security->gate()->sync($request->gate_ids);
+        $security->inside_gates()->sync($request->inside_gate_ids);
       
         return response()->json([
             'success' => 'You add data success'
@@ -123,6 +126,8 @@ class SecurityController extends Controller
             'pool_ids' => 'array',
             'beach_ids' => 'array',
             'gate_ids' => 'array',
+            'inside_gate_ids' => 'array',
+            'inside_gate_ids.*' => 'required|exists:inside_gates,id',
             'pool_ids.*' => 'required|exists:pools,id',
             'beach_ids.*' => 'required|exists:beaches,id',
             'gate_ids.*' => 'required|exists:gates,id',
@@ -155,6 +160,7 @@ class SecurityController extends Controller
         $security->pool()->sync($request->pool_ids);
         $security->beach()->sync($request->beach_ids);
         $security->gate()->sync($request->gate_ids);
+        $security->inside_gates()->sync($request->inside_gate_ids);
 
         return response()->json([
             'success' => 'You update data success'
