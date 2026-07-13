@@ -12,7 +12,7 @@ use App\Models\InsideGate;
 
 class InsideGateController extends Controller
 {
-    public function __construct(private InsideGate $pool){}
+    public function __construct(private InsideGate $inside_gate){}
     use TraitImage;
 
     public function view(Request $request){
