@@ -31,7 +31,7 @@ class PostsController extends Controller
         $query = $this->posts
             ->where('village_id', $request->village_id)
             ->withCount('love')
-            ->with(['admin', 'images', 'village', 'my_love']); // تم استيراد العلاقات المستخدمة في التحويل
+            ->with(['images', 'village', 'my_love']); // تم استيراد العلاقات المستخدمة في التحويل
 
         if($request->from){
             $query->whereDate("created_at", ">=", $request->from);
@@ -59,10 +59,11 @@ class PostsController extends Controller
                 'image'       => $item->images->pluck('image_link'),
                 'description' => $item->description,
                 'love_count'  => $item->love_count,
-                'admin_name'  => $item->admin?->name,
+                'admin_name'  => $item->village?->name,
                 'my_love'     => $item->my_love->count() > 0 ? 1 : 0, // تم تحسينها لتعمل مع الـ Collection المرفقة مباشرة
-                'user_name'   => empty($item->admin) ? $item->village?->name : $item->admin?->name,
-                'user_image'  => empty($item->admin) ? $item->village?->image_link : $item->admin?->image_link,
+                'user_name'   => !empty($item->village) ? $item->village?->name : $item->admin?->name,
+                'user_image'  => !empty($item->village) ? $item->village?->logo ? 
+                $item->village?->logo_link : $item->village?->image_link : $item->admin?->image_link,
             ];
         });
 
