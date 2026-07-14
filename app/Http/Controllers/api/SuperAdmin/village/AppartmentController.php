@@ -174,6 +174,22 @@ class AppartmentController extends Controller
         ]);
     }
 
+    public function village_list(Request $request){
+        $appartments = Village::
+        get()
+        ->map(function($apartment) {
+            return [
+                "id" => $apartment->id,
+                "name" => $apartment->name, 
+                "zone_id" => $apartment->zone_id, 
+            ];
+        }); 
+
+        return response()->json([ 
+            'appartments' => $appartments,
+        ]);
+    }
+
     public function appartement_list(Request $request){
         $appartments = $this->appartment 
         ->get()
