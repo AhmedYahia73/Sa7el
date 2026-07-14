@@ -514,7 +514,7 @@ class UserController extends Controller
                     "unit"          => $item->appartment?->unit,
                     "status"        => $status,
                 ];
-            });
+            })->values();
 
         return response()->json([
             "property" => $formattedProperties,
