@@ -143,7 +143,7 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
         Route::put('update_review/{id}', 'update_review');
         Route::post('review', 'review');
         Route::post('show_reviews', 'show_reviews');
-        Route::get('zone_lists', 'zone_lists');
+        Route::get('zone_village_lists', 'zone_village_lists');
     });
 
     Route::controller(RentController::class)

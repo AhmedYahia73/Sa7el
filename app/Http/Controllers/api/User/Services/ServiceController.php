@@ -128,7 +128,7 @@ class ServiceController extends Controller
         ]);
     }
 
-    public function zone_lists(Request $request){
+    public function zone_village_lists(Request $request){
         $validator = Validator::make($request->all(), [
             'village_id' => 'required|exists:villages,id',
         ]);
