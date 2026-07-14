@@ -295,7 +295,7 @@ class RentController extends Controller
         $rent->delete();
 
         return response()->json([
-            "success" => "You update data success"
+            "success" => "You delete data success"
         ]);
     }
 }
