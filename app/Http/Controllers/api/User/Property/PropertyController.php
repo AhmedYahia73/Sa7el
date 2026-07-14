@@ -443,13 +443,18 @@ class PropertyController extends Controller
             ],400);
         }
 
+        $appartments = AppartmentCode::
+        where("code", $request->code)
+        ->whereNull("user_id")
+        ->get();
         $rent_images = AppartmentCode::
         where("code", $request->code)
         ->with("rent_images")
         ->first()?->rent_images;
 
         return response()->json([
-            "rent_images" => $rent_images
+            "rent_images" => $rent_images,
+            "update_delete" => isset($appartments[0]) ? $appartments[0]->people == $appartments->count() : false
         ]);
     }
 }
