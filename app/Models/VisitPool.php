@@ -23,6 +23,10 @@ class VisitPool extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function inside_gate(){
+        return $this->belongsTo(InsideGate::class, 'inside_gate_id');
+    }
+
     public function pool(){
         return $this->belongsTo(Pools::class, 'pool_id');
     }

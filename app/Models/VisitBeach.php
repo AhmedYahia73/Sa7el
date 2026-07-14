@@ -27,6 +27,10 @@ class VisitBeach extends Model
         return $this->belongsTo(Beach::class, 'beach_id');
     }
 
+    public function inside_gate(){
+        return $this->belongsTo(InsideGate::class, 'inside_gate_id');
+    }
+
     public function appartment(){
         return $this->belongsTo(Appartment::class, 'appartment_id');
     }

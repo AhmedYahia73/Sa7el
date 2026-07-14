@@ -156,12 +156,77 @@ class InsideGateController extends Controller
         ]);
     }
 
-    public function entrance_list($id){
-        $insid_gate = InsideGate::
-        findOrFail($id);
-        if($insid_gate->type == "beach"){
-            // $data = VisitBeach::
-            // where("id")
+    public function entrance_list(Request $request, $id){
+        $validator = Validator::make($request->all(), [
+            'from'   => 'nullable|date',
+            'to'     => 'nullable|date',
+            'search' => 'nullable|string|max:255'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 400);
         }
+
+        $insideGate = InsideGate::findOrFail($id);
+
+        $gateType = $insideGate->type;
+        $modelClass = ($gateType === "beach") ? VisitBeach::class : VisitPool::class;
+
+        $query = $modelClass::where("inside_gate_id", $id)
+            ->where('village_id', $request->user()->village_id)
+            ->with(["user", "appartment"]);
+
+        if ($request->filled('from')) {
+            $query->whereDate("created_at", ">=", $request->from);
+        }
+
+        if ($request->filled('to')) {
+            $query->whereDate("created_at", "<=", $request->to);
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('user', function ($userQuery) use ($search) {
+                    $userQuery->where('name', 'like', "%{$search}%")
+                            ->orWhere('phone', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%");
+                })
+                ->orWhereHas('appartment', function ($appartmentQuery) use ($search) {
+                    $appartmentQuery->where('unit', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        $paginatedData = $query->latest()->paginate($request->get('per_page', 15));
+
+        $formattedItems = collect($paginatedData->items())->map(function ($item) use ($gateType) {
+            return [
+                "id"            => $item->id,
+                "type"          => $item->type,
+                "visitor_type"  => $item->visitor_type,
+                "user_type"     => $item->user_type,
+                "appartment"    => $item->appartment?->unit,
+                "user_name"     => $item->user?->name,
+                "user_phone"    => $item->user?->phone,
+                "user_email"    => $item->user?->email,
+                "gate_type"     => ($gateType === "beach") ? "beach" : "pool",
+                "date"          => $item->created_at->format("Y-m-d"),
+                "time"          => $item->created_at->format("H:i A"),
+            ];
+        });
+
+        return response()->json([
+            "data" => $formattedItems,
+            "pagination" => [
+                "current_page" => $paginatedData->currentPage(),
+                "last_page"    => $paginatedData->lastPage(),
+                "per_page"     => $paginatedData->perPage(),
+                "total"        => $paginatedData->total(),
+            ]
+        ]);
     }
 }
