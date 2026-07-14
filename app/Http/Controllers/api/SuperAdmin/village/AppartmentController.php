@@ -216,8 +216,7 @@ class AppartmentController extends Controller
             'appartment' => $appartment, 
         ]);
     }
-
-    public function 
+ 
 
     public function user_list(Request $request){ 
         $validator = Validator::make($request->all(), [
