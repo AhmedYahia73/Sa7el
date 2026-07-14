@@ -204,12 +204,12 @@ class AppartmentController extends Controller
         ->with("type", "village")
         ->first();
         $appartment = [
-            "id" => $apartment->id,
-            "unit" => $apartment->unit, 
-            "location" => $apartment->location, 
-            "type" => $apartment?->type?->name, 
-            "village" => $apartment?->village?->name, 
-            "created_at" => $apartment->created_at, 
+            "id" => $appartment->id,
+            "unit" => $appartment->unit, 
+            "location" => $appartment->location, 
+            "type" => $appartment?->type?->name, 
+            "village" => $appartment?->village?->name, 
+            "created_at" => $appartment->created_at, 
         ];
 
         return response()->json([ 
