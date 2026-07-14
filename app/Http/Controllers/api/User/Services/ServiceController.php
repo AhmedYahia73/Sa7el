@@ -222,7 +222,6 @@ class ServiceController extends Controller
             ->withCount([
                 'love_user as loves_count',
                 'love_user as my_love_count' => fn($q) => $q->where('users.id', $userId),
-                ''
             ])
             // جلب العلاقات المطلوبة مسبقاً مع الفلترة والترجمات للأداء العالي
             ->with([
