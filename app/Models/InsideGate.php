@@ -12,6 +12,7 @@ class InsideGate extends Model
         'village_id',
         'from',
         'to',
+        'type', 
         'status', 
     ];
     protected $appends = ['ar_name'];

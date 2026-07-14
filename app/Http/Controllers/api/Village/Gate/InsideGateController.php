@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use App\trait\TraitImage;
  
 use App\Models\InsideGate;
+use App\Models\InsideGate;
 
 class InsideGateController extends Controller
 {
@@ -58,8 +59,17 @@ class InsideGateController extends Controller
 
     public function create(PoolRequest $request){
         // name, from, to, status,
-        // ar_name 
+        // ar_name , type
+        $validator = Validator::make($request->all(), [
+            'type' => 'required|in:pool,beach',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
         $inside_gateRequest = $request->validated();
+        $inside_gateRequest['type'] = $request->type;
         $inside_gateRequest['village_id'] = $request->user()->village_id;
 
         $inside_gate = $this->inside_gate
@@ -86,7 +96,16 @@ class InsideGateController extends Controller
     public function modify(PoolRequest $request, $id){
         // name, image, status,
         // ar_name 
+        $validator = Validator::make($request->all(), [
+            'type' => 'required|in:pool,beach',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
         $inside_gateRequest = $request->validated();
+        $inside_gateRequest['type'] = $request->type;
         $inside_gate = $this->inside_gate
         ->where('id', $id)
         ->where('village_id', $request->user()->village_id)
@@ -134,5 +153,9 @@ class InsideGateController extends Controller
         return response()->json([
             'success' => 'You delete data success'
         ]);
+    }
+
+    public function entrance_list($id){
+
     }
 }
