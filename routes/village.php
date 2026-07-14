@@ -298,7 +298,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
-        Route::get('/entrance_list', 'entrance_list');
+        Route::get('/entrance_list/{id}', 'entrance_list');
     });
 
     Route::controller(GateController::class)->prefix('gate')->middleware('can:Gates')
