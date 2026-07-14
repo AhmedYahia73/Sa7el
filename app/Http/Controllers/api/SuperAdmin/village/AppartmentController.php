@@ -94,6 +94,86 @@ class AppartmentController extends Controller
         ]);
     }
 
+    public function all_units(Request $request){  
+        $validator = Validator::make($request->all(), [
+            'village_id' => ['sometimes', 'exists:villages,id'],
+        ]);
+        if ($validator->fails()) { 
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+        $appartments = $this->appartment
+        ->when($request->filled('search'), function ($query) use ($request) {
+            $searchTerm = $request->get('search');
+            $query->where('unit', 'LIKE', "%{$searchTerm}%");
+        }) 
+        ->with([
+            'type:id,name,image', 
+            'zone:id,name,image,description',"village",
+            'appartment_code' => function($query) {
+                $query->select(['id', 'code', 'type', 'from', 'to', 'people', 'user_id', 'appartment_id'])
+                    ->with('user:id,name');
+            }
+        ]);
+        if($request->village_id){
+            $appartments->where("village_id", $request->village_id);
+        }
+        $appartments = $appartments
+        ->paginate($request->get('per_page', 10));
+
+        // 2. تعديل شكل البيانات
+        $appartments->through(function($apartment) {
+            
+            $formatted_codes = $apartment->appartment_code
+                ->where("type", "owner")
+                ->groupBy('code')
+                ->map(function($group, $codeString) {
+                    return [
+                        'code'   => $codeString,
+                        'type'   => $group->first()->type,
+                        'from'   => $group->first()->from,
+                        'to'     => $group->first()->to,
+                        'people' => $group->first()->people,
+                        'users'  => $group->map(function($codeItem) {
+                            return $codeItem->user;
+                        })->filter()->values() 
+                    ];
+                })->values();
+                
+            $rent_codes = $apartment->appartment_code
+                ->where("type", "renter")
+                ->where("from", "<=", date("Y-m-d"))
+                ->where("to", ">=", date("Y-m-d"))
+                ->groupBy('code')
+                ->map(function($group, $codeString) {
+                    return [
+                        'code'   => $codeString,
+                        'type'   => $group->first()->type,
+                        'from'   => $group->first()->from,
+                        'to'     => $group->first()->to,
+                        'people' => $group->first()->people,
+                        'users'  => $group->map(function($codeItem) {
+                            return $codeItem->user;
+                        })->filter()->values() 
+                    ];
+                })->values();
+
+            // ✨ التعديل هنا: إسناد الكولكشن كاملة مباشرة بدون تحديد Index خاطئ
+            $apartment->formatted_codes = $formatted_codes->last();
+            $apartment->rent_codes = $rent_codes->last();
+
+            // حذف العلاقة الأصلية نظيفة بعد التعديل
+            unset($apartment->appartment_code);
+            $apartment->village_name = $apartment?->village?->name;
+            return $apartment;
+        }); 
+
+        return response()->json([ 
+            'appartments' => $appartments,  
+        ]);
+    }
+
     public function appartement_list(Request $request){
         $appartments = $this->appartment 
         ->get()
@@ -115,6 +195,26 @@ class AppartmentController extends Controller
             'appartments' => $appartments,
             'zones' => $zones,
             'appartment_type' => $appartment_type,
+        ]);
+    }
+
+    public function appartement_details(Request $request, $id){
+        $appartments = $this->appartment 
+        ->with("type", "village")
+        ->get()
+        ->map(function($apartment) {
+            return [
+                "id" => $apartment->id,
+                "unit" => $apartment->unit, 
+                "location" => $apartment->location, 
+                "type" => $apartment?->type?->name, 
+                "village" => $apartment?->village?->name, 
+                "created_at" => $apartment->created_at, 
+            ];
+        }); 
+
+        return response()->json([ 
+            'appartments' => $appartments, 
         ]);
     }
 

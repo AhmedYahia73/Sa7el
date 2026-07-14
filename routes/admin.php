@@ -89,6 +89,8 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::post('/add', 'create');
         Route::put('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
+        Route::get('/appartement_details/{id}', 'appartement_details');
+        Route::get('/all_units', 'all_units');
         Route::get('/{id}', 'view');
     });
 
