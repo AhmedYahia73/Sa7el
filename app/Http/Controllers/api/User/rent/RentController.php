@@ -239,6 +239,7 @@ class RentController extends Controller
     public function update_rent_images(Request $request, $id){
         $validator = Validator::make($request->all(), [
             'description' => 'required',
+            'code' => "required",
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -269,6 +270,15 @@ class RentController extends Controller
     }
 
     public function delete_rent_images(Request $request, $id){
+        $validator = Validator::make($request->all(), [ 
+            'code' => "required",
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }
         $appartments = AppartmentCode::
         where("code", $request->code)
         ->whereNull("user_id")
