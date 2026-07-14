@@ -28,6 +28,7 @@ class InsideGateController extends Controller
                 "from" => $item->from,
                 "to" => $item->to,
                 "status" => $item->status,
+                "type" => $item->type,
             ];
         });
 
