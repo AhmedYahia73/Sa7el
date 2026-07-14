@@ -489,8 +489,8 @@ class UserController extends Controller
         $rents = AppartmentCode::whereIn("appartment_id", $apartmentIds)
             ->where("type", "renter")
             ->with(["appartment", "village"])
-            ->unique("code")
             ->get()
+            ->unique("code")
             ->map(function ($item) {
                 $now = now();
                 $from = Carbon::parse($item->from);
