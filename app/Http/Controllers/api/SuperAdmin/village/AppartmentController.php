@@ -175,7 +175,7 @@ class AppartmentController extends Controller
     }
 
     public function village_list(Request $request){
-        $appartments = Village::
+        $villages = Village::
         get()
         ->map(function($apartment) {
             return [
@@ -186,7 +186,7 @@ class AppartmentController extends Controller
         }); 
 
         return response()->json([ 
-            'appartments' => $appartments,
+            'villages' => $villages,
         ]);
     }
 
