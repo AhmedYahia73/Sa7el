@@ -276,7 +276,7 @@ class RentController extends Controller
         $status = isset($appartments[0]) ? $appartments[0]->people == $appartments->count() : false;
         if(!$status){
             return response()->json([
-                "errors" => "You can not update"
+                "errors" => "You can not delete"
             ], 400);
         }
         $rent = RentImage::
