@@ -12,6 +12,7 @@ use App\Models\ProviderGallary;
 use App\Models\ProviderVideos;
 use App\Models\ProviderReview;
 use App\Models\Appartment;
+use App\Models\ZoneVillage;
 
 class ServiceController extends Controller
 {
@@ -124,6 +125,31 @@ class ServiceController extends Controller
 
         return response()->json([
             'services' => $services
+        ]);
+    }
+
+    public function zone_lists(Request $request){
+        $validator = Validator::make($request->all(), [
+            'village_id' => 'required|exists:villages,id',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }
+        $list = ZoneVillage::
+        where("village_id", $request->village_id)
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+            ];
+        });
+
+        return response()->json([
+            "list" => $list
         ]);
     }
 
