@@ -221,7 +221,8 @@ class ServiceController extends Controller
             // حساب عدد الإعجابات مباشرة من قاعدة البيانات، وفحص إعجاب المستخدم الحالي
             ->withCount([
                 'love_user as loves_count',
-                'love_user as my_love_count' => fn($q) => $q->where('users.id', $userId)
+                'love_user as my_love_count' => fn($q) => $q->where('users.id', $userId),
+                ''
             ])
             // جلب العلاقات المطلوبة مسبقاً مع الفلترة والترجمات للأداء العالي
             ->with([
@@ -276,6 +277,7 @@ class ServiceController extends Controller
                 'description'      => $local == 'en' ? $item->description : ($item->ar_description ?? $item->description),
                 
                 'loves_count'      => $item->loves_count,
+                'rate'             => $item->rate,
                 'my_love'          => $item->my_love_count > 0,
             ];
         }); 
