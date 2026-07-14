@@ -469,48 +469,55 @@ class UserController extends Controller
     }
 
     public function units(Request $request, $id){
-        $property = AppartmentCode::
-        where("user_id", $id)
-        ->where("type", "owner")
-        ->with("appartment", "village")
-        ->get()
-        ->map(function($item){
+        $properties = AppartmentCode::where("user_id", $id)
+            ->where("type", "owner")
+            ->with(["appartment", "village"])
+            ->get();
+
+        $formattedProperties = $properties->map(function ($item) {
             return [
-                "id" => $item->id,
-                "people" => $item->people,
+                "id"            => $item->id,
+                "people"        => $item->people,
                 "image_id_link" => $item->image_id_link,
-                "village" => $item?->village?->name,
-                "unit" => $item?->appartment?->unit,
+                "village"       => $item->village?->name,
+                "unit"          => $item->appartment?->unit,
             ];
         });
-        $rents = AppartmentCode::
-        where("user_id", $id)
-        ->where("type", "renter")
-        ->with("appartment", "village")
-        ->get()
-        ->map(function($item){
-            $status = "Past";
-            if(Carbon::parse($item->from) <= now() && Carbon::parse($item->to) >= now()){
-                $status = "Current";
-            }
-            elseif(Carbon::parse($item->to) > now()){
-                $status = "Upcoming";
-            }
-            return [
-                "id" => $item->id,
-                "people" => $item->people,
-                "image_id_link" => $item->image_id_link,
-                "from" => $item->from,
-                "to" => $item->to,
-                "village" => $item?->village?->name,
-                "unit" => $item?->appartment?->unit,
-                "status" => $status,
-            ];
-        }); 
+
+        $apartmentIds = $properties->pluck('appartment_id')->filter()->unique();
+
+        $rents = AppartmentCode::whereIn("appartment_id", $apartmentIds)
+            ->where("type", "renter")
+            ->with(["appartment", "village"])
+            ->get()
+            ->map(function ($item) {
+                $now = now();
+                $from = Carbon::parse($item->from);
+                $to = Carbon::parse($item->to);
+
+                if ($from->lessThanOrEqualTo($now) && $to->greaterThanOrEqualTo($now)) {
+                    $status = "Current";
+                } elseif ($to->greaterThanOrEqualTo($now)) {
+                    $status = "Upcoming";
+                } else {
+                    $status = "Past";
+                }
+
+                return [
+                    "id"            => $item->id,
+                    "people"        => $item->people,
+                    "image_id_link" => $item->image_id_link,
+                    "from"          => $item->from,
+                    "to"            => $item->to,
+                    "village"       => $item->village?->name,
+                    "unit"          => $item->appartment?->unit,
+                    "status"        => $status,
+                ];
+            });
 
         return response()->json([
-            "property" => $property,
-            "rents" => $rents,
+            "property" => $formattedProperties,
+            "rents"    => $rents,
         ]);
     }
      
