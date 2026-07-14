@@ -290,7 +290,7 @@ class RentController extends Controller
             ], 400);
         }
         $rent = RentImage::
-        findOrFail("id", $id);
+        findOrFail( $id);
         $this->deleteImage($rent->image);
         $rent->delete();
 
