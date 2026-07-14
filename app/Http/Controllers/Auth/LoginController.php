@@ -118,6 +118,7 @@ class LoginController extends Controller
         ->delete();
         $user = $this->secuity
         ->where('email', $request->email)
+        ->with("pool", "beach", "gate", "inside_gates")
         ->first();
         if (empty($user)) {
             return response()->json(['errors'=>'creational not Valid'],403);
@@ -139,9 +140,17 @@ class LoginController extends Controller
         }
         if (password_verify($request->input('password'), $user->password)) {
             $user->token = $user->createToken('security')->plainTextToken;
+            $gate = $user->gate->count() > 0;
+            $beach = $user->beach->count() > 0;
+            $pool = $user->pool->count() > 0;
+            $inside_gate = $user->inside_gates->count() > 0;
             return response()->json([
                 'security' => $user,
                 'token' => $user->token,
+                "gate" => $gate ,
+                "beach" => $beach ,
+                "pool" => $pool ,
+                "inside_gate" => $inside_gate ,
             ], 200);
         }
         else { 
