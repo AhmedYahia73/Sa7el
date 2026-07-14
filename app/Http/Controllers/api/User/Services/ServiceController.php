@@ -210,7 +210,7 @@ class ServiceController extends Controller
             'services' => $services
         ]);
     }
-
+    
     public function services_provider(Request $request){
         $validator = Validator::make($request->all(), [
             'village_id'      => 'sometimes|exists:villages,id',
@@ -244,30 +244,34 @@ class ServiceController extends Controller
 
         $services_providers = Provider::where('status', 1)
             ->where("service_id", $request->service_id)
-            // حساب عدد الإعجابات مباشرة من قاعدة البيانات، وفحص إعجاب المستخدم الحالي
             ->withCount([
                 'love_user as loves_count',
                 'love_user as my_love_count' => fn($q) => $q->where('users.id', $userId),
             ])
-            // جلب العلاقات المطلوبة مسبقاً مع الفلترة والترجمات للأداء العالي
+            // 1. قمنا بإضافة 'translations' هنا ليتم تحميلها مسبقاً دفعة واحدة لتفادي الـ N+1
             ->with([
-                'work_hours', 'service', 'village', 'contact', 'zone.translations', 'mall.translations',
+                'work_hours', 'service', 'village', 'contact', 'zone.translations', 'mall.translations', 'translations',
                 'menue' => fn($q) => $q->where('status', 1)
             ])
-            // منطق البحث بالاسم (إنجليزي/عربي) أو الهاتف
+            // 2. تعديل منطق البحث للبحث في جدول الترجمات الفعلي بدلاً من الحقل الوهمي ar_name
             ->when($request->filled('search'), function($query) use ($search) {
                 $query->where(function($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('ar_name', 'like', "%{$search}%")
-                    ->orWhere('phone', 'like', "%{$search}%");
+                    ->orWhere('phone', 'like', "%{$search}%")
+                    ->orWhereHas('translations', function($transQuery) use ($search) {
+                        $transQuery->where('key', 'name')
+                                    ->where('locale', 'ar')
+                                    ->where('value', 'like', "%{$search}%");
+                    });
                 });
             });
-            if($request->village_id){
-                $services_providers->where('village_id', $request->village_id);
-            }
-            if($request->zone_village_id){
-                $services_providers->where('zone_village_id', $request->zone_village_id);
-            }
+
+        if($request->village_id){
+            $services_providers->where('village_id', $request->village_id);
+        }
+        if($request->zone_village_id){
+            $services_providers->where('zone_village_id', $request->zone_village_id);
+        }
 
         $services_providers = $services_providers->paginate($request->get('per_page', 15));
 
