@@ -199,22 +199,21 @@ class AppartmentController extends Controller
     }
 
     public function appartement_details(Request $request, $id){
-        $appartments = $this->appartment 
+        $appartment = $this->appartment 
+        ->where("id", $id)
         ->with("type", "village")
-        ->get()
-        ->map(function($apartment) {
-            return [
-                "id" => $apartment->id,
-                "unit" => $apartment->unit, 
-                "location" => $apartment->location, 
-                "type" => $apartment?->type?->name, 
-                "village" => $apartment?->village?->name, 
-                "created_at" => $apartment->created_at, 
-            ];
-        }); 
+        ->first();
+        $appartment = [
+            "id" => $apartment->id,
+            "unit" => $apartment->unit, 
+            "location" => $apartment->location, 
+            "type" => $apartment?->type?->name, 
+            "village" => $apartment?->village?->name, 
+            "created_at" => $apartment->created_at, 
+        ];
 
         return response()->json([ 
-            'appartments' => $appartments, 
+            'appartment' => $appartment, 
         ]);
     }
 
