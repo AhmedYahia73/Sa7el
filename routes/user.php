@@ -34,8 +34,6 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
         Route::post('/add', 'add_property'); 
         Route::get('/pending_code_request', 'pending_code_request'); 
         Route::post('/rent_images', 'rent_images'); 
-        Route::put('/update_rent_images/{id}', 'update_rent_images'); 
-        Route::delete('/delete_rent_images/{id}', 'delete_rent_images'); 
     });
 
     Route::controller(HomeController::class)
@@ -155,6 +153,8 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
         Route::post('/rent/destroy', 'destroy');
         Route::post('/rent/delete_user', 'delete_user');
         Route::post('/rent/push_rent_images', 'push_rent_images');
+        Route::put('/update_rent_images/{id}', 'update_rent_images'); 
+        Route::delete('/delete_rent_images/{id}', 'delete_rent_images'); 
     });
 
     Route::controller(OfferController::class)->prefix('offer')
