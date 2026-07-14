@@ -136,7 +136,7 @@ class BeachController extends Controller
     public function entrance_beach_qr(Request $request){
         $validator = Validator::make($request->all(), [
             'qr_code' => 'required|string',
-            'beach_id' => 'required|exists:beaches,id',
+            'inside_gate_id' => 'required|exists:inside_gates,id',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -225,7 +225,7 @@ class BeachController extends Controller
         create([
             'user_id' => $userid,
             'village_id' => $request->user()->village_id,
-            'beach_id' => $request->beach_id,
+            'inside_gate_id' => $request->inside_gate_id,
             'appartment_id' => $appartment_id,
             'type' => $type,
             'visitor_type' => $visitor_type,

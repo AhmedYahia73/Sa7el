@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Validator;
 use App\trait\TraitImage;
  
 use App\Models\InsideGate;
-use App\Models\InsideGate;
+use App\Models\VisitBeach;
+use App\Models\VisitPool;
 
 class InsideGateController extends Controller
 {
@@ -156,6 +157,11 @@ class InsideGateController extends Controller
     }
 
     public function entrance_list($id){
-
+        $insid_gate = InsideGate::
+        findOrFail($id);
+        if($insid_gate->type == "beach"){
+            // $data = VisitBeach::
+            // where("id")
+        }
     }
 }

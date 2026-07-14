@@ -16,6 +16,7 @@ class VisitPool extends Model
         'visitor_type',
         'code',
         'user_type',
+        'inside_gate_id',
     ];
 
     public function user(){

@@ -138,7 +138,7 @@ class PoolController extends Controller
     public function entrance_pool_qr(Request $request){
         $validator = Validator::make($request->all(), [
             'qr_code' => 'required|string',
-            'pool_id' => 'required|exists:pools,id',
+            'inside_gate_id' => 'required|exists:inside_gates,id',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -227,7 +227,7 @@ class PoolController extends Controller
         create([
             'user_id' => $userid,
             'village_id' => $request->user()->village_id,
-            'pool_id' => $request->pool_id,
+            'inside_gate_id' => $request->inside_gate_id,
             'appartment_id' => $appartment_id,
             'type' => $type,
             'visitor_type' => $visitor_type,
