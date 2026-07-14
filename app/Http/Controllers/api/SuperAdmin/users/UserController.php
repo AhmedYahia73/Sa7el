@@ -489,6 +489,7 @@ class UserController extends Controller
         $rents = AppartmentCode::whereIn("appartment_id", $apartmentIds)
             ->where("type", "renter")
             ->with(["appartment", "village"])
+            ->unique("code")
             ->get()
             ->map(function ($item) {
                 $now = now();
