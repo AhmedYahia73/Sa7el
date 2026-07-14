@@ -217,6 +217,8 @@ class AppartmentController extends Controller
         ]);
     }
 
+    public function 
+
     public function user_list(Request $request){ 
         $validator = Validator::make($request->all(), [
             'search' => ['sometimes'],
@@ -515,6 +517,54 @@ class AppartmentController extends Controller
 
         return response()->json([
             'success' => 'You delete data success',
+        ]);
+    }
+
+    public function unit_renters(Request $request){
+        $validator = Validator::make($request->all(), [
+            'appartment_id' => 'required|exists:appartments,id',
+        ]);
+
+        if ($validator->fails()) { 
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        $rents = AppartmentCode::
+            with('owner:id,name,phone', 'user:id,name,phone')
+            ->where('type', 'renter')  
+            ->where("appartment_id", $request->appartment_id)
+            ->where("to", ">=", date("Y-m-d"))
+            ->orderByDesc('id')
+            ->get(); 
+
+        return response()->json([
+            'rents' => $rents,
+            'rents_count' => $rents->count(),
+        ]);
+    }
+
+    public function unit_owners(Request $request){
+        $validator = Validator::make($request->all(), [
+            'appartment_id' => 'required|exists:appartments,id',
+        ]);
+
+        if ($validator->fails()) { 
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        $owner = AppartmentCode::
+            with('user:id,name,phone')
+            ->where('type', 'owner')  
+            ->where("appartment_id", $request->appartment_id)
+            ->get(); 
+
+        return response()->json([
+            'owner' => $owner,
+            'owner_count' => $owner->count(),
         ]);
     }
 }

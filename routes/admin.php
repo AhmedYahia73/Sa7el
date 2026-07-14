@@ -91,6 +91,8 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::delete('/delete/{id}', 'delete');
         Route::get('/appartement_details/{id}', 'appartement_details');
         Route::get('/all_units', 'all_units');
+        Route::get('/unit_renters/{id}', 'unit_renters');
+        Route::get('/unit_owners/{id}', 'unit_owners');
         Route::get('/{id}', 'view');
     });
 
