@@ -93,6 +93,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::get('/all_units', 'all_units');
         Route::get('/unit_renters', 'unit_renters');
         Route::get('/unit_owners', 'unit_owners');
+        Route::get('/unit_report', 'unit_report');
         Route::get('/{id}', 'view');
     });
 

@@ -566,4 +566,32 @@ class AppartmentController extends Controller
             'owner_count' => $owner->count(),
         ]);
     }
+
+    public function unit_report(Request $request){
+        $validator = Validator::make($request->all(), [
+            'appartment_id' => 'required|exists:appartments,id',
+        ]);
+
+        if ($validator->fails()) { 
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        $owner = AppartmentCode::
+        where('type', 'owner')  
+        ->where("appartment_id", $request->appartment_id)
+        ->count(); 
+
+        $rents = AppartmentCode::
+        where('type', 'renter')  
+        ->where("appartment_id", $request->appartment_id)
+        ->where("to", ">=", date("Y-m-d"))
+        ->count(); 
+
+        return response()->json([
+            'owner' => $owner, 
+            'rents' => $rents, 
+        ]);
+    }
 }
