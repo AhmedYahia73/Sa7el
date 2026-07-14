@@ -318,7 +318,7 @@ class ServiceController extends Controller
     
     public function services_provider_gallery(Request $request){
         $validator = Validator::make($request->all(), [
-            'provider_id' => 'required|exists:appartments,id', 
+            'provider_id' => 'required|exists:providers,id', 
             'local'       => 'required',
             'per_page'    => 'sometimes|integer|min:1|max:100', // اختياري للتحكم بحجم الصفحة
         ]);
@@ -351,7 +351,7 @@ class ServiceController extends Controller
 
     public function services_provider_videos(Request $request){
         $validator = Validator::make($request->all(), [
-            'provider_id' => 'required|exists:appartments,id', 
+            'provider_id' => 'required|exists:providers,id', 
             'local'       => 'required',
             'per_page'    => 'sometimes|integer|min:1|max:100',
         ]);
