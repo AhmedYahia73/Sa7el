@@ -218,6 +218,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
+        Route::get('/unit_report', 'unit_report');
     });
 
     Route::controller(AppartmentProfileController::class)
