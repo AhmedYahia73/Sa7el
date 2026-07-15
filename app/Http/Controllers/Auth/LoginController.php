@@ -395,11 +395,11 @@ class LoginController extends Controller
             ], 400);
         }
         if (password_verify($request->input('password'), $user->password) && $user->role == 'user') {
-            if ($user->tokens()->exists()) {
-                return response()->json([
-                    'errors' => 'already logged in from another device'
-                ], 403);
-            }
+            // if ($user->tokens()->exists()) {
+            //     return response()->json([
+            //         'errors' => 'already logged in from another device'
+            //     ], 403);
+            // }
             $user->fcm_token = $request->fcm_token ?? null;
             $user->save();
             $user->token = $user->createToken('user')->plainTextToken;
@@ -490,6 +490,7 @@ class LoginController extends Controller
                 'errors' => $validator->errors()->first(),
             ], 400);
         }
+        return response()->json(["login" => true]);
 
         $userId = auth()->user()->id;
         $ip_address = $request->ip_address;
