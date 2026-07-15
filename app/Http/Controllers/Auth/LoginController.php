@@ -588,17 +588,20 @@ class LoginController extends Controller
             'token' => $token, 
         ]);
     }
+    
+    public function logout(Request $request) { 
+        $user = auth()->user();
+        
+        // بيمسح التوكن الحالي المستخدم في الطلب ده فقط
+        $deleteToken = $user->currentAccessToken()->delete();
 
-    public function logout(Request $request){ 
-        $user =auth()->user();
-        $deletToken = $user->tokens()->delete();
-        if ($deletToken) {
+        if ($deleteToken) {
             return response()->json([
-                'success' => 'You logout success'
+                'success' => 'You logged out successfully'
             ]);
         } else {
             return response()->json([
-                'faild' => 'You faild to logout'
+                'failed' => 'Failed to logout'
             ], 400);
         }
     }
