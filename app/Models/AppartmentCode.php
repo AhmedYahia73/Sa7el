@@ -18,6 +18,7 @@ class AppartmentCode extends Model
         'image',
         'owner_id',
         'user_type',
+        'approve_rent_images',
     ];
     protected $appends = ['image_id_link'];
 
