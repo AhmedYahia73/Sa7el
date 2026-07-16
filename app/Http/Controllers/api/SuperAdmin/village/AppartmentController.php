@@ -353,6 +353,7 @@ class AppartmentController extends Controller
             'success' => $code
         ]);
     }
+    
     public function update_code(Request $request, $id)
     { 
         // 1. الـ Validation
@@ -370,6 +371,7 @@ class AppartmentController extends Controller
 
         // 2. استخدام Transaction لحماية البيانات
         DB::beginTransaction();
+        try {
             $appartment_code = $this->appartment_code->findOrFail($id);
             $codes = $this->appartment_code
                 ->where("code", $appartment_code->code)
@@ -386,6 +388,16 @@ class AppartmentController extends Controller
             $fromDate = $request->from ?? $appartment_code->from;
             $toDate = $request->to ?? $appartment_code->to;
 
+            // تجهيز حقل الصورة الافتراضي وتحويله إلى صيغة JSON متوافقة مع قاعدة البيانات
+            $defaultImage = null;
+            if (!empty($appartment_code->image)) {
+                // نقوم بعمل json_encode لإجبار القيمة على مطابقة الـ JSON constraint في الـ DB
+                // إذا كانت الصورة مخزنة مسبقاً كـ JSON صالح، نمررها كما هي، وإلا نحولها.
+                $defaultImage = $this->isJson($appartment_code->image) 
+                    ? $appartment_code->image 
+                    : json_encode($appartment_code->image);
+            }
+
             // تجهيز البيانات الافتراضية للسجلات الجديدة (الـ else)
             $baseData = [
                 'appartment_id' => $appartment_code->appartment_id,
@@ -395,7 +407,7 @@ class AppartmentController extends Controller
                 'to'            => $toDate,
                 'type'          => $appartment_code->type,
                 'code'          => $appartment_code->code,
-                'image'         => $appartment_code->image ?? null,
+                'image'         => $defaultImage,
                 'owner_id'      => $appartment_code->owner_id,
                 'user_type'     => $appartment_code->user_type,
                 'people'        => $request->people,
@@ -410,6 +422,14 @@ class AppartmentController extends Controller
             $records = [];
             for ($i = 0; $i < $request->people; $i++) {
                 if (isset($codes[$i])) {
+                    // تحديد الصورة الحالية وتحويلها لـ JSON إذا لم تكن كذلك
+                    $currentImage = null;
+                    if (!empty($codes[$i]->image)) {
+                        $currentImage = $this->isJson($codes[$i]->image) 
+                            ? $codes[$i]->image 
+                            : json_encode($codes[$i]->image);
+                    }
+
                     // السجل موجود مسبقاً: نحدث البيانات ونحافظ على الـ user_id والـ created_at القديم
                     $record = [
                         'appartment_id' => $codes[$i]->appartment_id,
@@ -419,7 +439,7 @@ class AppartmentController extends Controller
                         'to'            => $request->to ?? $codes[$i]->to,
                         'type'          => $codes[$i]->type,
                         'code'          => $codes[$i]->code,
-                        'image'         => $codes[$i]->image,
+                        'image'         => $currentImage,
                         'owner_id'      => $codes[$i]->owner_id,
                         'user_type'     => $codes[$i]->user_type,
                         'people'        => $request->people,
@@ -449,7 +469,27 @@ class AppartmentController extends Controller
             return response()->json([
                 'success' => "Data updated successfully"
             ]);
- 
+
+        } catch (\Exception $e) {
+            // التراجع في حالة الخطأ
+            DB::rollBack();
+            
+            return response()->json([
+                'error' => "Something went wrong, please try again.",
+                'debug' => $e->getMessage() 
+            ], 500);
+        }
+    }
+
+    /**
+     * دالة مساعدة للتأكد مما إذا كانت القيمة مسبقاً بصيغة JSON صالحة
+     */
+    private function isJson($string) {
+        if (!is_string($string)) {
+            return false;
+        }
+        json_decode($string);
+        return (json_last_error() == JSON_ERROR_NONE);
     }
 
     public function create(Request $request){
