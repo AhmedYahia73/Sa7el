@@ -38,6 +38,7 @@ class User extends Authenticatable
         "apple_id",
         "fcm_token",
         "favourite",
+        "verification",
     ];
     protected $appends = ['image_link', 'qr_code_link'];
     

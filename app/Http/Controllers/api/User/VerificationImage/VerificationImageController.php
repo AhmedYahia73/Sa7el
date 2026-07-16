@@ -59,7 +59,8 @@ class VerificationImageController extends Controller
             if (count($faceMatches) > 0) {
                 // وجد تطابق، نأخذ النسبة المئوية لأول وجه متطابق
                 $similarity = $faceMatches[0]['Similarity'];
-
+                auth()->user()->verification = trur;
+                auth()->user()->save();
                 return response()->json([
                     'success' => true,
                     'is_identical' => true,
