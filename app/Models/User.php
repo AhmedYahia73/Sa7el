@@ -39,6 +39,7 @@ class User extends Authenticatable
         "fcm_token",
         "favourite",
         "verification",
+        "delete_unit_role",
     ];
     protected $appends = ['image_link', 'qr_code_link'];
     
