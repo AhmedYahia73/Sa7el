@@ -26,7 +26,7 @@ class UserController extends Controller
 
     public function view(){
         $users = $this->user
-        ->select('id', 'name', 'email', 'phone', 'birthDate',
+        ->select('id', 'name', 'email', 'phone', 'birthDate', 'verification',
         'user_type', 'village_id', 'image', 'parent_user_id', 'status', 'gender')
         ->with('villages_user', 'parent')
         ->where('role', 'user')
@@ -61,6 +61,7 @@ class UserController extends Controller
                 'gender' => $item->gender,
                 'villages_user' => $item->villages_user,
                 'parent' => $item->parent,
+                "verification" => $item->verification,
             ];
         });
         $village = $this->village

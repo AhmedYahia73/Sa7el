@@ -25,6 +25,10 @@ class HomeController extends Controller
         $users = $this->users
         ->where('role', 'user')
         ->count();
+        $verification_users = $this->users
+        ->where('role', 'user')
+        ->where("verification", true)
+        ->count();
         $units = $this->units 
         ->count();
         $subscriper = $this->villages
@@ -52,6 +56,7 @@ class HomeController extends Controller
             'pending_payment' => $pending_payment,
             'service_providers' => $provider,
             'maintenance_providers' => $maintenance_providers,
+            "verification_users" => $verification_users,
         ]);
     }
 }
