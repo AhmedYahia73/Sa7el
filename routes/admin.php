@@ -234,6 +234,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     Route::controller(VillageController::class)->prefix('village')
     ->group(function() {
         Route::get('/', 'view')->middleware('can:admin_Village_view');
+        Route::get('/village_zones/{id}', 'village_zones')->middleware('can:admin_Village_view');
         Route::get('/item/{id}', 'village')->middleware('can:admin_Village_view');
         Route::put('/status/{id}', 'status')->middleware('can:admin_Village_status');
         Route::post('/update_profile_image/{id}', 'update_profile_image')->middleware('can:admin_Village_update_profile');

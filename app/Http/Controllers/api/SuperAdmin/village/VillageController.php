@@ -66,6 +66,21 @@ class VillageController extends Controller
         ]);
     }
 
+    public function village_zones($id){
+        $zone_village = ZoneVillage::
+        where("village_id", $id)
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+            ];
+        });
+
+        return response()->json([
+            "zone_village" => $zone_village
+        ]);
+    }
+
     public function village($id){
         $village = $this->village
         ->with(['translations', 'zone', 'village_zones'])
