@@ -223,6 +223,10 @@ class PoolController extends Controller
             ], 400);
          }
         
+        $last_visit = VisitPool::
+        where("user_id", $userid)
+        ->where("village_id", $request->user()->village_id)
+        ->first();
         VisitPool::
         create([
             'user_id' => $userid,
@@ -245,8 +249,8 @@ class PoolController extends Controller
             'visitor_type' => $visitor_type,
             'user_type' => $user_type,
             "is_visitor" => $type == 'visitor' ? true : false,
-            'date' => date('Y-m-d'),
-            'time' => date('h:i A'),
+            'date' => $last_visit ? $last_visit->created_at->format("Y-m-d") ?? null : null,
+            'time' => $last_visit ? $last_visit->created_at->format("h:i A") ?? null : null,
          ]);
         
     }

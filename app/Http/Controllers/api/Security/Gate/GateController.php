@@ -124,8 +124,7 @@ class GateController extends Controller
             ]);
          }
          $last_entrance = EntranceGate::
-         where("gate_id", $request->gate_id)
-         ->where("user_id", $userid)
+         where("user_id", $userid)
          ->where("village_id", $request->user()->village_id)
          ->first();
          EntranceGate::create([
