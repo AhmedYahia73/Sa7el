@@ -23,6 +23,7 @@ use App\Models\AppartmentType;
 use App\Models\SecurityMan;
 use App\Models\Package;
 use App\Models\Notification;
+use App\Models\DeviceLog;
 use App\Models\Zone;
 
 class LoginController extends Controller
@@ -517,7 +518,11 @@ class LoginController extends Controller
             ]);
             
             $request->user()->update(['ip_address' => $ip_address]);
-
+            DeviceLog::create([
+                "device" => $request->ip_address,
+                "user_id" => $userId,
+                "status" => true,
+            ]);
             return response()->json(["login" => true]);
         }
 
@@ -525,9 +530,20 @@ class LoginController extends Controller
         if ($last_request->ip_address == $ip_address) {
             // طالما هو نفس الجهاز الأخير، هنشوف حالته
             if ($last_request->status == "approve") {
+                DeviceLog::create([
+                    "device" => $request->ip_address,
+                    "user_id" => $userId,
+                    "status" => true,
+                ]);
                 return response()->json(["login" => true]); // يدخل علطول
             } else {
                 // لو كان لسه Pending، هيرجع False ومش هيبعت إشعار تاني (عشان ميغرقش الأدمن إشعارات لو فضل يدوس)
+                
+                DeviceLog::create([
+                    "device" => $request->ip_address,
+                    "user_id" => $userId,
+                    "status" => false,
+                ]);
                 return response()->json(["login" => false]);
             }
         } 
@@ -556,6 +572,11 @@ class LoginController extends Controller
             Notification::create($data);
             NotificationEvent::dispatch($data);
 
+            DeviceLog::create([
+                "device" => $request->ip_address,
+                "user_id" => $userId,
+                "status" => false,
+            ]);
             // نقفل عليه لحد ما الأدمن يوافق
             return response()->json(["login" => false]);
         }
