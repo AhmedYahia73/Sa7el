@@ -267,7 +267,7 @@ class UserController extends Controller
                 'price' => $item->price,
             ];
         });
-        $appartment_code = $appartment_code->where('type', 'renter')
+        $appartment_code = $this->appartment_code->where('type', 'renter')
         ->where('from', '<=', date('Y-m-d'))
         ->where('to', '>=', date('Y-m-d'))->values();
         $type = 'Visitor';
@@ -284,7 +284,7 @@ class UserController extends Controller
         }
         unset($user->user_type);
         $user->user_type = $type;
-        
+
         return response()->json([
             'user' => $user,
             'properties' => $properties,
