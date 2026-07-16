@@ -214,4 +214,20 @@ class SecurityController extends Controller
             'success' => 'You delete data success'
         ]);
     }
+
+    public function logout_user(Request $request, $id){
+        $village_id = $request->user()->village_id;
+
+        $user = SecurityMan::where('id', $id)
+            ->where('village_id', $village_id) 
+            ->first();
+
+        if (!$user) {
+            return response()->json(['errors' => 'user not found'], 404);
+        }
+
+        $user->tokens()->delete();
+
+        return response()->json(['success' => 'user logged out successfully']);
+    }
 }

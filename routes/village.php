@@ -314,6 +314,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(SecurityController::class)->prefix('security')->middleware('can:Security Man')
     ->group(function() {
         Route::get('/', 'view');
+        Route::get('/logout/{id}', 'logout_user');
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
