@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('device_logs', function (Blueprint $table) {
             $table->id();
             $table->string("device");
+            $table->foreignId('user_id')->nullable()->constrained("users")->onUpdate('cascade')->onDelete('cascade');
+            $table->boolean("status")->default(1);
             $table->timestamps();
         });
     }
