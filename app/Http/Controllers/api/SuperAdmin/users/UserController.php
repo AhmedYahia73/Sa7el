@@ -269,7 +269,7 @@ class UserController extends Controller
         });
         $appartment_code = $this->appartment_code->where('type', 'renter')
         ->where('from', '<=', date('Y-m-d'))
-        ->where('to', '>=', date('Y-m-d'))->values();
+        ->where('to', '>=', date('Y-m-d'))->get();
         $type = 'Visitor';
         if (count($appartment_code) > 0) {
             if ($appartment_code[0]->type == "owner") {
