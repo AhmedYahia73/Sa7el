@@ -353,14 +353,13 @@ class AppartmentController extends Controller
             'success' => $code
         ]);
     }
-    
     public function update_code(Request $request, $id)
     { 
-        // 1. تحسين الـ Validation
+        // 1. الـ Validation
         $validator = Validator::make($request->all(), [ 
             'people' => ['required', 'integer', 'min:1'],
-            'from' =>["sometimes", "date_format:Y-m-d H:i:s"],
-            'to' =>["sometimes", "date_format:Y-m-d H:i:s"],
+            'from' => ["sometimes", "date_format:Y-m-d H:i:s"],
+            'to' => ["sometimes", "date_format:Y-m-d H:i:s"],
         ]); 
 
         if ($validator->fails()) { 
@@ -377,56 +376,75 @@ class AppartmentController extends Controller
                 ->where("code", $appartment_code->code)
                 ->get();
 
-            // تجهيز البيانات الأساسية (تم إضافة user_id هنا لتجنب نقص الحقول)
-            $data = $appartment_code->only([
-                'appartment_id', 'village_id', 'from', 
-                'to', 'type', 'code', 'image', 'owner_id', 'user_type'
-            ]);
-            
-            // إصلاح المشكلة: تحديث عدد الأشخاص بالرقم الجديد من الـ Request
-            $data['people']     = $request->people;
-            $data['created_at'] = now();
-            $data['updated_at'] = now();
-            $data['user_id'] = null;
-            if($request->from){
-                $data['from'] = $request->from;
-            }
-            if($request->to){
-                $data['to'] = $request->to;
-            }
+            // تحديد الحقول المطلوبة بالترتيب لضمان تطابق مصفوفة الـ Bulk Insert
+            $fillableFields = [
+                'appartment_id', 'user_id', 'village_id', 'from', 'to', 
+                'type', 'code', 'image', 'owner_id', 'user_type', 
+                'people', 'created_at', 'updated_at'
+            ];
+
+            // تجهيز التواريخ الجديدة لو مبعوتة
+            $fromDate = $request->from ?? $appartment_code->from;
+            $toDate = $request->to ?? $appartment_code->to;
+
+            // تجهيز البيانات الافتراضية للسجلات الجديدة (الـ else)
+            $baseData = [
+                'appartment_id' => $appartment_code->appartment_id,
+                'user_id'       => null,
+                'village_id'    => $appartment_code->village_id,
+                'from'          => $fromDate,
+                'to'            => $toDate,
+                'type'          => $appartment_code->type,
+                'code'          => $appartment_code->code,
+                'image'         => $appartment_code->image,
+                'owner_id'      => $appartment_code->owner_id,
+                'user_type'     => $appartment_code->user_type,
+                'people'        => $request->people,
+                'created_at'    => now(),
+                'updated_at'    => now(),
+            ];
 
             // 3. مسح البيانات القديمة
             $this->appartment_code->where("code", $appartment_code->code)->delete();  
 
-            // 4. تجهيز مصفوفة لعمل إدخال مرة واحدة (Bulk Insert) بتطابق كامل للحقول
+            // 4. بناء مصفوفة السجلات مع إجبار الترتيب والتطابق
             $records = [];
             for ($i = 0; $i < $request->people; $i++) {
                 if (isset($codes[$i])) {
-                    // نأخذ البيانات القديمة مع الحفاظ على نفس ترتيب الحقول والـ Timestamps
-                    $record = $codes[$i]->only([
-                        'appartment_id', 'user_id', 'village_id', 'from', 
-                        'to', 'type', 'code', 'image', 'owner_id', 'user_type'
-                    ]);
-                    if($request->from){
-                        $record['from'] = $request->from;
-                    }
-                    if($request->to){
-                        $record['to'] = $request->to;
-                    }
-                    $record['people']     = $request->people;
-                    $record['created_at'] = $codes[$i]->created_at ?? now(); // الحفاظ على وقت الإنشاء القديم أو الحالي
-                    $record['updated_at'] = now();
+                    // السجل موجود مسبقاً: نحدث البيانات ونحافظ على الـ user_id والـ created_at القديم
+                    $record = [
+                        'appartment_id' => $codes[$i]->appartment_id,
+                        'user_id'       => $codes[$i]->user_id,
+                        'village_id'    => $codes[$i]->village_id,
+                        'from'          => $request->from ?? $codes[$i]->from,
+                        'to'            => $request->to ?? $codes[$i]->to,
+                        'type'          => $codes[$i]->type,
+                        'code'          => $codes[$i]->code,
+                        'image'         => $codes[$i]->image,
+                        'owner_id'      => $codes[$i]->owner_id,
+                        'user_type'     => $codes[$i]->user_type,
+                        'people'        => $request->people,
+                        'created_at'    => $codes[$i]->created_at ?? now(),
+                        'updated_at'    => now(),
+                    ];
                 } else {
-                    // لو السجلات الجديدة أكبر من القديمة، نستخدم مصفوفة $data المتطابقة تماماً في الحقول
-                    $record = $data;
+                    // سجل جديد زائد عن العدد القديم
+                    $record = $baseData;
                 }
-                $records[] = $record;
+
+                // السحر هنا: إعادة فرز المصفوفة لتطابق ترتيب الحقول اللي حددناها فوق بالظبط
+                $sortedRecord = [];
+                foreach ($fillableFields as $field) {
+                    $sortedRecord[$field] = $record[$field];
+                }
+
+                $records[] = $sortedRecord;
             }
 
-            // تنفيذ الإدخال كاستعلام واحد سريع في الداتابيز
+            // تنفيذ الإدخال السريع دفعة واحدة
             $this->appartment_code->insert($records);
 
-            // حفظ التغييرات في الداتابيز
+            // تأكيد الحفظ
             DB::commit();
 
             return response()->json([
@@ -434,16 +452,15 @@ class AppartmentController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            // التراجع عن أي تغييرات لو حصل خطأ
+            // التراجع في حالة الخطأ
             DB::rollBack();
             
-            // نصيحة: أثناء التطوير يمكنك استرجاع $e->getMessage() لمعرفة تفاصيل أي خطأ آخر قد يظهر
             return response()->json([
                 'error' => "Something went wrong, please try again.",
-                'debug' => $e->getMessage() // احذف هذا السطر في مرحلة الـ Production
+                'debug' => $e->getMessage() 
             ], 500);
         }
-    } 
+    }
 
     public function create(Request $request){
         $validator = Validator::make($request->all(), [
