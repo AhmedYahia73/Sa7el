@@ -9,6 +9,9 @@ use App\Models\CodeRequest;
 use App\Models\LoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Notifications\NotificationChanged;
+use App\Models\Notification;
+use App\Models\User;
 
 class RequestController extends Controller
 {
