@@ -135,6 +135,7 @@ class BeachController extends Controller
             'appartment' => $appartment,
             'user' => $user,
             'time' => $old_time,
+            "umbrellas" => $my_umbrellas - ($request->umbrella ?? 0),
          ]);
     }
 

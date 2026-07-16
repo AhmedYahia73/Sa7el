@@ -78,7 +78,8 @@ class UserController extends Controller
         $search = $request->search; // أو request('search') حسب مكان الكود
 
         $users = $this->user
-            ->select('id', 'name', 'email', 'phone', 'birthDate', 'user_type', 'village_id', 'image', 'parent_user_id', 'status', 'gender')
+            ->select('id', 'name', 'email', 'phone', 'birthDate', 'user_type', 
+            'village_id', 'image', 'parent_user_id', 'status', 'gender', 'verification')
             ->with(['villages_user', 'parent', 'appartment_code'])
             ->where('role', 'user')
             
