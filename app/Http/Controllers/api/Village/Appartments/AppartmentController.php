@@ -386,6 +386,11 @@ class AppartmentController extends Controller
     }
     
     public function delete($id){
+        if(!$request->user()->delete_unit_role){
+            return response()->json([
+                'errors' => 'You dont have premission'
+            ], 400);
+        }
         $appartment = $this->appartment
         ->where('id', $id) 
         ->first();
