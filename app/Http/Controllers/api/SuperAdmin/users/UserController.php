@@ -126,6 +126,7 @@ class UserController extends Controller
                     'villages_user' => $item->villages_user,
                     'parent' => $item->parent,
                     'favourite' => $item->favourite,
+                    "verification" => $item->verification,
                 ];
             });
         $village = $this->village
