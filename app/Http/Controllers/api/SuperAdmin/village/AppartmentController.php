@@ -449,8 +449,7 @@ class AppartmentController extends Controller
             return response()->json([
                 'success' => "Data updated successfully"
             ]);
-
-        }  
+ 
     }
 
     public function create(Request $request){
