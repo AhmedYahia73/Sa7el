@@ -93,6 +93,26 @@ class RequestController extends Controller
                     'user_id' => $request->user()->id
                 ]);
             }
+            $notification = "قام الأدمن بالموافقة على كود " . $appartment_code->code . 
+            " للوحدة " . $appartment_code?->appartment?->unit;
+            $data = [ 
+                'village_id' => $codes->village_id,
+                'code_request_id' => $id,
+                'login_request_id' => null,
+                "type" => "user", // user, admin
+                'notification' => $notification,
+                'is_read' => 0,
+                "user_id" => $codes->user_id,
+            ];
+            UserNotification::dispatch($data);
+            $new_notification = Notification::create($data);
+            $user = User::find($codes->user_id);
+            $data = [
+                "id" => $new_notification->id,
+                "title" => "كود تسجيل فى القرية",
+                "body" => $notification
+            ];
+            $user->notify(new NotificationChanged($data));
         }
         $codes->update(['status' => $request->status]);
 
@@ -139,6 +159,27 @@ class RequestController extends Controller
         $login_request = LoginRequest::where('id', $id) 
             ->first();
         $login_request->update(['status' => $request->status]);
+        if ($request->status == "approve") { 
+            $notification = "قام الادمن بالموافقة على طلب دخولك قرية " . $login_request?->village?->name;
+            $data = [ 
+                'village_id' => $login_request->village_id,
+                'code_request_id' => null,
+                'login_request_id' => $id,
+                "type" => "user", // user, admin
+                'notification' => $notification,
+                'is_read' => 0,
+                "user_id" => $login_request->user_id,
+            ];
+            UserNotification::dispatch($data);
+            $new_notification = Notification::create($data);
+            $user = User::find($login_request->user_id);
+            $data = [
+                "id" => $new_notification->id,
+                "title" => "دخول القرية",
+                "body" => $notification
+            ];
+            $user->notify(new NotificationChanged($data));
+        }
 
         return response()->json([
             'message' => 'Login request status updated successfully'
