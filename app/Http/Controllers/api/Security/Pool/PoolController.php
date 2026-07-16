@@ -90,6 +90,11 @@ class PoolController extends Controller
          ->where('village_id', $request->user()->village_id)
          ->whereDate('created_at', date('Y-m-d'))
          ->first();
+         $old_date_user_pool = $this->user_pool
+         ->where('user_id', $userid)
+         ->where('pool_id', $pool_id)
+         ->where('village_id', $request->user()->village_id)
+         ->first();
         $appartment->type;
         $user = $this->user
         ->where('id', $userid)
@@ -105,10 +110,10 @@ class PoolController extends Controller
                 'errors' => 'Appartment is wrong'
             ], 400);
          }
-         if (!empty($user_pool_now)) {
-            $old_time = $user_pool_now->updated_at->format('Y-m-d h:i A');
-            $user_pool_now->updated_at = now();
-            $user_pool_now->save();
+         if (!empty($old_date_user_pool)) {
+            $old_time = $old_date_user_pool->updated_at->format('Y-m-d h:i A');
+            $old_date_user_pool->updated_at = now();
+            $old_date_user_pool->save();
          }
          else{
             $user_pool = $this->user_pool
@@ -154,6 +159,8 @@ class PoolController extends Controller
         $code = null;
         $user_type = null;
         $visitor_type = null;
+        $last_visit_date = date("Y-m-d");
+        $last_visit_time = date("h:i A");
         if ($arr_text[0] == 'visitor_id') {
             $userid = intval($arr_text[1]); 
             $tomorrow = Carbon::now()->addDay();
@@ -197,6 +204,12 @@ class PoolController extends Controller
         elseif(intval($arr_text[0])) {
             $userid = intval($arr_text[0]); 
             $appartment_id = $arr_text[2];
+            $last_visit = VisitPool::
+            where("user_id", $userid)
+            ->where("village_id", $request->user()->village_id)
+            ->first();
+            $last_visit_date = $last_visit ? $last_visit->created_at->format("Y-m-d") ?? null : null;
+            $last_visit_time = $last_visit ? $last_visit->created_at->format("h:i A") ?? null : null;
         }
         else{
             return response()->json([
@@ -223,10 +236,6 @@ class PoolController extends Controller
             ], 400);
          }
         
-        $last_visit = VisitPool::
-        where("user_id", $userid)
-        ->where("village_id", $request->user()->village_id)
-        ->first();
         VisitPool::
         create([
             'user_id' => $userid,
@@ -249,8 +258,8 @@ class PoolController extends Controller
             'visitor_type' => $visitor_type,
             'user_type' => $user_type,
             "is_visitor" => $type == 'visitor' ? true : false,
-            'date' => $last_visit ? $last_visit->created_at->format("Y-m-d") ?? null : null,
-            'time' => $last_visit ? $last_visit->created_at->format("h:i A") ?? null : null,
+            'date' => $last_visit_date,
+            'time' => ,
          ]);
         
     }
