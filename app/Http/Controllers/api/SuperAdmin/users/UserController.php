@@ -267,7 +267,24 @@ class UserController extends Controller
                 'price' => $item->price,
             ];
         });
-
+        $appartment_code = $appartment_code->where('type', 'renter')
+        ->where('from', '<=', date('Y-m-d'))
+        ->where('to', '>=', date('Y-m-d'))->values();
+        $type = 'Visitor';
+        if (count($appartment_code) > 0) {
+            if ($appartment_code[0]->type == "owner") {
+                $type = 'Owner';
+            }
+            elseif($appartment_code[0]->type == "renter"){
+                $type = 'Renter';
+            }
+            else{
+                $type = 'Visitor';
+            }
+        }
+        unset($user->user_type);
+        $user->user_type = $type;
+        
         return response()->json([
             'user' => $user,
             'properties' => $properties,
