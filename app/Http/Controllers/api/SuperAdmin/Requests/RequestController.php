@@ -10,6 +10,7 @@ use App\Models\LoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Notifications\NotificationChanged;
+use App\Events\UserNotification;
 use App\Models\Notification;
 use App\Models\User;
 
