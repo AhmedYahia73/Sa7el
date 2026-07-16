@@ -260,7 +260,7 @@ class PoolController extends Controller
             'user_type' => $user_type,
             "is_visitor" => $type == 'visitor' ? true : false,
             'date' => $last_visit_date,
-            'time' => ,
+            'time' => $last_visit_time,
          ]);
         
     }
