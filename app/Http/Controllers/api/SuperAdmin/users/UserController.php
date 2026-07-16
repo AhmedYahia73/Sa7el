@@ -191,13 +191,10 @@ class UserController extends Controller
                     'parent' => $item->parent,
                     'favourite' => $item->favourite,
                 ];
-            });
-        $village = $this->village
-        ->get();
+            }); 
 
         return response()->json([
-            'users' => $users,
-            'village' => $village,
+            'users' => $users, 
         ]);
     }
 
