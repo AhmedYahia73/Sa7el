@@ -105,7 +105,7 @@ class BeachController extends Controller
             ], 400);
          }
          if (!empty($user_beach_now)) {
-            $old_time = $user_beach_now->updated_at->format('h:i A');
+            $old_time = $user_beach_now->updated_at->format('Y-d-m h:i A');
             $user_beach_now->updated_at = now();
             $user_beach_now->save();
          } else {

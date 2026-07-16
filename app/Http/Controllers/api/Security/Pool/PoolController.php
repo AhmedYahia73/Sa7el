@@ -106,7 +106,7 @@ class PoolController extends Controller
             ], 400);
          }
          if (!empty($user_pool_now)) {
-            $old_time = $user_pool_now->updated_at->format('h:i A');
+            $old_time = $user_pool_now->updated_at->format('Y-m-d h:i A');
             $user_pool_now->updated_at = now();
             $user_pool_now->save();
          }
