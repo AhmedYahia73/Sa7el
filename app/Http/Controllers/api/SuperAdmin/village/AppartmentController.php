@@ -370,7 +370,6 @@ class AppartmentController extends Controller
 
         // 2. استخدام Transaction لحماية البيانات
         DB::beginTransaction();
-        try {
             $appartment_code = $this->appartment_code->findOrFail($id);
             $codes = $this->appartment_code
                 ->where("code", $appartment_code->code)
@@ -451,15 +450,7 @@ class AppartmentController extends Controller
                 'success' => "Data updated successfully"
             ]);
 
-        } catch (\Exception $e) {
-            // التراجع في حالة الخطأ
-            DB::rollBack();
-            
-            return response()->json([
-                'error' => "Something went wrong, please try again.",
-                'debug' => $e->getMessage() 
-            ], 500);
-        }
+        }  
     }
 
     public function create(Request $request){
