@@ -396,7 +396,7 @@ class AppartmentController extends Controller
                 'to'            => $toDate,
                 'type'          => $appartment_code->type,
                 'code'          => $appartment_code->code,
-                'image'         => $appartment_code->image,
+                'image'         => $appartment_code->image ?? null,
                 'owner_id'      => $appartment_code->owner_id,
                 'user_type'     => $appartment_code->user_type,
                 'people'        => $request->people,
