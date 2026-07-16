@@ -69,6 +69,7 @@ class VillageController extends Controller
     public function village_zones($id){
         $zone_village = ZoneVillage::
         where("village_id", $id)
+        ->get()
         ->map(function($item){
             return [
                 "id" => $item->id,
