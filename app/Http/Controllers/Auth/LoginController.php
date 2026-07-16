@@ -155,7 +155,6 @@ class LoginController extends Controller
                 "pool" => $pool ,
                 "inside_gate_pool" => $inside_gate_pool ,
                 "inside_gate_beach" => $inside_gate_beach ,
-                "data" => $user->inside_gates ,
             ], 200);
         }
         else { 

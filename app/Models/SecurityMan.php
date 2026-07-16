@@ -53,6 +53,6 @@ class SecurityMan extends Model
     }
 
     public function inside_gates(){
-        return $this->belongsToMany(SecurityMan::class, 'inside_security', 'security_id', 'gate_id');
+        return $this->belongsToMany(InsideGate::class, 'inside_security', 'security_id', 'gate_id');
     }
 }
