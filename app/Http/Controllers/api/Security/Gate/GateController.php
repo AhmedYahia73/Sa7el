@@ -123,6 +123,11 @@ class GateController extends Controller
                 'user_type' => $user_type,
             ]);
          }
+         $last_entrance = EntranceGate::
+         where("gate_id", $request->gate_id)
+         ->where("user_id", $userid)
+         ->where("village_id", $request->user()->village_id)
+         ->first();
          EntranceGate::create([
             'gate_id' => $request->gate_id,
             'user_id' => $userid,
@@ -140,8 +145,8 @@ class GateController extends Controller
             'user' => $user,
             'visit_village_id' => $visit_village,
             'visitor_type' => $visitor_type,
-            'date' => date('Y-m-d'),
-            'time' => date('h:i A'),
+            'date' => $last_entrance ? $last_entrance->created_at->format('Y-m-d') ?? null : null,
+            'time' => $last_entrance ? $last_entrance->created_at->format('h:i A') ?? null : null, 
          ]);
     }
 
