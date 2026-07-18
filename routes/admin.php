@@ -313,6 +313,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::post('/delete_user', 'delete_user')->middleware('can:admin_user_delete');
         Route::get('/favourite_users', 'favourite_users')->middleware('can:admin_user_view');
         Route::get('/make_user_favourite/{id}', 'make_user_favourite')->middleware('can:admin_user_edit');
+        Route::get('/verification_user/{id}', 'verification_user')->middleware('can:admin_user_verification');
     });
     
     Route::controller(ServiceTypeController::class)->prefix('service_type')

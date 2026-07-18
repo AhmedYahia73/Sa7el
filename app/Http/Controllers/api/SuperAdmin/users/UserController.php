@@ -628,4 +628,16 @@ class UserController extends Controller
             "favourite" => $favouritePaginated
         ]);
     }
+
+    public function verification_user(Request $request, $id){
+        User::
+        where("id", $id)
+        ->update([
+            "verification" => true
+        ]);
+
+        return response()->json([
+            "success" => "You update data success"
+        ]);
+    }
 }

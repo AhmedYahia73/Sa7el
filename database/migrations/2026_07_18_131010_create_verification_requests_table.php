@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained("users")->onUpdate('cascade')->onDelete('cascade');
             $table->string("image");
-            $table->enum("status", ["pending", "approve", "reject"]);
+            $table->enum("status", ["pending", "approve", "reject"])->default("pending");
             $table->timestamps();
         });
     }

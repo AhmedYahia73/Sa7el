@@ -5,9 +5,14 @@ namespace App\Http\Controllers\api\user\VerificationImage;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Aws\Rekognition\RekognitionClient;
+use App\Models\VerificationRequest;
+use Illuminate\Support\Facades\Validator;
+use App\trait\TraitImage;
 
 class VerificationImageController extends Controller
 {
+    use TraitImage;
+
     public function verifyFaces(Request $request)
     {
         // 1. Validation
@@ -92,6 +97,29 @@ class VerificationImageController extends Controller
                 'error' => $e->getMessage()
             ], 400);
         }
+    }
+
+    public function manuel_request(Request $request){
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id',
+            'image' => "required"
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+        
+        $image_path = $this->storeBase64Image($request->image, 'images/verification_request');
+        VerificationRequest::create([
+            'user_id' => $request->user_id,
+            'status' => 'pending',
+            'image' => $image_path
+        ]);
+
+        return response()->json([
+            "success" => "You make request success"
+        ]);
     }
 
     /**
