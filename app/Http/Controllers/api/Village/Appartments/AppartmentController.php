@@ -110,6 +110,7 @@ class AppartmentController extends Controller
             'users' => $users, 
         ]);
     }
+    
 // 1176>appartment>789
     public function appartement_list(Request $request){
         $appartments = $this->appartment
@@ -385,6 +386,11 @@ class AppartmentController extends Controller
     }
     
     public function delete($id){
+        if(!$request->user()->delete_unit_role){
+            return response()->json([
+                'errors' => 'You dont have premission'
+            ], 400);
+        }
         $appartment = $this->appartment
         ->where('id', $id) 
         ->first();
@@ -398,6 +404,34 @@ class AppartmentController extends Controller
 
         return response()->json([
             'success' => 'You delete data success',
+        ]);
+    }
+
+    public function unit_report(Request $request){
+        $validator = Validator::make($request->all(), [
+            'appartment_id' => 'required|exists:appartments,id',
+        ]);
+
+        if ($validator->fails()) { 
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        $owner = AppartmentCode::
+        where('type', 'owner')  
+        ->where("appartment_id", $request->appartment_id)
+        ->count(); 
+
+        $rents = AppartmentCode::
+        where('type', 'renter')  
+        ->where("appartment_id", $request->appartment_id)
+        ->where("to", ">=", date("Y-m-d"))
+        ->count(); 
+
+        return response()->json([
+            'owner' => $owner, 
+            'rents' => $rents, 
         ]);
     }
 }

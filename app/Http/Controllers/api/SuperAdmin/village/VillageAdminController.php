@@ -11,6 +11,7 @@ use Illuminate\Validation\Rule;
 
 use App\Models\Village;
 use App\Models\User;
+use App\Models\AppartmentCode;
 use App\Models\AdminPosition;
 
 class VillageAdminController extends Controller

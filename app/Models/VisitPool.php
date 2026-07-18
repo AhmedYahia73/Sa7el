@@ -16,10 +16,15 @@ class VisitPool extends Model
         'visitor_type',
         'code',
         'user_type',
+        'inside_gate_id',
     ];
 
     public function user(){
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function inside_gate(){
+        return $this->belongsTo(InsideGate::class, 'inside_gate_id');
     }
 
     public function pool(){

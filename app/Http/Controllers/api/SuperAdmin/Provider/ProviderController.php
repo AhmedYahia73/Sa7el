@@ -70,12 +70,13 @@ class ProviderController extends Controller
             ];
         });
         $villages = $this->villages
-        ->select("id", "name")
+        ->select("id", "name", "zone_id")
         ->where('status', 1)->get()
         ->map(function($item){
             return [
                 "id" => $item->id,
                 "name" => $item->name,
+                "zone_id" => $item->zone_id,
             ];
         });
         $zones = $this->zones

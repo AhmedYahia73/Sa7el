@@ -139,7 +139,7 @@ class HomeController extends Controller
         // إضافة البحث بناءً على اسم أو رقم الوحدة (unit)
         ->when($search, function ($query, $search) {
             $query->whereHas('unit', function ($unitQuery) use ($search) {
-                $unitQuery->where('name', 'like', '%' . $search . '%');
+                $unitQuery->where('unit', 'like', '%' . $search . '%');
             });
         })
         ->paginate(15) // تحديد عدد العناصر في كل صفحة (مثلاً 15)

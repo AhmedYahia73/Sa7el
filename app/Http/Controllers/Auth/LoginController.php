@@ -23,6 +23,7 @@ use App\Models\AppartmentType;
 use App\Models\SecurityMan;
 use App\Models\Package;
 use App\Models\Notification;
+use App\Models\DeviceLog;
 use App\Models\Zone;
 
 class LoginController extends Controller
@@ -118,6 +119,7 @@ class LoginController extends Controller
         ->delete();
         $user = $this->secuity
         ->where('email', $request->email)
+        ->with("pool", "beach", "gate", "inside_gates")
         ->first();
         if (empty($user)) {
             return response()->json(['errors'=>'creational not Valid'],403);
@@ -139,9 +141,21 @@ class LoginController extends Controller
         }
         if (password_verify($request->input('password'), $user->password)) {
             $user->token = $user->createToken('security')->plainTextToken;
+            $gate = $user->gate->count() > 0;
+            $beach = $user->beach->count() > 0;
+            $pool = $user->pool->count() > 0;
+            $inside_gate_pool = $user->inside_gates
+            ->where("type", "pool")->count() > 0;
+            $inside_gate_beach = $user->inside_gates
+            ->where("type", "beach")->count() > 0;
             return response()->json([
                 'security' => $user,
                 'token' => $user->token,
+                "gate" => $gate ,
+                "beach" => $beach ,
+                "pool" => $pool ,
+                "inside_gate_pool" => $inside_gate_pool ,
+                "inside_gate_beach" => $inside_gate_beach ,
             ], 200);
         }
         else { 
@@ -386,11 +400,11 @@ class LoginController extends Controller
             ], 400);
         }
         if (password_verify($request->input('password'), $user->password) && $user->role == 'user') {
-            if ($user->tokens()->exists()) {
-                return response()->json([
-                    'errors' => 'already logged in from another device'
-                ], 403);
-            }
+            // if ($user->tokens()->exists()) {
+            //     return response()->json([
+            //         'errors' => 'already logged in from another device'
+            //     ], 403);
+            // }
             $user->fcm_token = $request->fcm_token ?? null;
             $user->save();
             $user->token = $user->createToken('user')->plainTextToken;
@@ -481,6 +495,7 @@ class LoginController extends Controller
                 'errors' => $validator->errors()->first(),
             ], 400);
         }
+        return response()->json(["login" => true]);
 
         $userId = auth()->user()->id;
         $ip_address = $request->ip_address;
@@ -503,7 +518,11 @@ class LoginController extends Controller
             ]);
             
             $request->user()->update(['ip_address' => $ip_address]);
-
+            DeviceLog::create([
+                "device" => $request->ip_address,
+                "user_id" => $userId,
+                "status" => true,
+            ]);
             return response()->json(["login" => true]);
         }
 
@@ -511,9 +530,20 @@ class LoginController extends Controller
         if ($last_request->ip_address == $ip_address) {
             // طالما هو نفس الجهاز الأخير، هنشوف حالته
             if ($last_request->status == "approve") {
+                DeviceLog::create([
+                    "device" => $request->ip_address,
+                    "user_id" => $userId,
+                    "status" => true,
+                ]);
                 return response()->json(["login" => true]); // يدخل علطول
             } else {
                 // لو كان لسه Pending، هيرجع False ومش هيبعت إشعار تاني (عشان ميغرقش الأدمن إشعارات لو فضل يدوس)
+                
+                DeviceLog::create([
+                    "device" => $request->ip_address,
+                    "user_id" => $userId,
+                    "status" => false,
+                ]);
                 return response()->json(["login" => false]);
             }
         } 
@@ -542,6 +572,11 @@ class LoginController extends Controller
             Notification::create($data);
             NotificationEvent::dispatch($data);
 
+            DeviceLog::create([
+                "device" => $request->ip_address,
+                "user_id" => $userId,
+                "status" => false,
+            ]);
             // نقفل عليه لحد ما الأدمن يوافق
             return response()->json(["login" => false]);
         }
@@ -578,17 +613,20 @@ class LoginController extends Controller
             'token' => $token, 
         ]);
     }
+    
+    public function logout(Request $request) { 
+        $user = auth()->user();
+        
+        // بيمسح التوكن الحالي المستخدم في الطلب ده فقط
+        $deleteToken = $user->currentAccessToken()->delete();
 
-    public function logout(Request $request){ 
-        $user =auth()->user();
-        $deletToken = $user->tokens()->delete();
-        if ($deletToken) {
+        if ($deleteToken) {
             return response()->json([
-                'success' => 'You logout success'
+                'success' => 'You logged out successfully'
             ]);
         } else {
             return response()->json([
-                'faild' => 'You faild to logout'
+                'failed' => 'Failed to logout'
             ], 400);
         }
     }

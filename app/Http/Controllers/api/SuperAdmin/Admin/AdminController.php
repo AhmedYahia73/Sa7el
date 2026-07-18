@@ -124,7 +124,7 @@ class AdminController extends Controller
         ->where('id', $id)
         ->first();
         if (!is_string($request->image)) {
-            $image_path = $this->update_image($request, $payment_method->image, 'image', 'images/admin');
+            $image_path = $this->update_image($request, $admin->image, 'image', 'images/admin');
             $paymentMethodRequest['image'] = $image_path;
         }
         $admin->update($adminRequest);

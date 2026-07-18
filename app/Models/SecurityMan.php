@@ -30,6 +30,7 @@ class SecurityMan extends Model
     protected $hidden = [
         'password',
         'remember_token',
+        'pivot'
     ];
     
     protected function casts(): array
@@ -51,4 +52,7 @@ class SecurityMan extends Model
         return $this->belongsToMany(Gate::class, 'security_position', 'security_id', 'gate_id');
     }
 
+    public function inside_gates(){
+        return $this->belongsToMany(InsideGate::class, 'inside_security', 'security_id', 'gate_id');
+    }
 }

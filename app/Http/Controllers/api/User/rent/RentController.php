@@ -39,7 +39,6 @@ class RentController extends Controller
         $rents = $this->appartment_code
         ->where('village_id', $request->village_id)
         ->where('appartment_id', $request->appartment_id)
-        ->where('owner_id', $request->user()->id)
         ->where('type', 'renter')
         ->where('to', '>', date('Y-m-d'))
         ->with('appartment')
@@ -234,6 +233,69 @@ class RentController extends Controller
 
         return response()->json([
             "success" => "You add data success"
+        ]);
+    }
+
+    public function update_rent_images(Request $request, $id){
+        $validator = Validator::make($request->all(), [
+            'description' => 'required',
+            'code' => "required",
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }
+        
+        $appartments = AppartmentCode::
+        where("code", $request->code)
+        ->whereNull("user_id")
+        ->get();
+        $status = isset($appartments[0]) ? $appartments[0]->people == $appartments->count() : false;
+        if(!$status){
+            return response()->json([
+                "errors" => "You can not update"
+            ], 400);
+        }
+        $rent = RentImage::
+        where("id", $id)
+        ->update([ 
+            "description" => $request->description,
+        ]);
+
+        return response()->json([
+            "success" => "You update data success"
+        ]);
+    }
+
+    public function delete_rent_images(Request $request, $id){
+        $validator = Validator::make($request->all(), [ 
+            'code' => "required",
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }
+        $appartments = AppartmentCode::
+        where("code", $request->code)
+        ->whereNull("user_id")
+        ->get();
+        $status = isset($appartments[0]) ? $appartments[0]->people == $appartments->count() : false;
+        if(!$status){
+            return response()->json([
+                "errors" => "You can not delete"
+            ], 400);
+        }
+        $rent = RentImage::
+        findOrFail( $id);
+        $this->deleteImage($rent->image);
+        $rent->delete();
+
+        return response()->json([
+            "success" => "You delete data success"
         ]);
     }
 }

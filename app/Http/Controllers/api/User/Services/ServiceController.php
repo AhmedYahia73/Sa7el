@@ -12,6 +12,7 @@ use App\Models\ProviderGallary;
 use App\Models\ProviderVideos;
 use App\Models\ProviderReview;
 use App\Models\Appartment;
+use App\Models\ZoneVillage;
 
 class ServiceController extends Controller
 {
@@ -127,6 +128,31 @@ class ServiceController extends Controller
         ]);
     }
 
+    public function zone_village_lists(Request $request){
+        $validator = Validator::make($request->all(), [
+            'village_id' => 'required|exists:villages,id',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }
+        $list = ZoneVillage::
+        where("village_id", $request->village_id)
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+            ];
+        });
+
+        return response()->json([
+            "list" => $list
+        ]);
+    }
+
     public function services(Request $request){
         $validator = Validator::make($request->all(), [
             'village_id'    => 'required|exists:villages,id',
@@ -184,7 +210,7 @@ class ServiceController extends Controller
             'services' => $services
         ]);
     }
-
+    
     public function services_provider(Request $request){
         $validator = Validator::make($request->all(), [
             'village_id'      => 'sometimes|exists:villages,id',
@@ -218,30 +244,34 @@ class ServiceController extends Controller
 
         $services_providers = Provider::where('status', 1)
             ->where("service_id", $request->service_id)
-            // حساب عدد الإعجابات مباشرة من قاعدة البيانات، وفحص إعجاب المستخدم الحالي
             ->withCount([
                 'love_user as loves_count',
-                'love_user as my_love_count' => fn($q) => $q->where('users.id', $userId)
+                'love_user as my_love_count' => fn($q) => $q->where('users.id', $userId),
             ])
-            // جلب العلاقات المطلوبة مسبقاً مع الفلترة والترجمات للأداء العالي
+            // 1. قمنا بإضافة 'translations' هنا ليتم تحميلها مسبقاً دفعة واحدة لتفادي الـ N+1
             ->with([
-                'work_hours', 'service', 'village', 'contact', 'zone.translations', 'mall.translations',
+                'work_hours', 'service', 'village', 'contact', 'zone.translations', 'mall.translations', 'translations',
                 'menue' => fn($q) => $q->where('status', 1)
             ])
-            // منطق البحث بالاسم (إنجليزي/عربي) أو الهاتف
+            // 2. تعديل منطق البحث للبحث في جدول الترجمات الفعلي بدلاً من الحقل الوهمي ar_name
             ->when($request->filled('search'), function($query) use ($search) {
                 $query->where(function($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('ar_name', 'like', "%{$search}%")
-                    ->orWhere('phone', 'like', "%{$search}%");
+                    ->orWhere('phone', 'like', "%{$search}%")
+                    ->orWhereHas('translations', function($transQuery) use ($search) {
+                        $transQuery->where('key', 'name')
+                                    ->where('locale', 'ar')
+                                    ->where('value', 'like', "%{$search}%");
+                    });
                 });
             });
-            if($request->village_id){
-                $services_providers->where('village_id', $request->village_id);
-            }
-            if($request->zone_village_id){
-                $services_providers->where('zone_village_id', $request->zone_village_id);
-            }
+
+        if($request->village_id){
+            $services_providers->where('village_id', $request->village_id);
+        }
+        if($request->zone_village_id){
+            $services_providers->where('zone_village_id', $request->zone_village_id);
+        }
 
         $services_providers = $services_providers->paginate($request->get('per_page', 15));
 
@@ -276,6 +306,7 @@ class ServiceController extends Controller
                 'description'      => $local == 'en' ? $item->description : ($item->ar_description ?? $item->description),
                 
                 'loves_count'      => $item->loves_count,
+                'rate'             => $item->rate,
                 'my_love'          => $item->my_love_count > 0,
             ];
         }); 
@@ -287,7 +318,7 @@ class ServiceController extends Controller
     
     public function services_provider_gallery(Request $request){
         $validator = Validator::make($request->all(), [
-            'provider_id' => 'required|exists:appartments,id', 
+            'provider_id' => 'required|exists:providers,id', 
             'local'       => 'required',
             'per_page'    => 'sometimes|integer|min:1|max:100', // اختياري للتحكم بحجم الصفحة
         ]);
@@ -320,7 +351,7 @@ class ServiceController extends Controller
 
     public function services_provider_videos(Request $request){
         $validator = Validator::make($request->all(), [
-            'provider_id' => 'required|exists:appartments,id', 
+            'provider_id' => 'required|exists:providers,id', 
             'local'       => 'required',
             'per_page'    => 'sometimes|integer|min:1|max:100',
         ]);

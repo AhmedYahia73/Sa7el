@@ -22,6 +22,7 @@ class ProfileController extends Controller
                 'email' => $user->email,
                 'phone' => $user->phone,
                 'image' => $user->image_link,
+                "verification" => $user->verification,
             ]
         ]);
     }
@@ -39,6 +40,7 @@ class ProfileController extends Controller
         if ($request->has('image')) {
             $image_path =$this->storeBase64Image($request->image, '/images/user_profile');
             $user->image = $image_path;
+            $user->verification = false;
         }
         $user->save();
 

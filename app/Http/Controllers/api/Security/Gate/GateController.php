@@ -75,6 +75,12 @@ class GateController extends Controller
         elseif(intval($arr_text[0])) {
             $userid = intval($arr_text[0]); 
             $appartment_id = $arr_text[2];
+            $last_entrance = EntranceGate::
+            where("user_id", $userid)
+            ->where("village_id", $request->user()->village_id)
+            ->first();
+            $last_entrance_date = $last_entrance ? $last_entrance->created_at->format('Y-m-d') ?? null : null;
+            $last_entrance_time = $last_entrance ? $last_entrance->created_at->format('h:i A') ?? null : null;
         }
         else{
             return response()->json([
@@ -140,8 +146,8 @@ class GateController extends Controller
             'user' => $user,
             'visit_village_id' => $visit_village,
             'visitor_type' => $visitor_type,
-            'date' => date('Y-m-d'),
-            'time' => date('h:i A'),
+            'date' => $last_entrance_date,
+            'time' => $last_entrance_time, 
          ]);
     }
 

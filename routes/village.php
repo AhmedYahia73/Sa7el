@@ -11,6 +11,7 @@ use App\Http\Controllers\api\Village\Problem\ProblemController;
 use App\Http\Controllers\api\Village\Maintenance\MaintenanceController;
 use App\Http\Controllers\api\Village\Visitor\VisitorController;
 use App\Http\Controllers\api\Village\Gate\GateController;
+use App\Http\Controllers\api\Village\Gate\InsideGateController;
 use App\Http\Controllers\api\Village\Security\SecurityController;
 use App\Http\Controllers\api\Village\MaintenanceFeez\MaintenanceFeezController;
 use App\Http\Controllers\api\Village\Appartments\AppartmentController;
@@ -217,6 +218,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
+        Route::get('/unit_report', 'unit_report');
     });
 
     Route::controller(AppartmentProfileController::class)
@@ -290,6 +292,16 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
         Route::get('/', 'view');
     });
 
+    Route::controller(InsideGateController::class)->prefix('inside_gate')->middleware('can:Gates')
+    ->group(function() {
+        Route::get('/', 'view');
+        Route::put('/status/{id}', 'status');
+        Route::post('/add', 'create');
+        Route::post('/update/{id}', 'modify');
+        Route::delete('/delete/{id}', 'delete');
+        Route::get('/entrance_list/{id}', 'entrance_list');
+    });
+
     Route::controller(GateController::class)->prefix('gate')->middleware('can:Gates')
     ->group(function() {
         Route::get('/', 'view');
@@ -302,6 +314,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(SecurityController::class)->prefix('security')->middleware('can:Security Man')
     ->group(function() {
         Route::get('/', 'view');
+        Route::get('/logout/{id}', 'logout_user');
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');

@@ -93,6 +93,11 @@ class BeachController extends Controller
          ->where('village_id', $request->user()->village_id)
          ->whereDate('created_at', date('Y-m-d'))
          ->first();
+         $old_user_beach = $this->user_beach
+         ->where('user_id', $userid)
+         ->where('beach_id', $beach_id)
+         ->where('village_id', $request->user()->village_id) 
+         ->first();
         $old_time = null;
         $user_type = $this->appartment_code
          ->where('appartment_id', $appartment_id)
@@ -104,10 +109,10 @@ class BeachController extends Controller
                 'errors' => 'Appartment is wrong'
             ], 400);
          }
-         if (!empty($user_beach_now)) {
-            $old_time = $user_beach_now->updated_at->format('h:i A');
-            $user_beach_now->updated_at = now();
-            $user_beach_now->save();
+         if (!empty($old_user_beach)) {
+            $old_time = $old_user_beach->updated_at->format('Y-d-m h:i A');
+            $old_user_beach->updated_at = now();
+            $old_user_beach->save();
          } else {
             $user_beach = $this->user_beach
             ->create([
@@ -130,13 +135,14 @@ class BeachController extends Controller
             'appartment' => $appartment,
             'user' => $user,
             'time' => $old_time,
+            "umbrellas" => $my_umbrellas - ($request->umbrella ?? 0),
          ]);
     }
 
     public function entrance_beach_qr(Request $request){
         $validator = Validator::make($request->all(), [
             'qr_code' => 'required|string',
-            'beach_id' => 'required|exists:beaches,id',
+            'inside_gate_id' => 'required|exists:inside_gates,id',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -152,6 +158,8 @@ class BeachController extends Controller
         $code = null;
         $user_type = null;
         $visitor_type = null;
+        $last_visit_date = date("Y-m-d");
+        $last_visit_time = date("h:i A");
         if ($arr_text[0] == 'visitor_id') {
             $userid = intval($arr_text[1]); 
             $tomorrow = Carbon::now()->addDay();
@@ -195,6 +203,12 @@ class BeachController extends Controller
         elseif(intval($arr_text[0])) {
             $userid = intval($arr_text[0]); 
             $appartment_id = $arr_text[2];
+            $last_visit = VisitBeach::
+            where("user_id", $userid)
+            ->where("village_id", $request->user()->village_id)
+            ->first();
+            $last_visit_date = $last_visit ? $last_visit->created_at->format("Y-m-d") ?? null : null;
+            $last_visit_time = $last_visit ? $last_visit->created_at->format("h:i A") ?? null : null;
         }
         else{
             return response()->json([
@@ -225,7 +239,7 @@ class BeachController extends Controller
         create([
             'user_id' => $userid,
             'village_id' => $request->user()->village_id,
-            'beach_id' => $request->beach_id,
+            'inside_gate_id' => $request->inside_gate_id,
             'appartment_id' => $appartment_id,
             'type' => $type,
             'visitor_type' => $visitor_type,
@@ -243,8 +257,8 @@ class BeachController extends Controller
             'visitor_type' => $visitor_type,
             'user_type' => $user_type,
             "is_visitor" => $type == 'visitor' ? true : false,
-            'date' => date('Y-m-d'),
-            'time' => date('h:i A'),
+            'date' => $last_visit_date,
+            'time' => $last_visit_time,
          ]);
         
     }

@@ -12,6 +12,7 @@ use App\Models\SecurityMan;
 use App\Models\Gate;
 use App\Models\Beach;
 use App\Models\Pools;
+use App\Models\InsideGate;
 
 class SecurityController extends Controller
 {
@@ -22,26 +23,56 @@ class SecurityController extends Controller
     public function view(Request $request){
         $security = $this->security
         ->where('village_id', $request->user()->village_id)
-        ->with('pool:id,name', 'beach:id,name', 'gate:id,name')
+        ->with('pool:id,name', 'beach:id,name', 'gate:id,name', 'inside_gates:id,name')
         ->get();
         $gates = $this->gates
         ->where('status', 1)
         ->where('village_id', $request->user()->village_id)
-        ->get();
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+            ];
+        });
         $beaches = $this->beaches
         ->where('status', 1)
         ->where('village_id', $request->user()->village_id)
-        ->get();
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+            ];
+        });
         $pools = $this->pools
         ->where('status', 1)
         ->where('village_id', $request->user()->village_id)
-        ->get();
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+            ];
+        });
+        $inside_gates = InsideGate::
+        where('status', 1)
+        ->where('village_id', $request->user()->village_id)
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+            ];
+        });
+
 
         return response()->json([
             'security' => $security,
             'gates' => $gates,
             'beaches' => $beaches,
             'pools' => $pools,
+            'inside_gates' => $inside_gates,
         ]);
     }
 
@@ -78,6 +109,8 @@ class SecurityController extends Controller
             'pool_ids' => 'array',
             'beach_ids' => 'array',
             'gate_ids' => 'array',
+            'inside_gate_ids' => 'array',
+            'inside_gate_ids.*' => 'required|exists:inside_gates,id',
             'pool_ids.*' => 'required|exists:pools,id',
             'beach_ids.*' => 'required|exists:beaches,id',
             'gate_ids.*' => 'required|exists:gates,id',
@@ -108,6 +141,7 @@ class SecurityController extends Controller
         $security->pool()->sync($request->pool_ids);
         $security->beach()->sync($request->beach_ids);
         $security->gate()->sync($request->gate_ids);
+        $security->inside_gates()->sync($request->inside_gate_ids);
       
         return response()->json([
             'success' => 'You add data success'
@@ -123,6 +157,8 @@ class SecurityController extends Controller
             'pool_ids' => 'array',
             'beach_ids' => 'array',
             'gate_ids' => 'array',
+            'inside_gate_ids' => 'array',
+            'inside_gate_ids.*' => 'required|exists:inside_gates,id',
             'pool_ids.*' => 'required|exists:pools,id',
             'beach_ids.*' => 'required|exists:beaches,id',
             'gate_ids.*' => 'required|exists:gates,id',
@@ -155,6 +191,7 @@ class SecurityController extends Controller
         $security->pool()->sync($request->pool_ids);
         $security->beach()->sync($request->beach_ids);
         $security->gate()->sync($request->gate_ids);
+        $security->inside_gates()->sync($request->inside_gate_ids);
 
         return response()->json([
             'success' => 'You update data success'
@@ -176,5 +213,21 @@ class SecurityController extends Controller
         return response()->json([
             'success' => 'You delete data success'
         ]);
+    }
+
+    public function logout_user(Request $request, $id){
+        $village_id = $request->user()->village_id;
+
+        $user = SecurityMan::where('id', $id)
+            ->where('village_id', $village_id) 
+            ->first();
+
+        if (!$user) {
+            return response()->json(['errors' => 'user not found'], 404);
+        }
+
+        $user->tokens()->delete();
+
+        return response()->json(['success' => 'user logged out successfully']);
     }
 }

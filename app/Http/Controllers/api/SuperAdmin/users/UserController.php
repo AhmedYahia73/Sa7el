@@ -27,7 +27,7 @@ class UserController extends Controller
 
     public function view(){
         $users = $this->user
-        ->select('id', 'name', 'email', 'phone', 'birthDate',
+        ->select('id', 'name', 'email', 'phone', 'birthDate', 'verification',
         'user_type', 'village_id', 'image', 'parent_user_id', 'status', 'gender')
         ->with('villages_user', 'parent')
         ->where('role', 'user')
@@ -62,6 +62,7 @@ class UserController extends Controller
                 'gender' => $item->gender,
                 'villages_user' => $item->villages_user,
                 'parent' => $item->parent,
+                "verification" => $item->verification,
             ];
         });
         $village = $this->village
@@ -78,7 +79,8 @@ class UserController extends Controller
         $search = $request->search; // أو request('search') حسب مكان الكود
 
         $users = $this->user
-            ->select('id', 'name', 'email', 'phone', 'birthDate', 'user_type', 'village_id', 'image', 'parent_user_id', 'status', 'gender')
+            ->select('id', 'name', 'email', 'phone', 'birthDate', 'user_type', 
+            'village_id', 'image', 'parent_user_id', 'status', 'gender', 'verification')
             ->with(['villages_user', 'parent', 'appartment_code'])
             ->where('role', 'user')
             
@@ -125,6 +127,8 @@ class UserController extends Controller
                     'gender' => $item->gender,
                     'villages_user' => $item->villages_user,
                     'parent' => $item->parent,
+                    'favourite' => $item->favourite,
+                    "verification" => $item->verification,
                 ];
             });
         $village = $this->village
@@ -133,6 +137,80 @@ class UserController extends Controller
         return response()->json([
             'users' => $users,
             'village' => $village,
+        ]);
+    }
+
+    public function favourite_users(Request $request){
+        $perPage = 15;
+        $search = $request->search; // أو request('search') حسب مكان الكود
+
+        $users = $this->user
+            ->select('id', 'name', 'email', 'phone', 'birthDate', 'user_type', 'village_id', 'image', 'parent_user_id', 'status', 'gender')
+            ->with(['villages_user', 'parent', 'appartment_code'])
+            ->where('role', 'user')
+            ->where("favourite", true)
+            
+            // --- بداية كود البحث ---
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%");
+                });
+            })
+            // --- نهاية كود البحث ---
+            
+            ->paginate($perPage)
+            ->through(function($item) {
+                $user_type_owner = $item->appartment_code->where('type', 'owner')->values();
+                $user_type_renter = $item->appartment_code->where('type', 'renter')
+                    ->where('from', '<=', date('Y-m-d'))
+                    ->where('to', '>=', date('Y-m-d'))->values();
+                    
+                $type = 'Visitor';
+                if (count($item->appartment_code) > 0) {
+                    if (count($user_type_owner) > 0) {
+                        $type = 'Owner';
+                    }
+                    elseif(count($user_type_renter) > 0){
+                        $type = 'Renter';
+                    }
+                    else{
+                        $type = 'Visitor';
+                    }
+                }
+                
+                return [
+                    'id' => $item->id,
+                    'name' => $item->name,
+                    'email' => $item->email,
+                    'phone' => $item->phone,
+                    'user_type' => $type,
+                    'village_id' => $item->village_id,
+                    'image' => $item->image_link,
+                    'parent_user_id' => $item->parent_user_id,
+                    'status' => $item->status,
+                    'gender' => $item->gender,
+                    'villages_user' => $item->villages_user,
+                    'parent' => $item->parent,
+                    'favourite' => $item->favourite,
+                ];
+            }); 
+
+        return response()->json([
+            'users' => $users, 
+        ]);
+    }
+
+    public function make_user_favourite(Request $request, $id){
+        $user = User::
+        where("id", $id)
+        ->first();
+        $user->favourite = !$user->favourite;
+        $user->save();
+        
+        return response()->json([
+            'success' => "You update data success",
         ]);
     }
 
@@ -190,11 +268,49 @@ class UserController extends Controller
                 'price' => $item->price,
             ];
         });
+        $appartment_code = $this->appartment_code->where('type', 'renter')
+        ->where('from', '<=', date('Y-m-d'))
+        ->where('to', '>=', date('Y-m-d'))->get();
+        $type = 'Visitor';
+        if (count($appartment_code) > 0) {
+            if ($appartment_code[0]->type == "owner") {
+                $type = 'Owner';
+            }
+            elseif($appartment_code[0]->type == "renter"){
+                $type = 'Renter';
+            }
+            else{
+                $type = 'Visitor';
+            }
+        }
+        unset($user->user_type);
+        $user->user_type = $type;
 
         return response()->json([
             'user' => $user,
             'properties' => $properties,
             'offers' => $offer,
+        ]);
+    }
+ 
+    public function online_user_units($id){
+        $units = AppartmentCode::
+        where("user_id", $id)
+        ->with("appartment")
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "type" => $item->type,
+                "from" => $item->from,
+                "to" => $item->to,
+                "people" => $item->people,
+                "unit" => $item?->appartment?->unit,
+            ];
+        });
+
+        return response()->json([
+            "units" => $units
         ]);
     }
 
@@ -371,52 +487,59 @@ class UserController extends Controller
     }
 
     public function units(Request $request, $id){
-        $property = AppartmentCode::
-        where("user_id", $id)
-        ->where("type", "owner")
-        ->with("appartment", "village")
-        ->get()
-        ->map(function($item){
+        $properties = AppartmentCode::where("user_id", $id)
+            ->where("type", "owner")
+            ->with(["appartment", "village"])
+            ->get();
+
+        $formattedProperties = $properties->map(function ($item) {
             return [
-                "id" => $item->id,
-                "people" => $item->people,
+                "id"            => $item->id,
+                "people"        => $item->people,
                 "image_id_link" => $item->image_id_link,
-                "village" => $item?->village?->name,
-                "unit" => $item?->appartment?->unit,
+                "village"       => $item->village?->name,
+                "unit"          => $item->appartment?->unit,
             ];
         });
-        $rents = AppartmentCode::
-        where("user_id", $id)
-        ->where("type", "renter")
-        ->with("appartment", "village")
-        ->get()
-        ->map(function($item){
-            $status = "Past";
-            if(Carbon::parse($item->from) <= now() && Carbon::parse($item->to) >= now()){
-                $status = "Current";
-            }
-            elseif(Carbon::parse($item->to) > now()){
-                $status = "Upcoming";
-            }
-            return [
-                "id" => $item->id,
-                "people" => $item->people,
-                "image_id_link" => $item->image_id_link,
-                "from" => $item->from,
-                "to" => $item->to,
-                "village" => $item?->village?->name,
-                "unit" => $item?->appartment?->unit,
-                "status" => $status,
-            ];
-        }); 
+
+        $apartmentIds = $properties->pluck('appartment_id')->filter()->unique();
+
+        $rents = AppartmentCode::whereIn("appartment_id", $apartmentIds)
+            ->where("type", "renter")
+            ->with(["appartment", "village"])
+            ->get()
+            ->unique("code")
+            ->map(function ($item) {
+                $now = now();
+                $from = Carbon::parse($item->from);
+                $to = Carbon::parse($item->to);
+
+                if ($from->lessThanOrEqualTo($now) && $to->greaterThanOrEqualTo($now)) {
+                    $status = "Current";
+                } elseif ($to->greaterThanOrEqualTo($now)) {
+                    $status = "Upcoming";
+                } else {
+                    $status = "Past";
+                }
+
+                return [
+                    "id"            => $item->id,
+                    "people"        => $item->people,
+                    "image_id_link" => $item->image_id_link,
+                    "from"          => $item->from,
+                    "to"            => $item->to,
+                    "village"       => $item->village?->name,
+                    "unit"          => $item->appartment?->unit,
+                    "status"        => $status,
+                ];
+            })->values();
 
         return response()->json([
-            "property" => $property,
-            "rents" => $rents,
+            "property" => $formattedProperties,
+            "rents"    => $rents,
         ]);
     }
-    
-
+     
     public function delete_user(Request $request){
         $validator = Validator::make($request->all(), [
             'id' => 'required|exists:appartment_codes,id',

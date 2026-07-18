@@ -16,6 +16,7 @@ class VisitBeach extends Model
         'visitor_type',
         'code',
         'user_type',
+        'inside_gate_id',
     ];
 
     public function user(){
@@ -24,6 +25,10 @@ class VisitBeach extends Model
 
     public function beach(){
         return $this->belongsTo(Beach::class, 'beach_id');
+    }
+
+    public function inside_gate(){
+        return $this->belongsTo(InsideGate::class, 'inside_gate_id');
     }
 
     public function appartment(){

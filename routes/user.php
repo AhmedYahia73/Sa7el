@@ -143,6 +143,7 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
         Route::put('update_review/{id}', 'update_review');
         Route::post('review', 'review');
         Route::post('show_reviews', 'show_reviews');
+        Route::get('zone_village_lists', 'zone_village_lists');
     });
 
     Route::controller(RentController::class)
@@ -153,6 +154,8 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
         Route::post('/rent/destroy', 'destroy');
         Route::post('/rent/delete_user', 'delete_user');
         Route::post('/rent/push_rent_images', 'push_rent_images');
+        Route::put('/update_rent_images/{id}', 'update_rent_images'); 
+        Route::delete('/delete_rent_images/{id}', 'delete_rent_images'); 
     });
 
     Route::controller(OfferController::class)->prefix('offer')

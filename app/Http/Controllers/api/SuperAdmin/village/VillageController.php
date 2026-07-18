@@ -11,6 +11,8 @@ use App\trait\TraitImage;
 use App\Models\Zone;
 use App\Models\Village;
 use App\Models\Appartment;
+use App\Models\SecurityMan;
+use App\Models\ZoneVillage;
 
 class VillageController extends Controller
 {
@@ -64,9 +66,25 @@ class VillageController extends Controller
         ]);
     }
 
+    public function village_zones($id){
+        $zone_village = ZoneVillage::
+        where("village_id", $id)
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+            ];
+        });
+
+        return response()->json([
+            "zone_village" => $zone_village
+        ]);
+    }
+
     public function village($id){
         $village = $this->village
-        ->with(['translations', 'zone'])
+        ->with(['translations', 'zone', 'village_zones'])
         ->withCount('population', 'units')
         ->where('id', $id)
         ->first();
@@ -103,7 +121,16 @@ class VillageController extends Controller
         // logo
         $validator = Validator::make($request->all(), [
             'image' => 'required|base64image', 
-            'logo' => 'required|base64image', 
+            'logo' => 'required|base64image',
+            'zones' => 'array',
+            'zones.*.name' => 'required|array',
+            'zones.*.name.en' => 'required',
+            'zones.*.name.ar' => 'required',
+            'zones.*.description' => 'required|array',
+            'zones.*.description.en' => 'required',
+            'zones.*.description.ar' => 'required',
+            'zones.*.lat' => 'required|numeric',
+            'zones.*.lng' => 'required|numeric',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -148,6 +175,17 @@ class VillageController extends Controller
             ];
         }
         $village->translations()->createMany($village_translations);
+        if($request->zones){
+            foreach ($request->zones as $item) {
+                ZoneVillage::create([
+                    'name' => $item['name'],
+                    'description' => $item['description'],
+                    'lat' => $item['lat'],
+                    'lng' => $item['lng'],
+                    'village_id' => $village->id,
+                ]);
+            }
+        }
 
         return response()->json([
             'success' => 'You add data success'
@@ -161,6 +199,17 @@ class VillageController extends Controller
             'image' => 'nullable|base64image',
             "units_num" => ['required', 'numeric'],
             'logo' => 'sometimes|base64image', 
+            'deleted_zones' => 'array', 
+            'deleted_zones.*' => 'exists:zone_villages,id', 
+            'zones' => 'array', 
+            'zones.*.name' => 'required|array',
+            'zones.*.name.en' => 'required',
+            'zones.*.name.ar' => 'required',
+            'zones.*.description' => 'required|array',
+            'zones.*.description.en' => 'required',
+            'zones.*.description.ar' => 'required',
+            'zones.*.lat' => 'required|numeric',
+            'zones.*.lng' => 'required|numeric',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -217,7 +266,22 @@ class VillageController extends Controller
         }
         $village->translations()->delete();
         $village->translations()->createMany($village_translations);
-
+        if($request->zones){
+            foreach ($request->zones as $item) {
+                ZoneVillage::create([
+                    'name' => $item['name'],
+                    'description' => $item['description'],
+                    'lat' => $item['lat'],
+                    'lng' => $item['lng'],
+                    'village_id' => $village->id,
+                ]);
+            }
+        }
+        if($request->deleted_zones){
+            ZoneVillage::
+            whereIn("id", $request->deleted_zones)
+            ->delete();
+        }
         return response()->json([
             'success' => 'You update data success'
         ]);
@@ -290,4 +354,25 @@ class VillageController extends Controller
     public function invoice(Request $request, $id){
         
     }
+
+    public function gate_keeper(Request $request, $id){
+        $gate_keeper = SecurityMan::
+        where("village_id", $id)
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+                "image" => $item->image_link,
+                "email" => $item->email,
+                "phone" => $item->phone,
+                "status" => $item->status,
+                "type" => $item->type,
+            ];
+        });
+
+        return response()->json([
+            "gate_keeper" => $gate_keeper
+        ]);
+    } 
 }

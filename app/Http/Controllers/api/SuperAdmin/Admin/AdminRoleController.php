@@ -25,7 +25,7 @@ class AdminRoleController extends Controller
         ->get();
         $roles = [
             'Zone' => ['all', 'view', 'status', 'add', 'edit', 'delete'],
-            'Village' => ['all', 'view', 'status', 'add', 'edit', 'delete', 'update_profile', 'view_units', 'delete_unit'],
+            'Village' => ['all', 'view', 'status', 'add', 'edit', 'delete', 'update_profile', 'view_units', 'delete_unit', "gate_keeper"],
             'Village Gallery' => ['all', 'view', 'status', 'add', 'delete'],
             'Village Admin' => ['all', 'view', 'status', 'add', 'edit', 'delete', 'logout_village'],
             'Village Admin Role' => ['all', 'view', 'status', 'add', 'edit', 'delete'],

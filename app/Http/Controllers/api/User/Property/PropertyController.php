@@ -148,6 +148,7 @@ class PropertyController extends Controller
                     'unit' => null,
                     'image' => $item->village->image_link,
                     'unit_type' => $item->type,
+                    'code' => $item->code,
                     'cover_image' => $item->village->cover_image_link,
                     'village_id' => $item->village_id,
                     'village' => $item->village->name, 
@@ -182,6 +183,7 @@ class PropertyController extends Controller
                     'id' => $appartment->id,
                     'unit' => $appartment->unit,
                     'unit_type' => $item->type,
+                    'code' => $item->code,
                     'image' => $appartment->village->image_link,
                     'cover_image' => $appartment->village->cover_image_link,
                     'village_id' => $appartment->village_id,
@@ -433,6 +435,7 @@ class PropertyController extends Controller
     public function rent_images(Request $request){
         $validator = Validator::make($request->all(), [
             'code' => 'required',
+            "approve" => "sometimes|boolean"
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -441,13 +444,28 @@ class PropertyController extends Controller
             ],400);
         }
 
+        $appartments = AppartmentCode::
+        where("code", $request->code)
+        ->whereNull("user_id")
+        ->get();
         $rent_images = AppartmentCode::
         where("code", $request->code)
         ->with("rent_images")
         ->first()?->rent_images;
+        $my_appartment_code = AppartmentCode::
+        where("code", $request->code)
+        ->where("user_id", auth()->user()->id)
+        ->first();
+        if($request->approve && $my_appartment_code){
+            $my_appartment_code->update([
+                "approve_rent_images" => true
+            ]);
+        }
 
         return response()->json([
-            "rent_images" => $rent_images
+            "rent_images" => $rent_images,
+            "update_delete" => isset($appartments[0]) ? $appartments[0]->people == $appartments->count() : false,
+            "approve" => $my_appartment_code?->approve_rent_images ?? false,
         ]);
     }
 }
