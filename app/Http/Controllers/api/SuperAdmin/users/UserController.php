@@ -14,6 +14,7 @@ use Carbon\Carbon;
 
 use App\Models\User;
 use App\Models\Village;
+use App\Models\Provider;
 use App\Models\AppartmentCode;
 use App\Models\Offer;
 
@@ -453,6 +454,55 @@ class UserController extends Controller
 
         return response()->json([
             "success" => "You delete data success"
+        ]);
+    }
+
+    public function favourite_provider(Request $request){
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id',
+            'search'  => 'nullable|string|max:255', // إضافة التحقق من نص البحث
+            'per_page'=> 'nullable|integer|min:1|max:100', // مرونة في تحديد عدد العناصر بالصفحة
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        $perPage = $request->input('per_page', 10);
+        $search = $request->input('search');
+
+        $favouriteQuery = Provider::whereHas("love_user", function($query) use($request) {
+            $query->where("users.id", $request->user_id);
+        });
+
+        if ($search) {
+            $favouriteQuery->where(function($query) use($search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhereHas('service', function($q) use($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        $favouritePaginated = $favouriteQuery->with(['zone', 'zone_village', 'village', 'service'])
+            ->paginate($perPage);
+
+        $favouritePaginated->getCollection()->transform(function($item) {
+            return [
+                "id"           => $item->id,
+                "name"         => $item->name,
+                "image"        => $item->image_link,
+                "zone"         => $item->zone?->name,
+                "zone_village" => $item->zone_village?->name,
+                "village"      => $item->village?->name,
+                "service"      => $item->service?->name,
+            ];
+        });
+
+        return response()->json([
+            "favourite" => $favouritePaginated
         ]);
     }
 }

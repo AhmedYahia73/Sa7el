@@ -39,6 +39,7 @@ use App\Http\Controllers\api\SuperAdmin\Application\ApplicationController;
 use App\Http\Controllers\api\SuperAdmin\Popup\PopupController;
 use App\Http\Controllers\api\SuperAdmin\notification\NotificationController;
 use App\Http\Controllers\api\SuperAdmin\Provider\ProviderReviewController;
+use App\Http\Controllers\api\SuperAdmin\Verification\VerificationRequestController;
 use App\Http\Controllers\api\User\Profile\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -148,6 +149,13 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::get('/{id}', 'view')->middleware('can:admin_provider_maintenance_cover_view');
         Route::post('/add/{id}', 'create')->middleware('can:admin_provider_maintenance_cover_add');
         Route::delete('/delete/{id}', 'delete')->middleware('can:admin_provider_maintenance_cover_delete');
+    });
+    
+    Route::controller(VerificationRequestController::class)
+    ->prefix('verification_request')
+    ->group(function() {
+        Route::get('/', 'index');
+        Route::put('/status/{id}', 'status');
     });
     
     Route::controller(MaintenanceProviderGalleryController::class)->prefix('maintenance_provider_gallary')
@@ -269,6 +277,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::get('/user_active', 'user_active')->middleware('can:admin_user_logout_user');
         Route::get('/logout_user/{id}', 'logout_user')->middleware('can:admin_user_logout_user');
         Route::get('/', 'view')->middleware('can:admin_user_view');
+        Route::post('/favourite_provider', 'favourite_provider')->middleware('can:admin_user_view');
         Route::get('/users', 'users')->middleware('can:admin_user_view');
         Route::get('/item/{id}', 'user')->middleware('can:admin_user_single_page');
         Route::get('/units/{id}', 'units')->middleware('can:admin_user_single_page');
