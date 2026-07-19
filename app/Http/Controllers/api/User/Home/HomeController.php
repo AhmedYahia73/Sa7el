@@ -9,6 +9,7 @@ use Carbon\Carbon;
 
 use App\Models\Village;
 use App\Models\Popup;
+use App\Models\InsideGate;
 
 class HomeController extends Controller
 {
@@ -20,6 +21,64 @@ class HomeController extends Controller
         return response()->json([
             "logo" => $village->logo_link,
             "name" => $village->name,
+        ]);
+    }
+
+    public function inside_gate_beach(Request $request){
+        $validator = Validator::make($request->all(), [
+            'locale' => 'required|in:ar,en',
+        ]);
+
+        if ($validator->fails()) { 
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        $locale = $request->locale;
+        $beach = InsideGate::
+        where("village_id", auth()->user()->village_id)
+        ->where("type", "beach")
+        ->get()
+        ->map(function($item) use($locale){
+            return [
+                "id" => $item->id,
+                "name" => $locale == "en" ?
+                $item->name : $item->ar_name,
+            ];
+        });
+
+        return response()->json([
+            "beaches" => $beach, 
+        ]);
+    }
+
+    public function inside_gate_pool(Request $request){
+        $validator = Validator::make($request->all(), [
+            'locale' => 'required|in:ar,en',
+        ]);
+
+        if ($validator->fails()) { 
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        $locale = $request->locale;
+        $pool = InsideGate::
+        where("village_id", auth()->user()->village_id)
+        ->where("type", "pool")
+        ->get()
+        ->map(function($item) use($locale){
+            return [
+                "id" => $item->id,
+                "name" => $locale == "en" ?
+                $item->name : $item->ar_name,
+            ];
+        });
+
+        return response()->json([
+            "pools" => $pool, 
         ]);
     }
 
