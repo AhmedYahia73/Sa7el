@@ -296,7 +296,7 @@ class ServiceController extends Controller
                 'website_status'   => $item->contact?->website_status ?? 0,
                 'instagram_status' => $item->contact?->instagram_status ?? 0,
                 'watts'            => $item->contact?->watts ?? null,
-                'phone'            => $item->contact?->phone ?? null,
+                'phone'            => $item?->phone ?? null,
                 'website'          => $item->contact?->website ?? null,
                 'instagram'        => $item->contact?->instagram ?? null,
 
