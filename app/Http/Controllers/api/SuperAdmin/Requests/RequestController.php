@@ -13,9 +13,11 @@ use App\Notifications\NotificationChanged;
 use App\Events\UserNotification;
 use App\Models\Notification;
 use App\Models\User;
+use App\trait\Notifications;
 
 class RequestController extends Controller
 {
+    use Notifications;
     
     public function code_request(Request $request){
         $requests = CodeRequest::
@@ -117,6 +119,7 @@ class RequestController extends Controller
                 "body" => $notification
             ];
             if ($user) {
+                $data_count = $this->sendNotificationToMany([$user->fcm_token], $data['title'], $data['body']);
                 $user->notify(new NotificationChanged($data));
             }
         }
@@ -185,6 +188,7 @@ class RequestController extends Controller
                 "body" => $notification
             ];
             if ($user) {
+                $data_count = $this->sendNotificationToMany([$user->fcm_token], $data['title'], $data['body']);
                 $user->notify(new NotificationChanged($data));
             }
         }
