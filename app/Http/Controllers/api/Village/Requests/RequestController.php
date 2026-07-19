@@ -195,7 +195,7 @@ class RequestController extends Controller
                 "body" => $notification
             ];
             if ($user) {
-                $data_count = $this->sendNotificationToMany($user->fcm_token, $data['title'], $data['body']);
+                $data_count = $this->sendNotificationToMany([$user->fcm_token], $data['title'], $data['body']);
                 $user->notify(new NotificationChanged($data));
             }
         }
