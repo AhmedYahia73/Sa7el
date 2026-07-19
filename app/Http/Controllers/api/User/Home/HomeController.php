@@ -90,7 +90,8 @@ class HomeController extends Controller
         });
 
         return response()->json([
-            "popups" => $popups
+            "popups" => $popups,
+            "my_age" => $my_age
         ]);
     }
 
