@@ -45,7 +45,7 @@ class User extends Authenticatable
     protected $appends = ['image_link', 'qr_code_link'];
     
     public function routeNotificationForFcm(){
-        return $this->fcm_token; 
+        return $this->fcm_token ?: null; 
     }
 
     public function getQrCodeLinkAttribute(){

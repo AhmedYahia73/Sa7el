@@ -116,7 +116,9 @@ class RequestController extends Controller
                 "title" => "كود تسجيل فى القرية",
                 "body" => $notification
             ];
-            $user->notify(new NotificationChanged($data));
+            if ($user) {
+                $user->notify(new NotificationChanged($data));
+            }
         }
         $codes->update(['status' => $request->status]);
 
@@ -182,7 +184,9 @@ class RequestController extends Controller
                 "title" => "دخول القرية",
                 "body" => $notification
             ];
-            $user->notify(new NotificationChanged($data));
+            if ($user) {
+                $user->notify(new NotificationChanged($data));
+            }
         }
 
         return response()->json([

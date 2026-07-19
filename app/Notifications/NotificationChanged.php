@@ -41,7 +41,7 @@ class NotificationChanged extends Notification implements ShouldQueue
                 body: $this->data['body'],
             )
         ))
-        ->setData([
+        ->data([
             'data_id' => (string) $this->data['id'],
             'click_action' => 'FLUTTER_NOTIFICATION_CLICK', 
         ]);
