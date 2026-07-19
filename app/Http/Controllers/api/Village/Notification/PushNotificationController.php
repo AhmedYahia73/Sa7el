@@ -7,9 +7,12 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Jobs\SendPushNotificationJob;
 use Illuminate\Support\Facades\Validator;
+use App\trait\Notifications;
 
 class PushNotificationController extends Controller
 {
+    use Notifications;
+
     public function push_notification(Request $request)
     {
         $validator = Validator::make($request->all(), [
