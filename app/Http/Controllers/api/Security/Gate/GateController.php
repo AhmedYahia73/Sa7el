@@ -45,6 +45,8 @@ class GateController extends Controller
         $visitor_type = null;
         $code = null;
         $appartment_id = null;
+        $last_entrance_date = date("Y-m-d");
+        $last_entrance_time = date("H:i A");
         if ($arr_text[0] == 'visitor_id') {
             $userid = intval($arr_text[1]);
             $visitor_type = $arr_text[5];
