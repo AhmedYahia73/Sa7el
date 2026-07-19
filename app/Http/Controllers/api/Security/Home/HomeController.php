@@ -50,6 +50,65 @@ class HomeController extends Controller
         ]);
     }
 
+
+    public function inside_gate_beach(Request $request){
+        $validator = Validator::make($request->all(), [
+            'locale' => 'required|in:ar,en',
+        ]);
+
+        if ($validator->fails()) { 
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        $locale = $request->locale;
+        $beach = InsideGate::
+        where("village_id", auth()->user()->village_id)
+        ->where("type", "beach")
+        ->get()
+        ->map(function($item) use($locale){
+            return [
+                "id" => $item->id,
+                "name" => $locale == "en" ?
+                $item->name : $item->ar_name,
+            ];
+        });
+
+        return response()->json([
+            "beaches" => $beach, 
+        ]);
+    }
+
+    public function inside_gate_pool(Request $request){
+        $validator = Validator::make($request->all(), [
+            'locale' => 'required|in:ar,en',
+        ]);
+
+        if ($validator->fails()) { 
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        $locale = $request->locale;
+        $pool = InsideGate::
+        where("village_id", auth()->user()->village_id)
+        ->where("type", "pool")
+        ->get()
+        ->map(function($item) use($locale){
+            return [
+                "id" => $item->id,
+                "name" => $locale == "en" ?
+                $item->name : $item->ar_name,
+            ];
+        });
+
+        return response()->json([
+            "pools" => $pool, 
+        ]);
+    }
+    
     public function entrance_gate(Request $request){
         $validator = Validator::make($request->all(), [
             'gate_id' => 'required|exists:gates,id',
