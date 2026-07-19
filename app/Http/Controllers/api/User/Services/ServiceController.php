@@ -457,6 +457,7 @@ class ServiceController extends Controller
         ->whereHas('love_user', function($query) use($request){
             $query->where('users.id', $request->user()->id);
         })
+        ->with("contact")
         ->get()
         ->map(function($item) use($request){
             return [
@@ -476,6 +477,11 @@ class ServiceController extends Controller
                 ? true : false,
                 'subscription' => !empty($item->from) && !empty($item->to) 
                 && $item->from <= date('Y-m-d') && $item->to >= date('Y-m-d') ? true : false,
+ 
+                'watts'            => $item->contact?->watts_status ? $item->contact?->watts : null,
+                'phone'            => $item->contact?->phone_status ? $item?->phone : null,
+                'website'          => $item->contact?->website_status ? $item->contact?->website : null,
+                'instagram'        => $item->contact?->instagram_status ? $item->contact?->instagram : null,
             ];
         });
         
