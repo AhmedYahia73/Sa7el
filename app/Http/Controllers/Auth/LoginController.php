@@ -495,7 +495,7 @@ class LoginController extends Controller
                 'errors' => $validator->errors()->first(),
             ], 400);
         }
-        //return response()->json(["login" => true]);
+        return response()->json(["login" => true]);
 
         $userId = auth()->user()->id;
         $ip_address = $request->ip_address;
