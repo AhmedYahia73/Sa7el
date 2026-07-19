@@ -40,6 +40,7 @@ class User extends Authenticatable
         "favourite",
         "verification",
         "delete_unit_role",
+        "popup_role",
     ];
     protected $appends = ['image_link', 'qr_code_link'];
     

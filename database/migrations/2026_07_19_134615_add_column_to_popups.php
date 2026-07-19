@@ -15,8 +15,8 @@ return new class extends Migration
             $table->enum("gender", ["all", "male", "female"])->default("all");
             $table->integer("age_from")->nullable();
             $table->integer("age_to")->nullable();
-            $table->date("start_date");
-            $table->date("end_date");
+            $table->date("start_date")->nullable();
+            $table->date("end_date")->nullable();
         });
     }
 

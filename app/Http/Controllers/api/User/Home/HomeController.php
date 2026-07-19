@@ -43,6 +43,8 @@ class HomeController extends Controller
         // 2. بناء الاستعلام الأساسي
         $popupQuery = Popup::where("all", 1)
             ->where("status", 1)
+            ->where("start_date", "<=", date("Y-m-d"))
+            ->where("end_date", ">=", date("Y-m-d"))
             ->where(function($query){
                 $query->where("gender", "all")
                       ->orWhere("gender", auth()->user()->gender);
@@ -112,6 +114,8 @@ class HomeController extends Controller
         // 2. بناء الاستعلام الأساسي
         $popupQuery = Popup::where("all", 1)
             ->where("status", 1)
+            ->where("start_date", "<=", date("Y-m-d"))
+            ->where("end_date", ">=", date("Y-m-d"))
             ->where("village_id", $request->village_id)
             ->where(function($query){
                 $query->where("gender", "all")

@@ -30,6 +30,7 @@ class VillageAdminRequest extends FormRequest
             'admin_position_id' => ['required', 'exists:admin_positions,id'],
             'status' => ['required', 'boolean'],
             'delete_unit_role' => ["required", "boolean"],
+            'popup_role' => ["required", "boolean"],
         ];
     }
 

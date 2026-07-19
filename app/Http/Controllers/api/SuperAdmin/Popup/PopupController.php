@@ -106,6 +106,8 @@ class PopupController extends Controller
             $exists = $this->popup
                 ->where('village_id', $request->village_id)
                 ->where("status", 1)
+                ->where("start_date", "<=", date("Y-m-d"))
+                ->where("end_date", ">=", date("Y-m-d"))
                 ->count();
 
             if ($exists >= 2) {
@@ -118,6 +120,8 @@ class PopupController extends Controller
             $exists = $this->popup
                 ->where('all', true)
                 ->where("status", 1)
+                ->where("start_date", "<=", date("Y-m-d"))
+                ->where("end_date", ">=", date("Y-m-d"))
                 ->count();
 
             if ($exists >= 2) {
@@ -192,6 +196,8 @@ class PopupController extends Controller
                 ->where('village_id', $request->village_id)
                 ->where('id', '!=', $id)
                 ->where("status", 1)
+                ->where("start_date", "<=", date("Y-m-d"))
+                ->where("end_date", ">=", date("Y-m-d"))
                 ->count();
 
             if ($exists >= 2) {
