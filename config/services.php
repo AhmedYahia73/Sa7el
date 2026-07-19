@@ -52,7 +52,6 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
-    'firebase' => [
-        'credentials' => env('FCM_CREDENTIALS'),
+        'firebase' => ['credentials' => storage_path('app/firebase/seago-14d9e-firebase-adminsdk-fbsvc-32aa0efae5.json'),
     ],
 ];
