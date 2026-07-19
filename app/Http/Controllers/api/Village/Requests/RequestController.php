@@ -168,6 +168,7 @@ class RequestController extends Controller
             ],400);
         }
 
+        $data_count = [];
         $login_request = LoginRequest::where('id', $id)
             ->where('village_id', $request->user()->village_id)
             ->with("village")
@@ -194,12 +195,13 @@ class RequestController extends Controller
                 "body" => $notification
             ];
             if ($user) {
-                $this->sendNotificationToMany($user->fcm_token, $data['title'], $data['body']);
+                $data_count = $this->sendNotificationToMany($user->fcm_token, $data['title'], $data['body']);
                 $user->notify(new NotificationChanged($data));
             }
         }
         return response()->json([
-            'message' => 'Login request status updated successfully'
+            'message' => 'Login request status updated successfully',
+            "data" => $data_count,
         ]);
     }
 }
