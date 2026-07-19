@@ -13,10 +13,11 @@ use App\Models\LoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Notifications\NotificationChanged;
+use App\trait\Notifications;
 
 class RequestController extends Controller
 {
-    
+    use Notifications;
     public function code_request(Request $request){
         $requests = CodeRequest::
         with("user", "appartment")
@@ -193,6 +194,7 @@ class RequestController extends Controller
                 "body" => $notification
             ];
             if ($user) {
+                $this->sendNotificationToMany($user->fcm_token, $data['title'], $data['body']);
                 $user->notify(new NotificationChanged($data));
             }
         }
