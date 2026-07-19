@@ -19,7 +19,23 @@ class PopupController extends Controller
     {
         $popups = $this->popup
             ->with('village')
-            ->get(); 
+            ->get()
+            ->map(function($item){
+                return [
+                    "id" => $item->id,
+                    "title" => $item->title,
+                    "description" => $item->description,
+                    "image" => $item->image_link,
+                    "all" => $item->all,
+                    "status" => $item->status,
+                    "gender" => $item->gender,
+                    "age_from" => $item->age_from,
+                    "age_to" => $item->age_to,
+                    "start_date" => $item->start_date,
+                    "end_date" => $item->end_date,
+                    "village" => $item?->village?->name,
+                ];
+            }); 
 
         return response()->json([
             'popups'   => $popups, 
@@ -73,6 +89,11 @@ class PopupController extends Controller
             'ar_description' => 'nullable|string',
             'village_id'     => 'nullable|exists:villages,id',
             'status'         => 'required|boolean',
+            "gender"         => "required|in:all,male,female",
+            "age_from"       => "sometimes|numeric",
+            "age_to"         => "sometimes|numeric",
+            "start_date"     => "required|date",
+            "end_date"       => "required|date",
         ]);
 
         if ($validator->fails()) {
@@ -84,9 +105,10 @@ class PopupController extends Controller
         if ($request->village_id) {
             $exists = $this->popup
                 ->where('village_id', $request->village_id)
-                ->exists();
+                ->where("status", 1)
+                ->count();
 
-            if ($exists) {
+            if ($exists >= 2) {
                 return response()->json([
                     'errors' => 'This village already has a popup',
                 ], 400);
@@ -95,9 +117,10 @@ class PopupController extends Controller
         else {
             $exists = $this->popup
                 ->where('all', true)
-                ->exists();
+                ->where("status", 1)
+                ->count();
 
-            if ($exists) {
+            if ($exists >= 2) {
                 return response()->json([
                     'errors' => 'This village already has a popup',
                 ], 400);
@@ -110,7 +133,6 @@ class PopupController extends Controller
         }
  
         $all = empty($request->village_id) ? true : false;
- 
         $this->popup->create([
             'village_id'     => $request->village_id,
             'title'          => $request->title,
@@ -121,6 +143,11 @@ class PopupController extends Controller
             'ar_image'       => $ar_image_path ?? null,
             'all'            => $all,
             'status'         => $request->status ?? true,
+            'gender'         => $request->gender,
+            'age_from'       => $request->age_from ?? null,
+            'age_to'         => $request->age_to ?? null,
+            'start_date'     => $request->start_date,
+            'end_date'       => $request->end_date,
         ]);
 
         return response()->json([
@@ -139,6 +166,11 @@ class PopupController extends Controller
             'ar_description' => 'nullable|string',
             'village_id'     => 'nullable|exists:villages,id',
             'status'         => 'required|boolean',
+            "gender"         => "required|in:all,male,female",
+            "age_from"       => "sometimes|numeric",
+            "age_to"       => "sometimes|numeric",
+            "start_date"     => "required|date",
+            "end_date"       => "required|date",
         ]);
 
         if ($validator->fails()) {
@@ -159,9 +191,10 @@ class PopupController extends Controller
             $exists = $this->popup
                 ->where('village_id', $request->village_id)
                 ->where('id', '!=', $id)
-                ->exists();
+                ->where("status", 1)
+                ->count();
 
-            if ($exists) {
+            if ($exists >= 2) {
                 return response()->json([
                     'errors' => 'This village already has a popup',
                 ], 400);
@@ -187,6 +220,11 @@ class PopupController extends Controller
             'ar_image'       => $ar_image_path ?? $popup->ar_image,
             'all'            => $all,
             'status'         => $request->status ?? $popup->status,
+            'gender'         => $request->gender,
+            'age_from'       => $request->age_from ?? null,
+            'age_to'         => $request->age_to ?? null,
+            'start_date'     => $request->start_date,
+            'end_date'       => $request->end_date,
         ]);
 
         return response()->json([
@@ -233,6 +271,30 @@ class PopupController extends Controller
             ], 400);
         }
 
+        if (!empty($popup->village_id)) {
+            $exists = $this->popup
+                ->where('village_id', $popup->village_id)
+                ->where("status", 1)
+                ->count();
+
+            if ($exists >= 2) {
+                return response()->json([
+                    'errors' => 'This village already has a popup',
+                ], 400);
+            }
+        }
+        else {
+            $exists = $this->popup
+                ->where('all', true)
+                ->where("status", 1)
+                ->count();
+
+            if ($exists >= 2) {
+                return response()->json([
+                    'errors' => 'This village already has a popup',
+                ], 400);
+            }
+        }
         $popup->update([
             'status' => $request->status,
         ]);

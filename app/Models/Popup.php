@@ -16,7 +16,12 @@ class Popup extends Model
         'ar_description',
         'ar_image',
         'all',
-        "status"
+        "status",
+        "gender",
+        "age_from",
+        "age_to",
+        "start_date",
+        "end_date",
     ];
     protected $appends = ['image_link', 'ar_image_link'];
 
