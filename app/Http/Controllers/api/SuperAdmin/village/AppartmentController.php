@@ -329,7 +329,7 @@ class AppartmentController extends Controller
         ->where('type', 'owner')
         ->whereNotNull('user_id')
         ->first();
-        if (!empty($appartment_code)) {
+        if (!empty($appartment_code) && $request->type != "owner") {
             return response()->json([
                 'errors' => "This appartment has owner you can't buy it"
             ], 400);
