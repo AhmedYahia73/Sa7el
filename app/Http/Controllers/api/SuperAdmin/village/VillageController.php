@@ -524,6 +524,7 @@ class VillageController extends Controller
         }
         $securityRequest = $request->validated(); 
         $securityRequest['password'] = $request->password;
+        $securityRequest['village_id'] = $request->village_id;
         $image_path = $this->storeBase64Image($request->image, '/village/security');
         $securityRequest['image'] = $image_path;
         $security = $this->security
