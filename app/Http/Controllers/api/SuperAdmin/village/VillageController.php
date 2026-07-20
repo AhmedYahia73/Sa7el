@@ -22,7 +22,7 @@ use App\Models\Pools;
 class VillageController extends Controller
 {
     public function __construct(private Village $village
-    , private Zone $zones, private Appartment $appartment){}
+    , private Zone $zones, private Appartment $appartment, private SecurityMan $security){}
     use TraitImage;
 
     public function view(){
