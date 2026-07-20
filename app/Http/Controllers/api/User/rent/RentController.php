@@ -87,19 +87,17 @@ class RentController extends Controller
                 'errors' => 'You are blocked to enter this appartment'
             ],400);
         } 
+        $from = $request->from; // تاريخ ووقت البداية الجديد
+        $to = $request->to;     // تاريخ ووقت النهاية الجديد
+
         $appartment_code = $this->appartment_code
-        ->where('from', '<=', $request->from)
-        ->where('to', '>=', $request->from)
-        ->where('to', '<=', $request->to)
-        ->where("appartment_id", $request->appartment_id)
-        ->orWhere('from', '>=', $request->from)
-        ->where('to', '<=', $request->to)
-        ->where("appartment_id", $request->appartment_id)
-        ->orWhere('from', '>=', $request->from)
-        ->where('from', '<=', $request->to)
-        ->where('to', '>=', $request->to)
-        ->where("appartment_id", $request->appartment_id)
-        ->first();
+            ->where('appartment_id', $request->appartment_id) // شرط الشقة أساسي ومستقل
+            ->where(function ($query) use ($from, $to) {
+                // المعادلة السحرية لمنع أي تداخل فترات (أيام أو ساعات)
+                $query->where('from', '<', $to)
+                    ->where('to', '>', $from);
+            })
+            ->first();
         if (!empty($appartment_code)) {
             return response()->json([
                 'errors' => 'Unit is rented from ' . $appartment_code->from . 
