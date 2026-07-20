@@ -16,6 +16,7 @@ use App\Models\User;
 use App\Models\Village;
 use App\Models\Provider;
 use App\Models\AppartmentCode;
+use App\Models\VisitorCode;
 use App\Models\Offer;
 
 class UserController extends Controller
@@ -75,42 +76,60 @@ class UserController extends Controller
     }
 
     public function users(Request $request){
-        $perPage = 15;
-        $search = $request->search; // أو request('search') حسب مكان الكود
+        $validator = Validator::make($request->all(), [
+            'gender' => 'sometimes|in:male,female,none',
+        ]);
 
-        $users = $this->user
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        $perPage = 15;
+        $search = $request->search;
+
+        // 1. نبدأ ببناء الاستعلام ونخزنه في المتغير أولاً بشكل صحيح
+        $usersQuery = $this->user
             ->select('id', 'name', 'email', 'phone', 'birthDate', 'user_type', 
-            'village_id', 'image', 'parent_user_id', 'status', 'gender', 'verification')
-            ->with(['villages_user', 'parent', 'appartment_code'])
-            ->where('role', 'user')
-            
-            // --- بداية كود البحث ---
-            ->when($search, function ($query, $search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('phone', 'like', "%{$search}%");
-                });
-            })
-            // --- نهاية كود البحث ---
-            
-            ->paginate($perPage)
+                    'village_id', 'image', 'parent_user_id', 'status', 'gender', 'verification')
+            // أضفنا appartment_code هنا لمنع مشكلة الـ N+1 Query
+            ->with(['villages_user', 'parent', 'appartment_code']) 
+            ->where('role', 'user');
+
+        // 2. كود البحث
+        $usersQuery->when($search, function ($query, $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%")
+                ->orWhere('phone', 'like', "%{$search}%");
+            });
+        });
+
+        // 3. كود الفرز حسب الجنس (تم إصلاح الربط)
+        if ($request->gender) {
+            if ($request->gender == "none") {
+                $usersQuery->whereNull("gender");
+            } else {
+                $usersQuery->where("gender", $request->gender);
+            }
+        }
+
+        // 4. عمل الـ Pagination والـ Transformation
+        $users = $usersQuery->paginate($perPage)
             ->through(function($item) {
+                // الآن هذه التصفية تتم في الذاكرة (Collection) وهي سريعة جداً لأننا استخدمنا with في الأعلى
                 $user_type_owner = $item->appartment_code->where('type', 'owner')->values();
                 $user_type_renter = $item->appartment_code->where('type', 'renter')
                     ->where('from', '<=', date('Y-m-d'))
                     ->where('to', '>=', date('Y-m-d'))->values();
                     
                 $type = 'Visitor';
-                if (count($item->appartment_code) > 0) {
-                    if (count($user_type_owner) > 0) {
+                if ($item->appartment_code->count() > 0) {
+                    if ($user_type_owner->count() > 0) {
                         $type = 'Owner';
-                    }
-                    elseif(count($user_type_renter) > 0){
+                    } elseif ($user_type_renter->count() > 0) {
                         $type = 'Renter';
-                    }
-                    else{
-                        $type = 'Visitor';
                     }
                 }
                 
@@ -131,12 +150,17 @@ class UserController extends Controller
                     "verification" => $item->verification,
                 ];
             });
-        $village = $this->village
-        ->get();
+
+        // 5. حساب الإحصائيات وجلب القرى
+        $male_count = $this->user->where('gender', 'male')->where('role', 'user')->count();
+        $female_count = $this->user->where('gender', 'female')->where('role', 'user')->count();
+        $village = $this->village->get();
 
         return response()->json([
             'users' => $users,
             'village' => $village,
+            'male_count' => $male_count,
+            'female_count' => $female_count,
         ]);
     }
 
@@ -216,76 +240,93 @@ class UserController extends Controller
 
     public function user($id){
         $user = $this->user
-        ->select('id', 'name', 'email', 'phone', 'password', 'rent_from', 'birthDate',
-        'rent_to', 'user_type', 'village_id', 'image', 'parent_user_id', 'status', 'gender')
-        ->where('id', $id)
-        ->where('role', 'user')
-        ->with('villages_user', 'parent')
-        ->first();
-        $properties = $this->appartment_code
-        ->where('user_id', $id)
-        ->where('type', 'owner')
-        ->get()
-        ->map(function($item){
-            return [
-                'id' => $item->id,
-                'village' => $item?->village?->name,
-                'icon' => $item?->village?->image_link,
-                'cover_image' => $item?->village?->cover_image_link,
-                'unit' => $item?->appartment?->unit,
-            ];
-        });
-        $offer = $this->offer
-        ->where('owner_id', $id)
-        ->whereHas('offer_status', function($query){
-            $query->where('rent_status', 1)
-            ->orWhere('sale_status', 1);
-        })
-        ->get()
-        ->map(function($item){
-            $type_offer = null;
-            if ($item->offer_status->sale_status && $item->offer_status->rent_status) {
-                $type_offer = 'Sale & Rent';
-            }
-            elseif ($item->offer_status->sale_status) {
-                $type_offer = 'Sale';
-            }
-            elseif ($item->offer_status->rent_status) {
-                $type_offer = 'Rent';
-            }
-            return [
-                'id' => $item->id,
-                'village' => $item?->village?->name,
-                'image' => $item?->village?->image_link,
-                'cover_image' => $item?->village?->cover_image_link,
-                'owner' => $item?->owner?->name,
-                'unit' => $item?->appartment?->unit,
-                'unit' => $item?->appartment?->unit,
-                'description' => $item->description,
-                'type_offer' => $type_offer,
-                'price_day' => $item->price_day,
-                'price_month' => $item->price_month,
-                'price' => $item->price,
-            ];
-        });
-        $appartment_code = $this->appartment_code->where('type', 'renter')
-        ->where('from', '<=', date('Y-m-d'))
-        ->where('to', '>=', date('Y-m-d'))->get();
-        $type = 'Visitor';
-        if (count($appartment_code) > 0) {
-            if ($appartment_code[0]->type == "owner") {
-                $type = 'Owner';
-            }
-            elseif($appartment_code[0]->type == "renter"){
-                $type = 'Renter';
-            }
-            else{
-                $type = 'Visitor';
-            }
-        }
-        unset($user->user_type);
-        $user->user_type = $type;
+            ->select('id', 'name', 'email', 'phone', 'password', 'rent_from', 'birthDate',
+                    'rent_to', 'user_type', 'village_id', 'image', 'parent_user_id', 'status', 'gender')
+            ->where('id', $id)
+            ->where('role', 'user')
+            ->with(['villages_user', 'parent'])
+            ->first();
 
+        // إذا لم يتم العثور على المستخدم، يفضل إرجاع خطأ مبكراً لحماية الكود من الانهيار
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        // 2. جلب العقارات المملوكة مع حل مشكلة الأداء (with)
+        $properties = $this->appartment_code
+            ->where('user_id', $id)
+            ->where('type', 'owner')
+            ->with(['village', 'appartment']) // تحميل مسبق للعلاقات
+            ->get()
+            ->map(function($item) {
+                return [
+                    'id' => $item->id,
+                    'village' => $item->village?->name,
+                    'icon' => $item->village?->image_link,
+                    'cover_image' => $item->village?->cover_image_link,
+                    'unit' => $item->appartment?->unit,
+                ];
+            });
+
+        // 3. جلب العروض مع حل مشكلة الأداء (with) وإصلاح التكرار
+        $offer = $this->offer
+            ->where('owner_id', $id)
+            ->whereHas('offer_status', function($query) {
+                $query->where('rent_status', 1)
+                    ->orWhere('sale_status', 1);
+            })
+            ->with(['offer_status', 'village', 'owner', 'appartment']) // تحميل مسبق للعلاقات
+            ->get()
+            ->map(function($item) {
+                $type_offer = null;
+                if ($item->offer_status?->sale_status && $item->offer_status?->rent_status) {
+                    $type_offer = 'Sale & Rent';
+                } elseif ($item->offer_status?->sale_status) {
+                    $type_offer = 'Sale';
+                } elseif ($item->offer_status?->rent_status) {
+                    $type_offer = 'Rent';
+                }
+
+                return [
+                    'id' => $item->id,
+                    'village' => $item->village?->name,
+                    'image' => $item->village?->image_link,
+                    'cover_image' => $item->village?->cover_image_link,
+                    'owner' => $item->owner?->name,
+                    'unit' => $item->appartment?->unit, // تم إزالة التكرار هنا
+                    'description' => $item->description,
+                    'type_offer' => $type_offer,
+                    'price_day' => $item->price_day,
+                    'price_month' => $item->price_month,
+                    'price' => $item->price,
+                ];
+            });
+
+        // 4. تحديد نوع المستخدم بطريقة برمجية نظيفة وسريعة والقراءة أسهل
+        $typesArray = [];
+
+        if ($properties->count() > 0) {
+            $typesArray[] = "Owner";
+        }
+
+        $is_renter = $this->appartment_code->where('type', 'renter')->where('user_id', $id)->exists(); // exists أسرع من count
+        if ($is_renter) {
+            $typesArray[] = "Renter";
+        }
+
+        $is_visitor = VisitorCode::where('user_id', $id)->exists(); // exists أسرع من count
+        if ($is_visitor) {
+            $typesArray[] = "Visitor";
+        }
+
+        // إذا لم يكن أي مما سبق، نضع التلقائي Visitor
+        $user_type_string = count($typesArray) > 0 ? implode(', ', $typesArray) : "Visitor";
+
+        // تحديث قيمة الـ user_type
+        unset($user->user_type);
+        $user->user_type = $user_type_string;
+
+        // 5. إرجاع الرد
         return response()->json([
             'user' => $user,
             'properties' => $properties,
