@@ -524,7 +524,7 @@ class VillageController extends Controller
         }
         $securityRequest = $request->validated(); 
         $securityRequest['password'] = $request->password;
-        $image_path = $this->upload($request, 'image', '/village/security');
+        $image_path = $this->storeBase64Image($request->image, '/village/security');
         $securityRequest['image'] = $image_path;
         $security = $this->security
         ->create($securityRequest);
@@ -570,7 +570,8 @@ class VillageController extends Controller
             ], 400);
         }
         if ($request->image && !is_string($request->image)) {
-            $image_path = $this->update_image($request, $security->image, 'image', '/village/security');
+            $image_path = $this->storeBase64Image($request->image, '/village/security');
+            $this->deleteImage($security->image);
             $securityRequest['image'] = $image_path;
         }
         if (!empty($request->password)) {
