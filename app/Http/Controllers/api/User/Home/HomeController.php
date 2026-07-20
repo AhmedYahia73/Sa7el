@@ -114,8 +114,8 @@ class HomeController extends Controller
         $my_age = $birthDate ? Carbon::parse($birthDate)->age : null;
 
         // 2. بناء الاستعلام الأساسي
-        $popupQuery = Popup::where("all", 1)
-            ->where("status", 1)
+        $popupQuery = Popup::
+            where("status", 1)
             ->where("start_date", "<=", date("Y-m-d"))
             ->where("end_date", ">=", date("Y-m-d"))
             ->where("village_id", $request->village_id)
