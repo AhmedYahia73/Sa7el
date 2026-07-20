@@ -78,6 +78,7 @@ class UserController extends Controller
     public function users(Request $request){
         $validator = Validator::make($request->all(), [
             'gender' => 'sometimes|in:male,female,none',
+            "gen" => 'sometimes|in:genX,millennials,genZ,alpha,none',
         ]);
 
         if ($validator->fails()) {
@@ -109,9 +110,42 @@ class UserController extends Controller
         // 3. كود الفرز حسب الجنس (تم إصلاح الربط)
         if ($request->gender) {
             if ($request->gender == "none") {
-                $usersQuery->whereNull("gender");
+                $usersQuery->whereNull("birthDate");
             } else {
-                $usersQuery->where("gender", $request->gender);
+                $usersQuery->where("birthDate", $request->gender);
+            }
+        }
+        if ($request->gen) {
+            if ($request->gen == "none") {
+                $usersQuery->whereNull("birthDate");
+            } 
+            elseif($request->gen == "genX") {
+                $usersQuery
+                ->where(function($q){
+                    $q->whereYear("birthDate", ">=", 1966)
+                    ->orWhereYear("birthDate", "<=", 1981);
+                });
+            }
+            elseif($request->gen == "millennials") {
+                $usersQuery
+                ->where(function($q){
+                    $q->whereYear("birthDate", ">=", 1982)
+                    ->orWhereYear("birthDate", "<=", 1997);
+                });
+            }
+            elseif($request->gen == "genZ") {
+                $usersQuery
+                ->where(function($q){
+                    $q->whereYear("birthDate", ">=", 1998)
+                    ->orWhereYear("birthDate", "<=", 2012);
+                });
+            }
+            elseif($request->gen == "alpha") {
+                $usersQuery
+                ->where(function($q){
+                    $q->whereYear("birthDate", ">=", 2013)
+                    ->orWhereYear("birthDate", "<=", 2020);
+                });
             }
         }
 

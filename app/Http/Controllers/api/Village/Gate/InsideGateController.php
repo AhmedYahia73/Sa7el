@@ -28,7 +28,7 @@ class InsideGateController extends Controller
                 "from" => $item->from,
                 "to" => $item->to,
                 "status" => $item->status,
-                "type" => $item->type,
+                "visitor" => $item->visitor,
             ];
         });
 
@@ -63,7 +63,7 @@ class InsideGateController extends Controller
         // name, from, to, status,
         // ar_name , type
         $validator = Validator::make($request->all(), [
-            'type' => 'required|in:pool,beach',
+            'visitor' => 'required|boolean',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -71,7 +71,7 @@ class InsideGateController extends Controller
             ],400);
         }
         $inside_gateRequest = $request->validated();
-        $inside_gateRequest['type'] = $request->type;
+        $inside_gateRequest['visitor'] = $request->visitor;
         $inside_gateRequest['village_id'] = $request->user()->village_id;
 
         $inside_gate = $this->inside_gate
@@ -99,7 +99,7 @@ class InsideGateController extends Controller
         // name, image, status,
         // ar_name 
         $validator = Validator::make($request->all(), [
-            'type' => 'required|in:pool,beach',
+            'visitor' => 'required|boolean',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -107,7 +107,7 @@ class InsideGateController extends Controller
             ],400);
         }
         $inside_gateRequest = $request->validated();
-        $inside_gateRequest['type'] = $request->type;
+        $inside_gateRequest['visitor'] = $request->visitor;
         $inside_gate = $this->inside_gate
         ->where('id', $id)
         ->where('village_id', $request->user()->village_id)
@@ -172,8 +172,7 @@ class InsideGateController extends Controller
 
         $insideGate = InsideGate::findOrFail($id);
 
-        $gateType = $insideGate->type;
-        $modelClass = ($gateType === "beach") ? VisitBeach::class : VisitPool::class;
+        $modelClass =  VisitBeach::class;
 
         $query = $modelClass::where("inside_gate_id", $id)
             ->where('village_id', $request->user()->village_id)

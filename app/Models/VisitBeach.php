@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class VisitBeach extends Model
 {
+    // Inside Gate Visitor
     protected $fillable = [
         'user_id', 
         'village_id',

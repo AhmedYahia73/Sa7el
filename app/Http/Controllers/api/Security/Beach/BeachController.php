@@ -139,7 +139,7 @@ class BeachController extends Controller
          ]);
     }
 
-    public function entrance_beach_qr(Request $request){
+    public function entrance_inside_gate_qr(Request $request){
         $validator = Validator::make($request->all(), [
             'qr_code' => 'required|string',
             'inside_gate_id' => 'required|exists:inside_gates,id',

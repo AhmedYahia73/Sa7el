@@ -9,7 +9,7 @@ use App\Models\AppartmentTypeUmbrella;
 use App\Models\EntrancePool;
 use App\Models\User;
 use App\Models\UserPool;
-use App\Models\VisitPool;
+use App\Models\VisitBeach;
 use App\trait\TraitImage;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -139,129 +139,5 @@ class PoolController extends Controller
             'time' => $old_time,
             "umbrellas" => $my_umbrellas - ($request->umbrella ?? 0),
          ]);
-    }
-    
-    public function entrance_pool_qr(Request $request){
-        $validator = Validator::make($request->all(), [
-            'qr_code' => 'required|string',
-            'inside_gate_id' => 'required|exists:inside_gates,id',
-        ]);
-        if ($validator->fails()) { // if Validate Make Error Return Message Error
-            return response()->json([
-                'errors' => $validator->errors(),
-            ],400);
-        }
-  
-        $text = $request->qr_code;
-        $arr_text = explode('>', $text);
-        $userid = 0; 
-        $appartment_id = 0;
-        $type = null;
-        $code = null;
-        $user_type = null;
-        $visitor_type = null;
-        $last_visit_date = date("Y-m-d");
-        $last_visit_time = date("h:i A");
-        if ($arr_text[0] == 'visitor_id') {
-            $userid = intval($arr_text[1]); 
-            $tomorrow = Carbon::now()->addDay();
-            $qrcode_time = $arr_text[7];
-            $qrcode_time = Carbon::parse($qrcode_time);
-            if ($tomorrow < $qrcode_time) {
-                return response()->json([
-                    'errors' => 'Qr code is expired'
-                ], 400);
-            }
-            $qr_code_code = $arr_text[9];
-            $code = $qr_code_code;
-            $visitor_type = $arr_text[5];
-            if($visitor_type != 'guest'){
-                return response()->json([
-                    'errors' => 'Not Allowed'
-                ], 400);
-            } 
-            
-            $visit_village = VisitPool::
-            where('user_id', $userid)
-            ->where('village_id', $request->user()->village_id)
-            ->where('code', $qr_code_code)
-            ->first();
-            if (!empty($visit_village)) {
-                return response()->json([
-                    'errors' => 'Qr code is expired...'
-                ], 400);
-            }
-            $appartment_id = $arr_text[11];
-            $appartment = Appartment::
-            where('id', $appartment_id)
-            ->first();
-            if (empty($appartment)) {
-                return response()->json([
-                    'errors' => 'Appartment is wrong'
-                ], 400);
-            }
-            $type = 'visitor';
-        } 
-        elseif(intval($arr_text[0])) {
-            $userid = intval($arr_text[0]); 
-            $appartment_id = $arr_text[2];
-            $last_visit = VisitPool::
-            where("user_id", $userid)
-            ->where("village_id", $request->user()->village_id)
-            ->first();
-            $last_visit_date = $last_visit ? $last_visit->created_at->format("Y-m-d") ?? null : null;
-            $last_visit_time = $last_visit ? $last_visit->created_at->format("h:i A") ?? null : null;
-        }
-        else{
-            return response()->json([
-                'errors' => 'Qr code is wrong'
-            ], 400);
-        }
-        
-         $appartment = Appartment::
-         where('id', $appartment_id)
-         ->first();
-         if (empty($appartment)) {
-            return response()->json([
-                'errors' => 'Qr code is wrong'
-            ], 400);
-         }
-        $user_type = AppartmentCode::
-         where('appartment_id', $appartment_id)
-         ->where('user_id', $userid)
-         ->orderByDesc('id')
-         ->first()?->type;
-         if (empty($user_type)) {
-            return response()->json([
-                'errors' => 'Appartment is wrong'
-            ], 400);
-         }
-        
-        VisitPool::
-        create([
-            'user_id' => $userid,
-            'village_id' => $request->user()->village_id,
-            'inside_gate_id' => $request->inside_gate_id,
-            'appartment_id' => $appartment_id,
-            'type' => $type,
-            'visitor_type' => $visitor_type,
-            'code' => $code,
-            'user_type' => $user_type,
-        ]);
-        $user = User::
-        where('id', $userid)
-        ->first();
-
-         return response()->json([
-            'success' => 'Qr code is true',
-            'appartment' => $appartment,
-            'user' => $user, 
-            'visitor_type' => $visitor_type,
-            'user_type' => $user_type,
-            "is_visitor" => $type == 'visitor' ? true : false,
-            'date' => $last_visit_date,
-            'time' => $last_visit_time,
-         ]);
-        
-    }
+    } 
 }
