@@ -45,5 +45,6 @@ Route::middleware(['auth:sanctum', 'IsSecurity'])->group(function(){
     ->group(function() {
         Route::post('/', 'read_qr');
         Route::post('/entrance_inside_gate_qr', 'entrance_inside_gate_qr');
+        Route::post('/inside_gate_upload_id', 'inside_gate_upload_id');
     });
 });

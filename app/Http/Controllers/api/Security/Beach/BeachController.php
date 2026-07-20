@@ -245,7 +245,7 @@ class BeachController extends Controller
             ], 400);
          }
         
-        VisitBeach::
+        $visit_inside_gates = VisitBeach::
         create([
             'user_id' => $userid,
             'village_id' => $request->user()->village_id,
@@ -269,7 +269,30 @@ class BeachController extends Controller
             "is_visitor" => $type == 'visitor' ? true : false,
             'date' => $last_visit_date,
             'time' => $last_visit_time,
-         ]);
-        
+            "visit_inside_gate_id" => $visit_inside_gates,
+         ]); 
+    }
+
+    public function inside_gate_upload_id(Request $request){
+        $validator = Validator::make($request->all(), [ 
+            'visit_inside_gate_id' => 'required|exists:visit_villages,id',
+            'image' => 'required',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+
+        $image_path = $this->storeBase64Image($request->image, 'images/visitors/id'); 
+        $visit_village = VisitBeach::
+        where('id', $request->visit_inside_gate_id)
+        ->update([
+            'image' => $image_path, 
+        ]);
+
+        return response()->json([
+            'success' => 'You upload id success'
+        ]);
     }
 }
