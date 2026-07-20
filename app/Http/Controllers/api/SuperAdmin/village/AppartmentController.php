@@ -315,7 +315,7 @@ class AppartmentController extends Controller
                 'from' => ['required', 'date_format:Y-m-d H:i:s'],
                 'to' => ['required', 'date_format:Y-m-d H:i:s'],
                 'people' => ['required', 'numeric'],
-                'image' => ['required'], 
+                'image' => ['required', 'array'], 
             ]);
         }
         if ($validator->fails()) { // if Validate Make Error Return Message Error
@@ -344,7 +344,10 @@ class AppartmentController extends Controller
         $codeRequest['code'] = $code;
         $codeRequest['village_id'] = $village_id;
         if ($request->has('image')) {
-            $image_path = $this->upload($request, 'image', '/village/appartment_code/id');
+            $image_path = [];
+            foreach ($request->image as $item) {
+                $image_path[] = $this->uploadFile($request->image, '/village/appartment_code/id');
+            }
             $codeRequest['image'] = $image_path;
         }
         for ($i = 0; $i < $request->people; $i++) {
