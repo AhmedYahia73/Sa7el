@@ -320,7 +320,7 @@ class UserController extends Controller
         }
 
         // إذا لم يكن أي مما سبق، نضع التلقائي Visitor
-        $user_type_string = count($typesArray) > 0 ? implode(', ', $typesArray) : "Visitor";
+        $user_type_string = count($typesArray) > 0 ? implode(', ', $typesArray) : "-";
 
         // تحديث قيمة الـ user_type
         unset($user->user_type);
