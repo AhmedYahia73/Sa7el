@@ -9,6 +9,7 @@ use App\Models\EntranceBeach;
 use App\Models\User;
 use App\Models\UserBeach;
 use App\Models\VisitBeach;
+use App\Models\InsideGate;
 use App\Models\AppartmentTypeUmbrella;
 use App\trait\TraitImage;
 use Carbon\Carbon;
@@ -178,10 +179,19 @@ class BeachController extends Controller
                     'errors' => 'Not Allowed'
                 ], 400);
             } 
-            
+            $inside_gate = InsideGate::
+            where('village_id', $request->user()->village_id)
+            ->where("id", $request->inside_gate_id)
+            ->first();
+            if (!$visit_village->visitor) {
+                return response()->json([
+                    'errors' => 'Visitor has not perimission'
+                ], 401);
+            }
             $visit_village = VisitBeach::
             where('user_id', $userid)
             ->where('village_id', $request->user()->village_id)
+            ->where("inside_gate_id", $request->inside_gate_id)
             ->where('code', $qr_code_code)
             ->first();
             if (!empty($visit_village)) {
