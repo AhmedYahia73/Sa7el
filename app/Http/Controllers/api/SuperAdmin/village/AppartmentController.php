@@ -346,7 +346,7 @@ class AppartmentController extends Controller
         if ($request->has('image')) {
             $image_path = [];
             foreach ($request->image as $item) {
-                $image_path[] = $this->uploadFile($request->image, '/village/appartment_code/id');
+                $image_path[] = $this->uploadFile($item, '/village/appartment_code/id');
             }
             $codeRequest['image'] = $image_path;
         }
