@@ -34,6 +34,8 @@ Route::middleware(['auth:sanctum', 'IsUser'])->group(function(){
         Route::post('/add', 'add_property'); 
         Route::get('/pending_code_request', 'pending_code_request'); 
         Route::post('/rent_images', 'rent_images'); 
+        Route::post('/people_appartment', 'people_appartment'); 
+        Route::post('/delete_user', 'delete_user'); 
     });
 
     Route::controller(HomeController::class)

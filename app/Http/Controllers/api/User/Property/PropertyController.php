@@ -376,6 +376,88 @@ class PropertyController extends Controller
         ]);
     }
 
+    public function people_appartment(Request $request){
+       $validator = Validator::make($request->all(), [
+            'appartment_id' => 'required|exists:appartments,id',
+            'code' => 'required'
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }
+
+        $my_data = AppartmentCode::
+        where("appartment_id", $request->appartment_id)
+        ->where("code", $request->code)
+        ->where("user_id", auth()->user()->id)
+        ->where("user_type", "super")
+        ->first();
+        if(empty($my_data)){
+            return response()->json([
+                "errors" => "You dont have premission"
+            ], 401);
+        }
+        $people = AppartmentCode::
+        where("appartment_id", $request->appartment_id)
+        ->where("code", $request->code)
+        ->with("user")
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "user_name" => $item?->user?->name,
+                "user_type" => $item->user_type,
+                "type" => $item->type,
+                "from" => $item->from,
+                "to" => $item->to,
+            ];
+        });
+
+        return response()->json([
+            "people" => $people
+        ]);
+    }
+
+    public function delete_user(Request $request){
+       $validator = Validator::make($request->all(), [
+            'appartment_id' => 'required|exists:appartments,id',
+            'code' => 'required',
+            'user_id' => "required|exists:users,id",
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            $firstError = $validator->errors()->first();
+            return response()->json([
+                'errors' => $firstError,
+            ],400);
+        }
+
+        $my_data = AppartmentCode::
+        where("appartment_id", $request->appartment_id)
+        ->where("code", $request->code)
+        ->where("user_id", auth()->user()->id)
+        ->where("user_type", "super")
+        ->first();
+        if(empty($my_data)){
+            return response()->json([
+                "errors" => "You dont have premission"
+            ], 401);
+        }
+        $people = AppartmentCode::
+        where("appartment_id", $request->appartment_id)
+        ->where("code", $request->code)
+        ->where("user_id", $request->user_id)
+        ->where("user_type", "!=", "super")
+        ->update([
+            "user_id" => null
+        ]);
+
+        return response()->json([
+            "success" => "You update data success"
+        ]);
+    }
+
     public function pending_code_request(Request $request){
         $validator = Validator::make($request->all(), [
             'local' => 'required|in:en,ar',
