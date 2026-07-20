@@ -13,6 +13,7 @@ use App\Models\UserBeach;
 use App\Models\UserPool;
 use App\Models\VisitorCode;
 use App\Models\VisitVillage;
+use App\Models\InsideGate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 

@@ -25,6 +25,7 @@ class AppartmentProfileController extends Controller
         ->map(function($item){
             return [
                 'id' => $item?->user?->id,
+                'appartment_code_id' => $item?->id,
                 'name' => $item?->user?->name,
                 'email' => $item?->user?->email,
                 'phone' => $item?->user?->phone,

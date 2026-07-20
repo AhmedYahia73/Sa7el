@@ -50,7 +50,8 @@ class PropertyController extends Controller
                     'image' => $item->village->image_link,
                     'cover_image' => $item->village->cover_image_link,
                     'village_id' => $item->village_id,
-                    'village' => $item->village->name, 
+                    'village' => $item->village->name,
+                    'user_type' => $item->user_type,
                     'type' => null,
                     'zone' => $request->local == 'en' ? $item?->village?->zone?->name
                     : $item?->village?->zone?->ar_name ?? $item?->village?->zone?->name,
@@ -79,6 +80,7 @@ class PropertyController extends Controller
                 return [
                     'id' => $appartment->id,
                     'unit' => $appartment->unit,
+                    'user_type' => $item->user_type,
                     'image' => $appartment->village->image_link,
                     'cover_image' => $appartment->village->cover_image_link,
                     'village_id' => $appartment->village_id,
@@ -148,6 +150,7 @@ class PropertyController extends Controller
                     'unit' => null,
                     'image' => $item->village->image_link,
                     'unit_type' => $item->type,
+                    'user_type' => $item->user_type,
                     'code' => $item->code,
                     'cover_image' => $item->village->cover_image_link,
                     'village_id' => $item->village_id,
@@ -183,6 +186,7 @@ class PropertyController extends Controller
                     'id' => $appartment->id,
                     'unit' => $appartment->unit,
                     'unit_type' => $item->type,
+                    'user_type' => $item->user_type,
                     'code' => $item->code,
                     'image' => $appartment->village->image_link,
                     'cover_image' => $appartment->village->cover_image_link,
