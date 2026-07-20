@@ -35,6 +35,7 @@ class ProviderController extends Controller
         $provider = $this->provider
         ->with(['translations', 'service', 'package', 'zone:id,name',
         'super_admin:id,name', 'work_hours', 'zone_village'])
+        ->withCount("love_user")
         ->when($request->search, function($q) use ($request) {
             $q->where(function($q) use ($request) {
                 $q->where('name', 'like', "%{$request->search}%")
