@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\SuperAdmin\VillageRequest;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\Village\SecuirtyRequest;
 use App\trait\TraitImage;
 
 use App\Models\Zone;
@@ -13,6 +14,10 @@ use App\Models\Village;
 use App\Models\Appartment;
 use App\Models\SecurityMan;
 use App\Models\ZoneVillage;
+use App\Models\InsideGate;
+use App\Models\Gate;
+use App\Models\Beach;
+use App\Models\Pools;
 
 class VillageController extends Controller
 {
@@ -375,4 +380,198 @@ class VillageController extends Controller
             "gate_keeper" => $gate_keeper
         ]);
     } 
+    
+    public function gate_keeper_lists($id){
+        $inside_gates = InsideGate::
+        where("status", 1)
+        ->where("village_id", $id)
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+                "village_id" => $item->village_id, 
+            ];
+        });
+        $gates = Gate::
+        where("status", 1)
+        ->where("village_id", $id)
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+                "village_id" => $item->village_id, 
+            ];
+        });
+        $beaches = Beach::
+        where("status", 1)
+        ->where("village_id", $id)
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+                "village_id" => $item->village_id, 
+            ];
+        });
+        $pools = Pools::
+        where("status", 1)
+        ->where("village_id", $id)
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+                "village_id" => $item->village_id, 
+            ];
+        });
+
+        return response()->json([
+            "inside_gates" => $inside_gates,
+            "gates" => $gates,
+            "beaches" => $beaches,
+            "pools" => $pools,
+        ]);
+    }
+
+    public function gate_keeper_status(Request $request, $id){
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|boolean',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+        
+        $security = $this->security
+        ->where('id', $id)
+        ->update([
+            'status' => $request->status
+        ]);
+
+        return response()->json([
+            'success' => $request->status ? 'active' : 'banned'
+        ]);
+    }
+
+    public function gate_keeper_create(SecuirtyRequest $request){
+        // name, password, image
+        // email, phone, type, status
+        $validator = Validator::make($request->all(), [
+            'image' => 'required',
+            'password' => 'required',
+            'email' => 'unique:security_men,email',
+            'phone' => 'unique:security_men,phone',
+            'pool_ids' => 'array',
+            'beach_ids' => 'array',
+            'gate_ids' => 'array',
+            'inside_gate_ids' => 'array',
+            'inside_gate_ids.*' => 'required|exists:inside_gates,id',
+            'pool_ids.*' => 'required|exists:pools,id',
+            'beach_ids.*' => 'required|exists:beaches,id',
+            'gate_ids.*' => 'required|exists:gates,id',
+            "gate_visitors" => "required|boolean",
+            "gate_entrance" => "required|boolean",
+            "village_id" => 'required|exists:villages,id',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+        $village = Village::
+        where("id", $request->village_id)
+        ->first();
+        $security_num = $village?->package?->security_num ?? 0;
+        $security_count = $this->security
+        ->where('village_id', $request->village_id)
+        ->count();
+        if ($security_num <= $security_count) {
+            return response()->json([
+                'errors' => 'You don’t have a package, so you should subscribe.'
+            ], 400);
+        }
+        $securityRequest = $request->validated(); 
+        $securityRequest['password'] = $request->password;
+        $image_path = $this->upload($request, 'image', '/village/security');
+        $securityRequest['image'] = $image_path;
+        $security = $this->security
+        ->create($securityRequest);
+        $security->pool()->sync($request->pool_ids);
+        $security->beach()->sync($request->beach_ids);
+        $security->gate()->sync($request->gate_ids);
+        $security->inside_gates()->sync($request->inside_gate_ids);
+      
+        return response()->json([
+            'success' => 'You add data success'
+        ]);
+    }
+
+    public function gate_keeper_modify(SecuirtyRequest $request, $id){
+        // name, password, image
+        // email, phone, type, status
+        $validator = Validator::make($request->all(), [
+            'email' => 'unique:security_men,email,' . $id,
+            'phone' => 'unique:security_men,phone,' . $id,
+            'pool_ids' => 'array',
+            'beach_ids' => 'array',
+            'gate_ids' => 'array',
+            'inside_gate_ids' => 'array',
+            'inside_gate_ids.*' => 'required|exists:inside_gates,id',
+            'pool_ids.*' => 'required|exists:pools,id',
+            'beach_ids.*' => 'required|exists:beaches,id',
+            'gate_ids.*' => 'required|exists:gates,id',
+            "gate_visitors" => "required|boolean",
+            "gate_entrance" => "required|boolean",
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+        $securityRequest = $request->validated();
+        $security = $this->security
+        ->where('id', $id) 
+        ->first();
+        if (empty($security)) {
+            return response()->json([
+                'errors' => 'security not found'
+            ], 400);
+        }
+        if ($request->image && !is_string($request->image)) {
+            $image_path = $this->update_image($request, $security->image, 'image', '/village/security');
+            $securityRequest['image'] = $image_path;
+        }
+        if (!empty($request->password)) {
+            $securityRequest['password'] = bcrypt($request->password);
+        }
+        $security->update($securityRequest);
+        $security->pool()->sync($request->pool_ids);
+        $security->beach()->sync($request->beach_ids);
+        $security->gate()->sync($request->gate_ids);
+        $security->inside_gates()->sync($request->inside_gate_ids);
+
+        return response()->json([
+            'success' => 'You update data success'
+        ]);
+    }
+
+    public function gate_keeper_delete($id){
+        $security = $this->security
+        ->where('id', $id)
+        ->first();
+        if (empty($security)) {
+            return response()->json([
+                'errors' => 'security not found'
+            ], 400);
+        }
+        $this->deleteImage($security->image);
+        $security->delete();
+
+        return response()->json([
+            'success' => 'You delete data success'
+        ]);
+    }
 }

@@ -254,6 +254,11 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::post('/village_units_delete', 'village_units_delete')->middleware('can:admin_Village_delete_unit');
 
         Route::get('/gate_keeper/{id}', 'gate_keeper')->middleware('can:admin_Village_gate_keeper');
+        Route::get('/gate_keeper_lists/{id}', 'gate_keeper_lists')->middleware('can:admin_Village_gate_keeper');
+        Route::put('/gate_keeper_status/{id}', 'gate_keeper_status')->middleware('can:admin_Village_gate_keeper');
+        Route::post('/gate_keeper_create', 'gate_keeper_create')->middleware('can:admin_Village_gate_keeper');
+        Route::post('/gate_keeper_update/{id}', 'gate_keeper_modify')->middleware('can:admin_Village_gate_keeper');
+        Route::delete('/gate_keeper_delete/{id}', 'gate_keeper_delete')->middleware('can:admin_Village_gate_keeper');
     });
     
     Route::controller(VillageGallaryController::class)->prefix('village_gallery')
