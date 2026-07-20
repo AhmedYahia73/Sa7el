@@ -176,43 +176,53 @@ class HomeController extends Controller
     }
 
     public function visitors(Request $request){
-        if(!auth()->user()->gate_visitors){
+        if (!auth()->user()->gate_visitors) {
             return response()->json([
                 'errors' => 'You are not allowed to view visitors'
             ], 401);
         }
+
         $validator = Validator::make($request->all(), [
-            'search' => 'sometimes',
+            'search' => 'sometimes|string',
         ]);
-        if ($validator->fails()) { // if Validate Make Error Return Message Error
+
+        if ($validator->fails()) {
             return response()->json([
                 'errors' => $validator->errors(),
-            ],400);
+            ], 400);
         }
 
-        $search = $request->input('search'); // الكلمة المراد البحث عنها
+        $search = $request->input('search');
 
-        $visitors = VisitorCode::with('unit')
-        ->where('village_id', $request->user()->village_id)
-        ->whereDate('created_at', now()->toDateString()) // استخدام now() أفضل في Laravel
-        ->whereDoesntHave('is_visit')
-        // إضافة البحث بناءً على اسم أو رقم الوحدة (unit)
-        ->when($search, function ($query, $search) {
-            $query->whereHas('unit', function ($unitQuery) use ($search) {
-                $unitQuery->where('unit', 'like', '%' . $search . '%');
+        $visitors = VisitorCode::with(['unit', 'user']) // يفضل وضع العلاقات في مصفوفة
+            ->where('village_id', $request->user()->village_id)
+            ->whereDate('created_at', now()->toDateString())
+            ->whereDoesntHave('is_visit')
+            // --- تعديل كود البحث لحماية الشروط الأساسية ---
+            ->when($search, function ($query, $search) {
+                $query->where(function ($innerQuery) use ($search) {
+                    $innerQuery->whereHas('unit', function ($unitQuery) use ($search) {
+                        $unitQuery->where('unit', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('user', function ($userQuery) use ($search) {
+                        $userQuery->where('name', 'like', '%' . $search . '%');
+                    });
+                });
+            })
+            // ------------------------------------------
+            ->paginate(15)
+            ->through(function ($visitor) {
+                return [
+                    'id' => $visitor->id,
+                    'code' => $visitor->code,
+                    'visitor_type' => $visitor->visitor_type,
+                    'appartment_id' => $visitor->appartment_id,
+                    'appartment_name' => $visitor->unit?->unit,
+                    'image_link' => $visitor->qr_code_link,
+                    'owner' => $visitor->user?->name,
+                    'created_at' => $visitor->created_at->format('Y-m-d h:i A'),
+                ];
             });
-        })
-        ->paginate(15) // تحديد عدد العناصر في كل صفحة (مثلاً 15)
-        ->through(function ($visitor) {
-            return [
-                'id' => $visitor->id,
-                'code' => $visitor->code,
-                'appartment_id' => $visitor->appartment_id,
-                'appartment_name' => $visitor->unit?->name,
-                'image_link' => $visitor->qr_code_link,
-                'created_at' => $visitor->created_at->format('Y-m-d h:i A'),
-            ];
-        });
 
         return response()->json([
             'visitors' => $visitors,

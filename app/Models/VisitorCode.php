@@ -27,4 +27,8 @@ class VisitorCode extends Model
     public function unit(){
         return $this->belongsTo(Appartment::class, 'appartment_id');
     }
+
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
