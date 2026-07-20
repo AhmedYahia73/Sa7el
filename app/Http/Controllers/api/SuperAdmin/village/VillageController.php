@@ -434,6 +434,35 @@ class VillageController extends Controller
             "pools" => $pools,
         ]);
     }
+    
+    public function gate_keeper_item($id){
+        $gate_keeper = SecurityMan::
+        where("id", $id)
+        ->with("pool:id,name", "beach:id,name", "gate:id,name", "inside_gates:id,name")
+        ->get()
+        ->map(function($item){
+            return [
+                "id" => $item->id,
+                "name" => $item->name,
+                "image" => $item->image_link,
+                "email" => $item->email,
+                "phone" => $item->phone,
+                "status" => $item->status,
+                "type" => $item->type,
+                "gate_visitors" => $item->gate_visitors,
+                "gate_entrance" => $item->gate_entrance,
+                "village_id" => $item->village_id,
+                "pool" => $item->pool,
+                "beach" => $item->beach,
+                "gate" => $item->gate,
+                "inside_gates" => $item->inside_gates,
+            ];
+        });
+ 
+        return response()->json([
+            "gate_keeper" => $gate_keeper
+        ]);
+    }
 
     public function gate_keeper_status(Request $request, $id){
         $validator = Validator::make($request->all(), [
