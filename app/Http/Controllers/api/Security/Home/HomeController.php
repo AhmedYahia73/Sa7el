@@ -72,7 +72,7 @@ class HomeController extends Controller
             return [
                 "id" => $item->id,
                 "name" => $locale == "en" ?
-                $item->name : $item->ar_name,
+                $item->name : $item->ar_name ?? $item->name,
             ];
         });
 
@@ -101,7 +101,7 @@ class HomeController extends Controller
             return [
                 "id" => $item->id,
                 "name" => $locale == "en" ?
-                $item->name : $item->ar_name,
+                $item->name : $item->ar_name ?? $item->name,
             ];
         });
 
