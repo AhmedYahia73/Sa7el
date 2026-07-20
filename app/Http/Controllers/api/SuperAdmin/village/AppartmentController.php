@@ -338,8 +338,11 @@ class AppartmentController extends Controller
         do {
             $code = mt_rand(1000000, 9999999); // Always 7 digits
         } while ($this->appartment_code::where('code', $code)->exists());
+        $village_id = Appartment::
+        where("id", $request->appartment_id)
+        ->first();
         $codeRequest['code'] = $code;
-        $codeRequest['village_id'] = $appartment_code->village_id;
+        $codeRequest['village_id'] = $village_id;
         if ($request->has('image')) {
             $image_path = $this->upload($request, 'image', '/village/appartment_code/id');
             $codeRequest['image'] = $image_path;
