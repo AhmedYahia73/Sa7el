@@ -144,18 +144,14 @@ class LoginController extends Controller
             $gate = $user->gate->count() > 0;
             $beach = $user->beach->count() > 0;
             $pool = $user->pool->count() > 0;
-            $inside_gate_pool = $user->inside_gates
-            ->where("type", "pool")->count() > 0;
-            $inside_gate_beach = $user->inside_gates
-            ->where("type", "beach")->count() > 0;
+            $inside_gates = $user->inside_gates->count() > 0;
             return response()->json([
                 'security' => $user,
                 'token' => $user->token,
                 "gate" => $gate ,
                 "beach" => $beach ,
                 "pool" => $pool ,
-                "inside_gate_pool" => $inside_gate_pool ,
-                "inside_gate_beach" => $inside_gate_beach ,
+                "inside_gates" => $inside_gates , 
             ], 200);
         }
         else { 
