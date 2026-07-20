@@ -340,7 +340,7 @@ class AppartmentController extends Controller
         } while ($this->appartment_code::where('code', $code)->exists());
         $village_id = Appartment::
         where("id", $request->appartment_id)
-        ->first();
+        ->first()->village_id;
         $codeRequest['code'] = $code;
         $codeRequest['village_id'] = $village_id;
         if ($request->has('image')) {
