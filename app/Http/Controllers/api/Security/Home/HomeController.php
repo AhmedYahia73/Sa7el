@@ -330,11 +330,14 @@ class HomeController extends Controller
         $appartment = Appartment::
         where("id", $request->appartment_id)
         ->first();
-        $user_type = AppartmentCode::
+        $appartment_code = AppartmentCode::
          where('appartment_id', $request->appartment_id)
          ->where('user_id', $request->user_id)
          ->orderByDesc('id')
-         ->first()?->type;
+         ->with("appartment.type")
+         ->first();
+        $user_type = $appartment_code?->type;
+        $unit_type = $appartment_code?->appartment?->type?->name;
         $visit_village = VisitVillage::
         create([
             'user_id' => $request->user_id,
@@ -359,6 +362,7 @@ class HomeController extends Controller
             'time' => date('h:i A'),
             "user_name" => $user->name,
             "appartment" => $appartment->unit,
+            "unit_type" => $unit_type,
         ]);
     }
 }
