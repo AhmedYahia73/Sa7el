@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api\Security\Home;
 
 use App\Http\Controllers\Controller;
 use App\Models\AppartmentCode;
+use App\Models\Appartment;
 use App\Models\Beach;
 use App\Models\EntranceGate;
 use App\Models\Gate;
@@ -323,6 +324,12 @@ class HomeController extends Controller
             ],400);
         }
          
+        $user = User::
+        where("user_id", $request->user_id)
+        ->first();
+        $appartment = Appartment::
+        where("id", $request->appartment_id)
+        ->first();
         $user_type = AppartmentCode::
          where('appartment_id', $request->appartment_id)
          ->where('user_id', $request->user_id)
@@ -350,6 +357,8 @@ class HomeController extends Controller
             'user_type' => $user_type,
             'date' => date('Y-m-d'),
             'time' => date('h:i A'),
+            "user_name" => $user->name,
+            "appartment" => $appartment->unit,
         ]);
     }
 }
