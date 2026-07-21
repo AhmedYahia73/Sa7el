@@ -325,7 +325,7 @@ class HomeController extends Controller
         }
          
         $user = User::
-        where("user_id", $request->user_id)
+        where("id", $request->user_id)
         ->first();
         $appartment = Appartment::
         where("id", $request->appartment_id)
