@@ -140,4 +140,101 @@ class PoolController extends Controller
             "umbrellas" => $my_umbrellas - ($request->umbrella ?? 0),
          ]);
     } 
+
+    public function entrance_user(Request $request){
+        $validator = Validator::make($request->all(), [
+            'pool_id' => 'required|exists:pools,id',
+            'user_id' => 'required|exists:users,id',
+            'appartment_id' => 'required|exists:appartments,id',
+            "umbrella" => "sometimes|integer", 
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+    
+        $pool_id = $request->pool_id; 
+        $userid = $request->user_id;
+        $appartment_id = $request->appartment_id;
+       
+         $appartment = $this->appartment
+         ->where('id', $appartment_id) 
+         ->first();
+         if (empty($appartment) || $pool_id != $request->pool_id) {
+            return response()->json([
+                'errors' => 'Qr code is wrong'
+            ], 400);
+         }
+        $umberllas = AppartmentTypeUmbrella::
+        where("appartment_type_id", $appartment->appartment_type_id)
+        ->where("village_id", $request->user()->village_id)
+        ->first()?->umbrellas ?? 1;
+         $user_umbrellas = $this->user_pool
+         ->where('user_id', $userid) 
+         ->where('village_id', $request->user()->village_id)
+         ->whereDate('created_at', date('Y-m-d'))
+         ->sum("umbrella") ?? 0;
+        $my_umbrellas = $umberllas - $user_umbrellas;
+        if($my_umbrellas < $request->umbrella){
+            return response()->json([
+                'errors' => 'عدد الشمسيات المتاحة ' . $my_umbrellas
+            ], 400);
+        }
+         $user_pool_now = $this->user_pool
+         ->where('user_id', $userid)
+         ->where('pool_id', $pool_id)
+         ->where('village_id', $request->user()->village_id)
+         ->whereDate('created_at', date('Y-m-d'))
+         ->first();
+         $old_date_user_pool = $this->user_pool
+         ->where('user_id', $userid)
+         ->where('pool_id', $pool_id)
+         ->where('village_id', $request->user()->village_id)
+         ->first();
+        $appartment->type;
+        $user = $this->user
+        ->where('id', $userid)
+        ->first();
+        $old_time = null;
+        $user_type = $this->appartment_code
+         ->where('appartment_id', $appartment_id)
+         ->where('user_id', $userid)
+         ->orderByDesc('id')
+         ->first()?->type;
+         if (empty($user_type)) {
+            return response()->json([
+                'errors' => 'Appartment is wrong'
+            ], 400);
+         }
+         if (!empty($old_date_user_pool)) {
+            $old_time = $old_date_user_pool->updated_at->format('Y-m-d h:i A');
+            $old_date_user_pool->updated_at = now();
+            $old_date_user_pool->save();
+         }
+         else{
+            $user_pool = $this->user_pool
+            ->create([
+                'user_id' => $userid,
+                'pool_id' => $pool_id,
+                'village_id' => $request->user()->village_id,
+                'user_type' => $user_type,
+                'umbrella' => $request->umbrella ?? 1,
+            ]);
+            EntrancePool::create([
+                'pool_id' => $pool_id,
+                'user_id' => $userid,
+                'time' => date('H:i:s'),
+                'village_id' => $request->user()->village_id,
+            ]);
+         }
+
+         return response()->json([
+            'success' => 'Qr code is true',
+            'appartment' => $appartment,
+            'user' => $user,
+            'time' => $old_time,
+            "umbrellas" => $my_umbrellas - ($request->umbrella ?? 0),
+         ]);
+    } 
 }

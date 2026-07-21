@@ -243,6 +243,7 @@ class HomeController extends Controller
             "id"    => $userModel->id,
             "name"  => $userModel->name,
             "email" => $userModel->email,
+            "image" => $userModel->image_link,
             "units" => $userModel->appartment_code->map(function($item) {
                 return [
                     "id"         => $item?->appartment?->id,
