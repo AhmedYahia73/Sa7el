@@ -99,7 +99,7 @@ class PoolController extends Controller
          
         $user_type = $this->appartment_code
          ->where('appartment_id', $appartment_id)
-         ->where('user_id', $old_user_beach?->user?->id)
+         ->where('user_id', $old_date_user_pool?->user?->id)
          ->orderByDesc('id')
          ->first()?->type;
         if (!empty($old_date_user_pool)) {
@@ -113,7 +113,7 @@ class PoolController extends Controller
                 'appartment' => $appartment,
                 'appartment_type' => $type,
                 'user' => $user,
-                'last_user' => $old_user_beach?->user,
+                'last_user' => $old_date_user_pool?->user,
                 'time' => $old_time,
                 'user_type' => $user_type,
                 "umbrellas" => 0,
@@ -148,7 +148,7 @@ class PoolController extends Controller
             'appartment_type' => $type,
             'user_type' => $user_type,
             'user' => $user,
-            'last_user' => $old_user_beach?->user,
+            'last_user' => $old_date_user_pool?->user,
             'time' => $old_time,
             "umbrellas" => $my_umbrellas - 1,
             "open_status" => true,
