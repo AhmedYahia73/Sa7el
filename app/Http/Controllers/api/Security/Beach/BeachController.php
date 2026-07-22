@@ -471,8 +471,7 @@ class BeachController extends Controller
         ]);
         $user = User::
         where('id', $userid)
-        ->first();
-        $user->user_type = $user_type;
+        ->first(); 
 
          return response()->json([
             'success' => 'Qr code is true',
