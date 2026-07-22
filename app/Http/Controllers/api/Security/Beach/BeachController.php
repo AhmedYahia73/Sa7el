@@ -390,7 +390,7 @@ class BeachController extends Controller
   
         $is_visitor  = VisitorCode::
         where('id', $request->visitor_id)
-        ->first() ? false : true;
+        ->first() ? true : false;
         $last_visit_date = date("Y-m-d");
         $last_visit_time = date("h:i A");
         $userid = $request->user_id;
