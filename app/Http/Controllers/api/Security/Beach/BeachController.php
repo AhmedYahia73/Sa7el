@@ -415,7 +415,7 @@ class BeachController extends Controller
             where('village_id', $request->user()->village_id)
             ->where("id", $request->inside_gate_id)
             ->first();
-            if (!$visit_village->visitor) {
+            if (!$request->user()->visitor) {
                 return response()->json([
                     'errors' => 'Visitor has not perimission'
                 ], 401);
