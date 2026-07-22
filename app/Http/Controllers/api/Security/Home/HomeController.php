@@ -74,8 +74,7 @@ class HomeController extends Controller
         ->where('village_id', $request->user()->village_id)
         ->whereHas('security', function($query) use($request){
             $query->where('security_men.id', $request->user()->id);
-        })
-        ->with("translations")
+        }) 
         ->get();
 
         return response()->json([
