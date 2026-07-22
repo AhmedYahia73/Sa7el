@@ -368,7 +368,7 @@ class BeachController extends Controller
             'appartment' => $appartment,
             'user' => $user, 
              'user_type' => $user_type,
-            "is_visitor" => $type == 'visitor' ? true : false,
+            "is_visitor" => ($type ?? $user_type) == 'visitor' ? true : false,
             'date' => $last_visit_date,
             'time' => $last_visit_time,
             "visit_inside_gate_id" => $visit_inside_gates,
