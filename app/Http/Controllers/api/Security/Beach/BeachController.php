@@ -62,7 +62,7 @@ class BeachController extends Controller
             ], 400);
         }
         $appartment = $this->appartment
-        ->select("id", "unit")
+        ->select("id", "unit", "appartment_type_id")
         ->with("type:id,name")
         ->where('id', $appartment_id)
         ->first();
@@ -185,7 +185,7 @@ class BeachController extends Controller
         $appartment_id = $request->appartment_id;
     
          $appartment = $this->appartment
-        ->select("id", "unit")
+        ->select("id", "unit", "appartment_type_id")
         ->with("type:id,name")
          ->where('id', $appartment_id) 
          ->first();
