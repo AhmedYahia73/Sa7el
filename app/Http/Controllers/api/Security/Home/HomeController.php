@@ -76,18 +76,7 @@ class HomeController extends Controller
             $query->where('security_men.id', $request->user()->id);
         })
         ->with("translations")
-        ->get()
-        ->map(function($item) use($request){
-            return [
-                "id" => $item->id,
-                "name" => $request->locale == "en" ? $item->name : $item->ar_name ?? $item->name,
-                'location' => $item->location,
-                'status' => $item->status,
-                'village_id' => $item->village_id,
-                'image' => $item->image,
-                'image_link' => $item->image_link,
-            ];
-        });
+        ->get();
 
         return response()->json([
             'beaches' => $beaches,
