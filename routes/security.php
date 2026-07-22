@@ -49,5 +49,6 @@ Route::middleware(['auth:sanctum', 'IsSecurity'])->group(function(){
         Route::post('/inside_gate_upload_id', 'inside_gate_upload_id');
         Route::post('/entrance_beach_user', 'entrance_beach_user');
         Route::post('/entrance_inside_gate_user', 'entrance_inside_gate_user');
+        Route::post('/entrance_visitor_inside_gate_user', 'entrance_visitor_inside_gate_user');
     });
 });

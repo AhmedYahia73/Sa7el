@@ -455,15 +455,7 @@ class BeachController extends Controller
             return response()->json([
                 'errors' => 'Qr code is expired'
             ], 400);
-        }
-         $appartment = Appartment::
-         where('id', $appartment_id)
-         ->first();
-         if (empty($appartment)) {
-            return response()->json([
-                'errors' => 'Qr code is wrong'
-            ], 400);
-         }
+        } 
         $user_type = AppartmentCode::
          where('appartment_id', $appartment_id)
          ->where('user_id', $userid) 
