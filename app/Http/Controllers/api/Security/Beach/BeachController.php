@@ -62,10 +62,6 @@ class BeachController extends Controller
                 'errors' => 'Qr code is wrong'
             ], 400);
         }
-                return response()->json([
-            'success' => 'Qr code is true',
-            "umbrellas" => $arr_text,
-        ]);
          $appartment = $this->appartment
          ->where('id', $appartment_id) 
          ->first();
