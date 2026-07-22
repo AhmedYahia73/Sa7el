@@ -26,24 +26,68 @@ class HomeController extends Controller
     private UserPool $user_pool){}
 
     public function view(Request $request){
+        $validator = Validator::make($request->all(), [
+            'locale' => 'in:ar,en',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
         $beaches = $this->beaches
         ->where('village_id', $request->user()->village_id)
         ->whereHas('security', function($query) use($request){
             $query->where('security_men.id', $request->user()->id);
         })
-        ->get();
+        ->with("translations")
+        ->get()
+        ->map(function($item) use($request){
+            return [
+                "id" => $item->id,
+                "name" => $request->locale == "en" ? $item->name : $item->ar_name ?? $item->name,
+                'qr_code' => $item->qr_code,
+                'from' => $item->from,
+                'to' => $item->to,
+                'village_id' => $item->village_id,
+                'status' => $item->status, 
+            ];
+        });
         $pools = $this->pools
         ->where('village_id', $request->user()->village_id)
         ->whereHas('security', function($query) use($request){
             $query->where('security_men.id', $request->user()->id);
         })
-        ->get();
+        ->with("translations")
+        ->get()
+        ->map(function($item) use($request){
+            return [
+                "id" => $item->id,
+                "name" => $request->locale == "en" ? $item->name : $item->ar_name ?? $item->name,
+                'qr_code' => $item->qr_code,
+                'from' => $item->from,
+                'to' => $item->to,
+                'village_id' => $item->village_id,
+                'status' => $item->status, 
+            ];
+        });
         $gates = $this->gates
         ->where('village_id', $request->user()->village_id)
         ->whereHas('security', function($query) use($request){
             $query->where('security_men.id', $request->user()->id);
         })
-        ->get();
+        ->with("translations")
+        ->get()
+        ->map(function($item) use($request){
+            return [
+                "id" => $item->id,
+                "name" => $request->locale == "en" ? $item->name : $item->ar_name ?? $item->name,
+                'location' => $item->location,
+                'status' => $item->status,
+                'village_id' => $item->village_id,
+                'image' => $item->image,
+                'image_link' => $item->image_link,
+            ];
+        });
 
         return response()->json([
             'beaches' => $beaches,
@@ -208,6 +252,7 @@ class HomeController extends Controller
 
         $validator = Validator::make($request->all(), [
             'phone' => 'required',
+            
         ]);
 
         if ($validator->fails()) {

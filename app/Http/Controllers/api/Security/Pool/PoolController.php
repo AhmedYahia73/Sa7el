@@ -99,8 +99,7 @@ class PoolController extends Controller
          
         $user_type = $this->appartment_code
          ->where('appartment_id', $appartment_id)
-         ->where('user_id', $old_date_user_pool?->user?->id)
-         ->whereNotNull('user_id')
+         ->where('user_id', $old_date_user_pool?->user?->id ?? 0) 
          ->orderByDesc('id')
          ->first()?->type;
         $user->user_type = $user_type;
@@ -211,8 +210,7 @@ class PoolController extends Controller
          
         $user_type = $this->appartment_code
          ->where('appartment_id', $appartment_id)
-         ->where('user_id', $old_date_user_pool?->user?->id)
-         ->whereNotNull('user_id')
+         ->where('user_id', $old_date_user_pool?->user?->id ?? 0) 
          ->orderByDesc('id')
          ->first()?->type;
         $user->user_type = $user_type;
