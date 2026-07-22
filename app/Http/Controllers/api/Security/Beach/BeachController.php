@@ -80,10 +80,7 @@ class BeachController extends Controller
          ->whereDate('created_at', date('Y-m-d'))
          ->sum("umbrella") ?? 0;
         $my_umbrellas = $umberllas - $user_umbrellas;
-        return response()->json([
-            'success' => 'Qr code is true',
-            "umbrellas" => $my_umbrellas,
-        ]);
+       
         if($my_umbrellas < $request->umbrella){
             return response()->json([
                 'errors' => 'عدد الشمسيات المتاحة ' . $my_umbrellas
