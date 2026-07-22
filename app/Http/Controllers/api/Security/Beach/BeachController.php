@@ -28,8 +28,7 @@ class BeachController extends Controller
     public function read_qr(Request $request){
         $validator = Validator::make($request->all(), [
             'qr_code' => 'required|string',
-            'beach_id' => 'required|exists:beaches,id',
-            "umbrella" => "sometimes|integer",
+            'beach_id' => 'required|exists:beaches,id', 
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -62,14 +61,16 @@ class BeachController extends Controller
                 'errors' => 'Qr code is wrong'
             ], 400);
         }
-         $appartment = $this->appartment
-         ->where('id', $appartment_id) 
-         ->first();
-         if (empty($appartment) || $beach_id != $request->beach_id) {
+        $appartment = $this->appartment
+        ->select("id", "unit")
+        ->with("type:id,name")
+        ->where('id', $appartment_id)
+        ->first();
+        if (empty($appartment) || $beach_id != $request->beach_id) {
             return response()->json([
                 'errors' => 'Qr code is wrong'
             ], 400);
-         }
+        }
         $umberllas = AppartmentTypeUmbrella::
         where("appartment_type_id", $appartment->appartment_type_id)
         ->where("village_id", $request->user()->village_id)
@@ -81,27 +82,33 @@ class BeachController extends Controller
          ->sum("umbrella") ?? 0;
         $my_umbrellas = $umberllas - $user_umbrellas;
        
-        if($my_umbrellas < $request->umbrella){
-            return response()->json([
-                'errors' => 'عدد الشمسيات المتاحة ' . $my_umbrellas
-            ], 400);
-        }
-        $appartment->type;
         $user = $this->user
+        ->select("id", "name", "image")
         ->where('id', $userid)
         ->first();
-         $user_beach_now = $this->user_beach
-         ->where('user_id', $userid)
-         ->where('beach_id', $beach_id)
+         $old_user_beach = $this->user_beach 
+         ->where("appartment_id", $appartment_id)
          ->where('village_id', $request->user()->village_id)
-         ->whereDate('created_at', date('Y-m-d'))
-         ->first();
-         $old_user_beach = $this->user_beach
-         ->where('user_id', $userid)
-         ->where('beach_id', $beach_id)
-         ->where('village_id', $request->user()->village_id) 
-         ->first();
-        $old_time = null;
+         ->with("user:id,name,image")
+         ->orderByDesc('id') 
+         ->first();  
+        if (!empty($old_user_beach)) {
+            $old_time = $old_user_beach->updated_at->format('Y-d-m h:i A');
+        } else {
+            $old_time = date('Y-d-m h:i A');
+        }
+        if($my_umbrellas < 1){ 
+            return response()->json([
+                'success' => 'User has no umbrellas available',
+                'appartment' => $appartment,
+                'appartment_type' => $appartment->type,
+                'user' => $user,
+                'last_user' => $old_user_beach?->user,
+                'time' => $old_time,
+                "umbrellas" => $my_umbrellas - 1,
+                "open_status" => false,
+            ]);
+        } 
         $user_type = $this->appartment_code
          ->where('appartment_id', $appartment_id)
          ->where('user_id', $userid)
@@ -139,7 +146,8 @@ class BeachController extends Controller
             'beach_id' => $beach_id,
             'user_type' => $user_type,
             'village_id' => $request->user()->village_id,
-            'umbrella' => $request->umbrella ?? 1,
+            'umbrella' => 1,
+            "appartment_id" => $appartment_id,
         ]); 
         EntranceBeach::create([
             'beach_id' => $beach_id,
@@ -151,9 +159,12 @@ class BeachController extends Controller
          return response()->json([
             'success' => 'Qr code is true',
             'appartment' => $appartment,
+            'appartment_type' => $appartment->type,
             'user' => $user,
+            'last_user' => $old_user_beach?->user,
             'time' => $old_time,
-            "umbrellas" => $my_umbrellas - ($request->umbrella ?? 0),
+            "umbrellas" => $my_umbrellas - 1,
+            "open_status" => true,
          ]);
     }
 
@@ -161,8 +172,7 @@ class BeachController extends Controller
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
             'beach_id' => 'required|exists:beaches,id',
-            'appartment_id' => 'required|exists:appartments,id',
-            "umbrella" => "sometimes|integer",
+            'appartment_id' => 'required|exists:appartments,id', 
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -175,6 +185,8 @@ class BeachController extends Controller
         $appartment_id = $request->appartment_id;
     
          $appartment = $this->appartment
+        ->select("id", "unit")
+        ->with("type:id,name")
          ->where('id', $appartment_id) 
          ->first();
          if (empty($appartment) || $beach_id != $request->beach_id) {
@@ -192,27 +204,46 @@ class BeachController extends Controller
          ->whereDate('created_at', date('Y-m-d'))
          ->sum("umbrella") ?? 0;
         $my_umbrellas = $umberllas - $user_umbrellas;
-        if($my_umbrellas < $request->umbrella){
-            return response()->json([
-                'errors' => 'عدد الشمسيات المتاحة ' . $my_umbrellas
-            ], 400);
-        }
-        $appartment->type;
+     
         $user = $this->user
+        ->select("id", "name", "image")
         ->where('id', $userid)
         ->first();
-         $user_beach_now = $this->user_beach
-         ->where('user_id', $userid)
-         ->where('beach_id', $beach_id)
-         ->where('village_id', $request->user()->village_id)
-         ->whereDate('created_at', date('Y-m-d'))
-         ->first();
          $old_user_beach = $this->user_beach
-         ->where('user_id', $userid)
-         ->where('beach_id', $beach_id)
-         ->where('village_id', $request->user()->village_id) 
+        //  ->where('user_id', $userid)
+        //  ->where('beach_id', $beach_id)
+         ->where("appartment_id", $appartment_id)
+         ->where('village_id', $request->user()->village_id)
+         ->with("user")
+         ->orderByDesc('id') 
          ->first();
-        $old_time = null;
+        if (!empty($old_user_beach)) {
+            $old_time = $old_user_beach->updated_at->format('Y-d-m h:i A');
+        } else {
+            $old_time = date('Y-d-m h:i A');
+        }
+        
+        if($my_umbrellas < 1){ 
+            return response()->json([
+                'success' => 'User has no umbrellas available',
+                'appartment' => $appartment,
+                'appartment_type' => $appartment->type,
+                'user' => $old_user_beach?->user,
+                'last_user' => $old_user_beach?->user,
+                'time' => $old_time,
+                "umbrellas" => $my_umbrellas - 1,
+                "open_status" => false,
+            ]);
+        } 
+        $user = $this->user
+        ->where('id', $userid)
+        ->first(); 
+         $old_user_beach = $this->user_beach
+         ->where("appartment_id", $appartment_id)
+         ->where('village_id', $request->user()->village_id)
+         ->with("user:id,name,image")
+         ->orderByDesc('id') 
+         ->first(); 
         $user_type = $this->appartment_code
          ->where('appartment_id', $appartment_id)
          ->where('user_id', $userid)
@@ -223,33 +254,32 @@ class BeachController extends Controller
                 'errors' => 'Appartment is wrong'
             ], 400);
          }
-         if (!empty($old_user_beach)) {
-            $old_time = $old_user_beach->updated_at->format('Y-d-m h:i A');
-            $old_user_beach->updated_at = now();
-            $old_user_beach->save();
-         } else {
-            $user_beach = $this->user_beach
-            ->create([
-                'user_id' => $userid,
-                'beach_id' => $beach_id,
-                'user_type' => $user_type,
-                'village_id' => $request->user()->village_id,
-                'umbrella' => $request->umbrella ?? 1,
-            ]);
-            EntranceBeach::create([
-                'beach_id' => $beach_id,
-                'user_id' => $userid,
-                'time' => date('H:i:s'),
-                'village_id' => $request->user()->village_id,
-            ]);
-         }
+         
+        $user_beach = $this->user_beach
+        ->create([
+            'user_id' => $userid,
+            'beach_id' => $beach_id,
+            'user_type' => $user_type,
+            'village_id' => $request->user()->village_id,
+            'umbrella' => 1,
+            "appartment_id" => $appartment_id,
+        ]); 
+        EntranceBeach::create([
+            'beach_id' => $beach_id,
+            'user_id' => $userid,
+            'time' => date('H:i:s'),
+            'village_id' => $request->user()->village_id,
+        ]); 
          
          return response()->json([
             'success' => 'Qr code is true',
             'appartment' => $appartment,
+            'appartment_type' => $appartment->type,
             'user' => $user,
+            'last_user' => $old_user_beach?->user,
             'time' => $old_time,
-            "umbrellas" => $my_umbrellas - ($request->umbrella ?? 0),
+            "umbrellas" => $my_umbrellas - 1,
+            "open_status" => true,
          ]);
     }
 

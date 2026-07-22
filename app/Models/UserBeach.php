@@ -12,6 +12,7 @@ class UserBeach extends Model
         'village_id',
         'user_type',
         'umbrella',
+        'appartment_id',
     ];
 
     public function user(){
@@ -20,5 +21,9 @@ class UserBeach extends Model
 
     public function beach(){
         return $this->belongsTo(Beach::class, 'beach_id');
+    }
+
+    public function appartment(){
+        return $this->belongsTo(Appartment::class, 'appartment_id');
     }
 }
