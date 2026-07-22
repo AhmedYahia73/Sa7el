@@ -120,12 +120,7 @@ class PoolController extends Controller
                 "umbrellas" => 0,
                 "open_status" => false,
             ]);
-        }
-         if (empty($user_type)) {
-            return response()->json([
-                'errors' => 'Appartment is wrong'
-            ], 400);
-         }    
+        }  
         $user_pool = $this->user_pool
         ->create([
             'user_id' => $userid,
@@ -231,17 +226,7 @@ class PoolController extends Controller
                 "umbrellas" => 0,
                 "open_status" => false,
             ]);
-        }
-         if (empty($user_type)) {
-            return response()->json([
-                'errors' => 'Appartment is wrong'
-            ], 400);
-         }
-         if (empty($user_type)) {
-            return response()->json([
-                'errors' => 'Appartment is wrong'
-            ], 400);
-         } 
+        } 
         $user_pool = $this->user_pool
         ->create([
             'user_id' => $userid,

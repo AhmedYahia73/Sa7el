@@ -122,12 +122,7 @@ class BeachController extends Controller
                 'user_type' => $user_type,
                 "open_status" => false,
             ]);
-        } 
-         if (empty($user_type)) {
-            return response()->json([
-                'errors' => $request->locale == "en" ? 'Appartment is wrong' : 'الشقة خاطئة'
-            ], 400);
-         }
+        }  
         //  if (!empty($old_user_beach)) {
         //     $old_time = $old_user_beach->updated_at->format('Y-d-m h:i A');
         //     $old_user_beach->updated_at = now();
@@ -265,12 +260,7 @@ class BeachController extends Controller
          ->where('appartment_id', $appartment_id)
          ->where('user_id', $old_user_beach?->user_id ?? 0) 
          ->orderByDesc('id')
-         ->first()?->type;
-         if (empty($user_type)) {
-            return response()->json([
-                'errors' => 'Appartment is wrong'
-            ], 400);
-         }
+         ->first()?->type; 
          
         $user_beach = $this->user_beach
         ->create([
