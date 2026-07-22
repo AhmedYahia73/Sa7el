@@ -245,7 +245,7 @@ class BeachController extends Controller
                 'user' => $old_user_beach?->user,
                 'last_user' => $old_user_beach?->user,
                 'time' => $old_time,
-                "umbrellas" => $my_umbrellas - 1,
+                "umbrellas" => 0,
                 "open_status" => false,
             ]);
         } 
