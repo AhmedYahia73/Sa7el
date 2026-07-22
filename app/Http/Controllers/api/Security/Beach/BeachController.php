@@ -95,7 +95,7 @@ class BeachController extends Controller
         if (!empty($old_user_beach)) {
             $old_time = $old_user_beach->updated_at->format('Y-d-m h:i A');
         } else {
-            $old_time = date('Y-d-m h:i A');
+            $old_time = date('Y-m-d h:i A');
         }
         if($my_umbrellas < 1){ 
             return response()->json([
@@ -220,7 +220,7 @@ class BeachController extends Controller
         if (!empty($old_user_beach)) {
             $old_time = $old_user_beach->updated_at->format('Y-d-m h:i A');
         } else {
-            $old_time = date('Y-d-m h:i A');
+            $old_time = date('Y-m-d h:i A');
         }
         
         if($my_umbrellas < 1){ 
