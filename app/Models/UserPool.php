@@ -12,6 +12,7 @@ class UserPool extends Model
         'village_id',
         'user_type',
         'umbrella',
+        'appartment_id',
     ];
 
     public function user(){
@@ -20,5 +21,9 @@ class UserPool extends Model
 
     public function pool(){
         return $this->belongsTo(Pools::class, 'pool_id');
+    }
+
+    public function appartment(){
+        return $this->belongsTo(Appartment::class, 'appartment_id');
     }
 }

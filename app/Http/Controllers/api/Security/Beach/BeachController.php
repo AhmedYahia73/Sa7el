@@ -97,7 +97,12 @@ class BeachController extends Controller
          ->where('village_id', $request->user()->village_id)
          ->with("user:id,name,image")
          ->orderByDesc('id') 
-         ->first();  
+         ->first();
+        $user_type = $this->appartment_code
+         ->where('appartment_id', $appartment_id)
+         ->where('user_id', $old_user_beach?->user?->id)
+         ->orderByDesc('id')
+         ->first()?->type;
         if (!empty($old_user_beach)) {
             $old_time = $old_user_beach->updated_at->format('Y-d-m h:i A');
         } else {
@@ -111,15 +116,11 @@ class BeachController extends Controller
                 'user' => $user,
                 'last_user' => $old_user_beach?->user,
                 'time' => $old_time,
-                "umbrellas" => $my_umbrellas - 1,
+                "umbrellas" => 0,
+                'user_type' => $user_type,
                 "open_status" => false,
             ]);
         } 
-        $user_type = $this->appartment_code
-         ->where('appartment_id', $appartment_id)
-         ->where('user_id', $userid)
-         ->orderByDesc('id')
-         ->first()?->type;
          if (empty($user_type)) {
             return response()->json([
                 'errors' => 'Appartment is wrong'
@@ -166,6 +167,7 @@ class BeachController extends Controller
             'success' => 'Qr code is true',
             'appartment' => $appartment, 
             'appartment_type' => $type,
+            'user_type' => $user_type,
             'user' => $user,
             'last_user' => $old_user_beach?->user,
             'time' => $old_time,
