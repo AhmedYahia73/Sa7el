@@ -365,6 +365,11 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
     Route::controller(ProviderReviewController::class)->prefix('show_reviews')
     ->group(function() {
         Route::get('/', 'show_reviews')->middleware('can:admin_provider_review_view');
+        Route::get('/provider_lists', 'provider_lists')->middleware('can:admin_provider_review_view');
+        Route::get('/user_lists', 'user_lists')->middleware('can:admin_provider_review_view');
+        Route::get('/review_item/{id}', 'review_item')->middleware('can:admin_provider_review_view');
+        Route::post('/', 'add')->middleware('can:admin_provider_review_add');
+        Route::put('/{id}', 'update')->middleware('can:admin_provider_review_update');
         Route::delete('/delete_review/{id}', 'delete_review')->middleware('can:admin_provider_review_delete');
     });
     

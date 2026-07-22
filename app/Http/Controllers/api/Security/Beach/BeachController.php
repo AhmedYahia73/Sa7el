@@ -28,7 +28,8 @@ class BeachController extends Controller
     public function read_qr(Request $request){
         $validator = Validator::make($request->all(), [
             'qr_code' => 'required|string',
-            'beach_id' => 'required|exists:beaches,id', 
+            'beach_id' => 'required|exists:beaches,id',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -58,7 +59,7 @@ class BeachController extends Controller
         } 
         else{
             return response()->json([
-                'errors' => 'Qr code is wrong'
+                'errors' => $request->locale == "en" ? 'Qr code is wrong' : 'رمز الاستجابة السري خطأ'
             ], 400);
         }
         $appartment = $this->appartment
@@ -124,7 +125,7 @@ class BeachController extends Controller
         } 
          if (empty($user_type)) {
             return response()->json([
-                'errors' => 'Appartment is wrong'
+                'errors' => $request->locale == "en" ? 'Appartment is wrong' : 'الشقة خاطئة'
             ], 400);
          }
         //  if (!empty($old_user_beach)) {
@@ -182,6 +183,7 @@ class BeachController extends Controller
             'user_id' => 'required|exists:users,id',
             'beach_id' => 'required|exists:beaches,id',
             'appartment_id' => 'required|exists:appartments,id', 
+            "locale" => "in:ar,en",
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -380,6 +382,7 @@ class BeachController extends Controller
             'inside_gate_id' => 'required|exists:inside_gates,id',
             "visitor_id" => "required|exists:visitor_codes,id",
             'appartment_id' => 'required|exists:appartments,id',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -401,7 +404,7 @@ class BeachController extends Controller
             ->first();
             if (!$visitor_code) {
                 return response()->json([
-                    'errors' => 'Qr code is expired'
+                    'errors' => $request->locale == "en" ? 'Qr code is expired' : 'رمز الاستجابة السري منتهي'
                 ], 400);
             }
             $tomorrow = Carbon::now()->addDay();
@@ -437,7 +440,7 @@ class BeachController extends Controller
             ->first();
             if (!empty($visit_village)) {
                 return response()->json([
-                    'errors' => 'Qr code is expired...'
+                    'errors' => $request->locale == "en" ? 'Qr code is expired...' : 'رمز الاستجابة السري منتهي...'
                 ], 400);
             }
             $appartment_id = $arr_text[11];
@@ -446,14 +449,14 @@ class BeachController extends Controller
             ->first();
             if (empty($appartment)) {
                 return response()->json([
-                    'errors' => 'Appartment is wrong'
+                    'errors' => $request->locale == "en" ? 'Appartment is wrong' : 'الشقة خاطئة'
                 ], 400);
             }
             $type = 'visitor';
         }
         else{
             return response()->json([
-                'errors' => 'Qr code is expired'
+                'errors' => $request->locale == "en" ? 'Qr code is expired' : 'رمز الاستجابة السري منتهي'
             ], 400);
         } 
         $user_type = AppartmentCode::
@@ -500,6 +503,7 @@ class BeachController extends Controller
         $validator = Validator::make($request->all(), [
             'qr_code' => 'required|string',
             'inside_gate_id' => 'required|exists:inside_gates,id',
+            "locale" => "in:ar,en",
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -524,7 +528,7 @@ class BeachController extends Controller
             $qrcode_time = Carbon::parse($qrcode_time);
             if ($tomorrow < $qrcode_time) {
                 return response()->json([
-                    'errors' => 'Qr code is expired'
+                    'errors' =>$request->locale == "en" ? 'Qr code is expired' : 'رمز الاستجابة السري منتهي'
                 ], 400);
             }
             $qr_code_code = $arr_text[9];
@@ -552,7 +556,7 @@ class BeachController extends Controller
             ->first();
             if (!empty($visit_village)) {
                 return response()->json([
-                    'errors' => 'Qr code is expired...'
+                    'errors' => $request->locale == "en" ? 'Qr code is expired...' : 'رمز الاستجابة السري منتهي...'
                 ], 400);
             }
             $appartment_id = $arr_text[11];

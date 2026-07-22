@@ -360,9 +360,21 @@ class AdminGates
                 return true;
             }
             return false;
-        });        
+        });
         Gate::define('admin_provider_review_delete', function ($user) {
             if ($user->position && !empty($user->position->sup_roles->where('module', 'Provider')->whereIn('action', ['all', 'delete_review'])->first())) {
+                return true;
+            }
+            return false;
+        });
+        Gate::define('admin_provider_review_add', function ($user) {
+            if ($user->position && !empty($user->position->sup_roles->where('module', 'Provider')->whereIn('action', ['all', 'add_review'])->first())) {
+                return true;
+            }
+            return false;
+        });
+        Gate::define('admin_provider_review_update', function ($user) {
+            if ($user->position && !empty($user->position->sup_roles->where('module', 'Provider')->whereIn('action', ['all', 'update_review'])->first())) {
                 return true;
             }
             return false;

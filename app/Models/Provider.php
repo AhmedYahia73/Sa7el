@@ -96,7 +96,7 @@ class Provider extends Model
     
     public function rate_items()
     {
-        return $this->hasMany(ProviderRate::class, 'provider_id');
+        return $this->hasMany(ProviderReview::class, 'provider_id');
     }
  
     public function getRateAttribute()
