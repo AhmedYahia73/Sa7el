@@ -103,6 +103,7 @@ class PoolController extends Controller
          ->whereNotNull('user_id')
          ->orderByDesc('id')
          ->first()?->type;
+        $user->user_type = $user_type;
         if (!empty($old_date_user_pool)) {
             $old_time = $old_date_user_pool->updated_at->format('Y-d-m h:i A');
         } else {
@@ -214,6 +215,7 @@ class PoolController extends Controller
          ->whereNotNull('user_id')
          ->orderByDesc('id')
          ->first()?->type;
+        $user->user_type = $user_type;
         if (!empty($old_date_user_pool)) {
             $old_time = $old_date_user_pool->updated_at->format('Y-d-m h:i A');
         } else {

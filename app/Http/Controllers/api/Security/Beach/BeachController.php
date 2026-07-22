@@ -104,6 +104,7 @@ class BeachController extends Controller
          ->whereNotNull('user_id')
          ->orderByDesc('id')
          ->first()?->type;
+        $user->user_type = $user_type;
         if (!empty($old_user_beach)) {
             $old_time = $old_user_beach->updated_at->format('Y-d-m h:i A');
         } else {
@@ -421,6 +422,7 @@ class BeachController extends Controller
         $user = User::
         where('id', $userid)
         ->first();
+        $user->user_type = $user_type;
 
          return response()->json([
             'success' => 'Qr code is true',
@@ -554,7 +556,8 @@ class BeachController extends Controller
         ]);
         $user = User::
         where('id', $userid)
-        ->first();
+        ->first(); 
+        $user->user_type = $user_type;
 
          return response()->json([
             'success' => 'Qr code is true',
