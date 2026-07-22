@@ -80,7 +80,7 @@ class PoolController extends Controller
         ->where("village_id", $request->user()->village_id)
         ->first()?->umbrellas ?? 1;
          $user_umbrellas = $this->user_pool
-         ->where('user_id', $userid) 
+         ->where('appartment_id', $appartment_id) 
          ->where('village_id', $request->user()->village_id)
          ->whereDate('created_at', date('Y-m-d'))
          ->sum("umbrella") ?? 0;
@@ -196,7 +196,7 @@ class PoolController extends Controller
         ->where("village_id", $request->user()->village_id)
         ->first()?->umbrellas ?? 1;
          $user_umbrellas = $this->user_pool
-         ->where('user_id', $userid) 
+         ->where('appartment_id', $appartment_id) 
          ->where('village_id', $request->user()->village_id)
          ->whereDate('created_at', date('Y-m-d'))
          ->sum("umbrella") ?? 0;

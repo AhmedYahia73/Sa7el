@@ -83,7 +83,7 @@ class BeachController extends Controller
         ->where("village_id", $request->user()->village_id)
         ->first()?->umbrellas ?? 1;
          $user_umbrellas = $this->user_beach
-         ->where('user_id', $userid) 
+         ->where('appartment_id', $appartment_id) 
          ->where('village_id', $request->user()->village_id)
          ->whereDate('created_at', date('Y-m-d'))
          ->sum("umbrella") ?? 0;
@@ -215,8 +215,8 @@ class BeachController extends Controller
         where("appartment_type_id", $appartment->appartment_type_id)
         ->where("village_id", $request->user()->village_id)
         ->first()?->umbrellas ?? 1;
-         $user_umbrellas = $this->user_beach
-         ->where('user_id', $userid) 
+         $user_umbrellas = $this->user_beach 
+         ->where('appartment_id', $appartment_id) 
          ->where('village_id', $request->user()->village_id)
          ->whereDate('created_at', date('Y-m-d'))
          ->sum("umbrella") ?? 0;
@@ -565,7 +565,7 @@ class BeachController extends Controller
             ->first();
             if (empty($appartment)) {
                 return response()->json([
-                    'errors' => 'Appartment is wrong'
+                    'errors' => $request->locale == "en" ? 'Appartment is wrong' : 'الشقة خاطئة'
                 ], 400);
             }
             $type = 'visitor';
@@ -582,7 +582,7 @@ class BeachController extends Controller
         }
         else{
             return response()->json([
-                'errors' => 'Qr code is wrong'
+                'errors' => $request->locale == "en" ? 'Qr code is wrong' : 'رمز الاستجابة السري خاطئ'
             ], 400);
         }
         
