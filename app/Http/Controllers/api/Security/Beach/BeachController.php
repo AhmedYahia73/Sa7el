@@ -415,11 +415,6 @@ class BeachController extends Controller
             where('village_id', $request->user()->village_id)
             ->where("id", $request->inside_gate_id)
             ->first();
-            if (!$request->user()->visitor) {
-                return response()->json([
-                    'errors' => 'Visitor has not perimission'
-                ], 401);
-            }
             $visit_village = VisitBeach::
             where('user_id', $userid)
             ->where('village_id', $request->user()->village_id)
@@ -430,6 +425,11 @@ class BeachController extends Controller
                 return response()->json([
                     'errors' => $request->locale == "en" ? 'Qr code is expired...' : 'رمز الاستجابة السري منتهي...'
                 ], 400);
+            }
+            if (!$visit_village->visitor) {
+                return response()->json([
+                    'errors' => 'Visitor has not perimission'
+                ], 401);
             }
             $appartment_id = $arr_text[11];
             $appartment = Appartment::
