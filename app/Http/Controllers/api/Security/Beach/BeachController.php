@@ -431,7 +431,7 @@ class BeachController extends Controller
             //         'errors' => 'Visitor has not perimission'
             //     ], 401);
             // }
-            $appartment_id = $arr_text[11];
+            $appartment_id = $request->appartment_id;
             $appartment = Appartment::
             where('id', $appartment_id)
             ->first();
