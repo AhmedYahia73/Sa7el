@@ -71,6 +71,7 @@ class BeachController extends Controller
             "name" => $appartment->name,
         ];
         unset($appartment->type);
+        $appartment->type = $type;
         if (empty($appartment) || $beach_id != $request->beach_id) {
             return response()->json([
                 'errors' => 'Qr code is wrong'
@@ -198,7 +199,8 @@ class BeachController extends Controller
             "id" => $appartment->id,
             "name" => $appartment->name,
         ];
-        unset($appartment->type);
+        unset($appartment->type); 
+        $appartment->type = $type;
          if (empty($appartment) || $beach_id != $request->beach_id) {
             return response()->json([
                 'errors' => 'Qr code is wrong'
