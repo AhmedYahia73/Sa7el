@@ -101,7 +101,7 @@ class BeachController extends Controller
          ->first();
         $user_type = $this->appartment_code
          ->where('appartment_id', $appartment_id)
-         ->where('user_id', $old_user_beach?->user?->id ?? 0) 
+         ->where('user_id', $old_user_beach?->user_id ?? 0) 
          ->orderByDesc('id')
          ->first()?->type;
         $user->user_type = $user_type;
@@ -263,7 +263,7 @@ class BeachController extends Controller
          ->first(); 
         $user_type = $this->appartment_code
          ->where('appartment_id', $appartment_id)
-         ->where('user_id', $old_user_beach?->user?->id ?? 0) 
+         ->where('user_id', $old_user_beach?->user_id ?? 0) 
          ->orderByDesc('id')
          ->first()?->type;
          if (empty($user_type)) {
