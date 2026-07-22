@@ -354,8 +354,7 @@ class BeachController extends Controller
             'village_id' => $request->user()->village_id,
             'inside_gate_id' => $request->inside_gate_id,
             'appartment_id' => $appartment_id,
-            'type' => $type ?? $user_type, 
-            'code' => $code,
+            'type' => $type ?? $user_type,  
             'user_type' => $user_type,
         ]);
         $user = User::
