@@ -247,7 +247,7 @@ class HomeController extends Controller
             "units" => $userModel->appartment_code->map(function($item) {
                 return [
                     "id"         => $item?->appartment?->id,
-                    "appartment" => $item?->appartment?->unit, // سيصبح null إذا لم يطابق شروط الـ Owner أو Renter الساري
+                    "appartment" => $item?->appartment?->unit,
                 ];
             }), 
         ];

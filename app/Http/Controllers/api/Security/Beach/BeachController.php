@@ -101,6 +101,7 @@ class BeachController extends Controller
         $user_type = $this->appartment_code
          ->where('appartment_id', $appartment_id)
          ->where('user_id', $old_user_beach?->user?->id)
+         ->whereNotNull('user_id')
          ->orderByDesc('id')
          ->first()?->type;
         if (!empty($old_user_beach)) {
@@ -261,6 +262,7 @@ class BeachController extends Controller
         $user_type = $this->appartment_code
          ->where('appartment_id', $appartment_id)
          ->where('user_id', $userid)
+         ->whereNotNull('user_id')
          ->orderByDesc('id')
          ->first()?->type;
          if (empty($user_type)) {
@@ -396,6 +398,7 @@ class BeachController extends Controller
         $user_type = AppartmentCode::
          where('appartment_id', $appartment_id)
          ->where('user_id', $userid)
+         ->whereNotNull('user_id')
          ->orderByDesc('id')
          ->first()?->type;
          if (empty($user_type)) {
@@ -529,6 +532,7 @@ class BeachController extends Controller
         $user_type = AppartmentCode::
          where('appartment_id', $appartment_id)
          ->where('user_id', $userid)
+         ->whereNotNull('user_id')
          ->orderByDesc('id')
          ->first()?->type;
          if (empty($user_type)) {
