@@ -388,13 +388,13 @@ class BeachController extends Controller
             ],400);
         }
   
-        $is_visitor  = VisitorCode::
+        $visitor_code  = VisitorCode::
         where('id', $request->visitor_id)
-        ->first() ? true : false;
+        ->first();
         $last_visit_date = date("Y-m-d");
         $last_visit_time = date("h:i A");
         $userid = $request->user_id;
-        if ($is_visitor) {  
+        if ($visitor_code) {  
             $tomorrow = Carbon::now()->addDay();
             $qrcode_time = $visitor_code->created_at;
             $qrcode_time = Carbon::parse($qrcode_time);
