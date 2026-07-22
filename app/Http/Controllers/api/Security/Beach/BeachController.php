@@ -426,11 +426,11 @@ class BeachController extends Controller
                     'errors' => $request->locale == "en" ? 'Qr code is expired...' : 'رمز الاستجابة السري منتهي...'
                 ], 400);
             }
-            if (!$visit_village->visitor) {
-                return response()->json([
-                    'errors' => 'Visitor has not perimission'
-                ], 401);
-            }
+            // if (!$visit_village->visitor) {
+            //     return response()->json([
+            //         'errors' => 'Visitor has not perimission'
+            //     ], 401);
+            // }
             $appartment_id = $arr_text[11];
             $appartment = Appartment::
             where('id', $appartment_id)
