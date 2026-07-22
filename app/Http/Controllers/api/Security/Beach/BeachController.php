@@ -111,7 +111,28 @@ class BeachController extends Controller
             return response()->json([
                 'errors' => 'Appartment is wrong'
             ], 400);
-         } 
+         }
+        //  if (!empty($old_user_beach)) {
+        //     $old_time = $old_user_beach->updated_at->format('Y-d-m h:i A');
+        //     $old_user_beach->updated_at = now();
+        //     $old_user_beach->save();
+        //  } else {
+        //     $user_beach = $this->user_beach
+        //     ->create([
+        //         'user_id' => $userid,
+        //         'beach_id' => $beach_id,
+        //         'user_type' => $user_type,
+        //         'village_id' => $request->user()->village_id,
+        //         'umbrella' => $request->umbrella ?? 1,
+        //     ]); 
+        //     EntranceBeach::create([
+        //         'beach_id' => $beach_id,
+        //         'user_id' => $userid,
+        //         'time' => date('H:i:s'),
+        //         'village_id' => $request->user()->village_id,
+        //     ]);
+        //  }
+         
         $user_beach = $this->user_beach
         ->create([
             'user_id' => $userid,
@@ -125,8 +146,8 @@ class BeachController extends Controller
             'user_id' => $userid,
             'time' => date('H:i:s'),
             'village_id' => $request->user()->village_id,
-        ]); 
-         
+        ]);
+
          return response()->json([
             'success' => 'Qr code is true',
             'appartment' => $appartment,
