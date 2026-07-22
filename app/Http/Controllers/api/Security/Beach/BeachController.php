@@ -394,12 +394,7 @@ class BeachController extends Controller
         $last_visit_date = date("Y-m-d");
         $last_visit_time = date("h:i A");
         $userid = $request->user_id;
-        if ($is_visitor) { 
-            if (!$is_visitor) {
-                return response()->json([
-                    'errors' => $request->locale == "en" ? 'Qr code is expired' : 'رمز الاستجابة السري منتهي'
-                ], 400);
-            }
+        if ($is_visitor) {  
             $tomorrow = Carbon::now()->addDay();
             $qrcode_time = $visitor_code->created_at;
             $qrcode_time = Carbon::parse($qrcode_time);
