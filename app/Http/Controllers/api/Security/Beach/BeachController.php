@@ -337,6 +337,7 @@ class BeachController extends Controller
                 'errors' => 'Qr code is wrong'
             ], 400);
          }
+         
         $user_type = AppartmentCode::
          where('appartment_id', $appartment_id)
          ->where('user_id', $userid) 
@@ -366,8 +367,7 @@ class BeachController extends Controller
             'success' => 'Qr code is true',
             'appartment' => $appartment,
             'user' => $user, 
-            'visitor_type' => $visitor_type,
-            'user_type' => $user_type,
+             'user_type' => $user_type,
             "is_visitor" => $type == 'visitor' ? true : false,
             'date' => $last_visit_date,
             'time' => $last_visit_time,
