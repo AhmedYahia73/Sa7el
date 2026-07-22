@@ -394,13 +394,8 @@ class BeachController extends Controller
         $last_visit_date = date("Y-m-d");
         $last_visit_time = date("h:i A");
         $userid = $request->user_id;
-        if ($is_visitor) {
-            $visitor_code = VisitorCode::
-            where("user_id", $userid)
-            ->where("appartment_id", $request->appartment_id)
-            ->orderByDesc("id")
-            ->first();
-            if (!$visitor_code) {
+        if ($is_visitor) { 
+            if (!$is_visitor) {
                 return response()->json([
                     'errors' => $request->locale == "en" ? 'Qr code is expired' : 'رمز الاستجابة السري منتهي'
                 ], 400);
