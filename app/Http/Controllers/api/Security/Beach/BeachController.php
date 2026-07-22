@@ -144,11 +144,16 @@ class BeachController extends Controller
         //     ]);
         //  }
          
+        $user_type2 = $this->appartment_code
+         ->where('appartment_id', $appartment_id)
+         ->where('user_id', $userid ?? 0) 
+         ->orderByDesc('id')
+         ->first()?->type;
         $user_beach = $this->user_beach
         ->create([
             'user_id' => $userid,
             'beach_id' => $beach_id,
-            'user_type' => $user_type,
+            'user_type' => $user_type2,
             'village_id' => $request->user()->village_id,
             'umbrella' => 1,
             "appartment_id" => $appartment_id,
@@ -262,11 +267,16 @@ class BeachController extends Controller
          ->orderByDesc('id')
          ->first()?->type; 
          
+        $user_type2 = $this->appartment_code
+         ->where('appartment_id', $appartment_id)
+         ->where('user_id', $userid ?? 0) 
+         ->orderByDesc('id')
+         ->first()?->type;
         $user_beach = $this->user_beach
         ->create([
             'user_id' => $userid,
             'beach_id' => $beach_id,
-            'user_type' => $user_type,
+            'user_type' => $user_type2,
             'village_id' => $request->user()->village_id,
             'umbrella' => 1,
             "appartment_id" => $appartment_id,
@@ -337,7 +347,7 @@ class BeachController extends Controller
                 'errors' => 'Appartment is wrong'
             ], 400);
          }
-        
+         
         $visit_inside_gates = VisitBeach::
         create([
             'user_id' => $userid,
@@ -345,7 +355,7 @@ class BeachController extends Controller
             'inside_gate_id' => $request->inside_gate_id,
             'appartment_id' => $appartment_id,
             'type' => $type,
-            'visitor_type' => $visitor_type,
+            'visitor_type' => $visitor_type2,
             'code' => $code,
             'user_type' => $user_type,
         ]);

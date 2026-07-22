@@ -108,6 +108,11 @@ class PoolController extends Controller
         } else {
             $old_time = date('Y-m-d h:i A');
         }
+        $user_type2 = $this->appartment_code
+         ->where('appartment_id', $appartment_id)
+         ->where('user_id', $userid ?? 0) 
+         ->orderByDesc('id')
+         ->first()?->type;
         if($my_umbrellas < 1){  
             return response()->json([
                 'success' => 'User has no umbrellas available',
@@ -121,12 +126,17 @@ class PoolController extends Controller
                 "open_status" => false,
             ]);
         }  
+        $user_type2 = $this->appartment_code
+         ->where('appartment_id', $appartment_id)
+         ->where('user_id', $userid ?? 0) 
+         ->orderByDesc('id')
+         ->first()?->type;
         $user_pool = $this->user_pool
         ->create([
             'user_id' => $userid,
             'pool_id' => $pool_id,
             'village_id' => $request->user()->village_id,
-            'user_type' => $user_type,
+            'user_type' => $user_type2,
             'umbrella' => 1,
             "appartment_id" => $appartment_id,
         ]);
@@ -214,6 +224,11 @@ class PoolController extends Controller
         } else {
             $old_time = date('Y-m-d h:i A');
         }
+        $user_type2 = $this->appartment_code
+         ->where('appartment_id', $appartment_id)
+         ->where('user_id', $userid ?? 0) 
+         ->orderByDesc('id')
+         ->first()?->type;
         if($my_umbrellas < 1){
             return response()->json([
                 'success' => 'User has no umbrellas available',
@@ -232,7 +247,7 @@ class PoolController extends Controller
             'user_id' => $userid,
             'pool_id' => $pool_id,
             'village_id' => $request->user()->village_id,
-            'user_type' => $user_type,
+            'user_type' => $user_type2,
             'umbrella' => $request->umbrella ?? 1,
         ]);
         EntrancePool::create([
