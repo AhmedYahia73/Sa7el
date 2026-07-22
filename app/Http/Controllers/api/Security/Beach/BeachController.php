@@ -66,6 +66,11 @@ class BeachController extends Controller
         ->with("type:id,name")
         ->where('id', $appartment_id)
         ->first();
+        $type = [
+            "id" => $appartment->id,
+            "name" => $appartment->name,
+        ];
+        unset($appartment->type);
         if (empty($appartment) || $beach_id != $request->beach_id) {
             return response()->json([
                 'errors' => 'Qr code is wrong'
@@ -101,7 +106,7 @@ class BeachController extends Controller
             return response()->json([
                 'success' => 'User has no umbrellas available',
                 'appartment' => $appartment,
-                'appartment_type' => $appartment->type,
+                'appartment_type' => $type,
                 'user' => $user,
                 'last_user' => $old_user_beach?->user,
                 'time' => $old_time,
@@ -158,8 +163,8 @@ class BeachController extends Controller
 
          return response()->json([
             'success' => 'Qr code is true',
-            'appartment' => $appartment,
-            'appartment_type' => $appartment->type,
+            'appartment' => $appartment, 
+            'appartment_type' => $type,
             'user' => $user,
             'last_user' => $old_user_beach?->user,
             'time' => $old_time,
@@ -189,6 +194,11 @@ class BeachController extends Controller
         ->with("type:id,name")
          ->where('id', $appartment_id) 
          ->first();
+        $type = [
+            "id" => $appartment->id,
+            "name" => $appartment->name,
+        ];
+        unset($appartment->type);
          if (empty($appartment) || $beach_id != $request->beach_id) {
             return response()->json([
                 'errors' => 'Qr code is wrong'
@@ -227,7 +237,7 @@ class BeachController extends Controller
             return response()->json([
                 'success' => 'User has no umbrellas available',
                 'appartment' => $appartment,
-                'appartment_type' => $appartment->type,
+                'appartment_type' => $type,
                 'user' => $old_user_beach?->user,
                 'last_user' => $old_user_beach?->user,
                 'time' => $old_time,
@@ -274,7 +284,7 @@ class BeachController extends Controller
          return response()->json([
             'success' => 'Qr code is true',
             'appartment' => $appartment,
-            'appartment_type' => $appartment->type,
+            'appartment_type' => $type,
             'user' => $user,
             'last_user' => $old_user_beach?->user,
             'time' => $old_time,
