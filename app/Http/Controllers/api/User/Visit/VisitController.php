@@ -178,6 +178,7 @@ class VisitController extends Controller
                 "visitor_type" => $item->visitor_type,
                 "qr_code_link" => $item->qr_code_link,
                 "is_visit" => !empty($item->is_visit) ? true : false,
+                "time" => $item?->is_visit ? Carbon::parse($item?->is_visit?->created_at)->format("H:i A") : null
             ];
         });
 
