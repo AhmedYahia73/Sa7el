@@ -231,6 +231,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(PostsController::class)->prefix('post')->middleware('can:News Feed')
     ->group(function() {
         Route::get('/', 'view');
+        Route::get('/new_view', 'new_view');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
