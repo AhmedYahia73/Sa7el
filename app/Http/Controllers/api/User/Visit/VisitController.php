@@ -40,7 +40,7 @@ class VisitController extends Controller
         ->first();
         if(empty($appartment) || !$appartment->visits_status || !$appartment->all_status){
             return response()->json([
-                'errors' => $request->locale == "en" ? 'You are blocked to enter this appartment' : 'محظور دخولك لهذه الشقة'
+                'errors' => $request->locale == "ar" ? 'محظور دخولك لهذه الشقة' : 'You are blocked to enter this appartment'
             ],400);
         }  
         $appartment_code = $this->appartment_code 
@@ -56,7 +56,7 @@ class VisitController extends Controller
         ->first();
         if (empty($appartment_code)) {
             return response()->json([
-                'errors' => $request->locale == "en" ? "You don't have appartment" : "ليس لديك شقة"
+                'errors' => $request->locale == "ar" ? "ليس لديك شقة" : "You don't have appartment"
             ], 400);
         }
         $time_before_day = Carbon::now()->subHours(24);
@@ -90,7 +90,7 @@ class VisitController extends Controller
             (count($worker) >= $visitor_limit_worker && $request->visitor_type == 'worker') || 
             (count($guest) >= $visitor_limit_guest && $request->visitor_type == 'guest')) {
                 return response()->json([
-                    'errors' => $request->locale == "en" ? ('You have exceeded the maximum limit to create qr code to ' . $request->visitor_type) : ('لقد تجاوزت الحد الأقصى لإنشاء رمز QR لـ ' . $request->visitor_type)
+                    'errors' => $request->locale == "ar" ? ('لقد تجاوزت الحد الأقصى لإنشاء رمز QR لـ ' . $request->visitor_type) : ('You have exceeded the maximum limit to create qr code to ' . $request->visitor_type)
                 ], 403);
             }
         }
@@ -162,7 +162,7 @@ class VisitController extends Controller
         ->first();
         if(empty($appartment) || !$appartment->visits_status || !$appartment->all_status){
             return response()->json([
-                'errors' => $request->locale == "en" ? 'You are blocked to enter this appartment' : 'محظور دخولك لهذه الشقة'
+                'errors' => $request->locale == "ar" ? 'محظور دخولك لهذه الشقة' : 'You are blocked to enter this appartment'
             ],400);
         }  
         $visitor_code = $this->visitor_code
