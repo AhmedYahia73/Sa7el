@@ -50,6 +50,7 @@ class GateController extends Controller
         // name, location, status, 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
+            'ar_name' => 'sometimes',
             'location' => 'required',
             'status' => 'required|boolean',
             'image' => 'required',
@@ -67,6 +68,20 @@ class GateController extends Controller
         $gates = $this->gates
         ->create($gateRequest);
       
+        $gate_translations = [[ 
+            'locale' => 'en',
+            'key' => 'name',
+            'value' => $request->name,
+        ]];
+        if (!empty($request->ar_name)) {
+            $gate_translations[] = [ 
+                'locale' => 'ar',
+                'key' => 'name',
+                'value' => $request->ar_name,
+            ];
+        }
+        $gates->translations()->createMany($gate_translations);
+
         return response()->json([
             'success' => 'You add data success'
         ]);
@@ -76,6 +91,7 @@ class GateController extends Controller
         // name, location, status, 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
+            'ar_name' => 'sometimes',
             'location' => 'required',
             'status' => 'required|boolean',
         ]);
@@ -100,6 +116,21 @@ class GateController extends Controller
         }
         $gates->update($gateRequest);
    
+        $gate_translations = [[ 
+            'locale' => 'en',
+            'key' => 'name',
+            'value' => $request->name,
+        ]];
+        if (!empty($request->ar_name)) {
+            $gate_translations[] = [ 
+                'locale' => 'ar',
+                'key' => 'name',
+                'value' => $request->ar_name,
+            ];
+        }
+        $gates->translations()->delete();
+        $gates->translations()->createMany($gate_translations);
+
         return response()->json([
             'success' => 'You update data success'
         ]);
@@ -115,6 +146,7 @@ class GateController extends Controller
             ], 400);
         }
         $this->deleteImage($gates->image);
+        $gates->translations()->delete();
         $gates->delete();
 
         return response()->json([
