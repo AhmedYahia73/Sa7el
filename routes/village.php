@@ -52,6 +52,11 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     ->group(function() {
         Route::get('/', 'view');
         Route::get('/filter', 'filter');
+        Route::get('/visitors', 'visitors');
+        Route::get('/worker', 'worker');
+        Route::get('/deliveries', 'deliveries');
+        Route::get('/owners', 'owners');
+        Route::get('/renters', 'renters'); 
     });
 
     Route::controller(PushNotificationController::class)
