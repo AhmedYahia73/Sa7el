@@ -21,6 +21,7 @@ class PoolBeachesController extends Controller
             'local' => 'required|in:en,ar',
             'village_id' => 'required|exists:villages,id',
             'appartment_id' => 'required|exists:appartments,id',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -33,7 +34,7 @@ class PoolBeachesController extends Controller
         ->first();
         if(empty($appartment) || !$appartment->beach_status || !$appartment->all_status){
             return response()->json([
-                'errors' => 'You are blocked to enter this appartment'
+                'errors' => $request->locale == "ar" ? 'محظور دخولك لهذه الشقة' : 'You are blocked to enter this appartment'
             ],400);
         } 
         $beaches = $this->beaches
@@ -65,6 +66,7 @@ class PoolBeachesController extends Controller
             'local' => 'required|in:en,ar',
             'village_id' => 'required|exists:villages,id',
             'appartment_id' => 'required|exists:appartments,id', 
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -77,7 +79,7 @@ class PoolBeachesController extends Controller
         ->first();
         if(empty($appartment) || !$appartment->pool_status || !$appartment->all_status){
             return response()->json([
-                'errors' => 'You are blocked to enter this appartment'
+                'errors' => $request->locale == "ar" ? 'محظور دخولك لهذه الشقة' : 'You are blocked to enter this appartment'
             ],400);
         }   
         $pools = $this->pools
