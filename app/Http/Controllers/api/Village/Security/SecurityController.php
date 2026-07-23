@@ -54,7 +54,19 @@ class SecurityController extends Controller
                 "id" => $item->id,
                 "name" => $item->name,
             ];
-        });
+        }); 
+
+
+        return response()->json([
+            'security' => $security,
+            'gates' => $gates,
+            'beaches' => $beaches,
+            'pools' => $pools,
+            'inside_gates' => $inside_gates,
+        ]);
+    }
+
+    public function inside_gates(Request $request){ 
         $inside_gates = InsideGate::
         where('status', 1)
         ->where('village_id', $request->user()->village_id)
@@ -67,11 +79,7 @@ class SecurityController extends Controller
         });
 
 
-        return response()->json([
-            'security' => $security,
-            'gates' => $gates,
-            'beaches' => $beaches,
-            'pools' => $pools,
+        return response()->json([ 
             'inside_gates' => $inside_gates,
         ]);
     }
