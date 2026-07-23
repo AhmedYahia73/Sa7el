@@ -222,6 +222,17 @@ class BeachController extends Controller
          ->sum("umbrella") ?? 0;
         $my_umbrellas = $umberllas - $user_umbrellas;
      
+         $old_user_beach = $this->user_beach
+         ->where("appartment_id", $appartment_id)
+         ->where('village_id', $request->user()->village_id)
+         ->with("user:id,name,image")
+         ->orderByDesc('id') 
+         ->first(); 
+        $user_type = $this->appartment_code
+         ->where('appartment_id', $appartment_id)
+         ->where('user_id', $old_user_beach?->user_id ?? 0) 
+         ->orderByDesc('id')
+         ->first()?->type; 
         $user = $this->user
         ->select("id", "name", "image")
         ->where('id', $userid)
@@ -250,22 +261,12 @@ class BeachController extends Controller
                 'time' => $old_time,
                 "umbrellas" => 0,
                 "open_status" => false,
+                'user_type' => $user_type,
             ]);
         } 
         $user = $this->user
         ->where('id', $userid)
         ->first(); 
-         $old_user_beach = $this->user_beach
-         ->where("appartment_id", $appartment_id)
-         ->where('village_id', $request->user()->village_id)
-         ->with("user:id,name,image")
-         ->orderByDesc('id') 
-         ->first(); 
-        $user_type = $this->appartment_code
-         ->where('appartment_id', $appartment_id)
-         ->where('user_id', $old_user_beach?->user_id ?? 0) 
-         ->orderByDesc('id')
-         ->first()?->type; 
          
         $user_type2 = $this->appartment_code
          ->where('appartment_id', $appartment_id)
@@ -297,6 +298,7 @@ class BeachController extends Controller
             'time' => $old_time,
             "umbrellas" => $my_umbrellas - 1,
             "open_status" => true,
+            'user_type' => $user_type,
          ]);
     }
 
