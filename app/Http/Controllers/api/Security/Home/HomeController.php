@@ -399,7 +399,7 @@ class HomeController extends Controller
             'user_type' => $user_type,
         ]);
         $last_entrance = EntranceGate::
-        where("user_id", $userid)
+        where("user_id", $request->user_id)
         ->where("village_id", $request->user()->village_id)
         ->first();
         $last_entrance_date = $last_entrance ? $last_entrance->created_at->format('Y-m-d') ?? null : null;
