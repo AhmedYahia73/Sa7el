@@ -298,8 +298,8 @@ class PropertyController extends Controller
             ->first();
             if (!empty($appartment_code)) {
                 return response()->json([
-                    'message' => $request->locale == "en" ? 'appartment already added' : 'تم إضافة الشقة من قبل'
-                ]);
+                    'errors' => $request->locale == "en" ? 'appartment already added' : 'تم إضافة الشقة من قبل'
+                ], 400);
             }
 
             $appartment_code = $this->appartment_code 
