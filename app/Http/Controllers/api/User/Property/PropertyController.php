@@ -285,11 +285,9 @@ class PropertyController extends Controller
             $appartment_code = $this->appartment_code
             ->where('type', 'owner')
             ->where('village_id', $request->village_id)
-            ->where('code', $request->code)
-            ->whereNotNull('code')
+            ->where('code', $request->code) 
             ->where('user_id', $request->user()->id)
-            ->orWhere('type', 'renter')
-            ->whereNotNull('code')
+            ->orWhere('type', 'renter') 
             ->where('from', '<=', now())
             ->where('to', '>=', now())
             ->where('village_id', $request->village_id)
