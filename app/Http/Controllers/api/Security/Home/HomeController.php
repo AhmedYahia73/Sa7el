@@ -398,6 +398,12 @@ class HomeController extends Controller
             'appartment_id' => $request->appartment_id,
             'user_type' => $user_type,
         ]);
+        $last_entrance = EntranceGate::
+        where("user_id", $userid)
+        ->where("village_id", $request->user()->village_id)
+        ->first();
+        $last_entrance_date = $last_entrance ? $last_entrance->created_at->format('Y-m-d') ?? null : null;
+        $last_entrance_time = $last_entrance ? $last_entrance->created_at->format('h:i A') ?? null : null;
         EntranceGate::create([
             'gate_id' => $request->gate_id,
             'user_id' => $request->user_id,
@@ -409,8 +415,8 @@ class HomeController extends Controller
             'success' => $request->locale == "ar" ? 'تم دخول المستخدم بنجاح' : 'User entrance success',
             'visit_village_id' => $visit_village->id,
             'user_type' => $user_type,
-            'date' => date('Y-m-d'),
-            'time' => date('h:i A'),
+            'date' => $last_entrance_date,
+            'time' => $last_entrance_date . " " . $last_entrance_time, 
             "user_name" => $user->name,
             "user_image" => $user->image_link,
             "appartment" => $appartment->unit,
