@@ -61,8 +61,7 @@ class SecurityController extends Controller
             'security' => $security,
             'gates' => $gates,
             'beaches' => $beaches,
-            'pools' => $pools,
-            'inside_gates' => $inside_gates,
+            'pools' => $pools, 
         ]);
     }
 
