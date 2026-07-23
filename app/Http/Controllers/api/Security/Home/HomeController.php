@@ -412,6 +412,7 @@ class HomeController extends Controller
             'date' => date('Y-m-d'),
             'time' => date('h:i A'),
             "user_name" => $user->name,
+            "user_image" => $user->image_link,
             "appartment" => $appartment->unit,
             "unit_type" => $unit_type,
         ]);

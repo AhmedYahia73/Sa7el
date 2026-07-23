@@ -150,7 +150,7 @@ class GateController extends Controller
             'visit_village_id' => $visit_village,
             'visitor_type' => $visitor_type,
             'date' => $last_entrance_date,
-            'time' => $last_entrance_time, 
+            'time' => $last_entrance_date . " " . $last_entrance_time, 
          ]);
     }
 
