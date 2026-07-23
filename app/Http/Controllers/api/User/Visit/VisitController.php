@@ -164,13 +164,22 @@ class VisitController extends Controller
             return response()->json([
                 'errors' => $request->locale == "ar" ? 'محظور دخولك لهذه الشقة' : 'You are blocked to enter this appartment'
             ],400);
-        }  
+        }
         $visitor_code = $this->visitor_code
         ->select('qr_code', 'visitor_type')
+        ->with("is_visit")
         ->where('village_id', $request->village_id)
         ->where('appartment_id', $request->appartment_id)
         ->whereDate('created_at', date('Y-m-d'))
-        ->get();
+        ->get()
+        ->map(function($item){
+            return [
+                "qr_code" => $item->qr_code,
+                "visitor_type" => $item->visitor_type,
+                "qr_code_link" => $item->qr_code_link,
+                "is_visit" => !empty($item->is_visit) ? true : false,
+            ];
+        });
 
         return response()->json([
             'visitor_code' => $visitor_code
