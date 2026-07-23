@@ -122,7 +122,7 @@ class HomeController extends Controller
                 "phone" => $item?->user?->phone,
                 "unit"  => $item?->appartment?->unit,
                 "gate"  => $item?->gate?->name,
-                "date"  => $item?->updated_at ? Carbon::parse($item?->updated_at)->format("Y-m-d H:i A") ?? null,
+                "date"  => $item?->updated_at?->format("Y-m-d h:i A"),
             ]);
     }
 
