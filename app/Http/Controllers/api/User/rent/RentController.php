@@ -34,7 +34,7 @@ class RentController extends Controller
         ->first();
         if(empty($appartment) || !$appartment->rent_code_status || !$appartment->all_status){
             return response()->json([
-                'errors' => $request->locale == "en" ? 'You are blocked to enter this appartment' : 'محظور دخولك لهذه الشقة'
+                'errors' => $request->locale == "ar" ? 'محظور دخولك لهذه الشقة' : 'You are blocked to enter this appartment'
             ],400);
         }
         $rents = $this->appartment_code
@@ -81,12 +81,12 @@ class RentController extends Controller
  
         if($renter_limit < $request->people){
             return response()->json([
-                'errors' => $request->locale == "en" ? ('renter must be less than ' . $renter_limit) : ('عدد المستأجرين يجب أن يكون أقل من ' . $renter_limit)
+                'errors' => $request->locale == "ar" ? ('عدد المستأجرين يجب أن يكون أقل من ' . $renter_limit) : ('renter must be less than ' . $renter_limit)
             ],400);
         }
         if(empty($appartment) || !$appartment->rent_code_status || !$appartment->all_status){
             return response()->json([
-                'errors' => $request->locale == "en" ? 'You are blocked to enter this appartment' : 'محظور دخولك لهذه الشقة'
+                'errors' => $request->locale == "ar" ? 'محظور دخولك لهذه الشقة' : 'You are blocked to enter this appartment'
             ],400);
         } 
         $from = $request->from; // تاريخ ووقت البداية الجديد
@@ -102,7 +102,7 @@ class RentController extends Controller
             ->first();
         if (!empty($appartment_code)) {
             return response()->json([
-                'errors' => $request->locale == "en" ? ('Unit is rented from ' . $appartment_code->from . ' to ' . $appartment_code->to) : ('الوحدة مؤجرة من ' . $appartment_code->from . ' إلى ' . $appartment_code->to)
+                'errors' => $request->locale == "ar" ? ('الوحدة مؤجرة من ' . $appartment_code->from . ' إلى ' . $appartment_code->to) : ('Unit is rented from ' . $appartment_code->from . ' to ' . $appartment_code->to)
             ], 400);
         }
         $rentRequest = $validator->validated();
@@ -172,7 +172,7 @@ class RentController extends Controller
         ->delete(); 
 
         return response()->json([
-            'success' => $request->locale == "en" ? "You delete code success" : "تم حذف الكود بنجاح"
+            'success' => $request->locale == "ar" ? "تم حذف الكود بنجاح" : "You delete code success"
         ]);
     }
 
@@ -199,7 +199,7 @@ class RentController extends Controller
         ]);
 
         return response()->json([
-            'success' => $request->locale == "en" ? "You delete code success" : "تم حذف المستخدم بنجاح"
+            'success' => $request->locale == "ar" ? "تم حذف المستخدم بنجاح" : "You delete code success"
         ]);
     }
 
@@ -233,7 +233,7 @@ class RentController extends Controller
         }
 
         return response()->json([
-            "success" => $request->locale == "en" ? "You add data success" : "تم إضافة البيانات بنجاح"
+            "success" => $request->locale == "ar" ? "تم إضافة البيانات بنجاح" : "You add data success"
         ]);
     }
 
@@ -257,7 +257,7 @@ class RentController extends Controller
         $status = isset($appartments[0]) ? $appartments[0]->people == $appartments->count() : false;
         if(!$status){
             return response()->json([
-                "errors" => $request->locale == "en" ? "You can not update" : "لا يمكنك التحديث"
+                "errors" => $request->locale == "ar" ? "لا يمكنك التحديث" : "You can not update"
             ], 400);
         }
         $rent = RentImage::
@@ -267,7 +267,7 @@ class RentController extends Controller
         ]);
 
         return response()->json([
-            "success" => $request->locale == "en" ? "You update data success" : "تم تحديث البيانات بنجاح"
+            "success" => $request->locale == "ar" ? "تم تحديث البيانات بنجاح" : "You update data success"
         ]);
     }
 
@@ -289,7 +289,7 @@ class RentController extends Controller
         $status = isset($appartments[0]) ? $appartments[0]->people == $appartments->count() : false;
         if(!$status){
             return response()->json([
-                "errors" => $request->locale == "en" ? "You can not delete" : "لا يمكنك الحذف"
+                "errors" => $request->locale == "ar" ? "لا يمكنك الحذف" : "You can not delete"
             ], 400);
         }
         $rent = RentImage::
@@ -298,7 +298,7 @@ class RentController extends Controller
         $rent->delete();
 
         return response()->json([
-            "success" => $request->locale == "en" ? "You delete data success" : "تم حذف البيانات بنجاح"
+            "success" => $request->locale == "ar" ? "تم حذف البيانات بنجاح" : "You delete data success"
         ]);
     }
 }

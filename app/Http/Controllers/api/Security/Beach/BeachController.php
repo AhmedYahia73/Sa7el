@@ -59,7 +59,7 @@ class BeachController extends Controller
         } 
         else{
             return response()->json([
-                'errors' => $request->locale == "en" ? 'Qr code is wrong' : 'رمز الاستجابة السري خطأ'
+                'errors' => $request->locale == "ar" ? 'رمز الاستجابة السري خطأ' : 'Qr code is wrong'
             ], 400);
         }
         $appartment = $this->appartment
@@ -75,7 +75,7 @@ class BeachController extends Controller
         $appartment->type = $type;
         if (empty($appartment) || $beach_id != $request->beach_id) {
             return response()->json([
-                'errors' => $request->locale == "en" ? 'Qr code is wrong' : 'رمز الاستجابة السري خطأ'
+                'errors' => $request->locale == "ar" ? 'رمز الاستجابة السري خطأ' : 'Qr code is wrong'
             ], 400);
         }
         $umberllas = AppartmentTypeUmbrella::
@@ -112,7 +112,7 @@ class BeachController extends Controller
         }
         if($my_umbrellas < 1){ 
             return response()->json([
-                'success' => $request->locale == "en" ? 'User has no umbrellas available' : 'المستخدم ليس لديه شمسيات متاحة',
+                'success' => $request->locale == "ar" ? 'المستخدم ليس لديه شمسيات متاحة' : 'User has no umbrellas available',
                 'appartment' => $appartment,
                 'appartment_type' => $type,
                 'user' => $user,
@@ -166,7 +166,7 @@ class BeachController extends Controller
         ]);
 
          return response()->json([
-            'success' => $request->locale == "en" ? 'Qr code is true' : 'رمز الاستجابة السري صحيح',
+            'success' => $request->locale == "ar" ? 'رمز الاستجابة السري صحيح' : 'Qr code is true',
             'appartment' => $appartment, 
             'appartment_type' => $type,
             'user_type' => $user_type,
@@ -208,7 +208,7 @@ class BeachController extends Controller
         $appartment->type = $type;
          if (empty($appartment) || $beach_id != $request->beach_id) {
             return response()->json([
-                'errors' => $request->locale == "en" ? 'Qr code is wrong' : 'رمز الاستجابة السري خطأ'
+                'errors' => $request->locale == "ar" ? 'رمز الاستجابة السري خطأ' : 'Qr code is wrong'
             ], 400);
          }
         $umberllas = AppartmentTypeUmbrella::
@@ -242,7 +242,7 @@ class BeachController extends Controller
         
         if($my_umbrellas < 1){ 
             return response()->json([
-                'success' => $request->locale == "en" ? 'User has no umbrellas available' : 'المستخدم ليس لديه شمسيات متاحة',
+                'success' => $request->locale == "ar" ? 'المستخدم ليس لديه شمسيات متاحة' : 'User has no umbrellas available',
                 'appartment' => $appartment,
                 'appartment_type' => $type,
                 'user' => $old_user_beach?->user,
@@ -289,7 +289,7 @@ class BeachController extends Controller
         ]); 
          
          return response()->json([
-            'success' => $request->locale == "en" ? 'Qr code is true' : 'رمز الاستجابة السري صحيح',
+            'success' => $request->locale == "ar" ? 'رمز الاستجابة السري صحيح' : 'Qr code is true',
             'appartment' => $appartment,
             'appartment_type' => $type,
             'user' => $user,
@@ -335,7 +335,7 @@ class BeachController extends Controller
          ->first();
          if (empty($appartment)) {
             return response()->json([
-                'errors' => $request->locale == "en" ? 'Qr code is wrong' : 'رمز الاستجابة السري خطأ'
+                'errors' => $request->locale == "ar" ? 'رمز الاستجابة السري خطأ' : 'Qr code is wrong'
             ], 400);
          }
          
@@ -346,7 +346,7 @@ class BeachController extends Controller
          ->first()?->type;
          if (empty($user_type)) {
             return response()->json([
-                'errors' => $request->locale == "en" ? 'Appartment is wrong' : 'الشقة خاطئة'
+                'errors' => $request->locale == "ar" ? 'الشقة خاطئة' : 'Appartment is wrong'
             ], 400);
          }
          
@@ -365,7 +365,7 @@ class BeachController extends Controller
         $user->user_type = $user_type;
 
          return response()->json([
-            'success' => $request->locale == "en" ? 'Qr code is true' : 'رمز الاستجابة السري صحيح',
+            'success' => $request->locale == "ar" ? 'رمز الاستجابة السري صحيح' : 'Qr code is true',
             'appartment' => $appartment,
             'user' => $user, 
              'user_type' => $user_type,
@@ -401,7 +401,7 @@ class BeachController extends Controller
             $qrcode_time = Carbon::parse($qrcode_time);
             if ($tomorrow < $qrcode_time) {
                 return response()->json([
-                    'errors' => $request->locale == "en" ? 'Qr code is expired' : 'رمز الاستجابة السري منتهي'
+                    'errors' => $request->locale == "ar" ? 'رمز الاستجابة السري منتهي' : 'Qr code is expired'
                 ], 400);
             }
             $qr_code_code = $visitor_code->code;
@@ -409,7 +409,7 @@ class BeachController extends Controller
             $visitor_type = $visitor_code->visitor_type;
             if($visitor_type != 'guest'){
                 return response()->json([
-                    'errors' => $request->locale == "en" ? 'Not Allowed' : 'غير مسموح'
+                    'errors' => $request->locale == "ar" ? 'غير مسموح' : 'Not Allowed'
                 ], 400);
             } 
             $inside_gate = InsideGate::
@@ -424,7 +424,7 @@ class BeachController extends Controller
             ->first();
             if (!empty($visit_village)) {
                 return response()->json([
-                    'errors' => $request->locale == "en" ? 'Qr code is expired...' : 'رمز الاستجابة السري منتهي...'
+                    'errors' => $request->locale == "ar" ? 'رمز الاستجابة السري منتهي...' : 'Qr code is expired...'
                 ], 400);
             }
             // if (!$visit_village->visitor) {
@@ -445,7 +445,7 @@ class BeachController extends Controller
         }
         else{
             return response()->json([
-                'errors' => $request->locale == "en" ? 'Qr code is expired' : 'رمز الاستجابة السري منتهي'
+                'errors' => $request->locale == "ar" ? 'رمز الاستجابة السري منتهي' : 'Qr code is expired'
             ], 400);
         } 
         $user_type = AppartmentCode::
@@ -455,7 +455,7 @@ class BeachController extends Controller
          ->first()?->type;
          if (empty($user_type)) {
             return response()->json([
-                'errors' => $request->locale == "en" ? 'Appartment is wrong' : 'الشقة خاطئة'
+                'errors' => $request->locale == "ar" ? 'الشقة خاطئة' : 'Appartment is wrong'
             ], 400);
          }
         
@@ -475,7 +475,7 @@ class BeachController extends Controller
         ->first(); 
 
          return response()->json([
-            'success' => $request->locale == "en" ? 'Qr code is true' : 'رمز الاستجابة السري صحيح',
+            'success' => $request->locale == "ar" ? 'رمز الاستجابة السري صحيح' : 'Qr code is true',
             'appartment' => $appartment,
             'user' => $user, 
             'visitor_type' => $visitor_type,
@@ -516,7 +516,7 @@ class BeachController extends Controller
             $qrcode_time = Carbon::parse($qrcode_time);
             if ($tomorrow < $qrcode_time) {
                 return response()->json([
-                    'errors' =>$request->locale == "en" ? 'Qr code is expired' : 'رمز الاستجابة السري منتهي'
+                    'errors' => $request->locale == "ar" ? 'رمز الاستجابة السري منتهي' : 'Qr code is expired'
                 ], 400);
             }
             $qr_code_code = $arr_text[9];
@@ -524,7 +524,7 @@ class BeachController extends Controller
             $visitor_type = $arr_text[5];
             if($visitor_type != 'guest'){
                 return response()->json([
-                    'errors' => $request->locale == "en" ? 'Not Allowed' : 'غير مسموح'
+                    'errors' => $request->locale == "ar" ? 'غير مسموح' : 'Not Allowed'
                 ], 400);
             } 
             $inside_gate = InsideGate::
@@ -533,7 +533,7 @@ class BeachController extends Controller
             ->first();
             if (!$visit_village->visitor) {
                 return response()->json([
-                    'errors' => $request->locale == "en" ? 'Visitor has not permission' : 'الزائر ليس لديه صلاحية'
+                    'errors' => $request->locale == "ar" ? 'الزائر ليس لديه صلاحية' : 'Visitor has not permission'
                 ], 401);
             }
             $visit_village = VisitBeach::
@@ -544,7 +544,7 @@ class BeachController extends Controller
             ->first();
             if (!empty($visit_village)) {
                 return response()->json([
-                    'errors' => $request->locale == "en" ? 'Qr code is expired...' : 'رمز الاستجابة السري منتهي...'
+                    'errors' => $request->locale == "ar" ? 'رمز الاستجابة السري منتهي...' : 'Qr code is expired...'
                 ], 400);
             }
             $appartment_id = $arr_text[11];
@@ -553,7 +553,7 @@ class BeachController extends Controller
             ->first();
             if (empty($appartment)) {
                 return response()->json([
-                    'errors' => $request->locale == "en" ? 'Appartment is wrong' : 'الشقة خاطئة'
+                    'errors' => $request->locale == "ar" ? 'الشقة خاطئة' : 'Appartment is wrong'
                 ], 400);
             }
             $type = 'visitor';
@@ -570,7 +570,7 @@ class BeachController extends Controller
         }
         else{
             return response()->json([
-                'errors' => $request->locale == "en" ? 'Qr code is wrong' : 'رمز الاستجابة السري خاطئ'
+                'errors' => $request->locale == "ar" ? 'رمز الاستجابة السري خاطئ' : 'Qr code is wrong'
             ], 400);
         }
         
@@ -579,7 +579,7 @@ class BeachController extends Controller
          ->first();
          if (empty($appartment)) {
             return response()->json([
-                'errors' => $request->locale == "en" ? 'Qr code is wrong' : 'رمز الاستجابة السري خطأ'
+                'errors' => $request->locale == "ar" ? 'رمز الاستجابة السري خطأ' : 'Qr code is wrong'
             ], 400);
          }
         $user_type = AppartmentCode::
@@ -589,7 +589,7 @@ class BeachController extends Controller
          ->first()?->type;
          if (empty($user_type)) {
             return response()->json([
-                'errors' => $request->locale == "en" ? 'Appartment is wrong' : 'الشقة خاطئة'
+                'errors' => $request->locale == "ar" ? 'الشقة خاطئة' : 'Appartment is wrong'
             ], 400);
          }
         
@@ -610,7 +610,7 @@ class BeachController extends Controller
         $user->user_type = $user_type;
 
          return response()->json([
-            'success' => $request->locale == "en" ? 'Qr code is true' : 'رمز الاستجابة السري صحيح',
+            'success' => $request->locale == "ar" ? 'رمز الاستجابة السري صحيح' : 'Qr code is true',
             'appartment' => $appartment,
             'user' => $user, 
             'visitor_type' => $visitor_type,
@@ -642,7 +642,7 @@ class BeachController extends Controller
         ]);
 
         return response()->json([
-            'success' => $request->locale == "en" ? 'You upload id success' : 'تم رفع الهوية بنجاح'
+            'success' => $request->locale == "ar" ? 'تم رفع الهوية بنجاح' : 'You upload id success'
         ]);
     }
 }

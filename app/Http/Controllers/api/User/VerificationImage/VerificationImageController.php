@@ -39,7 +39,7 @@ class VerificationImageController extends Controller
         if (!$imageSourceBytes || !$imageTargetBytes) {
             return response()->json([
                 'status' => false, 
-                'message' => $request->locale == "en" ? 'The sent Base64 text is invalid or corrupted.' : 'نص الـ Base64 المرسل غير صالح أو تالف.'
+                'message' => $request->locale == "ar" ? 'نص الـ Base64 المرسل غير صالح أو تالف.' : 'The sent Base64 text is invalid or corrupted.'
             ], 400);
         }
 
@@ -76,7 +76,7 @@ class VerificationImageController extends Controller
                     'success' => true,
                     'is_identical' => true,
                     'confidence' => round($similarity, 2) . '%',
-                    'message' => $request->locale == "en" ? 'Verified successfully, person matches.' : 'تم التحقق بنجاح، الشخص متطابق.'
+                    'message' => $request->locale == "ar" ? 'تم التحقق بنجاح، الشخص متطابق.' : 'Verified successfully, person matches.'
                 ]);
             }
 
@@ -85,21 +85,21 @@ class VerificationImageController extends Controller
                 'success' => true,
                 'is_identical' => false,
                 'confidence' => '0%',
-                'message' => $request->locale == "en" ? 'Images do not belong to the same person or faces are not clear.' : 'الصور لا تنتمي لنفس الشخص أو الوجوه غير واضحة.'
+                'message' => $request->locale == "ar" ? 'الصور لا تنتمي لنفس الشخص أو الوجوه غير واضحة.' : 'Images do not belong to the same person or faces are not clear.'
             ]);
 
         } catch (\Aws\Exception\AwsException $e) {
             // لقط أي إيرور صادر من خدمات AWS مباشرة
             return response()->json([
                 'status' => false,
-                'message' => $request->locale == "en" ? 'An error occurred.' : 'حدث خطأ.',
+                'message' => $request->locale == "ar" ? 'حدث خطأ.' : 'An error occurred.',
                 'error' => $e->getAwsErrorMessage() ?? $e->getMessage()
             ], 400);
         } catch (\Exception $e) {
             // لقط أي إيرور عام داخل الـ لارافل
             return response()->json([
                 'status' => false,
-                'message' => $request->locale == "en" ? 'An unexpected error occurred during processing.' : 'حدث خطأ غير متوقع أثناء المعالجة.',
+                'message' => $request->locale == "ar" ? 'حدث خطأ غير متوقع أثناء المعالجة.' : 'An unexpected error occurred during processing.',
                 'error' => $e->getMessage()
             ], 400);
         }
@@ -125,7 +125,7 @@ class VerificationImageController extends Controller
         ]);
 
         return response()->json([
-            "success" => $request->locale == "en" ? "You make request success" : "تم تقديم الطلب بنجاح"
+            "success" => $request->locale == "ar" ? "تم تقديم الطلب بنجاح" : "You make request success"
         ]);
     }
 

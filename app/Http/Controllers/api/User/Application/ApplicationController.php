@@ -16,7 +16,7 @@ class ApplicationController extends Controller
     { 
         $validation = Validator::make($request->all(), [  
             'message' => ['required', 'string'],
-            'locale' => ['required', "in:en,ar"],
+            'locale' => ['sometimes', "in:en,ar"],
         ]);
 
         if ($validation->fails()) {
@@ -24,13 +24,13 @@ class ApplicationController extends Controller
         }
 
         $userQuery = $request->input('message');
-        $locale = $request->input('locale');
+        $locale = $request->input('locale', 'en');
 
         $application = Application::first();
 
         if(!$application){
             return response()->json([
-                "errors" => $request->locale == "en" ? "You should open help" : "يجب فتح المساعدة"
+                "errors" => $request->locale == "ar" ? "يجب فتح المساعدة" : "You should open help"
             ], 400);
         }
         // 1. تعديل وفلترة: إضافة بحث مبدئي وجلب أسماء الأعمدة الصحيحة تماماً من الـ DB
@@ -40,7 +40,7 @@ class ApplicationController extends Controller
 
         // 2. تعديل: استخدام أسماء الأعمدة الصحيحة المستخرجة في الخطوة السابقة
         $formattedRecords = $records->map(function ($item) use ($locale) {
-        $video = $locale == "en" ? $item->en_video : $item->ar_video;
+        $video = $locale == "ar" ? $item->ar_video : $item->en_video;
         return "ID: {$item->id} | Description: {$item->description["en"]} | Video Content Source: {$video}";
         })->implode("\n");
 

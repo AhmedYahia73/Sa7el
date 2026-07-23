@@ -57,7 +57,7 @@ class GateController extends Controller
             $qrcode_time = Carbon::parse($qrcode_time);
             if ($tomorrow < $qrcode_time) {
                 return response()->json([
-                    'errors' => $request->locale == "en" ? 'Qr code is expired' : 'رمز الاستجابة السري منتهي'
+                    'errors' => $request->locale == "ar" ? 'رمز الاستجابة السري منتهي' : 'Qr code is expired'
                 ], 400);
             }
             $qr_code_code = $arr_text[9];
@@ -70,7 +70,7 @@ class GateController extends Controller
             ->first();
             if (!empty($visit_village)) {
                 return response()->json([
-                    'errors' => $request->locale == "en" ? 'Qr code is expired...' : 'رمز الاستجابة السري منتهي...'
+                    'errors' => $request->locale == "ar" ? 'رمز الاستجابة السري منتهي...' : 'Qr code is expired...'
                 ], 400);
             }
             $appartment_id = $arr_text[11];
@@ -87,7 +87,7 @@ class GateController extends Controller
         }
         else{
             return response()->json([
-                'errors' => $request->locale == "en" ? 'Qr code is wrong' : 'رمز الاستجابة السري خطأ'
+                'errors' => $request->locale == "ar" ? 'رمز الاستجابة السري خطأ' : 'Qr code is wrong'
             ], 400);
         }
          $appartment = $this->appartment_data
@@ -95,7 +95,7 @@ class GateController extends Controller
          ->first();
          if (empty($appartment)) {
             return response()->json([
-                'errors' => $request->locale == "en" ? 'Qr code is wrong' : 'رمز الاستجابة السري خطأ'
+                'errors' => $request->locale == "ar" ? 'رمز الاستجابة السري خطأ' : 'Qr code is wrong'
             ], 400);
          }
         $user_type = $this->appartment
@@ -105,7 +105,7 @@ class GateController extends Controller
          ->first()?->type;
          if (empty($user_type)) {
             return response()->json([
-                'errors' => $request->locale == "en" ? 'Appartment is wrong' : 'الشقة خاطئة'
+                'errors' => $request->locale == "ar" ? 'الشقة خاطئة' : 'Appartment is wrong'
             ], 400);
          }
          if ($visitor) { 
@@ -144,7 +144,7 @@ class GateController extends Controller
         ->first();
 
          return response()->json([
-            'success' => $request->locale == "en" ? 'Qr code is true' : 'رمز الاستجابة السري صحيح',
+            'success' => $request->locale == "ar" ? 'رمز الاستجابة السري صحيح' : 'Qr code is true',
             'appartment' => $appartment,
             'user' => $user,
             'visit_village_id' => $visit_village,
@@ -174,7 +174,7 @@ class GateController extends Controller
         ]);
 
         return response()->json([
-            'success' => $request->locale == "en" ? 'You upload id success' : 'تم رفع الهوية بنجاح'
+            'success' => $request->locale == "ar" ? 'تم رفع الهوية بنجاح' : 'You upload id success'
         ]);
     }
 }

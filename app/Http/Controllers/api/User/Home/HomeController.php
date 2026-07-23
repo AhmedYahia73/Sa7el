@@ -34,7 +34,7 @@ class HomeController extends Controller
 
     public function popup_all(Request $request){
         $validator = Validator::make($request->all(), [
-            'locale' => 'required|in:ar,en',
+            'locale' => 'in:ar,en',
         ]);
 
         if ($validator->fails()) { 
@@ -43,7 +43,7 @@ class HomeController extends Controller
             ], 400);
         }
 
-        $locale = $request->locale;
+        $locale = $request->locale ?? 'en';
         
         // 1. إصلاح تسمية المتغير وحساب العمر بشكل صحيح
         $birthDate = auth()->user()->birthDate;
@@ -91,9 +91,9 @@ class HomeController extends Controller
         $popups = $popupQuery->get()
         ->map(function($popup) use($locale){
             return [
-                "title" => $locale == "en" ? $popup->title : ($popup->ar_title ?? $popup->title),
-                "description" => $locale == "en" ? $popup->description : ($popup->ar_description ?? $popup->description),
-                "image" => $locale == "en" ? $popup->image_link : ($popup->ar_image_link ?? $popup->image_link),
+                "title" => $locale == "ar" ? ($popup->ar_title ?? $popup->title) : $popup->title,
+                "description" => $locale == "ar" ? ($popup->ar_description ?? $popup->description) : $popup->description,
+                "image" => $locale == "ar" ? ($popup->ar_image_link ?? $popup->image_link) : $popup->image_link,
             ];
         });
 
@@ -105,7 +105,7 @@ class HomeController extends Controller
 
     public function village_popup(Request $request){
         $validator = Validator::make($request->all(), [
-            'locale' => 'required|in:ar,en',
+            'locale' => 'in:ar,en',
             'village_id' => "required|exists:villages,id"
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
@@ -115,7 +115,7 @@ class HomeController extends Controller
         } 
 
 
-        $locale = $request->locale;
+        $locale = $request->locale ?? 'en';
         
         // 1. إصلاح تسمية المتغير وحساب العمر بشكل صحيح
         $birthDate = auth()->user()->birthDate;
@@ -164,9 +164,9 @@ class HomeController extends Controller
         $popups = $popupQuery->get()
         ->map(function($popup) use($locale){
             return [
-                "title" => $locale == "en" ? $popup->title : ($popup->ar_title ?? $popup->title),
-                "description" => $locale == "en" ? $popup->description : ($popup->ar_description ?? $popup->description),
-                "image" => $locale == "en" ? $popup->image_link : ($popup->ar_image_link ?? $popup->image_link),
+                "title" => $locale == "ar" ? ($popup->ar_title ?? $popup->title) : $popup->title,
+                "description" => $locale == "ar" ? ($popup->ar_description ?? $popup->description) : $popup->description,
+                "image" => $locale == "ar" ? ($popup->ar_image_link ?? $popup->image_link) : $popup->image_link,
             ];
         });
 

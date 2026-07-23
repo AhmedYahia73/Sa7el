@@ -127,7 +127,7 @@ class MaintenanceFeezController extends Controller
         ->create($paymentRequest);
         
         return response()->json([
-            'success' => $request->locale == "en" ? 'You make request success' : 'تم تقديم الطلب بنجاح'
+            'success' => $request->locale == "ar" ? 'تم تقديم الطلب بنجاح' : 'You make request success'
         ]);
     }
 }

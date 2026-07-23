@@ -99,7 +99,7 @@ class PostsController extends Controller
         }
         
         return response()->json([
-            'success' => $request->locale == "en" ? 'You react success' : 'تم التفاعل بنجاح'
+            'success' => $request->locale == "ar" ? 'تم التفاعل بنجاح' : 'You react success'
         ]);
     }
 }

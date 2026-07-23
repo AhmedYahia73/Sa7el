@@ -29,7 +29,7 @@ class EntranceController extends Controller
         ->first();
         if(empty($appartment) || !$appartment->entrance_status || !$appartment->all_status){
             return response()->json([
-                'errors' => $request->locale == "en" ? 'You are blocked to enter this appartment' : 'محظور دخولك لهذه الشقة'
+                'errors' => $request->locale == "ar" ? 'محظور دخولك لهذه الشقة' : 'You are blocked to enter this appartment'
             ],400);
         } 
         $user = $request->user();

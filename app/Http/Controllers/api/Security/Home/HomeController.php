@@ -44,7 +44,7 @@ class HomeController extends Controller
         ->map(function($item) use($request){
             return [
                 "id" => $item->id,
-                "name" => $request->locale == "en" ? $item->name : $item->ar_name ?? $item->name,
+                "name" => $request->locale == "ar" ? ($item->ar_name ?? $item->name) : $item->name,
                 'qr_code' => $item->qr_code,
                 'from' => $item->from,
                 'to' => $item->to,
@@ -62,7 +62,7 @@ class HomeController extends Controller
         ->map(function($item) use($request){
             return [
                 "id" => $item->id,
-                "name" => $request->locale == "en" ? $item->name : $item->ar_name ?? $item->name,
+                "name" => $request->locale == "ar" ? ($item->ar_name ?? $item->name) : $item->name,
                 'qr_code' => $item->qr_code,
                 'from' => $item->from,
                 'to' => $item->to,
@@ -80,7 +80,7 @@ class HomeController extends Controller
         ->map(function($item) use($request){
             return [
                 "id" => $item->id,
-                "name" => $request->locale == "en" ? $item->name : $item->ar_name ?? $item->name,
+                "name" => $request->locale == "ar" ? ($item->ar_name ?? $item->name) : $item->name,
                 'location' => $item->location,
                 'status' => $item->status,
                 'image' => $item->image,
@@ -98,7 +98,7 @@ class HomeController extends Controller
  
     public function inside_gates(Request $request){
         $validator = Validator::make($request->all(), [
-            'locale' => 'required|in:ar,en',
+            'locale' => 'in:ar,en',
         ]);
 
         if ($validator->fails()) { 
@@ -107,15 +107,14 @@ class HomeController extends Controller
             ], 400);
         }
 
-        $locale = $request->locale;
+        $locale = $request->locale ?? 'en';
         $inside_gate = InsideGate::
         where("village_id", auth()->user()->village_id) 
         ->get()
         ->map(function($item) use($locale){
             return [
                 "id" => $item->id,
-                "name" => $locale == "en" ?
-                $item->name : $item->ar_name ?? $item->name,
+                "name" => $locale == "ar" ? ($item->ar_name ?? $item->name) : $item->name,
             ];
         });
 
@@ -195,7 +194,7 @@ class HomeController extends Controller
     public function visitors(Request $request){
         if (!auth()->user()->gate_visitors) {
             return response()->json([
-                'errors' => $request->locale == "en" ? 'You are not allowed to view visitors' : 'غير مسموح لك بعرض الزوار'
+                'errors' => $request->locale == "ar" ? 'غير مسموح لك بعرض الزوار' : 'You are not allowed to view visitors'
             ], 401);
         }
 
@@ -250,7 +249,7 @@ class HomeController extends Controller
     public function search_village_users(Request $request){
         if (!auth()->user()->gate_entrance) {
             return response()->json([
-                'errors' => $request->locale == "en" ? 'You are not allowed to view visitors' : 'غير مسموح لك بعرض الزوار'
+                'errors' => $request->locale == "ar" ? 'غير مسموح لك بعرض الزوار' : 'You are not allowed to view visitors'
             ], 401);
         }
 
@@ -284,7 +283,7 @@ class HomeController extends Controller
 
         if (!$userModel) {
             return response()->json([
-                'errors' => $request->locale == "en" ? 'User not found or does not belong to this village' : 'المستخدم غير موجود أو لا ينتمي لهذه القرية'
+                'errors' => $request->locale == "ar" ? 'المستخدم غير موجود أو لا ينتمي لهذه القرية' : 'User not found or does not belong to this village'
             ], 404);
         }
 
@@ -309,7 +308,7 @@ class HomeController extends Controller
     public function entrance_visitor(Request $request){
         if(!auth()->user()->gate_visitors){
             return response()->json([
-                'errors' => $request->locale == "en" ? 'You are not allowed to view visitors' : 'غير مسموح لك بعرض الزوار'
+                'errors' => $request->locale == "ar" ? 'غير مسموح لك بعرض الزوار' : 'You are not allowed to view visitors'
             ], 401);
         }
         $validator = Validator::make($request->all(), [
@@ -350,7 +349,7 @@ class HomeController extends Controller
         ]);
 
         return response()->json([
-            'success' => $request->locale == "en" ? 'Visitor entrance success' : 'تم دخول الزائر بنجاح',
+            'success' => $request->locale == "ar" ? 'تم دخول الزائر بنجاح' : 'Visitor entrance success',
             'visit_village_id' => $visit_village->id,
             'visitor_type' => $visitor_code->visitor_type,
             'date' => date('Y-m-d'),
@@ -361,7 +360,7 @@ class HomeController extends Controller
     public function entrance_user(Request $request){
         if(!auth()->user()->gate_entrance){
             return response()->json([
-                'errors' => $request->locale == "en" ? 'You are not allowed to view visitors' : 'غير مسموح لك بعرض الزوار'
+                'errors' => $request->locale == "ar" ? 'غير مسموح لك بعرض الزوار' : 'You are not allowed to view visitors'
             ], 401);
         }
         $validator = Validator::make($request->all(), [
@@ -407,7 +406,7 @@ class HomeController extends Controller
         ]);
 
         return response()->json([
-            'success' => $request->locale == "en" ? 'User entrance success' : 'تم دخول المستخدم بنجاح',
+            'success' => $request->locale == "ar" ? 'تم دخول المستخدم بنجاح' : 'User entrance success',
             'visit_village_id' => $visit_village->id,
             'user_type' => $user_type,
             'date' => date('Y-m-d'),

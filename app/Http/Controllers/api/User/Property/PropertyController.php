@@ -270,7 +270,7 @@ class PropertyController extends Controller
             ]);
 
             return response()->json([
-                'message' => $request->locale == "en" ? 'You add data success' : 'تم إضافة البيانات بنجاح'
+                'message' => $request->locale == "ar" ? 'تم إضافة البيانات بنجاح' : 'You add data success'
             ]);
         }
         else{
@@ -298,7 +298,7 @@ class PropertyController extends Controller
             ->first();
             if (!empty($appartment_code)) {
                 return response()->json([
-                    'errors' => $request->locale == "en" ? 'appartment already added' : 'تم إضافة الشقة من قبل'
+                    'errors' => $request->locale == "ar" ? 'تم إضافة الشقة من قبل' : 'appartment already added'
                 ], 400);
             }
 
@@ -307,7 +307,7 @@ class PropertyController extends Controller
             ->firstOrFail(); 
             if($appartment_code->village_id != $request->village_id){
                 return response()->json([
-                    'errors' => $request->locale == "en" ? 'This code does not belong to this village' : 'هذا الكود لا ينتمي لهذه القرية'
+                    'errors' => $request->locale == "ar" ? 'هذا الكود لا ينتمي لهذه القرية' : 'This code does not belong to this village'
                 ],403);
             }
             $appartment_count = $this->appartment_code
@@ -350,7 +350,7 @@ class PropertyController extends Controller
                 $appartment_code_item->save(); 
 
                 return response()->json([
-                    'message' => $request->locale == "en" ? 'You add data success' : 'تم إضافة البيانات بنجاح'
+                    'message' => $request->locale == "ar" ? 'تم إضافة البيانات بنجاح' : 'You add data success'
                 ]);
             }
             $notification = "قام " . auth()->user()->name . " بادخال كود  برقم " . $request->code . "من الابليكشن";
@@ -375,7 +375,7 @@ class PropertyController extends Controller
         }
 
         return response()->json([
-            'message' => $request->locale == "en" ? 'You add data success' : 'تم إضافة البيانات بنجاح'
+            'message' => $request->locale == "ar" ? 'تم إضافة البيانات بنجاح' : 'You add data success'
         ]);
     }
 
@@ -400,7 +400,7 @@ class PropertyController extends Controller
         ->first();
         if(empty($my_data)){
             return response()->json([
-                "errors" => $request->locale == "en" ? "You dont have premission" : "ليس لديك صلاحية"
+                "errors" => $request->locale == "ar" ? "ليس لديك صلاحية" : "You dont have premission"
             ], 401);
         }
         $people = AppartmentCode::
@@ -446,7 +446,7 @@ class PropertyController extends Controller
         ->first();
         if(empty($my_data)){
             return response()->json([
-                "errors" => $request->locale == "en" ? "You dont have premission" : "ليس لديك صلاحية"
+                "errors" => $request->locale == "ar" ? "ليس لديك صلاحية" : "You dont have premission"
             ], 401);
         }
         $people = AppartmentCode::
@@ -459,7 +459,7 @@ class PropertyController extends Controller
         ]);
 
         return response()->json([
-            "success" => $request->locale == "en" ? "You update data success" : "تم تحديث البيانات بنجاح"
+            "success" => $request->locale == "ar" ? "تم تحديث البيانات بنجاح" : "You update data success"
         ]);
     }
 

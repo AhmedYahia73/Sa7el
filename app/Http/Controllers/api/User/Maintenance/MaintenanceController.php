@@ -115,7 +115,7 @@ class MaintenanceController extends Controller
         }
 
         return response()->json([
-            'success' => $request->locale == "en" ? 'You add data success' : 'تم إضافة البيانات بنجاح'
+            'success' => $request->locale == "ar" ? 'تم إضافة البيانات بنجاح' : 'You add data success'
         ]);
     }
 

@@ -39,7 +39,7 @@ class ServiceController extends Controller
         ->first();
         if(empty($appartment) || !$appartment->options_status || !$appartment->all_status){
             return response()->json([
-                'errors' => $request->locale == "en" ? 'You are blocked to enter this appartment' : 'محظور دخولك لهذه الشقة'
+                'errors' => $request->locale == "ar" ? 'محظور دخولك لهذه الشقة' : 'You are blocked to enter this appartment'
             ],400);
         } 
         $services = $this->services
@@ -237,7 +237,7 @@ class ServiceController extends Controller
 
         if (empty($appartment) || !$appartment->options_status || !$appartment->all_status) {
             return response()->json([
-                'errors' => $request->locale == "en" ? 'You are blocked to enter this appartment' : 'محظور دخولك لهذه الشقة'
+                'errors' => $request->locale == "ar" ? 'محظور دخولك لهذه الشقة' : 'You are blocked to enter this appartment'
             ], 400);
         } 
 
@@ -447,7 +447,7 @@ class ServiceController extends Controller
         }
         
         return response()->json([
-            'success' => $request->locale == "en" ? 'You update react success' : 'تم تحديث التفاعل بنجاح'
+            'success' => $request->locale == "ar" ? 'تم تحديث التفاعل بنجاح' : 'You update react success'
         ]);
     }
 
@@ -523,7 +523,7 @@ class ServiceController extends Controller
         }
         
         return response()->json([
-            'success' => $request->locale == "en" ? 'You update react success' : 'تم تحديث التفاعل بنجاح'
+            'success' => $request->locale == "ar" ? 'تم تحديث التفاعل بنجاح' : 'You update react success'
         ]);
     }
 
@@ -551,7 +551,7 @@ class ServiceController extends Controller
         }
         
         return response()->json([
-            'success' => $request->locale == "en" ? 'You update react success' : 'تم تحديث التفاعل بنجاح'
+            'success' => $request->locale == "ar" ? 'تم تحديث التفاعل بنجاح' : 'You update react success'
         ]);
     }
 
@@ -612,7 +612,7 @@ class ServiceController extends Controller
 
         if(!$review){
             return response()->json([
-                "errors" => $request->locale == "en" ? "You must enroll rate" : "يجب إضافة تقييم أولاً",
+                "errors" => $request->locale == "ar" ? "يجب إضافة تقييم أولاً" : "You must enroll rate",
             ], 400);
         }
 
@@ -634,7 +634,7 @@ class ServiceController extends Controller
         ];
 
         return response()->json([
-            "success" => $request->locale == "en" ? "You add your review success" : "تم إضافة تقييمك بنجاح",
+            "success" => $request->locale == "ar" ? "تم إضافة تقييمك بنجاح" : "You add your review success",
             "data"    => $data
         ]);
     }
@@ -660,7 +660,7 @@ class ServiceController extends Controller
 
         if($exists){
             return response()->json([
-                "errors" => $request->locale == "en" ? "You add your review before" : "لقد قمت بإضافة تقييمك من قبل",
+                "errors" => $request->locale == "ar" ? "لقد قمت بإضافة تقييمك من قبل" : "You add your review before",
             ], 400);
         }
 
@@ -684,7 +684,7 @@ class ServiceController extends Controller
         ];
 
         return response()->json([
-            "success" => $request->locale == "en" ? "You add your review success" : "تم إضافة تقييمك بنجاح",
+            "success" => $request->locale == "ar" ? "تم إضافة تقييمك بنجاح" : "You add your review success",
             "data"    => $data
         ]);
     }
