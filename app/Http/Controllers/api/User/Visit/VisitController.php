@@ -166,7 +166,7 @@ class VisitController extends Controller
             ],400);
         }
         $visitor_code = $this->visitor_code
-        ->select('qr_code', 'visitor_type')
+        ->select('qr_code', 'visitor_type', 'code')
         ->with("is_visit")
         ->where('village_id', $request->village_id)
         ->where('appartment_id', $request->appartment_id)
