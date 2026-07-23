@@ -24,6 +24,7 @@ class ProblemReportController extends Controller
             'description' => 'required',
             'image' => 'required',
             'village_id' => 'required|exists:villages,id',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -53,13 +54,14 @@ class ProblemReportController extends Controller
         }
 
         return response()->json([
-            'success' => 'You add data success'
+            'success' => $request->locale == "en" ? 'You add data success' : 'تم إضافة البيانات بنجاح'
         ]);
     }
 
     public function history(Request $request){
         $validator = Validator::make($request->all(), [
             'village_id' => 'required|exists:villages,id',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();

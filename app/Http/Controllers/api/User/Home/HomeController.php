@@ -13,7 +13,15 @@ use App\Models\InsideGate;
 
 class HomeController extends Controller
 {
-    public function village($id){
+    public function village(Request $request, $id){
+        $validator = Validator::make($request->all(), [
+            'locale' => 'in:ar,en',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 400);
+        }
         $village = Village::
         where("id", $id)
         ->first();

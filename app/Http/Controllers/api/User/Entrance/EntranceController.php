@@ -17,6 +17,7 @@ class EntranceController extends Controller
     public function view(Request $request){
         $validator = Validator::make($request->all(), [
             'appartment_id' => 'required|exists:appartments,id', 
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -28,7 +29,7 @@ class EntranceController extends Controller
         ->first();
         if(empty($appartment) || !$appartment->entrance_status || !$appartment->all_status){
             return response()->json([
-                'errors' => 'You are blocked to enter this appartment'
+                'errors' => $request->locale == "en" ? 'You are blocked to enter this appartment' : 'محظور دخولك لهذه الشقة'
             ],400);
         } 
         $user = $request->user();

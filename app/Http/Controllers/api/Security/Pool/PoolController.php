@@ -27,6 +27,7 @@ class PoolController extends Controller
         $validator = Validator::make($request->all(), [
             'qr_code' => 'required|string',
             'pool_id' => 'required|exists:pools,id',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -57,7 +58,7 @@ class PoolController extends Controller
         } 
         else{
             return response()->json([
-                'errors' => 'Qr code is wrong'
+                'errors' => $request->locale == "en" ? 'Qr code is wrong' : 'رمز الاستجابة السري خطأ'
             ], 400);
         }
          $appartment = $this->appartment
@@ -67,7 +68,7 @@ class PoolController extends Controller
          ->first();
          if (empty($appartment) || $pool_id != $request->pool_id) {
             return response()->json([
-                'errors' => 'Qr code is wrong'
+                'errors' => $request->locale == "en" ? 'Qr code is wrong' : 'رمز الاستجابة السري خطأ'
             ], 400);
          }
         $type = [
@@ -115,7 +116,7 @@ class PoolController extends Controller
          ->first()?->type;
         if($my_umbrellas < 1){  
             return response()->json([
-                'success' => 'User has no umbrellas available',
+                'success' => $request->locale == "en" ? 'User has no umbrellas available' : 'المستخدم ليس لديه شمسيات متاحة',
                 'appartment' => $appartment,
                 'appartment_type' => $type,
                 'user' => $user,
@@ -148,7 +149,7 @@ class PoolController extends Controller
         ]); 
 
          return response()->json([
-            'success' => 'Qr code is true',
+            'success' => $request->locale == "en" ? 'Qr code is true' : 'رمز الاستجابة السري صحيح',
             'appartment' => $appartment,
             'appartment_type' => $type,
             'user_type' => $user_type,
@@ -165,6 +166,7 @@ class PoolController extends Controller
             'pool_id' => 'required|exists:pools,id',
             'user_id' => 'required|exists:users,id',
             'appartment_id' => 'required|exists:appartments,id', 
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -183,7 +185,7 @@ class PoolController extends Controller
          ->first();
          if (empty($appartment) || $pool_id != $request->pool_id) {
             return response()->json([
-                'errors' => 'Qr code is wrong'
+                'errors' => $request->locale == "en" ? 'Qr code is wrong' : 'رمز الاستجابة السري خطأ'
             ], 400);
          }
         $type = [
@@ -231,7 +233,7 @@ class PoolController extends Controller
          ->first()?->type;
         if($my_umbrellas < 1){
             return response()->json([
-                'success' => 'User has no umbrellas available',
+                'success' => $request->locale == "en" ? 'User has no umbrellas available' : 'المستخدم ليس لديه شمسيات متاحة',
                 'appartment' => $appartment,
                 'appartment_type' => $type,
                 'user' => $user,
@@ -258,7 +260,7 @@ class PoolController extends Controller
         ]); 
 
          return response()->json([
-            'success' => 'Qr code is true',
+            'success' => $request->locale == "en" ? 'Qr code is true' : 'رمز الاستجابة السري صحيح',
             'appartment' => $appartment,
             'appartment_type' => $type,
             'user_type' => $user_type,

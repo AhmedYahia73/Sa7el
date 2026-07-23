@@ -22,6 +22,7 @@ class MaintenanceFeezController extends Controller
         $validator = Validator::make($request->all(), [
             'village_id' => 'required|exists:villages,id',
             'appartment_id' => 'required|exists:appartments,id',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -65,6 +66,7 @@ class MaintenanceFeezController extends Controller
             'village_id' => 'required|exists:villages,id',
             'appartment_id' => 'required|exists:appartments,id',
             'year' => 'required|numeric',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -107,6 +109,7 @@ class MaintenanceFeezController extends Controller
             'appartment_id' => 'required|exists:appartments,id',
             'paid' => 'required|numeric',
             'receipt' => 'required',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -124,7 +127,7 @@ class MaintenanceFeezController extends Controller
         ->create($paymentRequest);
         
         return response()->json([
-            'success' => 'You make request success'
+            'success' => $request->locale == "en" ? 'You make request success' : 'تم تقديم الطلب بنجاح'
         ]);
     }
 }

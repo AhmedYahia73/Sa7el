@@ -115,6 +115,7 @@ class HomeController extends Controller
     public function entrance_gate(Request $request){
         $validator = Validator::make($request->all(), [
             'gate_id' => 'required|exists:gates,id',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -142,6 +143,7 @@ class HomeController extends Controller
     public function entrance_pool(Request $request){
         $validator = Validator::make($request->all(), [
             'pool_id' => 'required|exists:pools,id',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -161,6 +163,7 @@ class HomeController extends Controller
     public function entrance_beach(Request $request){
         $validator = Validator::make($request->all(), [
             'beach_id' => 'required|exists:beaches,id',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -180,12 +183,13 @@ class HomeController extends Controller
     public function visitors(Request $request){
         if (!auth()->user()->gate_visitors) {
             return response()->json([
-                'errors' => 'You are not allowed to view visitors'
+                'errors' => $request->locale == "en" ? 'You are not allowed to view visitors' : 'غير مسموح لك بعرض الزوار'
             ], 401);
         }
 
         $validator = Validator::make($request->all(), [
             'search' => 'sometimes|string',
+            'locale' => 'in:ar,en',
         ]);
 
         if ($validator->fails()) {
@@ -234,13 +238,13 @@ class HomeController extends Controller
     public function search_village_users(Request $request){
         if (!auth()->user()->gate_entrance) {
             return response()->json([
-                'errors' => 'You are not allowed to view visitors'
+                'errors' => $request->locale == "en" ? 'You are not allowed to view visitors' : 'غير مسموح لك بعرض الزوار'
             ], 401);
         }
 
         $validator = Validator::make($request->all(), [
             'phone' => 'required',
-            
+            'locale' => 'in:ar,en',
         ]);
 
         if ($validator->fails()) {
@@ -268,7 +272,7 @@ class HomeController extends Controller
 
         if (!$userModel) {
             return response()->json([
-                'errors' => 'User not found or does not belong to this village'
+                'errors' => $request->locale == "en" ? 'User not found or does not belong to this village' : 'المستخدم غير موجود أو لا ينتمي لهذه القرية'
             ], 404);
         }
 
@@ -293,12 +297,13 @@ class HomeController extends Controller
     public function entrance_visitor(Request $request){
         if(!auth()->user()->gate_visitors){
             return response()->json([
-                'errors' => 'You are not allowed to view visitors'
+                'errors' => $request->locale == "en" ? 'You are not allowed to view visitors' : 'غير مسموح لك بعرض الزوار'
             ], 401);
         }
         $validator = Validator::make($request->all(), [
             'gate_id' => 'required|exists:gates,id',
             "visitor_id" => "required|exists:visitor_codes,id",
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -333,7 +338,7 @@ class HomeController extends Controller
         ]);
 
         return response()->json([
-            'success' => 'Visitor entrance success',
+            'success' => $request->locale == "en" ? 'Visitor entrance success' : 'تم دخول الزائر بنجاح',
             'visit_village_id' => $visit_village->id,
             'visitor_type' => $visitor_code->visitor_type,
             'date' => date('Y-m-d'),
@@ -344,13 +349,14 @@ class HomeController extends Controller
     public function entrance_user(Request $request){
         if(!auth()->user()->gate_entrance){
             return response()->json([
-                'errors' => 'You are not allowed to view visitors'
+                'errors' => $request->locale == "en" ? 'You are not allowed to view visitors' : 'غير مسموح لك بعرض الزوار'
             ], 401);
         }
         $validator = Validator::make($request->all(), [
             'gate_id' => 'required|exists:gates,id',
             "user_id" => "required|exists:users,id",
             "appartment_id" => "required|exists:appartments,id",
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -389,7 +395,7 @@ class HomeController extends Controller
         ]);
 
         return response()->json([
-            'success' => 'User entrance success',
+            'success' => $request->locale == "en" ? 'User entrance success' : 'تم دخول المستخدم بنجاح',
             'visit_village_id' => $visit_village->id,
             'user_type' => $user_type,
             'date' => date('Y-m-d'),

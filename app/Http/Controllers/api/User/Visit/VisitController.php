@@ -26,6 +26,7 @@ class VisitController extends Controller
             'village_id' => 'required|exists:villages,id',
             'visitor_type' => 'required|in:guest,worker,delivery',
             'appartment_id' => 'required|exists:appartments,id',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -39,7 +40,7 @@ class VisitController extends Controller
         ->first();
         if(empty($appartment) || !$appartment->visits_status || !$appartment->all_status){
             return response()->json([
-                'errors' => 'You are blocked to enter this appartment'
+                'errors' => $request->locale == "en" ? 'You are blocked to enter this appartment' : 'محظور دخولك لهذه الشقة'
             ],400);
         }  
         $appartment_code = $this->appartment_code 
@@ -55,7 +56,7 @@ class VisitController extends Controller
         ->first();
         if (empty($appartment_code)) {
             return response()->json([
-                'errors' => "You don't have appartment"
+                'errors' => $request->locale == "en" ? "You don't have appartment" : "ليس لديك شقة"
             ], 400);
         }
         $time_before_day = Carbon::now()->subHours(24);
@@ -89,7 +90,7 @@ class VisitController extends Controller
             (count($worker) >= $visitor_limit_worker && $request->visitor_type == 'worker') || 
             (count($guest) >= $visitor_limit_guest && $request->visitor_type == 'guest')) {
                 return response()->json([
-                    'errors' => 'You have exceeded the maximum limit to create qr code to ' . $request->visitor_type
+                    'errors' => $request->locale == "en" ? ('You have exceeded the maximum limit to create qr code to ' . $request->visitor_type) : ('لقد تجاوزت الحد الأقصى لإنشاء رمز QR لـ ' . $request->visitor_type)
                 ], 403);
             }
         }
@@ -119,6 +120,7 @@ class VisitController extends Controller
     public function create_code(Request $request){
         $validator = Validator::make($request->all(), [
             'village_id' => 'required|exists:villages,id',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -146,6 +148,7 @@ class VisitController extends Controller
         $validator = Validator::make($request->all(), [
             'village_id' => 'required|exists:villages,id',
             'appartment_id' => 'required|exists:appartments,id',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -159,7 +162,7 @@ class VisitController extends Controller
         ->first();
         if(empty($appartment) || !$appartment->visits_status || !$appartment->all_status){
             return response()->json([
-                'errors' => 'You are blocked to enter this appartment'
+                'errors' => $request->locale == "en" ? 'You are blocked to enter this appartment' : 'محظور دخولك لهذه الشقة'
             ],400);
         }  
         $visitor_code = $this->visitor_code

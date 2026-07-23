@@ -20,6 +20,7 @@ class PropertyController extends Controller
     public function my_property(Request $request){
         $validator = Validator::make($request->all(), [
             'local' => 'required|in:en,ar',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -122,6 +123,7 @@ class PropertyController extends Controller
     public function my_new_property(Request $request){
         $validator = Validator::make($request->all(), [
             'local' => 'required|in:en,ar',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -233,6 +235,7 @@ class PropertyController extends Controller
             'village_id' => 'required|exists:villages,id',
             'code' => 'sometimes',
             'local' => 'required|in:en,ar', 
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -267,7 +270,7 @@ class PropertyController extends Controller
             ]);
 
             return response()->json([
-                'message' => 'You add data success'
+                'message' => $request->locale == "en" ? 'You add data success' : 'تم إضافة البيانات بنجاح'
             ]);
         }
         else{
@@ -295,7 +298,7 @@ class PropertyController extends Controller
             ->first();
             if (!empty($appartment_code)) {
                 return response()->json([
-                    'message' => 'appartment already added'
+                    'message' => $request->locale == "en" ? 'appartment already added' : 'تم إضافة الشقة من قبل'
                 ]);
             }
 
@@ -304,7 +307,7 @@ class PropertyController extends Controller
             ->firstOrFail(); 
             if($appartment_code->village_id != $request->village_id){
                 return response()->json([
-                    'errors' => 'This code does not belong to this village'
+                    'errors' => $request->locale == "en" ? 'This code does not belong to this village' : 'هذا الكود لا ينتمي لهذه القرية'
                 ],403);
             }
             $appartment_count = $this->appartment_code
@@ -347,7 +350,7 @@ class PropertyController extends Controller
                 $appartment_code_item->save(); 
 
                 return response()->json([
-                    'message' => 'You add data success'
+                    'message' => $request->locale == "en" ? 'You add data success' : 'تم إضافة البيانات بنجاح'
                 ]);
             }
             $notification = "قام " . auth()->user()->name . " بادخال كود  برقم " . $request->code . "من الابليكشن";
@@ -372,14 +375,15 @@ class PropertyController extends Controller
         }
 
         return response()->json([
-            'message' => 'You add data success'
+            'message' => $request->locale == "en" ? 'You add data success' : 'تم إضافة البيانات بنجاح'
         ]);
     }
 
     public function people_appartment(Request $request){
        $validator = Validator::make($request->all(), [
             'appartment_id' => 'required|exists:appartments,id',
-            'code' => 'required'
+            'code' => 'required',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -396,7 +400,7 @@ class PropertyController extends Controller
         ->first();
         if(empty($my_data)){
             return response()->json([
-                "errors" => "You dont have premission"
+                "errors" => $request->locale == "en" ? "You dont have premission" : "ليس لديك صلاحية"
             ], 401);
         }
         $people = AppartmentCode::
@@ -425,6 +429,7 @@ class PropertyController extends Controller
             'appartment_id' => 'required|exists:appartments,id',
             'code' => 'required',
             'user_id' => "required|exists:users,id",
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -441,7 +446,7 @@ class PropertyController extends Controller
         ->first();
         if(empty($my_data)){
             return response()->json([
-                "errors" => "You dont have premission"
+                "errors" => $request->locale == "en" ? "You dont have premission" : "ليس لديك صلاحية"
             ], 401);
         }
         $people = AppartmentCode::
@@ -454,13 +459,14 @@ class PropertyController extends Controller
         ]);
 
         return response()->json([
-            "success" => "You update data success"
+            "success" => $request->locale == "en" ? "You update data success" : "تم تحديث البيانات بنجاح"
         ]);
     }
 
     public function pending_code_request(Request $request){
         $validator = Validator::make($request->all(), [
             'local' => 'required|in:en,ar',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -521,7 +527,8 @@ class PropertyController extends Controller
     public function rent_images(Request $request){
         $validator = Validator::make($request->all(), [
             'code' => 'required',
-            "approve" => "sometimes|boolean"
+            "approve" => "sometimes|boolean",
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();

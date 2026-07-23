@@ -25,6 +25,7 @@ class MaintenanceController extends Controller
         $validator = Validator::make($request->all(), [
             'local' => 'required|in:en,ar',
             'village_id' => 'required|exists:villages,id',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -81,6 +82,7 @@ class MaintenanceController extends Controller
             'image' => 'nullable',
             'status' => 'required|boolean',
             'village_id' => 'required|exists:villages,id',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -113,7 +115,7 @@ class MaintenanceController extends Controller
         }
 
         return response()->json([
-            'success' => 'You add data success'
+            'success' => $request->locale == "en" ? 'You add data success' : 'تم إضافة البيانات بنجاح'
         ]);
     }
 
@@ -122,6 +124,7 @@ class MaintenanceController extends Controller
             'local' => 'required|in:en,ar',
             'village_id' => 'required|exists:villages,id',
             'appartment_id' => 'required|exists:appartments,id',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();

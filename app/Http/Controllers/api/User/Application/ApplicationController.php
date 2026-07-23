@@ -30,7 +30,7 @@ class ApplicationController extends Controller
 
         if(!$application){
             return response()->json([
-                "errors" => "You should open help"
+                "errors" => $request->locale == "en" ? "You should open help" : "يجب فتح المساعدة"
             ], 400);
         }
         // 1. تعديل وفلترة: إضافة بحث مبدئي وجلب أسماء الأعمدة الصحيحة تماماً من الـ DB

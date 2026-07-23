@@ -20,6 +20,7 @@ class RentController extends Controller
         $validator = Validator::make($request->all(), [
             'village_id' => 'required|exists:villages,id',
             'appartment_id' => 'required|exists:appartments,id',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -33,7 +34,7 @@ class RentController extends Controller
         ->first();
         if(empty($appartment) || !$appartment->rent_code_status || !$appartment->all_status){
             return response()->json([
-                'errors' => 'You are blocked to enter this appartment'
+                'errors' => $request->locale == "en" ? 'You are blocked to enter this appartment' : 'محظور دخولك لهذه الشقة'
             ],400);
         }
         $rents = $this->appartment_code
@@ -61,6 +62,7 @@ class RentController extends Controller
             // 'image' => 'required',
             'image' => 'required|array',
             'image.*' => 'required',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -79,12 +81,12 @@ class RentController extends Controller
  
         if($renter_limit < $request->people){
             return response()->json([
-                'errors' => 'renter must be less than ' . $renter_limit 
+                'errors' => $request->locale == "en" ? ('renter must be less than ' . $renter_limit) : ('عدد المستأجرين يجب أن يكون أقل من ' . $renter_limit)
             ],400);
         }
         if(empty($appartment) || !$appartment->rent_code_status || !$appartment->all_status){
             return response()->json([
-                'errors' => 'You are blocked to enter this appartment'
+                'errors' => $request->locale == "en" ? 'You are blocked to enter this appartment' : 'محظور دخولك لهذه الشقة'
             ],400);
         } 
         $from = $request->from; // تاريخ ووقت البداية الجديد
@@ -100,8 +102,7 @@ class RentController extends Controller
             ->first();
         if (!empty($appartment_code)) {
             return response()->json([
-                'errors' => 'Unit is rented from ' . $appartment_code->from . 
-                ' to ' . $appartment_code->to
+                'errors' => $request->locale == "en" ? ('Unit is rented from ' . $appartment_code->from . ' to ' . $appartment_code->to) : ('الوحدة مؤجرة من ' . $appartment_code->from . ' إلى ' . $appartment_code->to)
             ], 400);
         }
         $rentRequest = $validator->validated();
@@ -130,6 +131,7 @@ class RentController extends Controller
     public function max_people(Request $request){
         $validator = Validator::make($request->all(), [
             'appartment_id' => 'required|exists:appartments,id',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -154,7 +156,8 @@ class RentController extends Controller
     public function destroy(Request $request){
         $validator = Validator::make($request->all(), [
             'appartment_id' => 'required|exists:appartments,id', 
-            'code' => 'required'
+            'code' => 'required',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -169,7 +172,7 @@ class RentController extends Controller
         ->delete(); 
 
         return response()->json([
-            'success' => "You delete code success"
+            'success' => $request->locale == "en" ? "You delete code success" : "تم حذف الكود بنجاح"
         ]);
     }
 
@@ -178,6 +181,7 @@ class RentController extends Controller
             'appartment_id' => 'required|exists:appartments,id', 
             'code' => 'required',
             'user_id' => 'required|exists:users,id',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -195,7 +199,7 @@ class RentController extends Controller
         ]);
 
         return response()->json([
-            'success' => "You delete code success"
+            'success' => $request->locale == "en" ? "You delete code success" : "تم حذف المستخدم بنجاح"
         ]);
     }
 
@@ -205,6 +209,7 @@ class RentController extends Controller
             'data.*.image' => 'required|base64image',
             'data.*.description' => 'required',
             'code' => "required",
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -228,7 +233,7 @@ class RentController extends Controller
         }
 
         return response()->json([
-            "success" => "You add data success"
+            "success" => $request->locale == "en" ? "You add data success" : "تم إضافة البيانات بنجاح"
         ]);
     }
 
@@ -236,6 +241,7 @@ class RentController extends Controller
         $validator = Validator::make($request->all(), [
             'description' => 'required',
             'code' => "required",
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -251,7 +257,7 @@ class RentController extends Controller
         $status = isset($appartments[0]) ? $appartments[0]->people == $appartments->count() : false;
         if(!$status){
             return response()->json([
-                "errors" => "You can not update"
+                "errors" => $request->locale == "en" ? "You can not update" : "لا يمكنك التحديث"
             ], 400);
         }
         $rent = RentImage::
@@ -261,13 +267,14 @@ class RentController extends Controller
         ]);
 
         return response()->json([
-            "success" => "You update data success"
+            "success" => $request->locale == "en" ? "You update data success" : "تم تحديث البيانات بنجاح"
         ]);
     }
 
     public function delete_rent_images(Request $request, $id){
         $validator = Validator::make($request->all(), [ 
             'code' => "required",
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -282,7 +289,7 @@ class RentController extends Controller
         $status = isset($appartments[0]) ? $appartments[0]->people == $appartments->count() : false;
         if(!$status){
             return response()->json([
-                "errors" => "You can not delete"
+                "errors" => $request->locale == "en" ? "You can not delete" : "لا يمكنك الحذف"
             ], 400);
         }
         $rent = RentImage::
@@ -291,7 +298,7 @@ class RentController extends Controller
         $rent->delete();
 
         return response()->json([
-            "success" => "You delete data success"
+            "success" => $request->locale == "en" ? "You delete data success" : "تم حذف البيانات بنجاح"
         ]);
     }
 }

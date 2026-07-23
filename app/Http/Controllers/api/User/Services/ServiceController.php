@@ -25,6 +25,7 @@ class ServiceController extends Controller
             'village_id' => 'required|exists:villages,id',
             'appartment_id' => 'required|exists:appartments,id', 
             'local' => 'required',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -38,7 +39,7 @@ class ServiceController extends Controller
         ->first();
         if(empty($appartment) || !$appartment->options_status || !$appartment->all_status){
             return response()->json([
-                'errors' => 'You are blocked to enter this appartment'
+                'errors' => $request->locale == "en" ? 'You are blocked to enter this appartment' : 'محظور دخولك لهذه الشقة'
             ],400);
         } 
         $services = $this->services
@@ -131,6 +132,7 @@ class ServiceController extends Controller
     public function zone_village_lists(Request $request){
         $validator = Validator::make($request->all(), [
             'village_id' => 'required|exists:villages,id',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -159,6 +161,7 @@ class ServiceController extends Controller
             'local'         => 'required|in:en,ar',
             'search'        => 'sometimes|string|nullable',
             'per_page'      => 'sometimes|integer|min:1|max:100',
+            'locale'        => 'in:ar,en',
         ]);
 
         if ($validator->fails()) { 
@@ -220,6 +223,7 @@ class ServiceController extends Controller
             'local'           => 'required|in:en,ar',
             'search'          => 'sometimes|string|nullable',
             'per_page'        => 'sometimes|integer|min:1|max:100',
+            'locale'          => 'in:ar,en',
         ]);
 
         if ($validator->fails()) { 
@@ -233,7 +237,7 @@ class ServiceController extends Controller
 
         if (empty($appartment) || !$appartment->options_status || !$appartment->all_status) {
             return response()->json([
-                'errors' => 'You are blocked to enter this appartment'
+                'errors' => $request->locale == "en" ? 'You are blocked to enter this appartment' : 'محظور دخولك لهذه الشقة'
             ], 400);
         } 
 
@@ -321,6 +325,7 @@ class ServiceController extends Controller
             'provider_id' => 'required|exists:providers,id', 
             'local'       => 'required',
             'per_page'    => 'sometimes|integer|min:1|max:100', // اختياري للتحكم بحجم الصفحة
+            'locale'      => 'in:ar,en',
         ]);
         
         if ($validator->fails()) { 
@@ -354,6 +359,7 @@ class ServiceController extends Controller
             'provider_id' => 'required|exists:providers,id', 
             'local'       => 'required',
             'per_page'    => 'sometimes|integer|min:1|max:100',
+            'locale'      => 'in:ar,en',
         ]);
         
         if ($validator->fails()) { 
@@ -384,6 +390,7 @@ class ServiceController extends Controller
     public function out_service(Request $request){
         $validator = Validator::make($request->all(), [
             'local' => 'required',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -419,6 +426,7 @@ class ServiceController extends Controller
     public function love(Request $request, $id){
         $validator = Validator::make($request->all(), [
             'love' => 'required|boolean',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -439,13 +447,14 @@ class ServiceController extends Controller
         }
         
         return response()->json([
-            'success' => 'You update react success'
+            'success' => $request->locale == "en" ? 'You update react success' : 'تم تحديث التفاعل بنجاح'
         ]);
     }
 
     public function love_history(Request $request){
         $validator = Validator::make($request->all(), [
             'local' => 'required|in:en,ar',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -493,6 +502,7 @@ class ServiceController extends Controller
     public function image_love(Request $request, $id){
         $validator = Validator::make($request->all(), [
             'love' => 'required|boolean',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -513,13 +523,14 @@ class ServiceController extends Controller
         }
         
         return response()->json([
-            'success' => 'You update react success'
+            'success' => $request->locale == "en" ? 'You update react success' : 'تم تحديث التفاعل بنجاح'
         ]);
     }
 
     public function video_love(Request $request, $id){
         $validator = Validator::make($request->all(), [
             'love' => 'required|boolean',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -540,11 +551,19 @@ class ServiceController extends Controller
         }
         
         return response()->json([
-            'success' => 'You update react success'
+            'success' => $request->locale == "en" ? 'You update react success' : 'تم تحديث التفاعل بنجاح'
         ]);
     }
 
     public function check_review(Request $request, $id){
+        $validator = Validator::make($request->all(), [
+            'locale' => 'in:ar,en',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 400);
+        }
         $check = ProviderReview::where("provider_id", $id)
             ->where("user_id", $request->user()->id)
             ->exists(); 
@@ -555,6 +574,14 @@ class ServiceController extends Controller
     }
 
     public function my_review(Request $request, $id){
+        $validator = Validator::make($request->all(), [
+            'locale' => 'in:ar,en',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 400);
+        }
         $my_review = ProviderReview::where("provider_id", $id)
             ->where("user_id", $request->user()->id)
             ->first(); 
@@ -568,7 +595,8 @@ class ServiceController extends Controller
         $validator = Validator::make($request->all(), [
             'rate'        => 'required|numeric|min:1|max:5',
             "comment"     => "sometimes|nullable",
-            "provider_id" => "required|exists:providers,id"
+            "provider_id" => "required|exists:providers,id",
+            'locale'      => 'in:ar,en',
         ]);
 
         if ($validator->fails()) {
@@ -584,7 +612,7 @@ class ServiceController extends Controller
 
         if(!$review){
             return response()->json([
-                "errors" => "You must enroll rate",
+                "errors" => $request->locale == "en" ? "You must enroll rate" : "يجب إضافة تقييم أولاً",
             ], 400);
         }
 
@@ -606,7 +634,7 @@ class ServiceController extends Controller
         ];
 
         return response()->json([
-            "success" => "You add your review success",
+            "success" => $request->locale == "en" ? "You add your review success" : "تم إضافة تقييمك بنجاح",
             "data"    => $data
         ]);
     }
@@ -615,7 +643,8 @@ class ServiceController extends Controller
         $validator = Validator::make($request->all(), [
             'rate'        => 'required|numeric|min:1|max:5',
             "comment"     => "sometimes|nullable",
-            "provider_id" => "required|exists:providers,id"
+            "provider_id" => "required|exists:providers,id",
+            'locale'      => 'in:ar,en',
         ]);
 
         if ($validator->fails()) {
@@ -631,7 +660,7 @@ class ServiceController extends Controller
 
         if($exists){
             return response()->json([
-                "errors" => "You add your review before",
+                "errors" => $request->locale == "en" ? "You add your review before" : "لقد قمت بإضافة تقييمك من قبل",
             ], 400);
         }
 
@@ -655,14 +684,15 @@ class ServiceController extends Controller
         ];
 
         return response()->json([
-            "success" => "You add your review success",
+            "success" => $request->locale == "en" ? "You add your review success" : "تم إضافة تقييمك بنجاح",
             "data"    => $data
         ]);
     }
 
     public function show_reviews(Request $request){
         $validator = Validator::make($request->all(), [
-            "provider_id" => "required|exists:providers,id"
+            "provider_id" => "required|exists:providers,id",
+            'locale'      => 'in:ar,en',
         ]);
 
         if ($validator->fails()) {

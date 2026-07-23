@@ -14,6 +14,7 @@ class HelpController extends Controller
     public function groups(Request $request){
         $validator = Validator::make($request->all(), [
             'local' => 'required|in:en,ar',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -41,6 +42,7 @@ class HelpController extends Controller
         $validator = Validator::make($request->all(), [
             'local' => 'required|in:en,ar',
             'help_group_id' => 'required|exists:help_groups,id',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();

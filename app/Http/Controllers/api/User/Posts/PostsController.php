@@ -19,6 +19,7 @@ class PostsController extends Controller
             'search'     => 'nullable|string|max:255',
             'from'       => 'nullable|date',
             'to'         => 'nullable|date',
+            'locale'     => 'in:ar,en',
         ]);
 
         if ($validator->fails()) { 
@@ -82,6 +83,7 @@ class PostsController extends Controller
         $validator = Validator::make($request->all(), [
             'post_id' => 'required|exists:posts,id',
             'react' => 'required|boolean',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -97,7 +99,7 @@ class PostsController extends Controller
         }
         
         return response()->json([
-            'success' => 'You react success'
+            'success' => $request->locale == "en" ? 'You react success' : 'تم التفاعل بنجاح'
         ]);
     }
 }
