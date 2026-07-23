@@ -13,6 +13,7 @@ use App\Models\AppartmentCode;
 use App\Models\UserBeach;
 use App\Models\UserPool;
 use App\Models\VisitVillage;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -121,6 +122,7 @@ class HomeController extends Controller
                 "phone" => $item?->user?->phone,
                 "unit"  => $item?->appartment?->unit,
                 "gate"  => $item?->gate?->name,
+                "date"  => $item?->updated_at ? Carbon::parse($item?->updated_at)->format("Y-m-d H:i A") ?? null,
             ]);
     }
 
