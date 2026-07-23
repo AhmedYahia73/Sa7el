@@ -25,7 +25,6 @@ class MaintenanceController extends Controller
         $validator = Validator::make($request->all(), [
             'local' => 'required|in:en,ar',
             'village_id' => 'required|exists:villages,id',
-            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -124,7 +123,6 @@ class MaintenanceController extends Controller
             'local' => 'required|in:en,ar',
             'village_id' => 'required|exists:villages,id',
             'appartment_id' => 'required|exists:appartments,id',
-            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
