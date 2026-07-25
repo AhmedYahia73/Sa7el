@@ -55,8 +55,7 @@ class PoolController extends Controller
         $code = null;
         $appartment_id = 0;
         $creates_at = null;
-        $is__visitor = $arr_text[0] == 'visitor_id';
-        return $is__visitor;
+        $is__visitor = $arr_text[0] == 'visitor_id'; 
         if ($arr_text[0] == 'visitor_id') {
             $userid = intval($arr_text[1]);
             $visitor_type = $arr_text[5];
@@ -94,7 +93,7 @@ class PoolController extends Controller
             return response()->json([
                 'errors' => $request->locale == "ar" ? 'رمز الاستجابة السري خطأ' : 'Qr code is wrong'
             ], 400);
-        }
+        }return 65756;
          $appartment = $this->appartment
         ->select("id", "unit", "appartment_type_id")
         ->with("type:id,name")
