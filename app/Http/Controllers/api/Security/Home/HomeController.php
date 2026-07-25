@@ -139,11 +139,13 @@ class HomeController extends Controller
         ->get();
         $entrance = $visit_village->count();
         $entrance_owner = $visit_village->where('type', 'owner')->count();
+        $entrance_renter = $visit_village->where('type', 'renter')->count();
         $entrance_visitor = $visit_village->where('type', 'visitor');
 
         return response()->json([
             'entrance' => $entrance,
             'entrance_owner' => $entrance_owner,
+            'entrance_renter' => $entrance_renter,
             'entrance_visitor' => $entrance_visitor->count(),
             'entrance_visitor_worker' => $entrance_visitor->where('visitor_type', 'worker')->count(),
             'entrance_visitor_guest' => $entrance_visitor->where('visitor_type', 'guest')->count(),

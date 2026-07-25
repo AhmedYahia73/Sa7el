@@ -7,6 +7,7 @@ use App\Models\Appartment;
 use App\Models\AppartmentCode;
 use App\Models\AppartmentTypeUmbrella;
 use App\Models\EntrancePool;
+use App\Models\Pools;
 use App\Models\User;
 use App\Models\UserPool;
 use App\Models\VisitorCode;
@@ -72,13 +73,16 @@ class PoolController extends Controller
             $code = $qr_code_code;
              
             $pool_id = $request->pool_id;
+            $pool = Pools::
+            where("id", $pool_id)
+            ->first()?->allow_visitor; 
             $appartment_id = $arr_text[11];
             $created_at = VisitorCode::
             where("code", $code)
             ->where("appartment_id", $appartment_id)
             ->orderByDesc("id")
             ->first()?->created_at?->format("H:i A");
-            if($visitor_type != 'guest'){
+            if($visitor_type != 'guest' || !$pool){
                 return response()->json([
                     'errors' => $request->locale == "ar" ? 'غير مسموح' : 'Not Allowed'
                 ], 400);

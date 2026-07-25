@@ -7,6 +7,7 @@ use App\Models\Appartment;
 use App\Models\AppartmentCode;
 use App\Models\EntranceBeach;
 use App\Models\User;
+use App\Models\Beach;
 use App\Models\UserBeach;
 use App\Models\VisitBeach;
 use App\Models\VisitorCode;
@@ -72,8 +73,11 @@ class BeachController extends Controller
             $code = $qr_code_code;
                 
             $beach_id = $request->beach_id;
+            $beach = Beach::
+            where("id", $beach_id)
+            ->first()?->allow_visitor; 
             $appartment_id = $arr_text[11];
-            if($visitor_type != 'guest'){
+            if($visitor_type != 'guest' || !$beach){
                 return response()->json([
                     'errors' => $request->locale == "ar" ? 'غير مسموح' : 'Not Allowed'
                 ], 400);
