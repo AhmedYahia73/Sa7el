@@ -71,7 +71,7 @@ class PoolController extends Controller
             $qr_code_code = $arr_text[9];
             $code = $qr_code_code;
              
-            $beach_id = $request->beach_id;
+            $pool_id = $request->pool_id;
             $appartment_id = $arr_text[11];
             $creates_at = VisitorCode::
             where("code", $code)
