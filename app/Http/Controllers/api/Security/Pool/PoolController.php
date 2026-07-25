@@ -93,7 +93,7 @@ class PoolController extends Controller
             return response()->json([
                 'errors' => $request->locale == "ar" ? 'رمز الاستجابة السري خطأ' : 'Qr code is wrong'
             ], 400);
-        }return 65756;
+        }
          $appartment = $this->appartment
         ->select("id", "unit", "appartment_type_id")
         ->with("type:id,name")
