@@ -55,6 +55,7 @@ class BeachController extends Controller
         $beach_id = 0;
         $creates_at = null;
         $is__visitor = $arr_text[0] == 'visitor_id';
+        return $is__visitor;
         if ($arr_text[0] == 'visitor_id') {
             $userid = intval($arr_text[1]);
             $visitor_type = $arr_text[5];
