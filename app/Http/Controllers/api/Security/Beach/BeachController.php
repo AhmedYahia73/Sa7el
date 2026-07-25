@@ -51,8 +51,39 @@ class BeachController extends Controller
         $text = $request->qr_code;
         $arr_text = explode('-', $text);
         $userid = 0;
+        $code = null;
         $beach_id = 0;
-        if ($arr_text[2] == 'beach_id') {
+        $creates_at = null;
+        $is__visitor = $arr_text[0] == 'visitor_id';
+        if ($arr_text[0] == 'visitor_id') {
+            $userid = intval($arr_text[1]);
+            $visitor_type = $arr_text[5];
+            $visitor = 1;
+            $tomorrow = Carbon::now()->addDay();
+            $qrcode_time = $arr_text[7];
+            $qrcode_time = Carbon::parse($qrcode_time);
+            if ($tomorrow < $qrcode_time) {
+                return response()->json([
+                    'errors' => $request->locale == "ar" ? 'رمز الاستجابة السري منتهي' : 'Qr code is expired'
+                ], 400);
+            }
+            $qr_code_code = $arr_text[9];
+            $code = $qr_code_code;
+                
+            $beach_id = $request->beach_id;
+            $appartment_id = $arr_text[11];
+            if($visitor_type != 'guest'){
+                return response()->json([
+                    'errors' => $request->locale == "ar" ? 'غير مسموح' : 'Not Allowed'
+                ], 400);
+            } 
+            $creates_at = VisitorCode::
+            where("code", $code)
+            ->where("appartment_id", $appartment_id)
+            ->orderByDesc("id")
+            ->first()?->created_at?->format("H:i A");
+        } 
+        elseif ($arr_text[2] == 'beach_id') {
             $userid = intval($arr_text[1]);
             $beach_id = intval($arr_text[3]);
             $appartment_id = intval($arr_text[5]);
@@ -121,6 +152,8 @@ class BeachController extends Controller
                 "umbrellas" => 0,
                 'user_type' => $user_type,
                 "open_status" => false,
+                "is__visitor" => $is__visitor,
+                "creates_at" => $creates_at,
             ]);
         }  
         //  if (!empty($old_user_beach)) {
@@ -143,7 +176,17 @@ class BeachController extends Controller
         //         'village_id' => $request->user()->village_id,
         //     ]);
         //  }
-         
+        if($arr_text[0] == 'visitor_id' && isset($code)){ 
+            $visits = $this->user_beach
+            ->where("code", $code)
+            ->where("appartment_id", $appartment_id)
+            ->first();
+            if($visits){
+                return response()->json([
+                    'errors' => $request->locale == "ar" ? 'رمز الاستجابة السري منتهي' : 'Qr code is expired'
+                ], 400);
+            }
+        }
         $user_type2 = $this->appartment_code
          ->where('appartment_id', $appartment_id)
          ->where('user_id', $userid ?? 0) 
@@ -153,10 +196,11 @@ class BeachController extends Controller
         ->create([
             'user_id' => $userid,
             'beach_id' => $beach_id,
-            'user_type' => $user_type2,
+            'user_type' => $arr_text[0] == 'visitor_id' ? "guest" : $user_type2,
             'village_id' => $request->user()->village_id,
             'umbrella' => 1,
             "appartment_id" => $appartment_id,
+            "code" =>$arr_text[0] == 'visitor_id' && isset($code) ? $code : null,
         ]); 
         EntranceBeach::create([
             'beach_id' => $beach_id,
@@ -175,6 +219,8 @@ class BeachController extends Controller
             'time' => $old_time,
             "umbrellas" => $my_umbrellas - 1,
             "open_status" => true,
+            "is__visitor" => $is__visitor,
+            "creates_at" => $creates_at,
          ]);
     }
 
