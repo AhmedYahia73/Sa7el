@@ -49,8 +49,8 @@ class BeachController extends Controller
         // $qrcode = new QrReader($tempImagePath);
         // $text = $qrcode->text();
         $text = $request->qr_code;
-        $arr_text = explode('-', $text);
-        $arr_text = count($arr_text) > 1 ? $arr_text : explode('>', $text);
+        $arr_text = explode('>', $text);
+        $arr_text = count($arr_text) > 1 ? $arr_text : explode('-', $text);
         $userid = 0;
         $code = null;
         $beach_id = 0;
