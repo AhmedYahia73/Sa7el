@@ -54,7 +54,7 @@ class BeachController extends Controller
         $userid = 0;
         $code = null;
         $beach_id = 0;
-        $creates_at = null;
+        $created_at = null;
         $is__visitor = $arr_text[0] == 'visitor_id';
         if ($arr_text[0] == 'visitor_id') {
             $userid = intval($arr_text[1]);
@@ -78,7 +78,7 @@ class BeachController extends Controller
                     'errors' => $request->locale == "ar" ? 'غير مسموح' : 'Not Allowed'
                 ], 400);
             } 
-            $creates_at = VisitorCode::
+            $created_at = VisitorCode::
             where("code", $code)
             ->where("appartment_id", $appartment_id)
             ->orderByDesc("id")
@@ -154,7 +154,7 @@ class BeachController extends Controller
                 'user_type' => $user_type,
                 "open_status" => false,
                 "is__visitor" => $is__visitor,
-                "creates_at" => $creates_at,
+                "created_at" => $created_at,
             ]);
         }  
         //  if (!empty($old_user_beach)) {
@@ -221,7 +221,7 @@ class BeachController extends Controller
             "umbrellas" => $my_umbrellas - 1,
             "open_status" => true,
             "is__visitor" => $is__visitor,
-            "creates_at" => $creates_at,
+            "created_at" => $created_at,
          ]);
     }
 

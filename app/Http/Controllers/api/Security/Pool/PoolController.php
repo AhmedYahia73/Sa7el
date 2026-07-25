@@ -54,7 +54,7 @@ class PoolController extends Controller
         $pool_id = 0;
         $code = null;
         $appartment_id = 0;
-        $creates_at = null;
+        $created_at = null;
         $is__visitor = $arr_text[0] == 'visitor_id'; 
         if ($arr_text[0] == 'visitor_id') {
             $userid = intval($arr_text[1]);
@@ -73,7 +73,7 @@ class PoolController extends Controller
              
             $pool_id = $request->pool_id;
             $appartment_id = $arr_text[11];
-            $creates_at = VisitorCode::
+            $created_at = VisitorCode::
             where("code", $code)
             ->where("appartment_id", $appartment_id)
             ->orderByDesc("id")
@@ -159,7 +159,7 @@ class PoolController extends Controller
                 "umbrellas" => 0,
                 "open_status" => false,
                 "is__visitor" => $is__visitor,
-                "creates_at" => $creates_at,
+                "created_at" => $created_at,
             ]);
         }  
         
@@ -207,7 +207,7 @@ class PoolController extends Controller
             "umbrellas" => $my_umbrellas - 1,
             "open_status" => true,
             "is__visitor" => $is__visitor,
-            "creates_at" => $creates_at,
+            "created_at" => $created_at,
          ]);
     } 
 
