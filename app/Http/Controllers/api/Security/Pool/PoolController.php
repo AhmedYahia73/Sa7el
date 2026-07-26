@@ -141,9 +141,10 @@ class PoolController extends Controller
         ->orderByDesc("id")
         ->first()?->created_at?->format("Y-m-d H:i A");
         $last_user = $old_date_user_pool?->user;
-        $last_user->is_visitor = $old_date_user_pool?->user_type == 'guest';
-        $last_user->qr_created_at = $qr_created_at;
-         
+        if($last_user){ 
+            $last_user->is_visitor = $old_date_user_pool?->user_type == 'guest';
+            $last_user->qr_created_at = $qr_created_at;
+        }
         $user_type = $this->appartment_code
          ->where('appartment_id', $appartment_id)
          ->where('user_id', $old_date_user_pool?->user?->id ?? 0) 
@@ -284,8 +285,10 @@ class PoolController extends Controller
         ->orderByDesc("id")
         ->first()?->created_at?->format("Y-m-d H:i A");
         $last_user = $old_date_user_pool?->user;
-        $last_user->is_visitor = $old_date_user_pool?->user_type == 'guest';
-        $last_user->qr_created_at = $qr_created_at;
+        if($last_user){ 
+            $last_user->is_visitor = $old_date_user_pool?->user_type == 'guest';
+            $last_user->qr_created_at = $qr_created_at;
+        }
          
         $user_type = $this->appartment_code
          ->where('appartment_id', $appartment_id)

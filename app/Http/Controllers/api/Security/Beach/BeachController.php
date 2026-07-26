@@ -142,8 +142,10 @@ class BeachController extends Controller
         ->orderByDesc("id")
         ->first()?->created_at?->format("Y-m-d H:i A");
         $last_user = $old_user_beach?->user;
-        $last_user->is_visitor = $old_user_beach?->user_type == 'guest';
-        $last_user->qr_created_at = $qr_created_at;
+        if($last_user){ 
+            $last_user->is_visitor = $old_user_beach?->user_type == 'guest';
+            $last_user->qr_created_at = $qr_created_at;
+        }
         $user_type = $this->appartment_code
          ->where('appartment_id', $appartment_id)
          ->where('user_id', $old_user_beach?->user_id ?? 0) 
@@ -310,8 +312,10 @@ class BeachController extends Controller
         ->where("appartment_id", $appartment_id)
         ->orderByDesc("id")
         ->first()?->created_at?->format("Y-m-d H:i A");
-        $last_user = $old_user_beach?->user;
-        $last_user->is_visitor = $old_user_beach?->user_type == 'guest';
+        if($last_user){ 
+            $last_user = $old_user_beach?->user;
+            $last_user->is_visitor = $old_user_beach?->user_type == 'guest';
+        }
         $last_user->qr_created_at = $qr_created_at;
         if (!empty($old_user_beach)) {
             $old_time = $old_user_beach->updated_at->format('Y-d-m h:i A');
