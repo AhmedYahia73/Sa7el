@@ -168,7 +168,7 @@ class PoolController extends Controller
         }  
         
         if($arr_text[0] == 'visitor_id' && isset($code)){ 
-            $visits = $this->user_beach
+            $visits = $this->user_pool
             ->where("code", $code)
             ->where("appartment_id", $appartment_id)
             ->first();

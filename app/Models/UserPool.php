@@ -13,6 +13,7 @@ class UserPool extends Model
         'user_type',
         'umbrella',
         'appartment_id',
+        'code',
     ];
 
     public function user(){
