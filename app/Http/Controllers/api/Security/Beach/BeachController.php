@@ -161,7 +161,7 @@ class BeachController extends Controller
                 'appartment' => $appartment,
                 'appartment_type' => $type,
                 'user' => $user,
-                'last_user' => $old_user_beach?->user,
+                'last_user' => $last_user,
                 'time' => $old_time,
                 "umbrellas" => 0,
                 'user_type' => $user_type,
@@ -304,6 +304,15 @@ class BeachController extends Controller
          ->with("user")
          ->orderByDesc('id') 
          ->first();
+
+        $qr_created_at = VisitorCode::
+        where("code", $old_user_beach?->code ?? 0)
+        ->where("appartment_id", $appartment_id)
+        ->orderByDesc("id")
+        ->first()?->created_at?->format("Y-m-d H:i A");
+        $last_user = $old_user_beach?->user;
+        $last_user->is_visitor = $old_user_beach?->user_type == 'guest';
+        $last_user->qr_created_at = $qr_created_at;
         if (!empty($old_user_beach)) {
             $old_time = $old_user_beach->updated_at->format('Y-d-m h:i A');
         } else {
@@ -316,7 +325,7 @@ class BeachController extends Controller
                 'appartment' => $appartment,
                 'appartment_type' => $type,
                 'user' => $old_user_beach?->user,
-                'last_user' => $old_user_beach?->user,
+                'last_user' => $last_user,
                 'time' => $old_time,
                 "umbrellas" => 0,
                 "open_status" => false,
@@ -353,7 +362,7 @@ class BeachController extends Controller
             'appartment' => $appartment,
             'appartment_type' => $type,
             'user' => $user,
-            'last_user' => $old_user_beach?->user,
+            'last_user' => $last_user,
             'time' => $old_time,
             "umbrellas" => $my_umbrellas - 1,
             "open_status" => true,
