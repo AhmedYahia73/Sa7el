@@ -27,6 +27,49 @@ class PostsController extends Controller
         ]);
     } 
 
+    public function new_view(Request $request){
+        $validator = Validator::make($request->all(), [
+            'search' => 'sometimes',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+        $search = $request->query('search');
+
+        $posts = $this->post
+            ->with(['images', 'admin'])
+            ->where('village_id', $request->user()->village_id)
+            ->when($search, function ($query, $search) {
+                // فلترة البوستات بناءً على بيانات الأدمن المرتبط
+                $query->whereHas('admin', function ($q) use ($search) {
+                    $q->where(function ($subQuery) use ($search) {
+                        $subQuery->where('name', 'like', "%{$search}%")
+                                ->orWhere('email', 'like', "%{$search}%")
+                                ->orWhere('phone', 'like', "%{$search}%");
+                    });
+                });
+            })
+            ->latest() // مرتبة من الأحدث للأقدم
+            ->paginate(15)
+            ->through(fn ($item) => [
+                "id"          => $item->id,
+                "description" => $item->description,
+                "images"      => $item->images,
+                "admin"       => $item->admin ? [
+                    "id"    => $item->admin->id,
+                    "name"  => $item->admin->name,
+                    "email" => $item->admin->email,
+                    "phone" => $item->admin->phone,
+                ] : null,
+            ]);
+
+        return response()->json([
+            'posts' => $posts,
+        ]);
+    } 
+
     public function create(Request $request){
         // images[], description
         $validator = Validator::make($request->all(), [

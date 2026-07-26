@@ -87,6 +87,7 @@ class MaintenanceProviderController extends Controller
     public function love(Request $request, $id){
         $validator = Validator::make($request->all(), [
             'love' => 'required|boolean',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -107,7 +108,7 @@ class MaintenanceProviderController extends Controller
         }
         
         return response()->json([
-            'success' => 'You update react success'
+            'success' => $request->locale == "ar" ? 'تم تحديث التفاعل بنجاح' : 'You update react success'
         ]);
     }
 
@@ -153,6 +154,7 @@ class MaintenanceProviderController extends Controller
     public function image_love(Request $request, $id){
         $validator = Validator::make($request->all(), [
             'love' => 'required|boolean',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -173,13 +175,14 @@ class MaintenanceProviderController extends Controller
         }
         
         return response()->json([
-            'success' => 'You update react success'
+            'success' => $request->locale == "ar" ? 'تم تحديث التفاعل بنجاح' : 'You update react success'
         ]);
     }
 
     public function video_love(Request $request, $id){
         $validator = Validator::make($request->all(), [
             'love' => 'required|boolean',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -200,7 +203,7 @@ class MaintenanceProviderController extends Controller
         }
         
         return response()->json([
-            'success' => 'You update react success'
+            'success' => $request->locale == "ar" ? 'تم تحديث التفاعل بنجاح' : 'You update react success'
         ]);
     }
 }

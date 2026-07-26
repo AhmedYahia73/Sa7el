@@ -122,7 +122,8 @@ class OfferController extends Controller
         $validator = Validator::make($request->all(), [
             'appartment_id' => 'required|exists:appartments,id',
             'village_id' => 'required|exists:villages,id',
-            'image' => 'required'
+            'image' => 'required',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -141,7 +142,7 @@ class OfferController extends Controller
         ]);
 
         return response()->json([
-            'success' => 'you add data success',
+            'success' => $request->locale == "ar" ? 'تم إضافة البيانات بنجاح' : 'you add data success',
         ]);
     }
 
@@ -152,6 +153,7 @@ class OfferController extends Controller
             'price_day' => 'required|numeric',
             'price_month' => 'required|numeric',
             'description' => 'sometimes',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -164,7 +166,7 @@ class OfferController extends Controller
         $this->offers->create($rentRequest);
 
         return response()->json([
-            'success' => 'You add data success'
+            'success' => $request->locale == "ar" ? 'تم إضافة البيانات بنجاح' : 'You add data success'
         ]);
     }
 
@@ -174,6 +176,7 @@ class OfferController extends Controller
             'appartment_id' => 'required|exists:appartments,id',
             'price' => 'required|numeric',
             'description' => 'sometimes',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -186,7 +189,7 @@ class OfferController extends Controller
         $this->offers->create($rentRequest);
 
         return response()->json([
-            'success' => 'You add data success'
+            'success' => $request->locale == "ar" ? 'تم إضافة البيانات بنجاح' : 'You add data success'
         ]);
     }
 
@@ -197,6 +200,7 @@ class OfferController extends Controller
             'price_day' => 'required|numeric',
             'price_month' => 'required|numeric',
             'description' => 'sometimes',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -209,7 +213,7 @@ class OfferController extends Controller
         ->update($rentRequest);
 
         return response()->json([
-            'success' => 'You update data success'
+            'success' => $request->locale == "ar" ? 'تم تحديث البيانات بنجاح' : 'You update data success'
         ]);
     }
 
@@ -219,6 +223,7 @@ class OfferController extends Controller
             'appartment_id' => 'required|exists:appartments,id',
             'price' => 'required|numeric',
             'description' => 'sometimes',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -231,7 +236,7 @@ class OfferController extends Controller
         ->update($saleRequest);
 
         return response()->json([
-            'success' => 'You update data success'
+            'success' => $request->locale == "ar" ? 'تم تحديث البيانات بنجاح' : 'You update data success'
         ]);
     }
 
@@ -241,7 +246,7 @@ class OfferController extends Controller
         ->delete();
 
         return response()->json([
-            'success' => 'You delete success'
+            'success' => $request->locale == "ar" ? 'تم الحذف بنجاح' : 'You delete success'
         ]);
     }
 }

@@ -16,10 +16,16 @@ class VerificationImageController extends Controller
     public function verifyFaces(Request $request)
     {
         // 1. Validation
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'face_one_base64' => 'required|string',
             'face_two_base64' => 'required|string',
+            'locale'          => 'in:ar,en',
         ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 400);
+        }
 
         // 2. تنظيف الـ Base64 والتخلص من الديباجة وأي مسافات زائدة
         $faceOneCleaned = $this->cleanBase64($request->face_one_base64);
@@ -33,7 +39,7 @@ class VerificationImageController extends Controller
         if (!$imageSourceBytes || !$imageTargetBytes) {
             return response()->json([
                 'status' => false, 
-                'message' => 'نص الـ Base64 المرسل غير صالح أو تالف.'
+                'message' => $request->locale == "ar" ? 'نص الـ Base64 المرسل غير صالح أو تالف.' : 'The sent Base64 text is invalid or corrupted.'
             ], 400);
         }
 
@@ -70,7 +76,7 @@ class VerificationImageController extends Controller
                     'success' => true,
                     'is_identical' => true,
                     'confidence' => round($similarity, 2) . '%',
-                    'message' => 'تم التحقق بنجاح، الشخص متطابق.'
+                    'message' => $request->locale == "ar" ? 'تم التحقق بنجاح، الشخص متطابق.' : 'Verified successfully, person matches.'
                 ]);
             }
 
@@ -79,21 +85,21 @@ class VerificationImageController extends Controller
                 'success' => true,
                 'is_identical' => false,
                 'confidence' => '0%',
-                'message' => 'الصور لا تنتمي لنفس الشخص أو الوجوه غير واضحة.'
+                'message' => $request->locale == "ar" ? 'الصور لا تنتمي لنفس الشخص أو الوجوه غير واضحة.' : 'Images do not belong to the same person or faces are not clear.'
             ]);
 
         } catch (\Aws\Exception\AwsException $e) {
             // لقط أي إيرور صادر من خدمات AWS مباشرة
             return response()->json([
                 'status' => false,
-                'message' => 'حدث خطأ.',
+                'message' => $request->locale == "ar" ? 'حدث خطأ.' : 'An error occurred.',
                 'error' => $e->getAwsErrorMessage() ?? $e->getMessage()
             ], 400);
         } catch (\Exception $e) {
             // لقط أي إيرور عام داخل الـ لارافل
             return response()->json([
                 'status' => false,
-                'message' => 'حدث خطأ غير متوقع أثناء المعالجة.',
+                'message' => $request->locale == "ar" ? 'حدث خطأ غير متوقع أثناء المعالجة.' : 'An unexpected error occurred during processing.',
                 'error' => $e->getMessage()
             ], 400);
         }
@@ -102,7 +108,8 @@ class VerificationImageController extends Controller
     public function manuel_request(Request $request){
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
-            'image' => "required"
+            'image' => "required",
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -118,7 +125,7 @@ class VerificationImageController extends Controller
         ]);
 
         return response()->json([
-            "success" => "You make request success"
+            "success" => $request->locale == "ar" ? "تم تقديم الطلب بنجاح" : "You make request success"
         ]);
     }
 

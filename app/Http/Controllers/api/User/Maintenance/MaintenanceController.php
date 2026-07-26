@@ -81,6 +81,7 @@ class MaintenanceController extends Controller
             'image' => 'nullable',
             'status' => 'required|boolean',
             'village_id' => 'required|exists:villages,id',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -113,7 +114,7 @@ class MaintenanceController extends Controller
         }
 
         return response()->json([
-            'success' => 'You add data success'
+            'success' => $request->locale == "ar" ? 'تم إضافة البيانات بنجاح' : 'You add data success'
         ]);
     }
 

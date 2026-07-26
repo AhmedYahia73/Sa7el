@@ -24,7 +24,8 @@ class GateController extends Controller
     public function read_qr(Request $request){
         $validator = Validator::make($request->all(), [
             'qr_code' => 'required|string',
-            'gate_id' => 'required|exists:gates,id', 
+            'gate_id' => 'required|exists:gates,id',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -56,7 +57,7 @@ class GateController extends Controller
             $qrcode_time = Carbon::parse($qrcode_time);
             if ($tomorrow < $qrcode_time) {
                 return response()->json([
-                    'errors' => 'Qr code is expired'
+                    'errors' => $request->locale == "ar" ? 'رمز الاستجابة السري منتهي' : 'Qr code is expired'
                 ], 400);
             }
             $qr_code_code = $arr_text[9];
@@ -69,7 +70,7 @@ class GateController extends Controller
             ->first();
             if (!empty($visit_village)) {
                 return response()->json([
-                    'errors' => 'Qr code is expired...'
+                    'errors' => $request->locale == "ar" ? 'رمز الاستجابة السري منتهي...' : 'Qr code is expired...'
                 ], 400);
             }
             $appartment_id = $arr_text[11];
@@ -86,7 +87,7 @@ class GateController extends Controller
         }
         else{
             return response()->json([
-                'errors' => 'Qr code is wrong'
+                'errors' => $request->locale == "ar" ? 'رمز الاستجابة السري خطأ' : 'Qr code is wrong'
             ], 400);
         }
          $appartment = $this->appartment_data
@@ -94,7 +95,7 @@ class GateController extends Controller
          ->first();
          if (empty($appartment)) {
             return response()->json([
-                'errors' => 'Qr code is wrong'
+                'errors' => $request->locale == "ar" ? 'رمز الاستجابة السري خطأ' : 'Qr code is wrong'
             ], 400);
          }
         $user_type = $this->appartment
@@ -104,7 +105,7 @@ class GateController extends Controller
          ->first()?->type;
          if (empty($user_type)) {
             return response()->json([
-                'errors' => 'Appartment is wrong'
+                'errors' => $request->locale == "ar" ? 'الشقة خاطئة' : 'Appartment is wrong'
             ], 400);
          }
          if ($visitor) { 
@@ -143,13 +144,13 @@ class GateController extends Controller
         ->first();
 
          return response()->json([
-            'success' => 'Qr code is true',
+            'success' => $request->locale == "ar" ? 'رمز الاستجابة السري صحيح' : 'Qr code is true',
             'appartment' => $appartment,
             'user' => $user,
             'visit_village_id' => $visit_village,
             'visitor_type' => $visitor_type,
             'date' => $last_entrance_date,
-            'time' => $last_entrance_time, 
+            'time' => $last_entrance_date . " " . $last_entrance_time, 
          ]);
     }
 
@@ -157,6 +158,7 @@ class GateController extends Controller
         $validator = Validator::make($request->all(), [ 
             'visit_village_id' => 'required|exists:visit_villages,id',
             'image' => 'required',
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -172,7 +174,7 @@ class GateController extends Controller
         ]);
 
         return response()->json([
-            'success' => 'You upload id success'
+            'success' => $request->locale == "ar" ? 'تم رفع الهوية بنجاح' : 'You upload id success'
         ]);
     }
 }

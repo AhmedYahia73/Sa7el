@@ -203,7 +203,7 @@ class InsideGateController extends Controller
 
         $paginatedData = $query->latest()->paginate($request->get('per_page', 15));
 
-        $formattedItems = collect($paginatedData->items())->map(function ($item) use ($gateType) {
+        $formattedItems = collect($paginatedData->items())->map(function ($item) {
             return [
                 "id"            => $item->id,
                 "type"          => $item->type,
@@ -212,8 +212,7 @@ class InsideGateController extends Controller
                 "appartment"    => $item->appartment?->unit,
                 "user_name"     => $item->user?->name,
                 "user_phone"    => $item->user?->phone,
-                "user_email"    => $item->user?->email,
-                "gate_type"     => ($gateType === "beach") ? "beach" : "pool",
+                "user_email"    => $item->user?->email, 
                 "date"          => $item->created_at->format("Y-m-d"),
                 "time"          => $item->created_at->format("H:i A"),
             ];

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api\Security\Profile;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use App\trait\TraitImage;
 
 use App\Models\SecurityMan;
@@ -14,6 +15,14 @@ class ProfileController extends Controller
     use TraitImage;
 
     public function profile(Request $request){
+        $validator = Validator::make($request->all(), [
+            'locale' => 'in:ar,en',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
         $security = $request->user();
 
         return response()->json([
@@ -27,6 +36,14 @@ class ProfileController extends Controller
     }
 
     public function update_profile(Request $request){
+        $validator = Validator::make($request->all(), [
+            'locale' => 'in:ar,en',
+        ]);
+        if ($validator->fails()) { // if Validate Make Error Return Message Error
+            return response()->json([
+                'errors' => $validator->errors(),
+            ],400);
+        }
         $security = $this->security_man
         ->where('id', $request->user()->id)
         ->first();

@@ -13,6 +13,7 @@ class Beach extends Model
         'to',
         'village_id',
         'status', 
+        'allow_visitor', 
     ];
     protected $appends = ['ar_name'];
 

@@ -52,6 +52,11 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     ->group(function() {
         Route::get('/', 'view');
         Route::get('/filter', 'filter');
+        Route::get('/visitors', 'visitors');
+        Route::get('/worker', 'worker');
+        Route::get('/deliveries', 'deliveries');
+        Route::get('/owners', 'owners');
+        Route::get('/renters', 'renters'); 
     });
 
     Route::controller(PushNotificationController::class)
@@ -231,6 +236,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(PostsController::class)->prefix('post')->middleware('can:News Feed')
     ->group(function() {
         Route::get('/', 'view');
+        Route::get('/new_view', 'new_view');
         Route::post('/add', 'create');
         Route::post('/update/{id}', 'modify');
         Route::delete('/delete/{id}', 'delete');
@@ -314,6 +320,7 @@ Route::middleware(['auth:sanctum', 'IsVillage'])->group(function(){
     Route::controller(SecurityController::class)->prefix('security')->middleware('can:Security Man')
     ->group(function() {
         Route::get('/', 'view');
+        Route::get('/inside_gates_list', 'inside_gates');
         Route::get('/logout/{id}', 'logout_user');
         Route::put('/status/{id}', 'status');
         Route::post('/add', 'create');

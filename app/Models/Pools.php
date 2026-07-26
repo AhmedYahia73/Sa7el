@@ -13,6 +13,7 @@ class Pools extends Model
         'from',
         'to',
         'status', 
+        'allow_visitor', 
     ];
     protected $appends = ['ar_name'];
 

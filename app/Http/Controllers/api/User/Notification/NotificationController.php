@@ -33,6 +33,7 @@ class NotificationController extends Controller
         $validator = Validator::make($request->all(), [
             'items' => 'required|array', 
             'items.*' => 'exists:notifications,id', 
+            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             return response()->json([
@@ -48,7 +49,7 @@ class NotificationController extends Controller
         ]);
 
         return response()->json([
-            "success" => "You update data success"
+            "success" => $request->locale == "ar" ? "تم تحديث البيانات بنجاح" : "You update data success"
         ]);
     }
 
@@ -60,7 +61,7 @@ class NotificationController extends Controller
         ]);
 
         return response()->json([
-            "success" => "You update data success"
+            "success" => $request->locale == "ar" ? "تم تحديث البيانات بنجاح" : "You update data success"
         ]);
     }
 }
