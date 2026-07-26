@@ -135,6 +135,15 @@ class BeachController extends Controller
          ->with("user:id,name,image")
          ->orderByDesc('id') 
          ->first();
+
+        $qr_created_at = VisitorCode::
+        where("code", $old_user_beach?->code ?? 0)
+        ->where("appartment_id", $appartment_id)
+        ->orderByDesc("id")
+        ->first()?->created_at?->format("Y-m-d H:i A");
+        $last_user = $old_user_beach?->user;
+        $last_user->is_visitor = $old_user_beach?->user_type == 'guest';
+        $last_user->qr_created_at = $qr_created_at;
         $user_type = $this->appartment_code
          ->where('appartment_id', $appartment_id)
          ->where('user_id', $old_user_beach?->user_id ?? 0) 
@@ -213,14 +222,13 @@ class BeachController extends Controller
             'time' => date('H:i:s'),
             'village_id' => $request->user()->village_id,
         ]);
-
          return response()->json([
             'success' => $request->locale == "ar" ? 'رمز الاستجابة السري صحيح' : 'Qr code is true',
             'appartment' => $appartment, 
             'appartment_type' => $type,
             'user_type' => $user_type,
             'user' => $user,
-            'last_user' => $old_user_beach?->user,
+            'last_user' => $last_user,
             'time' => $old_time,
             "umbrellas" => $my_umbrellas - 1,
             "open_status" => true,
