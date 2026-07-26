@@ -59,7 +59,6 @@ class ProviderReviewController extends Controller
         ->when(request()->search, function($query){
             $query->where("name", "like", "%" . request()->search . "%");
         })
-        ->get()
         ->paginate(10)
         ->through(function($item){
             return [
@@ -89,7 +88,6 @@ class ProviderReviewController extends Controller
         ->when(request()->search, function($query){
             $query->where("name", "like", "%" . request()->search . "%");
         })
-        ->get()
         ->paginate(10)
         ->through(function($item){
             return [
