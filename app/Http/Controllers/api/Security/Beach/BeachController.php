@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Validator;
 use Zxing\QrReader;
 
 class BeachController extends Controller
-{
+{ 
     public function __construct(private Appartment $appartment,
     private UserBeach $user_beach, private User $user,
     private AppartmentCode $appartment_code){}
