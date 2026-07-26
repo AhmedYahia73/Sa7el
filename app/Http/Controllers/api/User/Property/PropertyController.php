@@ -123,7 +123,6 @@ class PropertyController extends Controller
     public function my_new_property(Request $request){
         $validator = Validator::make($request->all(), [
             'local' => 'required|in:en,ar',
-            'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -234,8 +233,7 @@ class PropertyController extends Controller
         $validator = Validator::make($request->all(), [
             'village_id' => 'required|exists:villages,id',
             'code' => 'sometimes',
-            'local' => 'required|in:en,ar', 
-            'locale' => 'in:ar,en',
+            'local' => 'required|in:en,ar',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
             $firstError = $validator->errors()->first();
@@ -270,59 +268,48 @@ class PropertyController extends Controller
             ]);
 
             return response()->json([
-                'message' => $request->locale == "ar" ? 'تم إضافة البيانات بنجاح' : 'You add data success'
+                'message' => $request->local == "ar" ? 'تم إضافة البيانات بنجاح' : 'You add data success'
             ]);
         }
         else{
             if ($request->appartment_id) {
                 $this->appartment_code
-                ->where('type', 'owner')
-                ->where('village_id', $request->village_id)
+                ->where('type', 'owner') 
                 ->where('appartment_id', $request->appartment_id)
                 ->whereNull('code')
                 ->delete();
             }
             $appartment_code = $this->appartment_code
-            ->where('type', 'owner')
-            ->where('village_id', $request->village_id)
+            ->where('type', 'owner') 
             ->where('code', $request->code) 
             ->where('user_id', $request->user()->id)
             ->orWhere('type', 'renter') 
             ->where('from', '<=', now())
-            ->where('to', '>=', now())
-            ->where('village_id', $request->village_id)
+            ->where('to', '>=', now()) 
             ->where('code', $request->code)
             ->where('user_id', $request->user()->id)
             ->first();
             if (!empty($appartment_code)) {
                 return response()->json([
-                    'errors' => $request->locale == "ar" ? 'تم إضافة الشقة من قبل' : 'appartment already added'
+                    'errors' => $request->local == "ar" ? 'تم إضافة الشقة من قبل' : 'appartment already added'
                 ], 400);
             }
 
             $appartment_code = $this->appartment_code 
             ->where('code', $request->code) 
-            ->firstOrFail(); 
-            if($appartment_code->village_id != $request->village_id){
-                return response()->json([
-                    'errors' => $request->locale == "ar" ? 'هذا الكود لا ينتمي لهذه القرية' : 'This code does not belong to this village'
-                ],403);
-            }
+            ->firstOrFail();  
             $appartment_count = $this->appartment_code
-            ->where('type', 'owner')
-            ->where('village_id', $request->village_id)
+            ->where('type', 'owner') 
             ->where('code', $request->code)
             ->whereNotNull('user_id')
             ->orWhere('type', 'renter')
-            ->where('to', '>=', now())
-            ->where('village_id', $request->village_id)
+            ->where('to', '>=', now()) 
             ->where('code', $request->code)
             ->whereNotNull('user_id')
-            ->count(); 
+            ->count();  
             $code_requests = CodeRequest::
             where("appartment_id", $appartment_code->appartment_id ?? null)
-            ->where("code", $request->code)
-            ->where("village_id", $request->village_id)
+            ->where("code", $request->code) 
             ->where("status", "pending")
             ->count();
             if (($code_requests ?? 0 ) + $appartment_count >= ($appartment_code?->people ?? 0)) {
@@ -348,12 +335,12 @@ class PropertyController extends Controller
                 $appartment_code_item->save(); 
 
                 return response()->json([
-                    'message' => $request->locale == "ar" ? 'تم إضافة البيانات بنجاح' : 'You add data success'
+                    'message' => $request->local == "ar" ? 'تم إضافة البيانات بنجاح' : 'You add data success'
                 ]);
             }
             $notification = "قام " . auth()->user()->name . " بادخال كود  برقم " . $request->code . "من الابليكشن";
             $data = [
-                'village_id' => $request->village_id,
+                'village_id' => $appartment_code->village_id,
                 'code_request_id' => null,
                 'login_request_id' => null,
                 "type" => "admin", // user, admin
@@ -365,15 +352,14 @@ class PropertyController extends Controller
                 'user_id' => auth()->user()->id,
                 'appartment_id' => $appartment_code->appartment_id,
                 'code' => $request->code,
-                'appartment_codes',
-                'village_id' => $request->village_id,
+                'village_id' => $appartment_code->village_id,
                 'status' => "pending",
                 "appartment_codes" => []
             ]);
         }
 
         return response()->json([
-            'message' => $request->locale == "ar" ? 'تم إضافة البيانات بنجاح' : 'You add data success'
+            'message' => $request->local == "ar" ? 'تم إضافة البيانات بنجاح' : 'You add data success'
         ]);
     }
 
