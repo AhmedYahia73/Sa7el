@@ -879,7 +879,7 @@ try {
 } catch (\Throwable $th) {
         return response()->json([
             'errors' => "apple error: " . $th->getMessage(),
-        ], 407);
+        ], 405);
 }
     }
 
