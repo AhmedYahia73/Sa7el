@@ -605,4 +605,18 @@ class VillageController extends Controller
             'success' => 'You delete data success'
         ]);
     }
+
+    public function logout_user(Request $request, $id){ 
+
+        $user = SecurityMan::where('id', $id) 
+            ->first();
+
+        if (!$user) {
+            return response()->json(['errors' => 'user not found'], 404);
+        }
+
+        $user->tokens()->delete();
+
+        return response()->json(['success' => 'user logged out successfully']);
+    }
 }

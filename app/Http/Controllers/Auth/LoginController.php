@@ -799,8 +799,7 @@ class LoginController extends Controller
             return response()->json([
                 'errors' => $validator->errors()->first(),
             ], 400);
-        }
-try {
+        } 
         try {
             // 1. التحقق من الـ Identity Token (JWT) من Apple
             $payload = $this->verifyAppleIdentityToken($request->access_token);
@@ -874,13 +873,7 @@ try {
             'user' => $user,
             'token' => $user->token,
             'image_status' => $user->image ? true : false,
-        ], 200);
-    //code...
-} catch (\Throwable $th) {
-        return response()->json([
-            'errors' => "apple error: " . $th->getMessage(),
-        ], 405);
-}
+        ], 200); 
     }
 
     /**
