@@ -789,7 +789,7 @@ class LoginController extends Controller
 
     public function apple_login(Request $request) {
         $validator = Validator::make($request->all(), [
-            'identity_token' => 'required', // الـ JWT اللي جاي من iOS/Android
+            'access_token' => 'required', // الـ JWT اللي جاي من iOS/Android
             'name' => 'nullable|string',     // الاسم بييجي أول مرة بس من Apple
             'email' => 'nullable|email',     // الإيميل بييجي أول مرة بس من Apple
             'fcm_token' => 'sometimes',
@@ -803,7 +803,7 @@ class LoginController extends Controller
 try {
         try {
             // 1. التحقق من الـ Identity Token (JWT) من Apple
-            $payload = $this->verifyAppleIdentityToken($request->identity_token);
+            $payload = $this->verifyAppleIdentityToken($request->access_token);
         } catch (\Exception $e) {
             return response()->json([
                 'errors' => 'Invalid Apple token: ' . $e->getMessage(),
