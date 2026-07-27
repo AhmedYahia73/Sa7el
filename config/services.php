@@ -40,9 +40,9 @@ return [
         'redirect' => null,           // مش محتاجينه
     ],
     'apple' => [
-        'client_id' => env('APPLE_CLIENT_ID'),
-        'client_secret' => env('APPLE_CLIENT_SECRET'),
-        'redirect' => env('APPLE_REDIRECT_URI'),
+        'client_id' => env('APPLE_CLIENT_ID'),       // Bundle ID بتاع الأبليكيشن
+        'client_secret' => null,                      // مش محتاجينه - Apple مبتستخدمش client_secret ثابت
+        'redirect' => null,                           // مش محتاجينه - مفيش redirect في mobile flow
         'team_id' => env('APPLE_TEAM_ID'),
         'key_id' => env('APPLE_KEY_ID'),
         'private_key' => env('APPLE_PRIVATE_KEY'),

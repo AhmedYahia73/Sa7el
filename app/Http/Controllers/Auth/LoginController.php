@@ -789,8 +789,10 @@ class LoginController extends Controller
 
     public function apple_login(Request $request) {
         $validator = Validator::make($request->all(), [
-            'access_token' => 'required', // التوكن المرسل من الفرونت إند
-            'name' => 'nullable|string',   // الاسم المرسل من الفرونت (مهم لأول مرة تسجيل)
+            'identity_token' => 'required', // الـ JWT اللي جاي من iOS/Android
+            'name' => 'nullable|string',     // الاسم بييجي أول مرة بس من Apple
+            'email' => 'nullable|email',     // الإيميل بييجي أول مرة بس من Apple
+            'fcm_token' => 'sometimes',
         ]);
 
         if ($validator->fails()) {
@@ -798,49 +800,56 @@ class LoginController extends Controller
                 'errors' => $validator->errors()->first(),
             ], 400);
         }
-
+try {
         try {
-            // 2. التحقق من التوكن وجلب البيانات من سيرفرات آبل
-            $appleUser = Socialite::driver('apple')->userFromToken($request->access_token);
+            // 1. التحقق من الـ Identity Token (JWT) من Apple
+            $payload = $this->verifyAppleIdentityToken($request->identity_token);
         } catch (\Exception $e) {
             return response()->json([
-                'errors' => 'Invalid Apple token or expired',
+                'errors' => 'Invalid Apple token: ' . $e->getMessage(),
             ], 401);
         }
 
-        // 3. البحث عن المستخدم (نبحث بالـ apple_id أولاً ثم الإيميل كخيار بديل)
-        $user = $this->user->where('apple_id', $appleUser->getId())
-            ->orWhere('email', $appleUser->getEmail())
-            ->first();
+        $appleUserId = $payload->sub;                          // Apple User ID (ثابت دايماً)
+        $appleEmail = $payload->email ?? $request->email;      // الإيميل ممكن ييجي من التوكن أو من الريكوست (أول مرة)
+
+        // 2. البحث عن المستخدم بالـ apple_id الأول (أضمن طريقة لأنه ثابت)
+        $user = $this->user->where('apple_id', $appleUserId)->first();
+
+        // لو مش موجود بالـ apple_id، نبحث بالإيميل (لو موجود)
+        if (empty($user) && !empty($appleEmail)) {
+            $user = $this->user->where('email', $appleEmail)->first();
+        }
 
         if (empty($user)) {
+            // مستخدم جديد - لازم رقم تليفون
             $validator = Validator::make($request->all(), [
-                'phone' => 'required|unique:users,phone', // التوكن المرسل من الفرونت إند
+                'phone' => 'required|unique:users,phone',
             ]); 
             if ($validator->fails()) {
                 return response()->json([
                     'errors' => $validator->errors()->first(),
                 ], 400);
             }
-            // إذا كان مستخدم جديد، ننشئ الحساب
-            // لو آبل مش بعتت الإيميل (بسبب خيارخفاء الإيميل)، آبل بتعمل إيميل وهمي ينتهي بـ @privaterelay.apple.com وهو شغال عادي.
+            // إنشاء حساب جديد
+            // لو آبل مبعتتش الإيميل (خيار إخفاء الإيميل)، بتعمل إيميل وهمي @privaterelay.appleid.com
             $user = $this->user->create([
-                'name' => $request->name ?? $appleUser->getName() ?? 'Apple User',
-                'email' => $appleUser->getEmail(),
-                'apple_id' => $appleUser->getId(),
+                'name' => $request->name ?? 'Apple User',
+                'email' => $appleEmail,
+                'apple_id' => $appleUserId,
                 'role' => 'user',
                 'status' => 1,
-                "phone" => $request->phone,
+                'phone' => $request->phone,
                 'password' => bcrypt(Str::random(16)),
             ]);
         } else {
-            // لو الحساب موجود مسبقاً بس مش مربوط بآبل
+            // لو الحساب موجود بس مش مربوط بآبل
             if (empty($user->apple_id)) {
-                $user->update(['apple_id' => $appleUser->getId()]);
+                $user->update(['apple_id' => $appleUserId]);
             }
         }
 
-        // 4. تطبيق نفس قيود الحماية بتاعتك
+        // 3. تطبيق قيود الحماية
         
         // التأكد من الحظر
         if ($user->status == 0) {
@@ -856,19 +865,54 @@ class LoginController extends Controller
             ], 403);
         }
 
-        // التأكد من عدم تسجيل الدخول من جهاز آخر
-        if ($user->tokens()->exists()) {
-            return response()->json([
-                'errors' => 'already logged in from another device'
-            ], 403);
-        }
-
-        // 5. إصدار التوكن وإرجاع الاستجابة
+        // 4. حفظ الـ fcm_token وإصدار التوكن
+        $user->fcm_token = $request->fcm_token ?? null;
+        $user->save();
         $user->token = $user->createToken('user')->plainTextToken;
 
         return response()->json([
             'user' => $user,
             'token' => $user->token,
+            'image_status' => $user->image ? true : false,
         ], 200);
+    //code...
+} catch (\Throwable $th) {
+        return response()->json([
+            'errors' => "apple error: " . $th->getMessage(),
+        ], 407);
+}
+    }
+
+    /**
+     * Verify Apple Identity Token (JWT) using Apple's public keys
+     * https://developer.apple.com/documentation/sign_in_with_apple/sign_in_with_apple_rest_api/verifying_a_user
+     */
+    private function verifyAppleIdentityToken(string $identityToken): object
+    {
+        // 1. جلب Apple's public keys
+        $appleKeysJson = file_get_contents('https://appleid.apple.com/auth/keys');
+        if ($appleKeysJson === false) {
+            throw new \Exception('Could not fetch Apple public keys');
+        }
+        $appleKeys = json_decode($appleKeysJson, true);
+
+        // 2. تحويل الـ JWK keys لصيغة يفهمها firebase/php-jwt
+        $keys = \Firebase\JWT\JWK::parseKeySet($appleKeys);
+
+        // 3. فك وتحقق من الـ JWT (بيتحقق من الـ signature والـ expiry أوتوماتيك)
+        $decoded = \Firebase\JWT\JWT::decode($identityToken, $keys);
+
+        // 4. تحقق إضافي: الـ issuer لازم يكون Apple
+        if ($decoded->iss !== 'https://appleid.apple.com') {
+            throw new \Exception('Invalid issuer');
+        }
+
+        // 5. تحقق إضافي: الـ audience لازم يكون الـ client_id بتاعنا
+        $clientId = config('services.apple.client_id');
+        if ($decoded->aud !== $clientId) {
+            throw new \Exception('Invalid audience');
+        }
+
+        return $decoded;
     }
 }
