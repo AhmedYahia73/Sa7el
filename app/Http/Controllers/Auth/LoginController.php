@@ -807,7 +807,7 @@ try {
         } catch (\Exception $e) {
             return response()->json([
                 'errors' => 'Invalid Apple token: ' . $e->getMessage(),
-            ], 401);
+            ], 403);
         }
 
         $appleUserId = $payload->sub;                          // Apple User ID (ثابت دايماً)
