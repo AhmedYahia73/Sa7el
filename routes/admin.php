@@ -260,6 +260,7 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::post('/gate_keeper_create', 'gate_keeper_create')->middleware('can:admin_Village_gate_keeper');
         Route::post('/gate_keeper_update/{id}', 'gate_keeper_modify')->middleware('can:admin_Village_gate_keeper');
         Route::delete('/gate_keeper_delete/{id}', 'gate_keeper_delete')->middleware('can:admin_Village_gate_keeper');
+        Route::delete('/gate_keeper_logout_user/{id}', 'logout_user')->middleware('can:admin_Village_gate_keeper');
     });
     
     Route::controller(VillageGallaryController::class)->prefix('village_gallery')
