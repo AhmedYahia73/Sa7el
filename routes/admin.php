@@ -257,9 +257,9 @@ Route::middleware(['auth:sanctum', 'IsAdmin'])->group(function(){
         Route::get('/gate_keeper_item/{id}', 'gate_keeper_item')->middleware('can:admin_Village_gate_keeper');
         Route::get('/gate_keeper_lists/{id}', 'gate_keeper_lists')->middleware('can:admin_Village_gate_keeper');
         Route::put('/gate_keeper_status/{id}', 'gate_keeper_status')->middleware('can:admin_Village_gate_keeper');
-        Route::post('/gate_keeper_create', 'gate_keeper_create')->middleware('can:admin_Village_gate_keeper');
+        Route::post('/gate_keeper', 'gate_keeper_create')->middleware('can:admin_Village_gate_keeper');
         Route::post('/gate_keeper_update/{id}', 'gate_keeper_modify')->middleware('can:admin_Village_gate_keeper');
-        Route::delete('/gate_keeper_delete/{id}', 'gate_keeper_delete')->middleware('can:admin_Village_gate_keeper');
+        Route::delete('/gate_keeper/{id}', 'gate_keeper_delete')->middleware('can:admin_Village_gate_keeper');
         Route::delete('/gate_keeper_logout_user/{id}', 'logout_user')->middleware('can:admin_Village_gate_keeper');
     });
     
