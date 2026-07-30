@@ -525,10 +525,13 @@ class PropertyController extends Controller
         where("code", $request->code)
         ->whereNull("user_id")
         ->get();
-        $rent_images = AppartmentCode::
+
+        $appartment_code_item = AppartmentCode::
         where("code", $request->code)
-        ->with("rent_images")
-        ->first()?->rent_images;
+        ->first();
+        $rent_images = RentImage::
+        where("appartment_id", $appartment_code_item->appartment_id)
+        ->get();
         $my_appartment_code = AppartmentCode::
         where("code", $request->code)
         ->where("user_id", auth()->user()->id)

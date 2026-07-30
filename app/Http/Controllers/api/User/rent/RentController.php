@@ -208,7 +208,7 @@ class RentController extends Controller
             'data' => 'required|array',
             'data.*.image' => 'required|base64image',
             'data.*.description' => 'required',
-            'code' => "required",
+            'appartment_id' => "required|exists:appartments,id",
             'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
@@ -217,19 +217,19 @@ class RentController extends Controller
                 'errors' => $firstError,
             ],400);
         }
-        
-        $appartment_code_ids = AppartmentCode::
-        where("code", $request->code)
-        ->pluck("id")
-        ->toArray();
-        $data = $request->data;
+          
+        if(!$this->check_renter($request->appartment_id)){
+            return response()->json([
+                "errors" => "Unit is rented you can't delete"
+            ], 400);
+        }
         foreach ($data as $item) {
             $image_path = $this->storeBase64Image($item['image'], 'images/rents');
             $rent = RentImage::create([
                 "image" => $image_path,
                 "description" => isset($item['description']) ? $item['description'] : null,
-            ]);
-            $rent->code()->attach($appartment_code_ids);
+                "appartment_id" => $request->appartment_id,
+            ]); 
         }
 
         return response()->json([
@@ -239,8 +239,7 @@ class RentController extends Controller
 
     public function update_rent_images(Request $request, $id){
         $validator = Validator::make($request->all(), [
-            'description' => 'required',
-            'code' => "required",
+            'description' => 'required', 
             'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
@@ -249,20 +248,16 @@ class RentController extends Controller
                 'errors' => $firstError,
             ],400);
         }
-        
-        $appartments = AppartmentCode::
-        where("code", $request->code)
-        ->whereNull("user_id")
-        ->get();
-        $status = isset($appartments[0]) ? $appartments[0]->people == $appartments->count() : false;
-        if(!$status){
-            return response()->json([
-                "errors" => $request->locale == "ar" ? "لا يمكنك التحديث" : "You can not update"
-            ], 400);
-        }
+          
         $rent = RentImage::
         where("id", $id)
-        ->update([ 
+        ->findOrFail( $id);
+        if(!$this->check_renter($rent->appartment_id)){
+            return response()->json([
+                "errors" => "Unit is rented you can't delete"
+            ], 400);
+        }
+        $rent->update([ 
             "description" => $request->description,
         ]);
 
@@ -272,8 +267,7 @@ class RentController extends Controller
     }
 
     public function delete_rent_images(Request $request, $id){
-        $validator = Validator::make($request->all(), [ 
-            'code' => "required",
+        $validator = Validator::make($request->all(), [  
             'locale' => 'in:ar,en',
         ]);
         if ($validator->fails()) { // if Validate Make Error Return Message Error
@@ -281,24 +275,32 @@ class RentController extends Controller
             return response()->json([
                 'errors' => $firstError,
             ],400);
-        }
-        $appartments = AppartmentCode::
-        where("code", $request->code)
-        ->whereNull("user_id")
-        ->get();
-        $status = isset($appartments[0]) ? $appartments[0]->people == $appartments->count() : false;
-        if(!$status){
-            return response()->json([
-                "errors" => $request->locale == "ar" ? "لا يمكنك الحذف" : "You can not delete"
-            ], 400);
-        }
+        } 
+
         $rent = RentImage::
         findOrFail( $id);
+        if(!$this->check_renter($rent->appartment_id)){
+            return response()->json([
+                "errors" => "Unit is rented you can't delete"
+            ], 400);
+        }
         $this->deleteImage($rent->image);
         $rent->delete();
 
         return response()->json([
             "success" => $request->locale == "ar" ? "تم حذف البيانات بنجاح" : "You delete data success"
         ]);
+    }
+
+    private function check_renter($appartment_id){
+        $appartment_code = AppartmentCode::
+        where("appartment_id", $appartment_id)
+        ->where("approve_rent_images", true)
+        ->where("to", ">=", now())
+        ->first();
+        if($appartment_code){
+            return false;
+        }
+        return true;
     }
 }

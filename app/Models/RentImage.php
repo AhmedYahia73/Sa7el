@@ -8,13 +8,14 @@ class RentImage extends Model
 {
     protected $fillable =[
         'image',
-        'description', 
+        'description',
+        'appartment_id',
     ];
     protected $appends = ['image_link'];
     
-    public function code(){
-        return $this->belongsToMany(AppartmentCode::class, "appartment_code_rent_image", "rent_image_id", "appartment_code_id");
-    }
+    // public function code(){
+    //     return $this->belongsToMany(AppartmentCode::class, "appartment_code_rent_image", "rent_image_id", "appartment_code_id");
+    // }
 
     public function getImageLinkAttribute(){
         if(isset($this->image)){
