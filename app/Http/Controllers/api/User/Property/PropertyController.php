@@ -6,6 +6,7 @@ use App\Events\NotificationEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Appartment;
 use App\Models\AppartmentCode;
+use App\Models\RentImage;
 use App\Models\CodeRequest;
 use App\Models\Notification;
 use App\Models\Zone;
