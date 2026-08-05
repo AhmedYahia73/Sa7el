@@ -223,6 +223,7 @@ class RentController extends Controller
                 "errors" => "Unit is rented you can't delete"
             ], 400);
         }
+        $data = $request->data;
         foreach ($data as $item) {
             $image_path = $this->storeBase64Image($item['image'], 'images/rents');
             $rent = RentImage::create([
